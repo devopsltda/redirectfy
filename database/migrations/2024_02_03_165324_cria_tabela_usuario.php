@@ -12,10 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::connection('sqlite')->create('usuario', function (Blueprint $table) {
-            $table->id();
-            $table->string('cpf');
+            $table->id()->unique();
+            $table->string('cpf')->unique();
             $table->string('nome');
-            $table->string('email');
+            $table->string('nome_de_usuario')->unique();
+            $table->string('email')->unique();
             $table->string('senha');
             $table->dateTimeTz('data_de_nascimento');
             $table->foreignId('plano_de_assinatura');
