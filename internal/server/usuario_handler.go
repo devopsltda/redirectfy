@@ -5,9 +5,12 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/TheDevOpsCorp/redirect-max/internal/auth"
 	"github.com/TheDevOpsCorp/redirect-max/internal/model"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
+
+	_ "github.com/joho/godotenv/autoload"
 )
 
 func geraHashSenha(senha string) (string, error) {
@@ -219,4 +222,60 @@ func (s *Server) UsuarioRemove(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{
 		"Mensagem": "Usuário removido com sucesso",
 	})
+}
+
+func (s *Server) UsuarioLogin(c echo.Context) error {
+	parametros := struct {
+		NomeDeUsuario string `json:"nome_de_usuario"`
+		Email         string `json:"email"`
+		Senha         string `json:"senha"`
+	}{}
+
+	if err := c.Bind(&parametros); err != nil {
+		return err
+	}
+
+	senhaComHash, err := geraHashSenha(parametros.Senha)
+
+	if err != nil {
+		log.Printf("UsuarioLogin: %v", err)
+		return err
+	}
+
+	parametros.Senha = senhaComHash
+
+	row := s.db.QueryRow(
+		"SELECT NOME_DE_USUARIO, SENHA FROM USUARIO WHERE REMOVIDO_EM IS NULL AND (NOME_DE_USUARIO = $1 OR EMAIL = $2)",
+		parametros.NomeDeUsuario,
+		parametros.Email,
+	)
+
+	var nomeDeUsuario string
+	var senha string
+
+	if err := row.Scan(&nomeDeUsuario, &senha); err != nil {
+		log.Printf("UsuarioLogin: %v", err)
+		return err
+	}
+
+	if err := row.Err(); err != nil {
+		log.Printf("UsuarioLogin: %v", err)
+		return err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(senha), []byte(parametros.Senha))
+
+	if err != nil {
+		log.Printf("UsuarioLogin: %v", err)
+		return err
+	}
+
+	err = auth.GeraTokensESetaCookies(nomeDeUsuario, c)
+
+	if err != nil {
+		log.Printf("UsuarioLogin: %v", err)
+		return err
+	}
+
+	return c.JSON(http.StatusOK, "")
 }
