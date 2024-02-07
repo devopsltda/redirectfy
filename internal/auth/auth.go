@@ -6,11 +6,16 @@ import (
 	"os"
 	"time"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 
 	_ "github.com/joho/godotenv/autoload"
 )
+
+type Claims struct {
+	Nome string `json:"nome"`
+	jwt.RegisteredClaims
+}
 
 var ChaveDeAcesso = os.Getenv("JWT_SECRET")
 var ChaveDeRefresh = os.Getenv("JWT_REFRESH_SECRET")
@@ -51,7 +56,7 @@ func GeraTokenRefresh(nomeDeUsuario string) (string, time.Time, error) {
 func GeraToken(nomeDeUsuario string, expiraEm time.Time, chave []byte) (string, time.Time, error) {
 	claims := jwt.MapClaims{
 		"nome_de_usuario": nomeDeUsuario,
-		"exp": expiraEm.Unix(),
+		"exp":             expiraEm.Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -109,9 +114,9 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		u := c.Get("usuario").(*jwt.Token)
 
-		claims := u.Claims.(*jwt.MapClaims)
+		claims := u.Claims.(*Claims)
 
-		if time.Unix(claims["exp"], 0).Sub(time.Now()) < 15 * time.Minute {
+		if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) < 15*time.Minute {
 			rc, err := c.Cookie("refresh-token")
 
 			if err == nil && rc != nil {
@@ -125,9 +130,9 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 				}
 
 				if tkn != nil && tkn.Valid {
-                    // If everything is good, update tokens.
+					// If everything is good, update tokens.
 					_ = GenerateTokensAndSetCookies(&user.User{
-						Name:  claims.Name,
+						Name: claims.Name,
 					}, c)
 				}
 			}

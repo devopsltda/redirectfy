@@ -8,6 +8,7 @@ import (
 	"github.com/TheDevOpsCorp/redirect-max/internal/auth"
 	"github.com/a-h/templ"
 	"github.com/go-playground/validator/v10"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -32,6 +33,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 	a.Use(echojwt.WithConfig(echojwt.Config{
 		SigningKey:  []byte(auth.ChaveDeAcesso),
 		TokenLookup: "cookie:access-token",
+		NewClaimsFunc: func(c echo.Context) jwt.Claims {
+			return new(auth.Claims)
+		},
 	}))
 
 	// API - Usuário
