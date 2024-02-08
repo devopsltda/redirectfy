@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -24,7 +25,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.Use(middleware.Recover())
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
 		Skipper: func(c echo.Context) bool {
-			return strings.Contains(c.Path(), "web")
+			return strings.Contains(c.Path(), "/web")
 		},
 	}))
 
@@ -36,6 +37,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 		NewClaimsFunc: func(c echo.Context) jwt.Claims {
 			return new(auth.Claims)
 		},
+		Skipper: func(c echo.Context) bool {
+			fmt.Println(c.Path())
+			return c.Path() == "/api/usuario/login" || (c.Path() == "/api/usuario" && c.Request().Method == "POST")
+		},
 	}))
 
 	// API - Usuário
@@ -44,6 +49,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	a.POST("/usuario", s.UsuarioCreate)
 	a.PATCH("/usuario/:nome_de_usuario", s.UsuarioUpdate)
 	a.DELETE("/usuario/:nome_de_usuario", s.UsuarioRemove)
+	a.POST("/usuario/login", s.UsuarioLogin)
 
 	// API - Plano de Assinatura
 	a.GET("/plano_de_assinatura", s.PlanoDeAssinaturaReadAll)

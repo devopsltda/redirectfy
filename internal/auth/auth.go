@@ -54,9 +54,11 @@ func GeraTokenRefresh(nomeDeUsuario string) (string, time.Time, error) {
 }
 
 func GeraToken(nomeDeUsuario string, expiraEm time.Time, chave []byte) (string, time.Time, error) {
-	claims := jwt.MapClaims{
-		"nome_de_usuario": nomeDeUsuario,
-		"exp":             expiraEm.Unix(),
+	claims := &Claims{
+		Nome: nomeDeUsuario,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: &jwt.NumericDate{Time: expiraEm},
+		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -112,28 +114,30 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			return next(c)
 		}
 
-		u := c.Get("usuario").(*jwt.Token)
+		nomeDeUsuario := c.Get("usuario").(*jwt.Token)
 
-		claims := u.Claims.(*Claims)
+		claims := nomeDeUsuario.Claims.(*Claims)
 
-		if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) < 15*time.Minute {
-			rc, err := c.Cookie("refresh-token")
+		if time.Unix(claims.RegisteredClaims.ExpiresAt.Unix(), 0).Sub(time.Now()) < 15*time.Minute {
+			refreshCookie, err := c.Cookie("refresh-token")
 
-			if err == nil && rc != nil {
-				tkn, err := jwt.ParseWithClaims(rc.Value, claims, func(token *jwt.Token) (interface{}, error) {
-					return []byte(GetRefreshJWTSecret()), nil
+			if err == nil && refreshCookie != nil {
+				token, err := jwt.ParseWithClaims(refreshCookie.Value, claims, func(token *jwt.Token) (interface{}, error) {
+					return []byte(ChaveDeRefresh), nil
 				})
+
 				if err != nil {
 					if err == jwt.ErrSignatureInvalid {
-						c.Response().Writer.WriteHeader(http.StatusUnauthorized)
+						c.JSON(http.StatusUnauthorized, "")
 					}
 				}
 
-				if tkn != nil && tkn.Valid {
-					// If everything is good, update tokens.
-					_ = GenerateTokensAndSetCookies(&user.User{
-						Name: claims.Name,
-					}, c)
+				if token != nil && token.Valid {
+					err = GeraTokensESetaCookies(nomeDeUsuario.Claims.(*Claims).Nome, c)
+
+					if err != nil {
+						return c.JSON(http.StatusInternalServerError, "")
+					}
 				}
 			}
 		}
