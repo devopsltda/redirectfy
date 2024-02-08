@@ -1,4 +1,8 @@
 definitions:
+  Erro:
+    properties:
+      message: {}
+    type: object
   echo.HTTPError:
     properties:
       message: {}
@@ -29,9 +33,9 @@ definitions:
       id:
         type: integer
       link_telegram:
-        $ref: '#/definitions/sql.NullString'
+        type: string
       link_whatsapp:
-        $ref: '#/definitions/sql.NullString'
+        type: string
       nome:
         type: string
       ordem_de_redirecionamento:
@@ -39,7 +43,7 @@ definitions:
       removido_em:
         $ref: '#/definitions/sql.NullString'
       usuario:
-        $ref: '#/definitions/model.UsuarioFK'
+        type: integer
     type: object
   model.PlanoDeAssinatura:
     properties:
@@ -54,13 +58,6 @@ definitions:
       removido_em:
         $ref: '#/definitions/sql.NullString'
       valor_mensal:
-        type: integer
-    type: object
-  model.PlanoDeAssinaturaFK:
-    properties:
-      dados:
-        $ref: '#/definitions/model.PlanoDeAssinatura'
-      id:
         type: integer
     type: object
   model.Usuario:
@@ -82,18 +79,11 @@ definitions:
       nome_de_usuario:
         type: string
       plano_de_assinatura:
-        $ref: '#/definitions/model.PlanoDeAssinaturaFK'
+        type: integer
       removido_em:
         $ref: '#/definitions/sql.NullString'
       senha:
         type: string
-    type: object
-  model.UsuarioFK:
-    properties:
-      dados:
-        $ref: '#/definitions/model.Usuario'
-      id:
-        type: integer
     type: object
   sql.NullInt64:
     properties:
@@ -340,11 +330,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
       summary: Retorna os planos de assinatura
       tags:
       - Plano de Assinatura
@@ -376,11 +366,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
       summary: Cria um plano de assinatura
       tags:
       - Plano de Assinatura
@@ -406,11 +396,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
       summary: Remove um plano de assinatura
       tags:
       - Plano de Assinatura
@@ -433,11 +423,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
       summary: Retorna o plano de assinatura com o nome fornecido
       tags:
       - Plano de Assinatura
@@ -472,11 +462,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
       summary: Atualiza um plano de assinatura
       tags:
       - Plano de Assinatura

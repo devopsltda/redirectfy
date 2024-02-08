@@ -359,13 +359,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     }
                 }
@@ -414,13 +414,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     }
                 }
@@ -457,13 +457,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     }
                 }
@@ -501,13 +501,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     }
                 }
@@ -561,13 +561,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     }
                 }
@@ -963,6 +963,12 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "Erro": {
+            "type": "object",
+            "properties": {
+                "message": {}
+            }
+        },
         "echo.HTTPError": {
             "type": "object",
             "properties": {
@@ -1008,10 +1014,10 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "link_telegram": {
-                    "$ref": "#/definitions/sql.NullString"
+                    "type": "string"
                 },
                 "link_whatsapp": {
-                    "$ref": "#/definitions/sql.NullString"
+                    "type": "string"
                 },
                 "nome": {
                     "type": "string"
@@ -1023,7 +1029,7 @@ const docTemplate = `{
                     "$ref": "#/definitions/sql.NullString"
                 },
                 "usuario": {
-                    "$ref": "#/definitions/model.UsuarioFK"
+                    "type": "integer"
                 }
             }
         },
@@ -1046,17 +1052,6 @@ const docTemplate = `{
                     "$ref": "#/definitions/sql.NullString"
                 },
                 "valor_mensal": {
-                    "type": "integer"
-                }
-            }
-        },
-        "model.PlanoDeAssinaturaFK": {
-            "type": "object",
-            "properties": {
-                "dados": {
-                    "$ref": "#/definitions/model.PlanoDeAssinatura"
-                },
-                "id": {
                     "type": "integer"
                 }
             }
@@ -1089,24 +1084,13 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "plano_de_assinatura": {
-                    "$ref": "#/definitions/model.PlanoDeAssinaturaFK"
+                    "type": "integer"
                 },
                 "removido_em": {
                     "$ref": "#/definitions/sql.NullString"
                 },
                 "senha": {
                     "type": "string"
-                }
-            }
-        },
-        "model.UsuarioFK": {
-            "type": "object",
-            "properties": {
-                "dados": {
-                    "$ref": "#/definitions/model.Usuario"
-                },
-                "id": {
-                    "type": "integer"
                 }
             }
         },

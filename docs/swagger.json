@@ -351,13 +351,13 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     }
                 }
@@ -406,13 +406,13 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     }
                 }
@@ -449,13 +449,13 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     }
                 }
@@ -493,13 +493,13 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     }
                 }
@@ -553,13 +553,13 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
+                            "$ref": "#/definitions/Erro"
                         }
                     }
                 }
@@ -955,6 +955,12 @@
         }
     },
     "definitions": {
+        "Erro": {
+            "type": "object",
+            "properties": {
+                "message": {}
+            }
+        },
         "echo.HTTPError": {
             "type": "object",
             "properties": {
@@ -1000,10 +1006,10 @@
                     "type": "integer"
                 },
                 "link_telegram": {
-                    "$ref": "#/definitions/sql.NullString"
+                    "type": "string"
                 },
                 "link_whatsapp": {
-                    "$ref": "#/definitions/sql.NullString"
+                    "type": "string"
                 },
                 "nome": {
                     "type": "string"
@@ -1015,7 +1021,7 @@
                     "$ref": "#/definitions/sql.NullString"
                 },
                 "usuario": {
-                    "$ref": "#/definitions/model.UsuarioFK"
+                    "type": "integer"
                 }
             }
         },
@@ -1038,17 +1044,6 @@
                     "$ref": "#/definitions/sql.NullString"
                 },
                 "valor_mensal": {
-                    "type": "integer"
-                }
-            }
-        },
-        "model.PlanoDeAssinaturaFK": {
-            "type": "object",
-            "properties": {
-                "dados": {
-                    "$ref": "#/definitions/model.PlanoDeAssinatura"
-                },
-                "id": {
                     "type": "integer"
                 }
             }
@@ -1081,24 +1076,13 @@
                     "type": "string"
                 },
                 "plano_de_assinatura": {
-                    "$ref": "#/definitions/model.PlanoDeAssinaturaFK"
+                    "type": "integer"
                 },
                 "removido_em": {
                     "$ref": "#/definitions/sql.NullString"
                 },
                 "senha": {
                     "type": "string"
-                }
-            }
-        },
-        "model.UsuarioFK": {
-            "type": "object",
-            "properties": {
-                "dados": {
-                    "$ref": "#/definitions/model.Usuario"
-                },
-                "id": {
-                    "type": "integer"
                 }
             }
         },

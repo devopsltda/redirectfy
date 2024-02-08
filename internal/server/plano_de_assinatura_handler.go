@@ -17,15 +17,34 @@ import (
 // @Produce json
 // @Param   nome path     string  true  "Nome"
 // @Success 200  {object} model.PlanoDeAssinatura
-// @Failure 400  {object} echo.HTTPError
-// @Failure 500  {object} echo.HTTPError
+// @Failure 400  {object} Erro
+// @Failure 500  {object} Erro
 // @Router  /api/plano_de_assinatura/:nome [get]
 func (s *Server) PlanoDeAssinaturaReadByNome(c echo.Context) error {
+	/*** Parâmetros ***/
+	parametros := struct {
+		Nome string `param:"nome"`
+	}{}
+	/*** Parâmetros ***/
+
+	/*** Validação ***/
+	var erros []string
+
+	if err := c.Bind(&parametros); err != nil {
+		erros = append(erros, "Por favor, forneça o nome do plano de assinatura no parâmetro 'nome'.")
+	}
+
+	if len(erros) > 0 {
+		return ErroValidacaoParametro(erros)
+	}
+	/*** Validação ***/
+
+	/*** Banco de Dados ***/
 	var planoDeAssinatura model.PlanoDeAssinatura
 
 	row := s.db.QueryRow(
 		"SELECT * FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL AND NOME = $1",
-		c.Param("nome"),
+		parametros.Nome,
 	)
 
 	if err := row.Scan(
@@ -44,6 +63,7 @@ func (s *Server) PlanoDeAssinaturaReadByNome(c echo.Context) error {
 		log.Printf("PlanoDeAssinaturaReadByNome: %v", err)
 		return err
 	}
+	/*** Banco de Dados ***/
 
 	return c.JSON(http.StatusOK, planoDeAssinatura)
 }
@@ -55,10 +75,17 @@ func (s *Server) PlanoDeAssinaturaReadByNome(c echo.Context) error {
 // @Accept  json
 // @Produce json
 // @Success 200  {object} []model.PlanoDeAssinatura
-// @Failure 400  {object} echo.HTTPError
-// @Failure 500  {object} echo.HTTPError
+// @Failure 400  {object} Erro
+// @Failure 500  {object} Erro
 // @Router  /api/plano_de_assinatura [get]
 func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
+	/*** Parâmetros ***/
+	/*** Parâmetros ***/
+
+	/*** Validação ***/
+	/*** Validação ***/
+
+	/*** Banco de Dados ***/
 	var planosDeAssinatura []model.PlanoDeAssinatura
 
 	rows, err := s.db.Query("SELECT * FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL")
@@ -92,6 +119,7 @@ func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
 		log.Printf("PlanoDeAssinaturaReadAll: %v", err)
 		return err
 	}
+	/*** Banco de Dados ***/
 
 	return c.JSON(http.StatusOK, planosDeAssinatura)
 }
@@ -105,23 +133,42 @@ func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
 // @Param   nome         body     string true "Nome"
 // @Param   valor_mensal body     int    true "Valor Mensal"
 // @Success 200          {object} map[string]string
-// @Failure 400          {object} echo.HTTPError
-// @Failure 500          {object} echo.HTTPError
+// @Failure 400          {object} Erro
+// @Failure 500          {object} Erro
 // @Router  /api/plano_de_assinatura [post]
 func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
-	var planoDeAssinatura model.PlanoDeAssinatura
+	/*** Parâmetros ***/
+	parametros := struct {
+		Nome        string `json:"nome"`
+		ValorMensal int64  `json:"valor_mensal"`
+	}{}
+	/*** Parâmetros ***/
 
-	if err := c.Bind(&planoDeAssinatura); err != nil {
-		log.Printf("PlanoDeAssinaturaCreate: %v", err)
-		return c.JSON(http.StatusBadRequest, map[string]string{
-			"Mensagem": "Requisição teve algum erro",
-		})
+	/*** Validação ***/
+	var erros []string
+
+	if err := c.Bind(&parametros); err != nil {
+		erros = append(erros, "Por favor, forneça o nome do plano de assinatura no parâmetro 'nome'.")
 	}
 
+	if err := Validate.Var(parametros.ValorMensal, "gte=0"); err != nil {
+		erros = append(erros, "Por favor, forneça um valor mensal válido no parâmetro 'valor_mensal'.")
+	}
+
+	if parametros.Nome == "" {
+		erros = append(erros, "Por favor, forneça um nome válido para o parâmetro 'nome'.")
+	}
+
+	if len(erros) > 0 {
+		return ErroValidacaoParametro(erros)
+	}
+	/*** Validação ***/
+
+	/*** Banco de Dados ***/
 	_, err := s.db.Exec(
 		"INSERT INTO PLANO_DE_ASSINATURA (NOME, VALOR_MENSAL, REMOVIDO_EM) VALUES ($1, $2, $3)",
-		planoDeAssinatura.Nome,
-		planoDeAssinatura.ValorMensal,
+		parametros.Nome,
+		parametros.ValorMensal,
 		nil,
 	)
 
@@ -129,6 +176,7 @@ func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 		log.Printf("PlanoDeAssinaturaCreate: %v", err)
 		return err
 	}
+	/*** Banco de Dados ***/
 
 	return c.JSON(http.StatusOK, map[string]string{
 		"Mensagem": "Plano de assinatura adicionado com sucesso",
@@ -145,19 +193,39 @@ func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 // @Param   nome         body     string false "Nome"
 // @Param   valor_mensal body     int    false "Valor Mensal"
 // @Success 200          {object} map[string]string
-// @Failure 400          {object} echo.HTTPError
-// @Failure 500          {object} echo.HTTPError
+// @Failure 400          {object} Erro
+// @Failure 500          {object} Erro
 // @Router  /api/plano_de_assinatura/:nome [patch]
 func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
+	/*** Parâmetros ***/
 	parametros := struct {
 		Nome        string `json:"nome"`
+		NomeParam   string `param:"nome"`
 		ValorMensal int64  `json:"valor_mensal"`
 	}{}
+	/*** Parâmetros ***/
+
+	/*** Validação ***/
+	var erros []string
 
 	if err := c.Bind(&parametros); err != nil {
-		return err
+		erros = append(erros, "Por favor, forneça o nome do plano de assinatura no parâmetro 'nome' e o valor mensal no parâmetro 'valor_mensal'.")
 	}
 
+	if err := Validate.Var(parametros.ValorMensal, "gte=0"); err != nil {
+		erros = append(erros, "Por favor, forneça um valor mensal válido no parâmetro 'valor_mensal'.")
+	}
+
+	if parametros.Nome == "" {
+		erros = append(erros, "Por favor, forneça um nome válido para o parâmetro 'nome'.")
+	}
+
+	if len(erros) > 0 {
+		return ErroValidacaoParametro(erros)
+	}
+	/*** Validação ***/
+
+	/*** Banco de Dados ***/
 	sqlQuery := "UPDATE PLANO_DE_ASSINATURA SET ATUALIZADO_EM = CURRENT_TIMESTAMP"
 
 	if parametros.Nome != "" {
@@ -172,13 +240,14 @@ func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 
 	_, err := s.db.Exec(
 		sqlQuery,
-		c.Param("nome"),
+		parametros.NomeParam,
 	)
 
 	if err != nil {
 		log.Printf("PlanoDeAssinaturaUpdate: %v", err)
 		return err
 	}
+	/*** Banco de Dados ***/
 
 	return c.JSON(http.StatusOK, map[string]string{
 		"Mensagem": "Plano de assinatura atualizado com sucesso",
@@ -193,19 +262,39 @@ func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 // @Produce json
 // @Param   nome path     string true "Nome"
 // @Success 200  {object} map[string]string
-// @Failure 400  {object} echo.HTTPError
-// @Failure 500  {object} echo.HTTPError
+// @Failure 400  {object} Erro
+// @Failure 500  {object} Erro
 // @Router  /api/plano_de_assinatura/:nome [delete]
 func (s *Server) PlanoDeAssinaturaRemove(c echo.Context) error {
+	/*** Parâmetros ***/
+	parametros := struct {
+		Nome string `param:"nome"`
+	}{}
+	/*** Parâmetros ***/
+
+	/*** Validação ***/
+	var erros []string
+
+	if err := c.Bind(&parametros); err != nil {
+		erros = append(erros, "Por favor, forneça o nome do plano de assinatura no parâmetro 'nome'.")
+	}
+
+	if len(erros) > 0 {
+		return ErroValidacaoParametro(erros)
+	}
+	/*** Validação ***/
+
+	/*** Banco de Dados ***/
 	_, err := s.db.Exec(
 		"UPDATE PLANO_DE_ASSINATURA SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE NOME = $1",
-		c.Param("nome"),
+		parametros.Nome,
 	)
 
 	if err != nil {
 		log.Printf("PlanoDeAssinaturaRemove: %v", err)
 		return err
 	}
+	/*** Banco de Dados ***/
 
 	return c.JSON(http.StatusOK, map[string]string{
 		"Mensagem": "Plano de assinatura removido com sucesso",

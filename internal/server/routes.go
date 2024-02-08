@@ -7,7 +7,6 @@ import (
 	"github.com/TheDevOpsCorp/redirect-max/cmd/web"
 	"github.com/TheDevOpsCorp/redirect-max/internal/auth"
 	"github.com/a-h/templ"
-	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -17,8 +16,6 @@ import (
 	_ "github.com/TheDevOpsCorp/redirect-max/docs"
 	_ "github.com/joho/godotenv/autoload"
 )
-
-var Validate = validator.New()
 
 // @title API do Redirect Max
 // @version 0.0.0-alpha

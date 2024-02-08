@@ -33,11 +33,30 @@ func geraHashSenha(senha string) (string, error) {
 // @Failure 500             {object} echo.HTTPError
 // @Router  /api/usuario/:nome_de_usuario [get]
 func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
+	/*** Parâmetros ***/
+	parametros := struct{
+		NomeDeUsuario string `param:"nome_de_usuario"`
+	}{}
+	/*** Parâmetros ***/
+
+	/*** Validação ***/
+	var erros []string
+
+	if err := c.Bind(&parametros); err != nil {
+		erros = append(erros, "Por favor, forneça o nome de usuário do usuário no parâmetro 'nome_de_usuario'.")
+	}
+
+	if len(erros) > 0 {
+		return ErroValidacaoParametro(erros)
+	}
+	/*** Validação ***/
+
+	/*** Banco de Dados ***/
 	var usuario model.Usuario
 
 	row := s.db.QueryRow(
 		"SELECT * FROM USUARIO WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = $1",
-		c.Param("nome_de_usuario"),
+		parametros.NomeDeUsuario,
 	)
 
 	if err := row.Scan(
@@ -61,6 +80,7 @@ func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 		log.Printf("UsuarioReadByNomeDeUsuario: %v", err)
 		return err
 	}
+	/*** Banco de Dados ***/
 
 	return c.JSON(http.StatusOK, usuario)
 }
@@ -76,6 +96,13 @@ func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 // @Failure 500             {object} echo.HTTPError
 // @Router  /api/usuario [get]
 func (s *Server) UsuarioReadAll(c echo.Context) error {
+	/*** Parâmetros ***/
+	/*** Parâmetros ***/
+
+	/*** Validação ***/
+	/*** Validação ***/
+
+	/*** Banco de Dados ***/
 	var usuarios []model.Usuario
 
 	rows, err := s.db.Query("SELECT * FROM USUARIO WHERE REMOVIDO_EM IS NULL")
@@ -114,6 +141,7 @@ func (s *Server) UsuarioReadAll(c echo.Context) error {
 		log.Printf("UsuarioReadAll: %v", err)
 		return err
 	}
+	/*** Banco de Dados ***/
 
 	return c.JSON(http.StatusOK, usuarios)
 }
@@ -136,6 +164,7 @@ func (s *Server) UsuarioReadAll(c echo.Context) error {
 // @Failure 500                 {object} echo.HTTPError
 // @Router  /api/usuario [post]
 func (s *Server) UsuarioCreate(c echo.Context) error {
+	/*** Parâmetros ***/
 	parametros := struct {
 		Cpf               string `json:"cpf"`
 		Nome              string `json:"nome"`
@@ -145,12 +174,45 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 		DataDeNascimento  string `json:"data_de_nascimento"`
 		PlanoDeAssinatura int64  `json:"plano_de_assinatura"`
 	}{}
+	/*** Parâmetros ***/
+
+	/*** Validação ***/
+	var erros []string
 
 	if err := c.Bind(&parametros); err != nil {
-		log.Printf("UsuarioNew: %v", err)
-		return c.JSON(http.StatusBadRequest, map[string]string{
-			"Mensagem": "Requisição teve algum erro",
-		})
+		erros = append(erros, "Por favor, forneça o CPF, nome, nome de usuário, email, senha, data de nascimento e plano de assinatura do usuário nos parâmetro 'cpf', 'nome', 'nome_de_usuario', 'email', 'senha', 'data_de_nascimento' e 'plano_de_assinatura', respectivamente.")
+	}
+
+	if parametros.Cpf == "" {
+		erros = append(erros, "Por favor, forneça um CPF válido para o parâmetro 'cpf'.")
+	}
+
+	if parametros.Nome == "" {
+		erros = append(erros, "Por favor, forneça um nome válido para o parâmetro 'nome'.")
+	}
+
+	if parametros.NomeDeUsuario == "" {
+		erros = append(erros, "Por favor, forneça um nome de usuário válido para o parâmetro 'nome_de_usuario'.")
+	}
+
+	if parametros.Email == "" {
+		erros = append(erros, "Por favor, forneça um email válido para o parâmetro 'email'.")
+	}
+
+	if parametros.Senha == "" {
+		erros = append(erros, "Por favor, forneça uma senha válida para o parâmetro 'senha'.")
+	}
+
+	if parametros.DataDeNascimento == "" {
+		erros = append(erros, "Por favor, forneça uma data de nascimento válida para o parâmetro 'data_de_nascimento'.")
+	}
+
+	if parametros.PlanoDeAssinatura == 0 {
+		erros = append(erros, "Por favor, forneça um plano de assinatura válido para o parâmetro 'plano_de_assinatura'.")
+	}
+
+	if len(erros) > 0 {
+		return ErroValidacaoParametro(erros)
 	}
 
 	senhaComHash, err := geraHashSenha(parametros.Senha)
@@ -161,7 +223,9 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 	}
 
 	parametros.Senha = senhaComHash
+	/*** Validação ***/
 
+	/*** Banco de Dados ***/
 	_, err = s.db.Exec(
 		"INSERT INTO USUARIO (CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA, REMOVIDO_EM) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
 		parametros.Cpf,
@@ -178,6 +242,7 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 		log.Printf("UsuarioCreate: %v", err)
 		return err
 	}
+	/*** Banco de Dados ***/
 
 	return c.JSON(http.StatusOK, map[string]string{
 		"Mensagem": "Usuário adicionado com sucesso",
@@ -203,20 +268,32 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 // @Failure 500                 {object} echo.HTTPError
 // @Router  /api/usuario/:nome_de_usuario [patch]
 func (s *Server) UsuarioUpdate(c echo.Context) error {
+	/*** Parâmetros ***/
 	parametros := struct {
-		Cpf               string `json:"cpf"`
-		Nome              string `json:"nome"`
-		NomeDeUsuario     string `json:"nome_de_usuario"`
-		Email             string `json:"email"`
-		Senha             string `json:"senha"`
-		DataDeNascimento  string `json:"data_de_nascimento"`
-		PlanoDeAssinatura int64  `json:"plano_de_assinatura"`
+		Cpf                string `json:"cpf"`
+		Nome               string `json:"nome"`
+		NomeDeUsuario      string `json:"nome_de_usuario"`
+		NomeDeUsuarioParam string `param:"nome_de_usuario"`
+		Email              string `json:"email"`
+		Senha              string `json:"senha"`
+		DataDeNascimento   string `json:"data_de_nascimento"`
+		PlanoDeAssinatura  int64  `json:"plano_de_assinatura"`
 	}{}
+	/*** Parâmetros ***/
+
+	/*** Validação ***/
+	var erros []string
 
 	if err := c.Bind(&parametros); err != nil {
-		return err
+		erros = append(erros, "Por favor, forneça o CPF, nome, nome de usuário, email, senha, data de nascimento e plano de assinatura do usuário nos parâmetro 'cpf', 'nome', 'nome_de_usuario', 'email', 'senha', 'data_de_nascimento' e 'plano_de_assinatura', respectivamente.")
 	}
 
+	if len(erros) > 0 {
+		return ErroValidacaoParametro(erros)
+	}
+	/*** Validação ***/
+
+	/*** Banco de Dados ***/
 	sqlQuery := "UPDATE USUARIO SET ATUALIZADO_EM = CURRENT_TIMESTAMP"
 
 	if parametros.Cpf != "" {
@@ -266,6 +343,7 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 		log.Printf("UsuarioUpdate: %v", err)
 		return err
 	}
+	/*** Banco de Dados ***/
 
 	return c.JSON(http.StatusOK, map[string]string{
 		"Mensagem": "Usuário atualizado com sucesso",
