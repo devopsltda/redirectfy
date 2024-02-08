@@ -15,8 +15,8 @@ import (
 // @Accept  json
 // @Produce json
 // @Success 200 {object} []model.Historico
-// @Failure 400 {object} echo.HTTPError
-// @Failure 500 {object} echo.HTTPError
+// @Failure 400 {object} Erro
+// @Failure 500 {object} Erro
 // @Router  /api/historico [get]
 func (s *Server) HistoricoReadAll(c echo.Context) error {
 	var historico []model.Historico

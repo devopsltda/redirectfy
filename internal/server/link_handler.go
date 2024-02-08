@@ -32,8 +32,8 @@ func generateHashCode(length int) string {
 // @Produce json
 // @Param   codigo_hash path     string true "Nome de Usuário"
 // @Success 200         {object} model.Link
-// @Failure 400         {object} echo.HTTPError
-// @Failure 500         {object} echo.HTTPError
+// @Failure 400         {object} Erro
+// @Failure 500         {object} Erro
 // @Router  /api/link/:codigo_hash [get]
 func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
 	var link model.Link
@@ -74,8 +74,8 @@ func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
 // @Accept  json
 // @Produce json
 // @Success 200 {object} []model.Link
-// @Failure 400 {object} echo.HTTPError
-// @Failure 500 {object} echo.HTTPError
+// @Failure 400 {object} Erro
+// @Failure 500 {object} Erro
 // @Router  /api/link [get]
 func (s *Server) LinkReadAll(c echo.Context) error {
 	var links []model.Link
@@ -131,8 +131,8 @@ func (s *Server) LinkReadAll(c echo.Context) error {
 // @Param   ordem_de_redirecionamento body     string true  "Ordem de Redirecionamento"
 // @Param   usuario                   body     string int   "Usuário"
 // @Success 200                       {object} map[string]string
-// @Failure 400                       {object} echo.HTTPError
-// @Failure 500                       {object} echo.HTTPError
+// @Failure 400                       {object} Erro
+// @Failure 500                       {object} Erro
 // @Router  /api/link [post]
 func (s *Server) LinkCreate(c echo.Context) error {
 	var link model.Link
@@ -204,8 +204,8 @@ func (s *Server) LinkCreate(c echo.Context) error {
 // @Param   link_telegram             body     string false "Link Telegram"
 // @Param   ordem_de_redirecionamento body     string false "Ordem de Redirecionamento"
 // @Success 200                       {object} map[string]string
-// @Failure 400                       {object} echo.HTTPError
-// @Failure 500                       {object} echo.HTTPError
+// @Failure 400                       {object} Erro
+// @Failure 500                       {object} Erro
 // @Router  /api/link/:codigo_hash [patch]
 func (s *Server) LinkUpdate(c echo.Context) error {
 	parametros := struct {
@@ -262,8 +262,8 @@ func (s *Server) LinkUpdate(c echo.Context) error {
 // @Produce json
 // @Param   codigo_hash path     string true "Código Hash"
 // @Success 200         {object} map[string]string
-// @Failure 400         {object} echo.HTTPError
-// @Failure 500         {object} echo.HTTPError
+// @Failure 400         {object} Erro
+// @Failure 500         {object} Erro
 // @Router  /api/link/:codigo_hash [delete]
 func (s *Server) LinkRemove(c echo.Context) error {
 	_, err := s.db.Exec(

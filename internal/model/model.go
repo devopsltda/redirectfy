@@ -8,8 +8,8 @@ type PlanoDeAssinatura struct {
 	ValorMensal  int64          `json:"valor_mensal"`
 	CriadoEm     string         `json:"criado_em"`
 	AtualizadoEm string         `json:"atualizado_em"`
-	RemovidoEm   sql.NullString `json:"removido_em"`
-}
+	RemovidoEm   sql.NullString `json:"removido_em" swaggertype:"integer"`
+} // @name PlanoDeAssinatura
 
 type Usuario struct {
 	Id                int64               `json:"id"`
@@ -22,8 +22,8 @@ type Usuario struct {
 	PlanoDeAssinatura int64               `json:"plano_de_assinatura"`
 	CriadoEm          string              `json:"criado_em"`
 	AtualizadoEm      string              `json:"atualizado_em"`
-	RemovidoEm        sql.NullString      `json:"removido_em"`
-}
+	RemovidoEm        sql.NullString      `json:"removido_em" swaggertype:"string"`
+} // @name Usuario
 
 type Link struct {
 	Id                      int64          `json:"id"`
@@ -35,14 +35,14 @@ type Link struct {
 	Usuario                 int64          `json:"usuario"`
 	CriadoEm                string         `json:"criado_em"`
 	AtualizadoEm            string         `json:"atualizado_em"`
-	RemovidoEm              sql.NullString `json:"removido_em"`
-}
+	RemovidoEm              sql.NullString `json:"removido_em" swaggertype:"string"`
+} // @name Link
 
 type Historico struct {
 	Id               int64          `json:"id"`
-	Usuario          sql.NullInt64  `json:"usuario"`
-	ValorOriginal    sql.NullString `json:"valor_original"`
-	ValorNovo        sql.NullString `json:"valor_novo"`
+	Usuario          sql.NullInt64  `json:"usuario" swaggertype:"integer"`
+	ValorOriginal    sql.NullString `json:"valor_original" swaggertype:"string"`
+	ValorNovo        sql.NullString `json:"valor_novo" swaggertype:"string"`
 	TabelaModificada string         `json:"tabela_modificada"`
 	CriadoEm         string         `json:"criado_em"`
-}
+} // @name Historico

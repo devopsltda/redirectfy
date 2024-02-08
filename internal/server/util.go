@@ -25,7 +25,7 @@ func ErroValidacaoParametro(mensagem []string) *echo.HTTPError {
 	return echo.NewHTTPError(
 		http.StatusBadRequest,
 		map[string][]string{
-			"erros": mensagem,
+			"Erros": mensagem,
 		},
 	)
 }

@@ -3,11 +3,7 @@ definitions:
     properties:
       message: {}
     type: object
-  echo.HTTPError:
-    properties:
-      message: {}
-    type: object
-  model.Historico:
+  Historico:
     properties:
       criado_em:
         type: string
@@ -16,13 +12,13 @@ definitions:
       tabela_modificada:
         type: string
       usuario:
-        $ref: '#/definitions/sql.NullInt64'
+        type: integer
       valor_novo:
-        $ref: '#/definitions/sql.NullString'
+        type: string
       valor_original:
-        $ref: '#/definitions/sql.NullString'
+        type: string
     type: object
-  model.Link:
+  Link:
     properties:
       atualizado_em:
         type: string
@@ -41,11 +37,11 @@ definitions:
       ordem_de_redirecionamento:
         type: string
       removido_em:
-        $ref: '#/definitions/sql.NullString'
+        type: string
       usuario:
         type: integer
     type: object
-  model.PlanoDeAssinatura:
+  PlanoDeAssinatura:
     properties:
       atualizado_em:
         type: string
@@ -56,11 +52,11 @@ definitions:
       nome:
         type: string
       removido_em:
-        $ref: '#/definitions/sql.NullString'
+        type: integer
       valor_mensal:
         type: integer
     type: object
-  model.Usuario:
+  Usuario:
     properties:
       atualizado_em:
         type: string
@@ -81,25 +77,9 @@ definitions:
       plano_de_assinatura:
         type: integer
       removido_em:
-        $ref: '#/definitions/sql.NullString'
+        type: string
       senha:
         type: string
-    type: object
-  sql.NullInt64:
-    properties:
-      int64:
-        type: integer
-      valid:
-        description: Valid is true if Int64 is not NULL
-        type: boolean
-    type: object
-  sql.NullString:
-    properties:
-      string:
-        type: string
-      valid:
-        description: Valid is true if String is not NULL
-        type: boolean
     type: object
 info:
   contact:
@@ -120,16 +100,16 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/model.Historico'
+              $ref: '#/definitions/Historico'
             type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
       summary: Retorna o histórico de ações no sistema
       tags:
       - Histórico
@@ -144,16 +124,16 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/model.Link'
+              $ref: '#/definitions/Link'
             type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
       summary: Retorna os links
       tags:
       - Link
@@ -200,11 +180,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
       summary: Cria um link
       tags:
       - Link
@@ -230,11 +210,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
       summary: Remove um link
       tags:
       - Link
@@ -253,15 +233,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Link'
+            $ref: '#/definitions/Link'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
       summary: Retorna o link com o código hash fornecido
       tags:
       - Link
@@ -306,11 +286,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
       summary: Atualiza um link
       tags:
       - Link
@@ -325,7 +305,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/model.PlanoDeAssinatura'
+              $ref: '#/definitions/PlanoDeAssinatura'
             type: array
         "400":
           description: Bad Request
@@ -419,7 +399,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.PlanoDeAssinatura'
+            $ref: '#/definitions/PlanoDeAssinatura'
         "400":
           description: Bad Request
           schema:
@@ -481,16 +461,16 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/model.Usuario'
+              $ref: '#/definitions/Usuario'
             type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
       summary: Retorna todos os usuários
       tags:
       - Usuário
@@ -552,11 +532,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
       summary: Cria um usuário
       tags:
       - Usuário
@@ -582,11 +562,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
       summary: Remove um usuário
       tags:
       - Usuário
@@ -605,15 +585,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Usuario'
+            $ref: '#/definitions/Usuario'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
       summary: Retorna o usuário com o nome de usuário fornecido
       tags:
       - Usuário
@@ -673,11 +653,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
       summary: Atualiza um usuário
       tags:
       - Usuário
@@ -714,11 +694,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/echo.HTTPError'
+            $ref: '#/definitions/Erro'
       summary: Autentica o usuário
       tags:
       - Usuário
