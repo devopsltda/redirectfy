@@ -21,6 +21,17 @@ func geraHashSenha(senha string) (string, error) {
 	return string(senhaComHash), err
 }
 
+// UsuarioReadByNomeDeUsuario godoc
+//
+// @Summary Retorna o usuário com o nome de usuário fornecido
+// @Tags    Usuário
+// @Accept  json
+// @Produce json
+// @Param   nome_de_usuario path     string  true  "Nome de Usuário"
+// @Success 200             {object} model.Usuario
+// @Failure 400             {object} echo.HTTPError
+// @Failure 500             {object} echo.HTTPError
+// @Router  /api/usuario/:nome_de_usuario [get]
 func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 	var usuario model.Usuario
 
@@ -37,7 +48,7 @@ func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 		&usuario.Email,
 		&usuario.Senha,
 		&usuario.DataDeNascimento,
-		&usuario.PlanoDeAssinatura.Id,
+		&usuario.PlanoDeAssinatura,
 		&usuario.CriadoEm,
 		&usuario.AtualizadoEm,
 		&usuario.RemovidoEm,
@@ -54,6 +65,16 @@ func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 	return c.JSON(http.StatusOK, usuario)
 }
 
+// UsuarioReadAll godoc
+//
+// @Summary Retorna todos os usuários
+// @Tags    Usuário
+// @Accept  json
+// @Produce json
+// @Success 200             {object} []model.Usuario
+// @Failure 400             {object} echo.HTTPError
+// @Failure 500             {object} echo.HTTPError
+// @Router  /api/usuario [get]
 func (s *Server) UsuarioReadAll(c echo.Context) error {
 	var usuarios []model.Usuario
 
@@ -77,7 +98,7 @@ func (s *Server) UsuarioReadAll(c echo.Context) error {
 			&usuario.Email,
 			&usuario.Senha,
 			&usuario.DataDeNascimento,
-			&usuario.PlanoDeAssinatura.Id,
+			&usuario.PlanoDeAssinatura,
 			&usuario.CriadoEm,
 			&usuario.AtualizadoEm,
 			&usuario.RemovidoEm,
@@ -97,6 +118,23 @@ func (s *Server) UsuarioReadAll(c echo.Context) error {
 	return c.JSON(http.StatusOK, usuarios)
 }
 
+// UsuarioCreate godoc
+//
+// @Summary Cria um usuário
+// @Tags    Usuário
+// @Accept  json
+// @Produce json
+// @Param   cpf                 body     string true "CPF"
+// @Param   nome                body     string true "Nome"
+// @Param   nome_de_usuario     body     string true "Nome de Usuário"
+// @Param   email               body     string true "Email"
+// @Param   senha               body     string true "Senha"
+// @Param   data_de_nascimento  body     string true "Data de Nascimento"
+// @Param   plano_de_assinatura body     int    true "Plano de Assinatura"
+// @Success 200                 {object} map[string]string
+// @Failure 400                 {object} echo.HTTPError
+// @Failure 500                 {object} echo.HTTPError
+// @Router  /api/usuario [post]
 func (s *Server) UsuarioCreate(c echo.Context) error {
 	parametros := struct {
 		Cpf               string `json:"cpf"`
@@ -146,6 +184,24 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 	})
 }
 
+// UsuarioUpdate godoc
+//
+// @Summary Atualiza um usuário
+// @Tags    Usuário
+// @Accept  json
+// @Produce json
+// @Param   nome_de_usuario     path     string true "Nome de Usuário"
+// @Param   cpf                 body     string false "CPF"
+// @Param   nome                body     string false "Nome"
+// @Param   nome_de_usuario     body     string false "Nome de Usuário"
+// @Param   email               body     string false "Email"
+// @Param   senha               body     string false "Senha"
+// @Param   data_de_nascimento  body     string false "Data de Nascimento"
+// @Param   plano_de_assinatura body     int    false "Plano de Assinatura"
+// @Success 200                 {object} map[string]string
+// @Failure 400                 {object} echo.HTTPError
+// @Failure 500                 {object} echo.HTTPError
+// @Router  /api/usuario/:nome_de_usuario [patch]
 func (s *Server) UsuarioUpdate(c echo.Context) error {
 	parametros := struct {
 		Cpf               string `json:"cpf"`
@@ -216,6 +272,17 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 	})
 }
 
+// UsuarioRemove godoc
+//
+// @Summary Remove um usuário
+// @Tags    Usuário
+// @Accept  json
+// @Produce json
+// @Param   nome_de_usuario   path     string true "Nome de Usuário"
+// @Success 200               {object} map[string]string
+// @Failure 400               {object} echo.HTTPError
+// @Failure 500               {object} echo.HTTPError
+// @Router  /api/usuario/:nome_de_usuario [delete]
 func (s *Server) UsuarioRemove(c echo.Context) error {
 	_, err := s.db.Exec(
 		"UPDATE USUARIO SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE NOME_DE_USUARIO = $1",
@@ -232,6 +299,19 @@ func (s *Server) UsuarioRemove(c echo.Context) error {
 	})
 }
 
+// UsuarioLogin godoc
+//
+// @Summary Autentica o usuário
+// @Tags    Usuário
+// @Accept  json
+// @Produce json
+// @Param   nome_de_usuario   body     string false "Nome de Usuário"
+// @Param   email             body     string false "Email"
+// @Param   senha             body     string true  "Senha"
+// @Success 200               {object} map[string]string
+// @Failure 400               {object} echo.HTTPError
+// @Failure 500               {object} echo.HTTPError
+// @Router  /api/usuario/login [post]
 func (s *Server) UsuarioLogin(c echo.Context) error {
 	parametros := struct {
 		NomeDeUsuario string `json:"nome_de_usuario"`

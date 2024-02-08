@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -13,15 +12,24 @@ import (
 	"github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 
+	_ "github.com/TheDevOpsCorp/redirect-max/docs"
 	_ "github.com/joho/godotenv/autoload"
 )
 
 var Validate = validator.New()
 
+// @title API do Redirect Max
+// @version 0.0.0-alpha
+// @description API para interagir com o Redirect Max
+
+// @contact.name Equipe da DevOps (Pablo, Guilherme e Eduardo)
+// @contact.email test@test.com
 func (s *Server) RegisterRoutes() http.Handler {
 	e := echo.New()
 	e.Use(middleware.Logger())
+	e.Use(middleware.Secure())
 	e.Use(middleware.Recover())
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
 		Skipper: func(c echo.Context) bool {
@@ -38,10 +46,12 @@ func (s *Server) RegisterRoutes() http.Handler {
 			return new(auth.Claims)
 		},
 		Skipper: func(c echo.Context) bool {
-			fmt.Println(c.Path())
-			return c.Path() == "/api/usuario/login" || (c.Path() == "/api/usuario" && c.Request().Method == "POST")
+			return c.Path() == "/api/usuario/login" || (c.Path() == "/api/usuario" && c.Request().Method == "POST") || strings.Contains(c.Path(), "/api/swagger")
 		},
 	}))
+
+	// API - Documentação Swagger
+	a.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	// API - Usuário
 	a.GET("/usuario", s.UsuarioReadAll)

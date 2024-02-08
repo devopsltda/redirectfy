@@ -9,6 +9,17 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// PlanoDeAssinaturaReadByNome godoc
+//
+// @Summary Retorna o plano de assinatura com o nome fornecido
+// @Tags    Plano de Assinatura
+// @Accept  json
+// @Produce json
+// @Param   nome path     string  true  "Nome"
+// @Success 200  {object} model.PlanoDeAssinatura
+// @Failure 400  {object} echo.HTTPError
+// @Failure 500  {object} echo.HTTPError
+// @Router  /api/plano_de_assinatura/:nome [get]
 func (s *Server) PlanoDeAssinaturaReadByNome(c echo.Context) error {
 	var planoDeAssinatura model.PlanoDeAssinatura
 
@@ -37,6 +48,16 @@ func (s *Server) PlanoDeAssinaturaReadByNome(c echo.Context) error {
 	return c.JSON(http.StatusOK, planoDeAssinatura)
 }
 
+// PlanoDeAssinaturaReadAll godoc
+//
+// @Summary Retorna os planos de assinatura
+// @Tags    Plano de Assinatura
+// @Accept  json
+// @Produce json
+// @Success 200  {object} []model.PlanoDeAssinatura
+// @Failure 400  {object} echo.HTTPError
+// @Failure 500  {object} echo.HTTPError
+// @Router  /api/plano_de_assinatura [get]
 func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
 	var planosDeAssinatura []model.PlanoDeAssinatura
 
@@ -75,6 +96,18 @@ func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
 	return c.JSON(http.StatusOK, planosDeAssinatura)
 }
 
+// PlanoDeAssinaturaCreate godoc
+//
+// @Summary Cria um plano de assinatura
+// @Tags    Plano de Assinatura
+// @Accept  json
+// @Produce json
+// @Param   nome         body     string true "Nome"
+// @Param   valor_mensal body     int    true "Valor Mensal"
+// @Success 200          {object} map[string]string
+// @Failure 400          {object} echo.HTTPError
+// @Failure 500          {object} echo.HTTPError
+// @Router  /api/plano_de_assinatura [post]
 func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 	var planoDeAssinatura model.PlanoDeAssinatura
 
@@ -102,6 +135,19 @@ func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 	})
 }
 
+// PlanoDeAssinaturaUpdate godoc
+//
+// @Summary Atualiza um plano de assinatura
+// @Tags    Plano de Assinatura
+// @Accept  json
+// @Produce json
+// @Param   nome         path     string true  "Nome"
+// @Param   nome         body     string false "Nome"
+// @Param   valor_mensal body     int    false "Valor Mensal"
+// @Success 200          {object} map[string]string
+// @Failure 400          {object} echo.HTTPError
+// @Failure 500          {object} echo.HTTPError
+// @Router  /api/plano_de_assinatura/:nome [patch]
 func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 	parametros := struct {
 		Nome        string `json:"nome"`
@@ -139,6 +185,17 @@ func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 	})
 }
 
+// PlanoDeAssinaturaRemove godoc
+//
+// @Summary Remove um plano de assinatura
+// @Tags    Plano de Assinatura
+// @Accept  json
+// @Produce json
+// @Param   nome path     string true "Nome"
+// @Success 200  {object} map[string]string
+// @Failure 400  {object} echo.HTTPError
+// @Failure 500  {object} echo.HTTPError
+// @Router  /api/plano_de_assinatura/:nome [delete]
 func (s *Server) PlanoDeAssinaturaRemove(c echo.Context) error {
 	_, err := s.db.Exec(
 		"UPDATE PLANO_DE_ASSINATURA SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE NOME = $1",

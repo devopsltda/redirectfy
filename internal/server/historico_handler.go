@@ -8,6 +8,16 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// HistoricoReadAll godoc
+//
+// @Summary Retorna o histórico de ações no sistema
+// @Tags    Histórico
+// @Accept  json
+// @Produce json
+// @Success 200 {object} []model.Historico
+// @Failure 400 {object} echo.HTTPError
+// @Failure 500 {object} echo.HTTPError
+// @Router  /api/historico [get]
 func (s *Server) HistoricoReadAll(c echo.Context) error {
 	var historico []model.Historico
 

@@ -11,11 +11,6 @@ type PlanoDeAssinatura struct {
 	RemovidoEm   sql.NullString `json:"removido_em"`
 }
 
-type PlanoDeAssinaturaFK struct {
-	Id    int64             `json:"id"`
-	Dados PlanoDeAssinatura `json:"dados"`
-}
-
 type Usuario struct {
 	Id                int64               `json:"id"`
 	Cpf               string              `json:"cpf"`
@@ -24,25 +19,20 @@ type Usuario struct {
 	Email             string              `json:"email"`
 	Senha             string              `json:"senha"`
 	DataDeNascimento  string              `json:"data_de_nascimento"`
-	PlanoDeAssinatura PlanoDeAssinaturaFK `json:"plano_de_assinatura"`
+	PlanoDeAssinatura int64               `json:"plano_de_assinatura"`
 	CriadoEm          string              `json:"criado_em"`
 	AtualizadoEm      string              `json:"atualizado_em"`
 	RemovidoEm        sql.NullString      `json:"removido_em"`
-}
-
-type UsuarioFK struct {
-	Id    int64   `json:"id"`
-	Dados Usuario `json:"dados"`
 }
 
 type Link struct {
 	Id                      int64          `json:"id"`
 	Nome                    string         `json:"nome"`
 	CodigoHash              string         `json:"codigo_hash"`
-	LinkWhatsapp            sql.NullString `json:"link_whatsapp"`
-	LinkTelegram            sql.NullString `json:"link_telegram"`
+	LinkWhatsapp            string         `json:"link_whatsapp"`
+	LinkTelegram            string         `json:"link_telegram"`
 	OrdemDeRedirecionamento string         `json:"ordem_de_redirecionamento"`
-	Usuario                 UsuarioFK      `json:"usuario"`
+	Usuario                 int64          `json:"usuario"`
 	CriadoEm                string         `json:"criado_em"`
 	AtualizadoEm            string         `json:"atualizado_em"`
 	RemovidoEm              sql.NullString `json:"removido_em"`

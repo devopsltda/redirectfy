@@ -2,7 +2,6 @@ package server
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -25,6 +24,17 @@ func generateHashCode(length int) string {
 	return string(b)
 }
 
+// LinkReadByCodigoHash godoc
+//
+// @Summary Retorna o link com o código hash fornecido
+// @Tags    Link
+// @Accept  json
+// @Produce json
+// @Param   codigo_hash path     string true "Nome de Usuário"
+// @Success 200         {object} model.Link
+// @Failure 400         {object} echo.HTTPError
+// @Failure 500         {object} echo.HTTPError
+// @Router  /api/link/:codigo_hash [get]
 func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
 	var link model.Link
 
@@ -40,7 +50,7 @@ func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
 		&link.LinkWhatsapp,
 		&link.LinkTelegram,
 		&link.OrdemDeRedirecionamento,
-		&link.Usuario.Id,
+		&link.Usuario,
 		&link.CriadoEm,
 		&link.AtualizadoEm,
 		&link.RemovidoEm,
@@ -57,6 +67,16 @@ func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
 	return c.JSON(http.StatusOK, link)
 }
 
+// LinkReadAll godoc
+//
+// @Summary Retorna os links
+// @Tags    Link
+// @Accept  json
+// @Produce json
+// @Success 200 {object} []model.Link
+// @Failure 400 {object} echo.HTTPError
+// @Failure 500 {object} echo.HTTPError
+// @Router  /api/link [get]
 func (s *Server) LinkReadAll(c echo.Context) error {
 	var links []model.Link
 
@@ -79,7 +99,7 @@ func (s *Server) LinkReadAll(c echo.Context) error {
 			&link.LinkWhatsapp,
 			&link.LinkTelegram,
 			&link.OrdemDeRedirecionamento,
-			&link.Usuario.Id,
+			&link.Usuario,
 			&link.CriadoEm,
 			&link.AtualizadoEm,
 			&link.RemovidoEm,
@@ -99,6 +119,21 @@ func (s *Server) LinkReadAll(c echo.Context) error {
 	return c.JSON(http.StatusOK, links)
 }
 
+// LinkCreate godoc
+//
+// @Summary Cria um link
+// @Tags    Link
+// @Accept  json
+// @Produce json
+// @Param   nome                      body     string true  "Nome"
+// @Param   link_whatsapp             body     string false "Link Whatsapp"
+// @Param   link_telegram             body     string false "Link Telegram"
+// @Param   ordem_de_redirecionamento body     string true  "Ordem de Redirecionamento"
+// @Param   usuario                   body     string int   "Usuário"
+// @Success 200                       {object} map[string]string
+// @Failure 400                       {object} echo.HTTPError
+// @Failure 500                       {object} echo.HTTPError
+// @Router  /api/link [post]
 func (s *Server) LinkCreate(c echo.Context) error {
 	var link model.Link
 
@@ -143,7 +178,7 @@ func (s *Server) LinkCreate(c echo.Context) error {
 		link.LinkWhatsapp,
 		link.LinkTelegram,
 		link.OrdemDeRedirecionamento,
-		link.Usuario.Id,
+		link.Usuario,
 		nil,
 	)
 
@@ -157,13 +192,27 @@ func (s *Server) LinkCreate(c echo.Context) error {
 	})
 }
 
+// LinkUpdate godoc
+//
+// @Summary Atualiza um link
+// @Tags    Link
+// @Accept  json
+// @Produce json
+// @Param   codigo_hash               path     string true  "Código Hash"
+// @Param   nome                      body     string false "Nome"
+// @Param   link_whatsapp             body     string false "Link Whatsapp"
+// @Param   link_telegram             body     string false "Link Telegram"
+// @Param   ordem_de_redirecionamento body     string false "Ordem de Redirecionamento"
+// @Success 200                       {object} map[string]string
+// @Failure 400                       {object} echo.HTTPError
+// @Failure 500                       {object} echo.HTTPError
+// @Router  /api/link/:codigo_hash [patch]
 func (s *Server) LinkUpdate(c echo.Context) error {
 	parametros := struct {
 		Nome                    string `json:"nome"`
 		LinkWhatsapp            string `json:"link_whatsapp"`
 		LinkTelegram            string `json:"link_telegram"`
 		OrdemDeRedirecionamento string `json:"ordem_de_redirecionamento"`
-		Usuario                 int64  `json:"usuario"`
 	}{}
 
 	if err := c.Bind(&parametros); err != nil {
@@ -188,10 +237,6 @@ func (s *Server) LinkUpdate(c echo.Context) error {
 		sqlQuery += ", SET ORDEM_DE_REDIRECIONAMENTO = '" + parametros.OrdemDeRedirecionamento + "'"
 	}
 
-	if parametros.Usuario != 0 {
-		sqlQuery += ", SET USUARIO = " + fmt.Sprint(parametros.Usuario)
-	}
-
 	sqlQuery += " WHERE CODIGO_HASH = $1"
 
 	_, err := s.db.Exec(
@@ -209,6 +254,17 @@ func (s *Server) LinkUpdate(c echo.Context) error {
 	})
 }
 
+// LinkRemove godoc
+//
+// @Summary Remove um link
+// @Tags    Link
+// @Accept  json
+// @Produce json
+// @Param   codigo_hash path     string true "Código Hash"
+// @Success 200         {object} map[string]string
+// @Failure 400         {object} echo.HTTPError
+// @Failure 500         {object} echo.HTTPError
+// @Router  /api/link/:codigo_hash [delete]
 func (s *Server) LinkRemove(c echo.Context) error {
 	_, err := s.db.Exec(
 		"UPDATE LINK SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE CODIGO_HASH = $1",
