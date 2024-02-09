@@ -1,9 +1,12 @@
-FROM golang:1.22.0-alpine3.19
+FROM golang:1.22.0-alpine3.19 as env
 
-WORKDIR app
+WORKDIR /app
 
-RUN apk add sqlite
+# Instalar Swag e Air
+RUN go install -v github.com/swaggo/swag/cmd/swag@latest && go install -v github.com/cosmtrek/air@latest
 
-COPU
+# Atualiza e instala dependências
+RUN apk update && apk add -U --no-cache --progress curl make nodejs npm sqlite
 
-CMD ["/app/bin/main"]
+# Node e TailwindCSS
+RUN npm install

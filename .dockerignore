@@ -1,2 +1,7 @@
 *
-!bin
+!bin/
+!tmp/
+!.github/
+!node_modules/
+
+!README.md

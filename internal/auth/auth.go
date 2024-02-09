@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -112,9 +113,13 @@ func SetCookieUsuario(nomeDeUsuario string, expiraEm time.Time, c echo.Context) 
 	c.SetCookie(cookie)
 }
 
+func PathWithNoAuthRequired(c echo.Context) bool {
+	return c.Path() == "/api/usuario/login" || (c.Path() == "/api/usuario" && c.Request().Method == "POST") || strings.Contains(c.Path(), "/api/swagger")
+}
+
 func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		if c.Get("usuario") == nil {
+		if c.Get("usuario") == nil || PathWithNoAuthRequired(c) {
 			return next(c)
 		}
 

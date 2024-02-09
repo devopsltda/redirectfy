@@ -34,6 +34,12 @@ func (s *Server) RegisterRoutes() http.Handler {
 		},
 	}))
 
+	// Arquivos estáticos (CSS, JS, imagens, etc)
+	JSFileServer := http.FileServer(http.FS(web.JSFiles))
+	CSSFileServer := http.FileServer(http.FS(web.CSSFiles))
+	e.GET("/static/js/*", echo.WrapHandler(JSFileServer))
+	e.GET("/static/css/*", echo.WrapHandler(CSSFileServer))
+
 	// API
 	a := e.Group("/api")
 	a.Use(echojwt.WithConfig(echojwt.Config{
@@ -42,9 +48,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 		NewClaimsFunc: func(c echo.Context) jwt.Claims {
 			return new(auth.Claims)
 		},
-		Skipper: func(c echo.Context) bool {
-			return c.Path() == "/api/usuario/login" || (c.Path() == "/api/usuario" && c.Request().Method == "POST") || strings.Contains(c.Path(), "/api/swagger")
-		},
+		Skipper: auth.PathWithNoAuthRequired,
 	}))
 
 	// API - Documentação Swagger
@@ -77,9 +81,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	// WEB
 	w := e.Group("/web")
-	fileServer := http.FileServer(http.FS(web.Files))
-	w.GET("/js/*", echo.WrapHandler(fileServer))
-	w.GET("/", echo.WrapHandler(templ.Handler(web.HelloForm())))
+	w.GET("", echo.WrapHandler(templ.Handler(web.HelloForm())))
 	w.POST("/hello", echo.WrapHandler(http.HandlerFunc(web.HelloWebHandler)))
 
 	return e

@@ -1,0 +1,20 @@
+{
+  "name": "redirect",
+  "version": "1.0.0",
+  "description": "API para manipulação do sistema Redirect Max",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "tailwindcss build -o cmd/web/static/css/tailwind.css --minify",
+    "watch": "tailwindcss build -o cmd/web/static/css/tailwind.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}
