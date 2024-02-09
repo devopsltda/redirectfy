@@ -7,6 +7,6 @@ services:
       target: env
     volumes:
       - ./:/app
-    command: ["make", "watch"]
     ports:
       - "8080:8080"
+    command: sh -c "npm install && go get ./... && make watch"
