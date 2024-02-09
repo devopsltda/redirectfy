@@ -1,4 +1,4 @@
-# API do Redirect Max 
+# API do Redirectfy
 
 API para manipulação do sistema Redirect Max
 
