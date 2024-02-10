@@ -109,6 +109,8 @@ func (s *Server) UsuarioReadAll(c echo.Context) error {
 	/*** Banco de Dados ***/
 	var usuarios []model.Usuario
 
+	log.Println(s.db)
+
 	rows, err := s.db.Query("SELECT * FROM USUARIO WHERE REMOVIDO_EM IS NULL")
 
 	if err != nil {

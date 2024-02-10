@@ -35,3 +35,10 @@ func NewServer() *http.Server {
 
 	return server
 }
+
+func NewTestServer() *Server {
+	return &Server{
+		db:   database.New(),
+	}
+}
+

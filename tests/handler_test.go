@@ -15,9 +15,10 @@ func TestHandler(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	resp := httptest.NewRecorder()
 	c := e.NewContext(req, resp)
-	s := &server.Server{}
+	s := server.NewTestServer()
+
 	// Assertions
-	if err := s.HelloWorldHandler(c); err != nil {
+	if err := s.UsuarioReadAll(c); err != nil {
 		t.Errorf("handler() error = %v", err)
 		return
 	}
