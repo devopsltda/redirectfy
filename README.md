@@ -1,6 +1,6 @@
-# API do Redirectfy
+# API do Redirectify
 
-API para manipulação do sistema Redirect Max
+API para manipulação do sistema Redirectify
 
 ## Requisitos
 
