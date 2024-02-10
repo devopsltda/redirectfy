@@ -55,4 +55,4 @@ watch:
 	    fi; \
 	fi
 
-.PHONY: all build run test clean docs
+.PHONY: all build run test clean docs watch

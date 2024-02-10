@@ -147,17 +147,15 @@ func (s *Server) LinkCreate(c echo.Context) error {
 	var codigo_hash string
 
 	for {
-		var codigo_hash_banco string
 		codigo_hash = generateHashCode(10)
 
 		row := s.db.QueryRow(
-			"SELECT CODIGO_HASH FROM LINK WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $1",
+			"SELECT '' FROM LINK WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $1",
 			codigo_hash,
 		)
 
-		if err := row.Scan(&codigo_hash_banco); err != nil {
+		if err := row.Scan(); err != nil {
 			if err == sql.ErrNoRows {
-				codigo_hash = codigo_hash_banco
 				break
 			} else {
 				log.Printf("LinkCreate: %v", err)

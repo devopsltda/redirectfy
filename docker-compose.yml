@@ -9,4 +9,4 @@ services:
       - ./:/app
     ports:
       - "8080:8080"
-    command: sh -c "npm install && go get ./... && make watch"
+    command: sh -c "npm install && templ generate && go get ./... && make watch"

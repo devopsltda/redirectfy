@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/TheDevOpsCorp/redirect-max/cmd/web"
+	"github.com/TheDevOpsCorp/redirect-max/cmd/web/views"
 	"github.com/TheDevOpsCorp/redirect-max/internal/auth"
 	"github.com/a-h/templ"
 	"github.com/golang-jwt/jwt/v5"
@@ -34,11 +35,12 @@ func (s *Server) RegisterRoutes() http.Handler {
 		},
 	}))
 
+	// Roteamento Dinâmico
+	e.GET("/:codigo_hash", s.LinkReadByCodigoHash)
+
 	// Arquivos estáticos (CSS, JS, imagens, etc)
-	JSFileServer := http.FileServer(http.FS(web.JSFiles))
-	CSSFileServer := http.FileServer(http.FS(web.CSSFiles))
-	e.GET("/static/js/*", echo.WrapHandler(JSFileServer))
-	e.GET("/static/css/*", echo.WrapHandler(CSSFileServer))
+	StaticFileServer := http.FileServer(http.FS(web.StaticFiles))
+	e.GET("/static/*", echo.WrapHandler(StaticFileServer))
 
 	// API
 	a := e.Group("/api")
@@ -81,8 +83,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	// WEB
 	w := e.Group("/web")
-	w.GET("", echo.WrapHandler(templ.Handler(web.HelloForm())))
-	w.POST("/hello", echo.WrapHandler(http.HandlerFunc(web.HelloWebHandler)))
+	w.GET("", echo.WrapHandler(templ.Handler(views.Landpage())))
+	w.POST("/hello", echo.WrapHandler(http.HandlerFunc(web.LoginWebHandler)))
 
 	return e
 }
