@@ -127,7 +127,7 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		claims := nomeDeUsuario.Claims.(*Claims)
 
-		if time.Unix(claims.RegisteredClaims.ExpiresAt.Unix(), 0).Sub(time.Now()) < 15*time.Minute {
+		if time.Until(claims.RegisteredClaims.ExpiresAt.Time) < 15*time.Minute {
 			refreshCookie, err := c.Cookie("refresh-token")
 
 			if err == nil && refreshCookie != nil {
@@ -137,7 +137,7 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 				if err != nil {
 					if err == jwt.ErrSignatureInvalid {
-						c.JSON(http.StatusUnauthorized, "")
+						return c.JSON(http.StatusUnauthorized, "")
 					}
 				}
 

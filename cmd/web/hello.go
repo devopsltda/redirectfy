@@ -17,5 +17,10 @@ func LoginWebHandler(w http.ResponseWriter, r *http.Request) {
 
 	name := r.FormValue("name")
 	component := views.HelloPost(name)
-	component.Render(r.Context(), w)
+	err = component.Render(r.Context(), w)
+
+	if err != nil {
+		log.Printf("LoginWebHandler: %v", err)
+		http.Error(w, "Could not render component", http.StatusInternalServerError)
+	}
 }

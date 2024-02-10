@@ -38,7 +38,7 @@ func NewServer() *http.Server {
 
 func NewTestServer() *Server {
 	return &Server{
-		db:   database.New(),
+		db:   database.NewTest(),
 	}
 }
 
