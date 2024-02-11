@@ -4,8 +4,14 @@ API para manipulação do sistema Redirectify
 
 ## Requisitos
 
+### Docker
+
+Apenas tenha o Docker instalado.
+
+### Source
+
 - Make
-    - Linux (não precisa instalar porque já vem de fábrica)
+    - No Linux não precisa instalar porque já vem de fábrica
     - [Windows](https://gnuwin32.sourceforge.net/packages/make.htm) (utilizado para rodar os scripts da aplicação)
 - [Go](https://go.dev/doc/install) (>=1.21)
     - [Air](https://github.com/cosmtrek/air) (responsável pelo *live reload* do código)
@@ -14,18 +20,64 @@ API para manipulação do sistema Redirectify
 
 ## Como Iniciar o Ambiente de Desenvolvimento
 
-As instruções abaixo assumem que o desenvolvedor está em um sistema Linux. Se esse não for o caso, utilize comandos equivalentes para o seu sistema.
+### Com Docker
 
 1. Clone o repositório
 
 ```bash
-git clone git@github.com:TheDevOpsCorp/redirect.git
+git clone git@github.com:TheDevOpsCorp/redirectify.git
 ```
 
 2. Vá para a pasta raiz do repositório
 
 ```bash
-cd redirect
+cd redirectify
+```
+
+3. Mude para a branch correta
+
+```bash
+git checkout main-but-it-works
+```
+
+3. Baixe as dependências do projeto
+
+```bash
+cp .env.example .env
+```
+
+4. Complete as variáveis de ambiente como disposto abaixo
+
+```bash
+PORT=8080
+APP_ENV=local
+DB_URL=./storage/test.db
+JWT_SECRET=         # Insira uma chave segura aqui
+JWT_REFRESH_SECRET= # Insira uma outra chave segura aqui
+```
+
+5. Roda o Docker
+
+```bash
+docker compose up
+```
+
+6. Acesse a documentação no [servidor local](http://localhost:8080/api/swagger/index.html) (porta 8080 por padrão, modifique caso você tenha alterado a porta)
+
+### A partir do código-fonte
+
+As instruções abaixo assumem que o desenvolvedor está em um sistema Linux. Se esse não for o caso, utilize comandos equivalentes para o seu sistema.
+
+1. Clone o repositório
+
+```bash
+git clone git@github.com:TheDevOpsCorp/redirectify.git
+```
+
+2. Vá para a pasta raiz do repositório
+
+```bash
+cd redirectify
 ```
 
 3. Mude para a branch correta
