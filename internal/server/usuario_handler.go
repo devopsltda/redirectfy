@@ -1,6 +1,7 @@
 package server
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -34,24 +35,12 @@ func geraHashSenha(senha string) (string, error) {
 // @Router  /api/usuario/:nome_de_usuario [get]
 func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 	/*** Parâmetros ***/
-	parametros := struct{
-		NomeDeUsuario string `param:"nome_de_usuario"`
-	}{}
+	nomeDeUsuario := c.Param("nome_de_usuario")
 	/*** Parâmetros ***/
 
 	/*** Validação ***/
-	var erros []string
-
-	if err := c.Bind(&parametros); err != nil {
-		erros = append(erros, "Por favor, forneça o nome de usuário do usuário no parâmetro 'nome_de_usuario'.")
-	}
-
-	if err := Validate.Var(parametros.NomeDeUsuario, "required"); err != nil {
-		erros = append(erros, "Por favor, forneça o nome de usuário do usuário no parâmetro 'nome_de_usuario'.")
-	}
-
-	if len(erros) > 0 {
-		return ErroValidacaoParametro(erros)
+	if !validaNomeDeUsuario(nomeDeUsuario) {
+		return ErroValidacaoNomeDeUsuario
 	}
 	/*** Validação ***/
 
@@ -60,7 +49,7 @@ func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 
 	row := s.db.QueryRow(
 		"SELECT * FROM USUARIO WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = $1",
-		parametros.NomeDeUsuario,
+		nomeDeUsuario,
 	)
 
 	if err := row.Scan(
@@ -77,12 +66,12 @@ func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 		&usuario.RemovidoEm,
 	); err != nil {
 		log.Printf("UsuarioReadByNomeDeUsuario: %v", err)
-		return err
+		return ErroConsultaLinhaBancoDados
 	}
 
 	if err := row.Err(); err != nil {
 		log.Printf("UsuarioReadByNomeDeUsuario: %v", err)
-		return err
+		return ErroRedeOuResultadoBancoDados
 	}
 	/*** Banco de Dados ***/
 
@@ -113,7 +102,7 @@ func (s *Server) UsuarioReadAll(c echo.Context) error {
 
 	if err != nil {
 		log.Printf("UsuarioReadAll: %v", err)
-		return err
+		return ErroConsultaBancoDados
 	}
 
 	defer rows.Close()
@@ -135,7 +124,7 @@ func (s *Server) UsuarioReadAll(c echo.Context) error {
 			&usuario.RemovidoEm,
 		); err != nil {
 			log.Printf("UsuarioReadAll: %v", err)
-			return err
+			return ErroConsultaLinhaBancoDados
 		}
 
 		usuarios = append(usuarios, usuario)
@@ -143,7 +132,7 @@ func (s *Server) UsuarioReadAll(c echo.Context) error {
 
 	if err := rows.Err(); err != nil {
 		log.Printf("UsuarioReadAll: %v", err)
-		return err
+		return ErroRedeOuResultadoBancoDados
 	}
 	/*** Banco de Dados ***/
 
@@ -169,6 +158,8 @@ func (s *Server) UsuarioReadAll(c echo.Context) error {
 // @Router  /api/usuario [post]
 func (s *Server) UsuarioCreate(c echo.Context) error {
 	/*** Parâmetros ***/
+	nomeDeUsuario := c.Param("nome_de_usuario")
+
 	parametros := struct {
 		Cpf               string `json:"cpf"`
 		Nome              string `json:"nome"`
@@ -181,30 +172,34 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 	/*** Parâmetros ***/
 
 	/*** Validação ***/
+	if !validaNomeDeUsuario(nomeDeUsuario) {
+		return ErroValidacaoNomeDeUsuario
+	}
+
 	var erros []string
 
 	if err := c.Bind(&parametros); err != nil {
-		erros = append(erros, "Por favor, forneça o CPF, nome, nome de usuário, email, senha, data de nascimento e plano de assinatura do usuário nos parâmetro 'cpf', 'nome', 'nome_de_usuario', 'email', 'senha', 'data_de_nascimento' e 'plano_de_assinatura', respectivamente.")
+		erros = append(erros, "Por favor, forneça o CPF, email, data de nascimento, nome, nome de usuário, senha e plano de assinatura do usuário nos parâmetro 'cpf', 'email', 'data_de_nascimento', 'nome', 'nome_de_usuario', 'senha' e 'plano_de_assinatura', respectivamente.")
 	}
 
-	if err := Validate.Var(parametros.Cpf, "required,numeric"); err != nil {
-		erros = append(erros, "Por favor, forneça um CPF válido para o parâmetro 'cpf'.")
+	if err := Validate.Var(parametros.Cpf, "required,numeric,len=11"); err != nil {
+		erros = append(erros, "Por favor, forneça um CPF válido (texto numérico com 11 dígitos) para o parâmetro 'cpf'.")
 	}
 
-	if err := Validate.Var(parametros.Nome, "required"); err != nil {
-		erros = append(erros, "Por favor, forneça um nome válido para o parâmetro 'nome'.")
+	if err := Validate.Var(parametros.Nome, "required,min=3,max=240"); err != nil {
+		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 240 caracteres) para o parâmetro 'nome'.")
 	}
 
-	if err := Validate.Var(parametros.NomeDeUsuario, "required"); err != nil {
-		erros = append(erros, "Por favor, forneça um nome de usuário válido para o parâmetro 'nome_de_usuario'.")
+	if err := Validate.Var(parametros.NomeDeUsuario, "required,min=3,max=120"); err != nil {
+		erros = append(erros, "Por favor, forneça um nome de usuário válido (texto de 3 a 120 caracteres) para o parâmetro 'nome_de_usuario'.")
 	}
 
 	if err := Validate.Var(parametros.Email, "required,email"); err != nil {
 		erros = append(erros, "Por favor, forneça um email válido para o parâmetro 'email'.")
 	}
 
-	if err := Validate.Var(parametros.Senha, "required,min=8"); err != nil {
-		erros = append(erros, "Por favor, forneça uma senha válida para o parâmetro 'senha'.")
+	if err := Validate.Var(parametros.Senha, "required,min=8,max=72"); err != nil {
+		erros = append(erros, "Por favor, forneça uma senha válida (texto de 8 a 72 caracteres, podendo conter letras, números e símbolos) para o parâmetro 'senha'.")
 	}
 
 	if err := Validate.Var(parametros.DataDeNascimento, "required,datetime"); err != nil {
@@ -223,7 +218,7 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 
 	if err != nil {
 		log.Printf("UsuarioCreate: %v", err)
-		return err
+		return ErroCriacaoSenha
 	}
 
 	parametros.Senha = senhaComHash
@@ -244,12 +239,12 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 
 	if err != nil {
 		log.Printf("UsuarioCreate: %v", err)
-		return err
+		return ErroExecucaoQueryBancoDados
 	}
 	/*** Banco de Dados ***/
 
 	return c.JSON(http.StatusOK, map[string]string{
-		"Mensagem": "Usuário adicionado com sucesso",
+		"Mensagem": "O novo usuário foi adicionado com sucesso.",
 	})
 }
 
@@ -273,11 +268,12 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 // @Router  /api/usuario/:nome_de_usuario [patch]
 func (s *Server) UsuarioUpdate(c echo.Context) error {
 	/*** Parâmetros ***/
+	nomeDeUsuario := c.Param("nome_de_usuario")
+
 	parametros := struct {
 		Cpf                string `json:"cpf"`
 		Nome               string `json:"nome"`
 		NomeDeUsuario      string `json:"nome_de_usuario"`
-		NomeDeUsuarioParam string `param:"nome_de_usuario"`
 		Email              string `json:"email"`
 		Senha              string `json:"senha"`
 		DataDeNascimento   string `json:"data_de_nascimento"`
@@ -286,14 +282,18 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 	/*** Parâmetros ***/
 
 	/*** Validação ***/
+	if !validaNomeDeUsuario(nomeDeUsuario) {
+		return ErroValidacaoNomeDeUsuario
+	}
+
 	var erros []string
 
 	if err := c.Bind(&parametros); err != nil {
 		erros = append(erros, "Por favor, forneça o CPF, nome, nome de usuário, email, senha, data de nascimento e plano de assinatura do usuário nos parâmetro 'cpf', 'nome', 'nome_de_usuario', 'email', 'senha', 'data_de_nascimento' e 'plano_de_assinatura', respectivamente.")
 	}
 
-	if err := Validate.Var(parametros.Cpf, "max=11"); err != nil {
-		erros = append(erros, "Por favor, forneça um CPF válido para o parâmetro 'cpf'.")
+	if err := Validate.Var(parametros.Cpf, "numeric,max=11"); err != nil {
+		erros = append(erros, "Por favor, forneça um CPF válido (texto numérico com 11 dígitos) para o parâmetro 'cpf'.")
 	}
 
 	if err := Validate.Var(parametros.Email, "email"); err != nil {
@@ -337,7 +337,7 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 
 		if err != nil {
 			log.Printf("UsuarioUpdate: %v", err)
-			return err
+			return ErroCriacaoSenha
 		}
 
 		parametros.Senha = senhaComHash
@@ -356,17 +356,17 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 
 	_, err := s.db.Exec(
 		sqlQuery,
-		c.Param("nome_de_usuario"),
+		nomeDeUsuario,
 	)
 
 	if err != nil {
 		log.Printf("UsuarioUpdate: %v", err)
-		return err
+		return ErroExecucaoQueryBancoDados
 	}
 	/*** Banco de Dados ***/
 
 	return c.JSON(http.StatusOK, map[string]string{
-		"Mensagem": "Usuário atualizado com sucesso",
+		"Mensagem": "O usuário foi atualizado com sucesso.",
 	})
 }
 
@@ -383,41 +383,29 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 // @Router  /api/usuario/:nome_de_usuario [delete]
 func (s *Server) UsuarioRemove(c echo.Context) error {
 	/*** Parâmetros ***/
-	parametros := struct{
-		NomeDeUsuario string `param:"nome_de_usuario"`
-	}{}
+	nomeDeUsuario := c.Param("nome_de_usuario")
 	/*** Parâmetros ***/
 
 	/*** Validação ***/
-	var erros []string
-
-	if err := c.Bind(&parametros); err != nil {
-		erros = append(erros, "Por favor, forneça o nome de usuário do usuário no parâmetro 'nome_de_usuario'.")
-	}
-
-	if err := Validate.Var(parametros.NomeDeUsuario, "required"); err != nil {
-		erros = append(erros, "Por favor, forneça o nome de usuário do usuário no parâmetro 'nome_de_usuario'.")
-	}
-
-	if len(erros) > 0 {
-		return ErroValidacaoParametro(erros)
+	if !validaNomeDeUsuario(nomeDeUsuario) {
+		return ErroValidacaoNomeDeUsuario
 	}
 	/*** Validação ***/
 
 	/*** Banco de Dados ***/
 	_, err := s.db.Exec(
 		"UPDATE USUARIO SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE NOME_DE_USUARIO = $1",
-		c.Param("nome_de_usuario"),
+		nomeDeUsuario,
 	)
 
 	if err != nil {
 		log.Printf("UsuarioRemove: %v", err)
-		return err
+		return ErroExecucaoQueryBancoDados
 	}
 	/*** Banco de Dados ***/
 
 	return c.JSON(http.StatusOK, map[string]string{
-		"Mensagem": "Usuário removido com sucesso",
+		"Mensagem": "O usuário foi removido com sucesso.",
 	})
 }
 
@@ -451,12 +439,13 @@ func (s *Server) UsuarioLogin(c echo.Context) error {
 	}
 
 	if err := Validate.Var(parametros.Email, "email"); err != nil {
-		erros = append(erros, "Por favor, forneça o email do usuário no parâmetro 'email'.")
+		erros = append(erros, "Por favor, forneça o email do usuário válido no parâmetro 'email'.")
 	}
 
-	if err := Validate.Var(parametros.Senha, "required"); err != nil {
-		erros = append(erros, "Por favor, forneça o nome de usuário do usuário no parâmetro 'nome_de_usuario'.")
+	if !validaNomeDeUsuario(parametros.NomeDeUsuario) {
+		erros = append(erros, "Por favor, forneça um nome de usuário válido no parâmetro 'nome_de_usuario'.")
 	}
+
 
 	if parametros.NomeDeUsuario == "" && parametros.Email == "" {
 		erros = append(erros, "Por favor, forneça o nome de usuário ou o email do usuário para realizar o login.")
@@ -492,13 +481,18 @@ func (s *Server) UsuarioLogin(c echo.Context) error {
 	var senha string
 
 	if err := row.Scan(&id, &nome, &nomeDeUsuario, &senha); err != nil {
+		if err == sql.ErrNoRows {
+			log.Printf("UsuarioLogin: %v", err)
+			return ErroUsuario
+		}
+
 		log.Printf("UsuarioLogin: %v", err)
-		return err
+		return ErroConsultaLinhaBancoDados
 	}
 
 	if err := row.Err(); err != nil {
 		log.Printf("UsuarioLogin: %v", err)
-		return err
+		return ErroRedeOuResultadoBancoDados
 	}
 	/*** Banco de Dados ***/
 
@@ -506,15 +500,17 @@ func (s *Server) UsuarioLogin(c echo.Context) error {
 
 	if err != nil {
 		log.Printf("UsuarioLogin: %v", err)
-		return err
+		return ErroSenha
 	}
 
 	err = auth.GeraTokensESetaCookies(id, nome, nomeDeUsuario, c)
 
 	if err != nil {
 		log.Printf("UsuarioLogin: %v", err)
-		return err
+		return ErroAssinaturaJWT
 	}
 
-	return c.JSON(http.StatusOK, "")
+	return c.JSON(http.StatusOK, map[string]string{
+		"Mensagem": "O usuário foi logado com sucesso.",
+	})
 }
