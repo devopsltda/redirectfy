@@ -31,7 +31,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.Use(middleware.Recover())
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
 		Skipper: func(c echo.Context) bool {
-			return strings.Contains(c.Path(), "/web")
+			return strings.Contains(c.Path(), "/web") || strings.Contains(c.Path(), "/docs")
 		},
 	}))
 
@@ -83,7 +83,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	// WEB
 	w := e.Group("/web")
-	w.GET("", echo.WrapHandler(templ.Handler(views.Landpage())))
+	w.GET("", echo.WrapHandler(templ.Handler(views.Loading())))
+	w.GET("/hey", echo.WrapHandler(templ.Handler(views.Landpage())))
+	w.GET("/main", echo.WrapHandler(templ.Handler(views.Links())))
 	w.POST("/hello", echo.WrapHandler(http.HandlerFunc(web.LoginWebHandler)))
 
 	return e

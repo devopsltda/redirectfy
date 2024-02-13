@@ -1,0 +1,16 @@
+package views
+
+import (
+	"github.com/TheDevOpsCorp/redirect-max/cmd/web/components"
+)
+
+templ Links() {
+	@Base() {
+		<main class="bg-[#fdf2e6] flex h-screen items-center justify-between min-h-screen">
+			@components.Sidebar("Eduardo")
+			<section class="flex h-full items-center justify-center w-full">
+				@components.Link("Bet 777", "Zwi_cUum2J", "Whatsapp", "Telegram", "whatsapp,telegram")
+			</section>
+		</main>
+	}
+}

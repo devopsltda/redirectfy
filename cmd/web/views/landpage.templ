@@ -2,12 +2,13 @@ package views
 
 templ Landpage() {
 	@Base() {
+		<main class="bg-[#ed7a07] flex flex-col items-center justify-center min-h-screen">
 			<form hx-post="/web/hello" method="POST" hx-target="#hello-container">
 				<input class="border border-black px-1 rounded" id="name" name="name" type="text"/>
 				<button type="submit">Submit</button>
 			</form>
 			<div id="hello-container"></div>
-
+		</main>
 	}
 }
 
