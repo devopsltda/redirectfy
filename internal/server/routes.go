@@ -42,6 +42,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 	StaticFileServer := http.FileServer(http.FS(web.StaticFiles))
 	e.GET("/static/*", echo.WrapHandler(StaticFileServer))
 
+	// API - Documentação Swagger
+	e.GET("/docs/*", echoSwagger.WrapHandler)
+
 	// API
 	a := e.Group("/api")
 	a.Use(echojwt.WithConfig(echojwt.Config{
@@ -52,9 +55,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 		},
 		Skipper: auth.PathWithNoAuthRequired,
 	}))
-
-	// API - Documentação Swagger
-	a.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	// API - Usuário
 	a.GET("/usuario", s.UsuarioReadAll)

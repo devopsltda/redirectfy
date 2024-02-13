@@ -1,7 +1,6 @@
 package server
 
 import (
-	"database/sql"
 	"log"
 	"math/rand"
 	"net/http"
@@ -36,32 +35,17 @@ func generateHashCode(length int) string {
 // @Failure 500         {object} Erro
 // @Router  /api/link/:codigo_hash [get]
 func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
-	var link model.Link
+	codigoHash := c.Param("codigo_hash")
 
-	row := s.db.QueryRow(
-		"SELECT * FROM LINK WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $1",
-		c.Param("codigo_hash"),
-	)
-
-	if err := row.Scan(
-		&link.Id,
-		&link.Nome,
-		&link.CodigoHash,
-		&link.LinkWhatsapp,
-		&link.LinkTelegram,
-		&link.OrdemDeRedirecionamento,
-		&link.Usuario,
-		&link.CriadoEm,
-		&link.AtualizadoEm,
-		&link.RemovidoEm,
-	); err != nil {
-		log.Printf("LinkReadByCodigoHash: %v", err)
-		return err
+	if err := Validate.Var(codigoHash, "required,len=10"); err != nil {
+		return ErroValidacaoCodigoHash
 	}
 
-	if err := row.Err(); err != nil {
+	link, err := model.LinkReadByCodigoHash(s.db, codigoHash)
+
+	if err != nil {
 		log.Printf("LinkReadByCodigoHash: %v", err)
-		return err
+		return ErroBancoDados
 	}
 
 	return c.JSON(http.StatusOK, link)
@@ -78,42 +62,11 @@ func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
 // @Failure 500 {object} Erro
 // @Router  /api/link [get]
 func (s *Server) LinkReadAll(c echo.Context) error {
-	var links []model.Link
-
-	rows, err := s.db.Query("SELECT * FROM LINK WHERE REMOVIDO_EM IS NULL")
+	links, err := model.LinkReadAll(s.db)
 
 	if err != nil {
 		log.Printf("LinkReadAll: %v", err)
-		return err
-	}
-
-	defer rows.Close()
-
-	for rows.Next() {
-		var link model.Link
-
-		if err := rows.Scan(
-			&link.Id,
-			&link.Nome,
-			&link.CodigoHash,
-			&link.LinkWhatsapp,
-			&link.LinkTelegram,
-			&link.OrdemDeRedirecionamento,
-			&link.Usuario,
-			&link.CriadoEm,
-			&link.AtualizadoEm,
-			&link.RemovidoEm,
-		); err != nil {
-			log.Printf("LinkReadAll: %v", err)
-			return err
-		}
-
-		links = append(links, link)
-	}
-
-	if err := rows.Err(); err != nil {
-		log.Printf("LinkReadAll: %v", err)
-		return err
+		return ErroBancoDados
 	}
 
 	return c.JSON(http.StatusOK, links)
@@ -135,58 +88,76 @@ func (s *Server) LinkReadAll(c echo.Context) error {
 // @Failure 500                       {object} Erro
 // @Router  /api/link [post]
 func (s *Server) LinkCreate(c echo.Context) error {
-	var link model.Link
+	parametros := struct {
+		Nome                    string `json:"nome"`
+		LinkWhatsapp            string `json:"link_whatsapp"`
+		LinkTelegram            string `json:"link_telegram"`
+		OrdemDeRedirecionamento string `json:"ordem_de_redirecionamento"`
+		Usuario                 int64  `json:"usuario"`
+	}{}
 
-	if err := c.Bind(&link); err != nil {
-		log.Printf("LinkCreate: %v", err)
-		return c.JSON(http.StatusBadRequest, map[string]string{
-			"Mensagem": "Requisição teve algum erro",
-		})
+	var erros []string
+
+	if err := c.Bind(&parametros); err != nil {
+		erros = append(erros, "Por favor, forneça o nome, link do whatsapp, link do telegram, ordem de redirecionamento e usuário nos parâmetro 'nome', 'link_whatsapp', 'link_telegram', 'ordem_de_redirecionamento' e 'usuario', respectivamente.")
 	}
 
-	var codigo_hash string
+	if err := Validate.Var(parametros.Nome, "required,min=3,max=120"); err != nil {
+		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 120 caracteres) para o parâmetro 'nome'.")
+	}
 
-	for {
-		codigo_hash = generateHashCode(10)
+	if err := Validate.Var(parametros.LinkWhatsapp, "required,max=120"); err != nil {
+		erros = append(erros, "Por favor, forneça um link de whatsapp válido para o parâmetro 'link_whatsapp'.")
+	}
 
-		row := s.db.QueryRow(
-			"SELECT '' FROM LINK WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $1",
-			codigo_hash,
-		)
+	if err := Validate.Var(parametros.LinkTelegram, "required,max=120"); err != nil {
+		erros = append(erros, "Por favor, forneça um link de telegram válido para o parâmetro 'link_telegram'.")
+	}
 
-		if err := row.Scan(); err != nil {
-			if err == sql.ErrNoRows {
-				break
-			} else {
-				log.Printf("LinkCreate: %v", err)
-				return err
-			}
-		}
+	if err := Validate.Var(parametros.OrdemDeRedirecionamento, "required,max=120"); err != nil {
+		erros = append(erros, "Por favor, forneça uma ordem de redirecionamento válida para o parâmetro 'ordem_de_redirecionamento'.")
+	}
 
-		if err := row.Err(); err != nil {
+	if err := Validate.Var(parametros.Usuario, "required,gte=0"); err != nil {
+		erros = append(erros, "Por favor, forneça um usuário válido para o parâmetro 'usuario'.")
+	}
+
+	if len(erros) > 0 {
+		return ErroValidacaoParametro(erros)
+	}
+
+	var err error
+	var codigoHash string
+	codigoHashExiste := true
+
+	for codigoHashExiste {
+		codigoHash = generateHashCode(10)
+
+		codigoHashExiste, err = model.LinkCheckIfCodigoHashExists(s.db, codigoHash)
+
+		if err != nil {
 			log.Printf("LinkCreate: %v", err)
-			return err
+			return ErroBancoDados
 		}
 	}
 
-	_, err := s.db.Exec(
-		"INSERT INTO LINK (NOME, CODIGO_HASH, LINK_WHATSAPP, LINK_TELEGRAM, ORDEM_DE_REDIRECIONAMENTO, USUARIO, REMOVIDO_EM) VALUES ($1, $2, $3, $4, $5, $6, $7)",
-		link.Nome,
-		codigo_hash,
-		link.LinkWhatsapp,
-		link.LinkTelegram,
-		link.OrdemDeRedirecionamento,
-		link.Usuario,
-		nil,
+	err = model.LinkCreate(
+		s.db,
+		parametros.Nome,
+		codigoHash,
+		parametros.LinkWhatsapp,
+		parametros.LinkTelegram,
+		parametros.OrdemDeRedirecionamento,
+		parametros.Usuario,
 	)
 
 	if err != nil {
 		log.Printf("LinkCreate: %v", err)
-		return err
+		return ErroBancoDados
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
-		"Mensagem": "Link adicionado com sucesso",
+		"Mensagem": "O link foi adicionado com sucesso.",
 	})
 }
 
@@ -213,42 +184,48 @@ func (s *Server) LinkUpdate(c echo.Context) error {
 		OrdemDeRedirecionamento string `json:"ordem_de_redirecionamento"`
 	}{}
 
+	var erros []string
+
+	codigoHash := c.Param("codigo_hash")
+
+	if err := Validate.Var(codigoHash, "required,len=10"); err != nil {
+		log.Printf("LinkUpdate: %v", err)
+		return ErroValidacaoCodigoHash
+	}
+
 	if err := c.Bind(&parametros); err != nil {
-		return err
+		erros = append(erros, "Por favor, forneça o nome, link do whatsapp, link do telegram, ordem de redirecionamento e usuário nos parâmetro 'nome', 'link_whatsapp', 'link_telegram', 'ordem_de_redirecionamento' e 'usuario', respectivamente.")
 	}
 
-	sqlQuery := "UPDATE LINK SET ATUALIZADO_EM = CURRENT_TIMESTAMP"
-
-	if parametros.Nome != "" {
-		sqlQuery += ", SET NOME = '" + parametros.Nome + "'"
+	if err := Validate.Var(parametros.Nome, "min=3,max=120"); err != nil {
+		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 120 caracteres) para o parâmetro 'nome'.")
 	}
 
-	if parametros.LinkWhatsapp != "" {
-		sqlQuery += ", SET LINK_WHATSAPP = '" + parametros.LinkWhatsapp + "'"
+	if err := Validate.Var(parametros.LinkWhatsapp, "max=120"); err != nil {
+		erros = append(erros, "Por favor, forneça um link de whatsapp válido para o parâmetro 'link_whatsapp'.")
 	}
 
-	if parametros.LinkTelegram != "" {
-		sqlQuery += ", SET LINK_TELEGRAM = '" + parametros.LinkTelegram + "'"
+	if err := Validate.Var(parametros.LinkTelegram, "max=120"); err != nil {
+		erros = append(erros, "Por favor, forneça um link de telegram válido para o parâmetro 'link_telegram'.")
 	}
 
-	if parametros.OrdemDeRedirecionamento != "" {
-		sqlQuery += ", SET ORDEM_DE_REDIRECIONAMENTO = '" + parametros.OrdemDeRedirecionamento + "'"
+	if err := Validate.Var(parametros.OrdemDeRedirecionamento, "max=120"); err != nil {
+		erros = append(erros, "Por favor, forneça uma ordem de redirecionamento válida para o parâmetro 'ordem_de_redirecionamento'.")
 	}
 
-	sqlQuery += " WHERE CODIGO_HASH = $1"
+	if len(erros) > 0 {
+		return ErroValidacaoParametro(erros)
+	}
 
-	_, err := s.db.Exec(
-		sqlQuery,
-		c.Param("codigo_hash"),
-	)
+	err := model.LinkUpdate(s.db, parametros.Nome, codigoHash, parametros.LinkWhatsapp, parametros.LinkTelegram, parametros.OrdemDeRedirecionamento)
 
 	if err != nil {
 		log.Printf("LinkUpdate: %v", err)
-		return err
+		return ErroBancoDados
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
-		"Mensagem": "Link atualizado com sucesso",
+		"Mensagem": "O link foi atualizado com sucesso.",
 	})
 }
 
@@ -264,17 +241,20 @@ func (s *Server) LinkUpdate(c echo.Context) error {
 // @Failure 500         {object} Erro
 // @Router  /api/link/:codigo_hash [delete]
 func (s *Server) LinkRemove(c echo.Context) error {
-	_, err := s.db.Exec(
-		"UPDATE LINK SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE CODIGO_HASH = $1",
-		c.Param("codigo_hash"),
-	)
+	codigoHash := c.Param("codigo_hash")
+
+	if err := Validate.Var(codigoHash, "required,len=10"); err != nil {
+		return ErroValidacaoCodigoHash
+	}
+
+	err := model.LinkRemove(s.db, codigoHash)
 
 	if err != nil {
 		log.Printf("LinkRemove: %v", err)
-		return err
+		return ErroBancoDados
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
-		"Mensagem": "Link removido com sucesso",
+		"Mensagem": "O link foi removido com sucesso.",
 	})
 }
