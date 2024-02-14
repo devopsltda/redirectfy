@@ -23,14 +23,14 @@ func Sidebar(nome string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"bg-rprimary flex flex-col h-full items-center justify-between p-5 text-rlightest w-80\"><div class=\"flex items-center justify-center\"><img class=\"h-12 pe-5\" src=\"/static/images/logo_light.svg\" alt=\"Redirectify\"><h1 class=\"font-bold text-xl\">Redirectify</h1><hr class=\"border-2 border-rprimary\"></div><nav class=\"w-full\"><ul><li class=\"bg-rlighter font-bold text-rblack p-3 rounded-md\">Links</li></ul></nav><div class=\"flex items-center justify-between w-full\"><h2 class=\"font-normal\">Olá, <span class=\"font-bold\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"bg-rprimary flex flex-col h-full items-center justify-between p-5 text-rlightest w-80\"><div class=\"flex items-center justify-center\"><img class=\"h-12 pe-5\" src=\"/static/images/logo_light.svg\" alt=\"Redirectify\"><h1 class=\"font-bold text-xl\">Redirectify</h1><hr class=\"border-2 border-rprimary\"></div><nav class=\"w-full\"><ul class=\"flex flex-col gap-3\"><li class=\"font-normal text-rlightest p-3 rounded-md\">API</li><li class=\"bg-rlighter font-bold text-rblack p-3 rounded-md\">Links</li><li class=\"bg-rblack flex font-bold items-center justify-between text-rlighter p-3 rounded-md\"><span>Se torne Premium</span><img class=\"h-5 w-5\" src=\"/static/icons/star_lighter.svg\" alt=\"Premium\"></li></ul></nav><div class=\"flex items-center justify-between w-full\"><h2 class=\"font-normal\">Olá, <span class=\"font-bold\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(nome)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/sidebar.templ`, Line: 15, Col: 63}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/web/components/sidebar.templ`, Line: 17, Col: 63}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {

@@ -8,8 +8,10 @@ templ Sidebar(nome string) {
 			<hr class="border-2 border-rprimary"/>
 		</div>
 		<nav class="w-full">
-			<ul>
+			<ul class="flex flex-col gap-3">
+				<li class="font-normal text-rlightest p-3 rounded-md">API</li>
 				<li class="bg-rlighter font-bold text-rblack p-3 rounded-md">Links</li>
+				<li class="bg-rblack flex font-bold items-center justify-between text-rlighter p-3 rounded-md"><span>Se torne Premium</span><img class="h-5 w-5" src="/static/icons/star_lighter.svg" alt="Premium"/></li>
 			</ul>
 		</nav>
 		<div class="flex items-center justify-between w-full">
