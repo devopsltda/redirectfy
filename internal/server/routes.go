@@ -83,10 +83,26 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	// WEB
 	w := e.Group("/web")
+
+	// Telas
+	// - Landpage
+	// - Tela de Pricing
+	// - Tela de Contato
+	// - Tela de Login
+	// - Tela de Signup
+	// - Tela de Esqueci Minha Senha
+	// - Tela de Criar Nova Senha
+	// - Tela de Confirmação de Mudança de Senha
+	// - Tela de Editar Usuário
+	// - Tela de Contratar Plano
+	// - Tela de Cancelar Plano
+	// - Tela de Gerenciamento de Links
 	w.GET("", echo.WrapHandler(templ.Handler(views.Loading())))
 	w.GET("/hey", echo.WrapHandler(templ.Handler(views.Landpage())))
-	w.GET("/main", echo.WrapHandler(templ.Handler(views.Links())))
-	w.POST("/hello", echo.WrapHandler(http.HandlerFunc(web.LoginWebHandler)))
+	w.GET("/main", echo.WrapHandler(http.HandlerFunc(web.MainWebHandler)))
+	w.POST("/link_create", echo.WrapHandler(http.HandlerFunc(web.LinkCreateWebHandler)))
+	w.GET("/link_create_form", echo.WrapHandler(http.HandlerFunc(web.LinkCreateFormWebHandler)))
+	w.GET("/link_create_button", echo.WrapHandler(http.HandlerFunc(web.LinkCreateButtonWebHandler)))
 
 	return e
 }

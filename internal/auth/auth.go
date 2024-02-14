@@ -58,8 +58,8 @@ func GeraTokenRefresh(id int64, nome, nomeDeUsuario string) (string, time.Time, 
 
 func GeraToken(id int64, nome, nomeDeUsuario string, expiraEm time.Time, chave []byte) (string, time.Time, error) {
 	claims := &Claims{
-		Id: id,
-		Nome: nome,
+		Id:            id,
+		Nome:          nome,
 		NomeDeUsuario: nomeDeUsuario,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: &jwt.NumericDate{Time: expiraEm},

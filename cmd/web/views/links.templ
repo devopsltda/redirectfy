@@ -2,14 +2,18 @@ package views
 
 import (
 	"github.com/TheDevOpsCorp/redirect-max/cmd/web/components"
+	"github.com/TheDevOpsCorp/redirect-max/internal/model"
 )
 
-templ Links() {
+templ Links(links []model.Link) {
 	@Base() {
-		<main class="bg-[#fdf2e6] flex h-screen items-center justify-between min-h-screen">
+		<main class="bg-rlightest flex h-screen items-center justify-between min-h-screen">
 			@components.Sidebar("Eduardo")
-			<section class="flex h-full items-center justify-center w-full">
-				@components.Link("Bet 777", "Zwi_cUum2J", "Whatsapp", "Telegram", "whatsapp,telegram")
+			<section class="flex flex-col gap-5 h-full items-center justify-center w-full">
+				for _, link := range links {
+					@components.Link(link.Nome, link.CodigoHash, link.LinkWhatsapp, link.LinkTelegram, link.OrdemDeRedirecionamento)
+				}
+				@components.LinkCreateButton()
 			</section>
 		</main>
 	}

@@ -6,17 +6,17 @@ import (
 )
 
 type Usuario struct {
-	Id                int64               `json:"id"`
-	Cpf               string              `json:"cpf"`
-	Nome              string              `json:"nome"`
-	NomeDeUsuario     string              `json:"nome_de_usuario"`
-	Email             string              `json:"email"`
-	Senha             string              `json:"senha"`
-	DataDeNascimento  string              `json:"data_de_nascimento"`
-	PlanoDeAssinatura int64               `json:"plano_de_assinatura"`
-	CriadoEm          string              `json:"criado_em"`
-	AtualizadoEm      string              `json:"atualizado_em"`
-	RemovidoEm        sql.NullString      `json:"removido_em" swaggertype:"string"`
+	Id                int64          `json:"id"`
+	Cpf               string         `json:"cpf"`
+	Nome              string         `json:"nome"`
+	NomeDeUsuario     string         `json:"nome_de_usuario"`
+	Email             string         `json:"email"`
+	Senha             string         `json:"senha"`
+	DataDeNascimento  string         `json:"data_de_nascimento"`
+	PlanoDeAssinatura int64          `json:"plano_de_assinatura"`
+	CriadoEm          string         `json:"criado_em"`
+	AtualizadoEm      string         `json:"atualizado_em"`
+	RemovidoEm        sql.NullString `json:"removido_em" swaggertype:"string"`
 } // @name Usuario
 
 func UsuarioReadByNomeDeUsuario(db *sql.DB, nomeDeUsuario string) (*Usuario, error) {
@@ -46,7 +46,7 @@ func UsuarioReadByNomeDeUsuario(db *sql.DB, nomeDeUsuario string) (*Usuario, err
 	if err := row.Err(); err != nil {
 		return nil, err
 	}
-	
+
 	return usuario, nil
 }
 
@@ -183,7 +183,7 @@ func UsuarioLogin(db *sql.DB, email, nomeDeUsuario string) (*int64, *string, *st
 	}
 
 	row := db.QueryRow(
-		"SELECT ID, NOME, NOME_DE_USUARIO, SENHA FROM USUARIO WHERE REMOVIDO_EM IS NULL AND " + login,
+		"SELECT ID, NOME, NOME_DE_USUARIO, SENHA FROM USUARIO WHERE REMOVIDO_EM IS NULL AND "+login,
 		loginValue,
 	)
 

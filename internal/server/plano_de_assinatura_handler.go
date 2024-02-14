@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/TheDevOpsCorp/redirect-max/internal/model"
+	"github.com/TheDevOpsCorp/redirect-max/internal/util"
 	"github.com/labstack/echo/v4"
 )
 
@@ -16,21 +17,21 @@ import (
 // @Produce json
 // @Param   nome path     string  true  "Nome"
 // @Success 200  {object} model.PlanoDeAssinatura
-// @Failure 400  {object} Erro
-// @Failure 500  {object} Erro
+// @Failure 400  {object} util.Erro
+// @Failure 500  {object} util.Erro
 // @Router  /api/plano_de_assinatura/:nome [get]
 func (s *Server) PlanoDeAssinaturaReadByNome(c echo.Context) error {
 	nome := c.Param("nome")
 
-	if err := Validate.Var(nome, "required,min=3,max=120"); err != nil {
-		return ErroValidacaoNome
+	if err := util.Validate.Var(nome, "required,min=3,max=120"); err != nil {
+		return util.ErroValidacaoNome
 	}
 
 	planoDeAssinatura, err := model.PlanoDeAssinaturaReadByNome(s.db, nome)
 
 	if err != nil {
 		log.Printf("PlanoDeAssinaturaReadByNome: %v", err)
-		return ErroBancoDados
+		return util.ErroBancoDados
 	}
 
 	return c.JSON(http.StatusOK, planoDeAssinatura)
@@ -43,15 +44,15 @@ func (s *Server) PlanoDeAssinaturaReadByNome(c echo.Context) error {
 // @Accept  json
 // @Produce json
 // @Success 200  {object} []model.PlanoDeAssinatura
-// @Failure 400  {object} Erro
-// @Failure 500  {object} Erro
+// @Failure 400  {object} util.Erro
+// @Failure 500  {object} util.Erro
 // @Router  /api/plano_de_assinatura [get]
 func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
 	planosDeAssinatura, err := model.PlanoDeAssinaturaReadAll(s.db)
 
 	if err != nil {
 		log.Printf("PlanoDeAssinaturaReadAll: %v", err)
-		return ErroBancoDados
+		return util.ErroBancoDados
 	}
 
 	return c.JSON(http.StatusOK, planosDeAssinatura)
@@ -66,8 +67,8 @@ func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
 // @Param   nome         body     string true "Nome"
 // @Param   valor_mensal body     int    true "Valor Mensal"
 // @Success 200          {object} map[string]string
-// @Failure 400          {object} Erro
-// @Failure 500          {object} Erro
+// @Failure 400          {object} util.Erro
+// @Failure 500          {object} util.Erro
 // @Router  /api/plano_de_assinatura [post]
 func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 	parametros := struct {
@@ -81,23 +82,23 @@ func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça o nome e o valor mensal do plano de assinatura nos parâmetros 'nome' e 'valor_mensal', respectivamente.")
 	}
 
-	if err := Validate.Var(parametros.Nome, "required,min=3,max=120"); err != nil {
+	if err := util.Validate.Var(parametros.Nome, "required,min=3,max=120"); err != nil {
 		erros = append(erros, "Por favor, forneça um nome válido no parâmetro 'nome'.")
 	}
 
-	if err := Validate.Var(parametros.ValorMensal, "required,gte=0"); err != nil {
+	if err := util.Validate.Var(parametros.ValorMensal, "required,gte=0"); err != nil {
 		erros = append(erros, "Por favor, forneça um valor mensal válido no parâmetro 'valor_mensal'.")
 	}
 
 	if len(erros) > 0 {
-		return ErroValidacaoParametro(erros)
+		return util.ErroValidacaoParametro(erros)
 	}
 
 	err := model.PlanoDeAssinaturaCreate(s.db, parametros.Nome, parametros.ValorMensal)
 
 	if err != nil {
 		log.Printf("PlanoDeAssinaturaCreate: %v", err)
-		return ErroBancoDados
+		return util.ErroBancoDados
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
@@ -115,8 +116,8 @@ func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 // @Param   nome         body     string false "Nome"
 // @Param   valor_mensal body     int    false "Valor Mensal"
 // @Success 200          {object} map[string]string
-// @Failure 400          {object} Erro
-// @Failure 500          {object} Erro
+// @Failure 400          {object} util.Erro
+// @Failure 500          {object} util.Erro
 // @Router  /api/plano_de_assinatura/:nome [patch]
 func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 	type parametrosUpdate struct {
@@ -128,8 +129,8 @@ func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 
 	nome := c.Param("nome")
 
-	if err := Validate.Var(nome, "required,min=3,max=120"); err != nil {
-		return ErroValidacaoNome
+	if err := util.Validate.Var(nome, "required,min=3,max=120"); err != nil {
+		return util.ErroValidacaoNome
 	}
 
 	var erros []string
@@ -138,11 +139,11 @@ func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça o nome do plano de assinatura no parâmetro 'nome' e o valor mensal no parâmetro 'valor_mensal'.")
 	}
 
-	if err := Validate.Var(parametros.Nome, "min=3,max=120"); err != nil {
+	if err := util.Validate.Var(parametros.Nome, "min=3,max=120"); err != nil {
 		erros = append(erros, "Por favor, forneça um nome válido para o parâmetro 'nome'.")
 	}
 
-	if err := Validate.Var(parametros.ValorMensal, "gte=0"); err != nil {
+	if err := util.Validate.Var(parametros.ValorMensal, "gte=0"); err != nil {
 		erros = append(erros, "Por favor, forneça um valor mensal válido no parâmetro 'valor_mensal'.")
 	}
 
@@ -151,14 +152,14 @@ func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 	}
 
 	if len(erros) > 0 {
-		return ErroValidacaoParametro(erros)
+		return util.ErroValidacaoParametro(erros)
 	}
 
 	err := model.PlanoDeAssinaturaUpdate(s.db, nome, parametros.Nome, parametros.ValorMensal)
 
 	if err != nil {
 		log.Printf("PlanoDeAssinaturaUpdate: %v", err)
-		return ErroBancoDados
+		return util.ErroBancoDados
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
@@ -174,14 +175,14 @@ func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 // @Produce json
 // @Param   nome path     string true "Nome"
 // @Success 200  {object} map[string]string
-// @Failure 400  {object} Erro
-// @Failure 500  {object} Erro
+// @Failure 400  {object} util.Erro
+// @Failure 500  {object} util.Erro
 // @Router  /api/plano_de_assinatura/:nome [delete]
 func (s *Server) PlanoDeAssinaturaRemove(c echo.Context) error {
 	nome := c.Param("nome")
 
-	if err := Validate.Var(nome, "required,min=3,max=120"); err != nil {
-		return ErroValidacaoNome
+	if err := util.Validate.Var(nome, "required,min=3,max=120"); err != nil {
+		return util.ErroValidacaoNome
 	}
 
 	err := model.PlanoDeAssinaturaRemove(s.db, nome)

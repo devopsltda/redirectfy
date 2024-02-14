@@ -1,0 +1,15 @@
+package components
+
+templ LinkCreateForm() {
+	<form id="create-link" class="bg-rprimary flex flex-col gap-3 p-3 rounded-lg text-rlightest w-1/3">
+		<h3 class="font-extrabold text-2xl">Criar um novo Link</h3>
+		<input id="link_create_nome" name="link_create_nome" class="bg-transparent border-b border-rlighter placeholder:text-rlighter px-1 text-lg" type="text" placeholder="Nome"></input>
+		<input id="link_create_link_whatsapp" name="link_create_link_whatsapp" class="bg-transparent border-b border-rlighter placeholder:text-rlighter px-1 text-lg" type="text" placeholder="Número do Whatsapp"></input>
+		<input id="link_create_link_telegram" name="link_create_link_telegram" class="bg-transparent border-b border-rlighter placeholder:text-rlighter px-1 text-lg" type="text" placeholder="Link do Telegram"></input>
+		<input id="link_create_ordem_de_redirecionamento" name="link_create_ordem_de_redirecionamento" class="bg-transparent border-b border-rlighter placeholder:text-rlighter px-1 text-lg" type="text" placeholder="Ordem de Redirecionamento"></input>
+		<div class="flex items-center justify-between px-20">
+			<button class="text-xl" type="button" hx-get="/web/link_create_button" hx-trigger="click" hx-target="#create-link" hx-swap="outerHTML">Cancelar</button>
+			<button class="text-xl" type="submit" hx-post="/web/link_create" hx-trigger="click" hx-target="#create-link" hx-swap="outerHTML">Enviar</button>
+		</div>
+	</form>
+}

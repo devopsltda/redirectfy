@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/TheDevOpsCorp/redirect-max/internal/model"
+	"github.com/TheDevOpsCorp/redirect-max/internal/util"
 	"github.com/labstack/echo/v4"
 )
 
@@ -23,7 +24,7 @@ func (s *Server) HistoricoReadAll(c echo.Context) error {
 
 	if err != nil {
 		log.Printf("HistoricoReadAll: %v", err)
-		return ErroBancoDados
+		return util.ErroBancoDados
 	}
 
 	return c.JSON(http.StatusOK, historico)

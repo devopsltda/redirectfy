@@ -12,9 +12,10 @@ import "bytes"
 
 import (
 	"github.com/TheDevOpsCorp/redirect-max/cmd/web/components"
+	"github.com/TheDevOpsCorp/redirect-max/internal/model"
 )
 
-func Links() templ.Component {
+func Links(links []model.Link) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -33,7 +34,7 @@ func Links() templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main class=\"bg-[#fdf2e6] flex h-screen items-center justify-between min-h-screen\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main class=\"bg-rlightest flex h-screen items-center justify-between min-h-screen\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -41,11 +42,17 @@ func Links() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"flex h-full items-center justify-center w-full\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"flex flex-col gap-5 h-full items-center justify-center w-full\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.Link("Bet 777", "Zwi_cUum2J", "Whatsapp", "Telegram", "whatsapp,telegram").Render(ctx, templ_7745c5c3_Buffer)
+			for _, link := range links {
+				templ_7745c5c3_Err = components.Link(link.Nome, link.CodigoHash, link.LinkWhatsapp, link.LinkTelegram, link.OrdemDeRedirecionamento).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = components.LinkCreateButton().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

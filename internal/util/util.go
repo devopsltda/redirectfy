@@ -1,17 +1,34 @@
-package server
+package util
 
 import (
+	"math/rand"
 	"net/http"
+	"time"
 	"unicode"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )
 
+/*** Código Hash ***/
+var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
+var symbols []byte = []byte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_")
+
+func GeraHashCode(length int) string {
+	b := make([]byte, length)
+
+	for i := range b {
+		b[i] = symbols[seededRand.Intn(len(symbols))]
+	}
+
+	return string(b)
+}
+
+
 /*** Validação ***/
 var Validate = validator.New()
 
-func validaNomeDeUsuario(s string) bool {
+func ValidaNomeDeUsuario(s string) bool {
 	for _, c := range s {
 		if !unicode.IsLetter(c) && !unicode.IsNumber(c) && c != '_' && c != '-' {
 			return false

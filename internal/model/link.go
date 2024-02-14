@@ -1,6 +1,8 @@
 package model
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 type Link struct {
 	Id                      int64          `json:"id"`
@@ -85,24 +87,24 @@ func LinkReadAll(db *sql.DB) ([]Link, error) {
 }
 
 func LinkCheckIfCodigoHashExists(db *sql.DB, codigoHash string) (bool, error) {
-		row := db.QueryRow(
-			"SELECT '' FROM LINK WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $1",
-			codigoHash,
-		)
+	row := db.QueryRow(
+		"SELECT '' FROM LINK WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $1",
+		codigoHash,
+	)
 
-		if err := row.Scan(); err != nil {
-			if err == sql.ErrNoRows {
-				return false, nil
-			} else {
-				return false, err
-			}
-		}
-
-		if err := row.Err(); err != nil {
+	if err := row.Scan(); err != nil {
+		if err == sql.ErrNoRows {
+			return false, nil
+		} else {
 			return false, err
 		}
+	}
 
-		return true, nil
+	if err := row.Err(); err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
 
 func LinkCreate(db *sql.DB, nome, codigoHash, linkWhatsapp, linkTelegram, ordemDeRedirecionamento string, usuario int64) error {
