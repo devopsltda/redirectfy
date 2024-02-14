@@ -36,7 +36,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	}))
 
 	// Roteamento Dinâmico
-	e.GET("/:codigo_hash", s.LinkReadByCodigoHash)
+	e.GET("/:codigo_hash", echo.WrapHandler(http.HandlerFunc(web.LinkAccessWebHandler)))
 
 	// Arquivos estáticos (CSS, JS, imagens, etc)
 	StaticFileServer := http.FileServer(http.FS(web.StaticFiles))
@@ -97,7 +97,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 	// - Tela de Contratar Plano
 	// - Tela de Cancelar Plano
 	// - Tela de Gerenciamento de Links
-	w.GET("", echo.WrapHandler(templ.Handler(views.Loading())))
 	w.GET("/hey", echo.WrapHandler(templ.Handler(views.Landpage())))
 	w.GET("/main", echo.WrapHandler(http.HandlerFunc(web.MainWebHandler)))
 	w.POST("/link_create", echo.WrapHandler(http.HandlerFunc(web.LinkCreateWebHandler)))

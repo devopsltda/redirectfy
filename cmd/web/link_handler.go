@@ -27,6 +27,22 @@ func MainWebHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func LinkAccessWebHandler(w http.ResponseWriter, r *http.Request) {
+	link, err := model.LinkReadByCodigoHash(database.Db, r.URL.Path[1:])
+
+	if err != nil {
+		log.Printf("LinkAccessWebHandler: %v", err)
+	}
+
+	component := views.LinkAccess(link)
+	err = component.Render(r.Context(), w)
+
+	if err != nil {
+		log.Printf("LinkAccessWebHandler: %v", err)
+		http.Error(w, "Could not render component", http.StatusInternalServerError)
+	}
+}
+
 func LinkCreateWebHandler(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 

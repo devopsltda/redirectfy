@@ -17,8 +17,8 @@ type Link struct {
 	RemovidoEm              sql.NullString `json:"removido_em" swaggertype:"string"`
 } // @name Link
 
-func LinkReadByCodigoHash(db *sql.DB, codigoHash string) (*Link, error) {
-	var link *Link
+func LinkReadByCodigoHash(db *sql.DB, codigoHash string) (Link, error) {
+	var link Link
 
 	row := db.QueryRow(
 		"SELECT * FROM LINK WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $1",
@@ -37,11 +37,11 @@ func LinkReadByCodigoHash(db *sql.DB, codigoHash string) (*Link, error) {
 		&link.AtualizadoEm,
 		&link.RemovidoEm,
 	); err != nil {
-		return nil, err
+		return link, err
 	}
 
 	if err := row.Err(); err != nil {
-		return nil, err
+		return link, err
 	}
 
 	return link, nil

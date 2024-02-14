@@ -5,13 +5,28 @@ import (
 	"github.com/TheDevOpsCorp/redirect-max/internal/model"
 )
 
+script goToApp(linkWhatsapp, linkTelegram string) {
+try {
+window.location = `https://chat.whatsapp.com/${linkWhatsapp}`;
+} catch (err) {
+window.location = `tg://join?invite=${linkTelegram}`;
+}
+}
+
+templ LinkAccess(link model.Link) {
+	@Base() {
+		@goToApp(link.LinkWhatsapp, link.LinkTelegram)
+	}
+}
+
 templ Links(links []model.Link) {
 	@Base() {
 		<main class="bg-rlightest flex h-screen items-center justify-between min-h-screen">
 			@components.Sidebar("Eduardo")
 			<section class="flex flex-col gap-5 h-full items-center justify-center w-full">
 				for _, link := range links {
-					@components.Link(link.Nome, link.CodigoHash, link.LinkWhatsapp, link.LinkTelegram, link.OrdemDeRedirecionamento)
+					@components.Link(link.Nome, link.CodigoHash, link.LinkWhatsapp, link.LinkTelegram,
+						link.OrdemDeRedirecionamento)
 				}
 				@components.LinkCreateButton()
 			</section>
