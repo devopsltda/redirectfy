@@ -4,9 +4,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/TheDevOpsCorp/redirect-max/internal/auth"
-	"github.com/TheDevOpsCorp/redirect-max/internal/model"
-	"github.com/TheDevOpsCorp/redirect-max/internal/util"
+	"github.com/TheDevOpsCorp/redirectify/internal/auth"
+	"github.com/TheDevOpsCorp/redirectify/internal/model"
+	"github.com/TheDevOpsCorp/redirectify/internal/util"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
 

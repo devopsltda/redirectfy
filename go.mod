@@ -1,4 +1,4 @@
-module github.com/TheDevOpsCorp/redirect-max
+module github.com/TheDevOpsCorp/redirectify
 
 go 1.21.6
 

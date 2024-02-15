@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/TheDevOpsCorp/redirect-max/internal/database"
+	"github.com/TheDevOpsCorp/redirectify/internal/database"
 	_ "github.com/joho/godotenv/autoload"
 )
 

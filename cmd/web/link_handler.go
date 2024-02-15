@@ -4,11 +4,11 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/TheDevOpsCorp/redirect-max/cmd/web/components"
-	"github.com/TheDevOpsCorp/redirect-max/cmd/web/views"
-	"github.com/TheDevOpsCorp/redirect-max/internal/database"
-	"github.com/TheDevOpsCorp/redirect-max/internal/model"
-	"github.com/TheDevOpsCorp/redirect-max/internal/util"
+	"github.com/TheDevOpsCorp/redirectify/cmd/web/components"
+	"github.com/TheDevOpsCorp/redirectify/cmd/web/views"
+	"github.com/TheDevOpsCorp/redirectify/internal/database"
+	"github.com/TheDevOpsCorp/redirectify/internal/model"
+	"github.com/TheDevOpsCorp/redirectify/internal/util"
 )
 
 func MainWebHandler(w http.ResponseWriter, r *http.Request) {

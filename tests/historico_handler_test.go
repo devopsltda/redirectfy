@@ -5,8 +5,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/TheDevOpsCorp/redirect-max/internal/server"
-	"github.com/TheDevOpsCorp/redirect-max/internal/util"
+	"github.com/TheDevOpsCorp/redirectify/internal/server"
+	"github.com/TheDevOpsCorp/redirectify/internal/util"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )

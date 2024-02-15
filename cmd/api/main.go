@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/TheDevOpsCorp/redirect-max/internal/server"
+	"github.com/TheDevOpsCorp/redirectify/internal/server"
 )
 
 func main() {

@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/TheDevOpsCorp/redirect-max/cmd/web"
-	"github.com/TheDevOpsCorp/redirect-max/cmd/web/views"
-	"github.com/TheDevOpsCorp/redirect-max/internal/auth"
+	"github.com/TheDevOpsCorp/redirectify/cmd/web"
+	"github.com/TheDevOpsCorp/redirectify/cmd/web/views"
+	"github.com/TheDevOpsCorp/redirectify/internal/auth"
 	"github.com/a-h/templ"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo-jwt/v4"
@@ -14,7 +14,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
 
-	_ "github.com/TheDevOpsCorp/redirect-max/docs"
+	_ "github.com/TheDevOpsCorp/redirectify/docs"
 	_ "github.com/joho/godotenv/autoload"
 )
 
