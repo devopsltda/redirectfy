@@ -8,8 +8,8 @@
     "test": "tests"
   },
   "scripts": {
-    "build": "tailwindcss build -o cmd/web/static/css/tailwind.css --minify",
-    "watch": "tailwindcss build -o cmd/web/static/css/tailwind.css --watch"
+    "build": "tailwindcss build -o cmd/resources/static/css/tailwind.css --minify",
+    "watch": "tailwindcss build -o cmd/resources/static/css/tailwind.css --watch"
   },
   "keywords": [],
   "author": "",
