@@ -1,8 +1,14 @@
-# API do Redirectify
+# Redirectify
 
-API para manipulação do sistema Redirectify
+O Redirectify é uma solução para redirecionamento de links que abrange tanto uma API para uso programático como uma aplicação Web responsiva para o usuário final.
 
-## Requisitos
+## Roadmap
+
+Acompanhe o desenvolvimento [aqui](https://coda.io/d/Mapa-de-Desenvolvimento-Redirect_d3Jz7W_oyZx/Mapa_suI7Y#_luOTT).
+
+## Requisitos para o Ambiente de Desenvolvimento
+
+O ambiente de desenvolvimento pode ser configurado via Docker ou construído a partir do código-fonte, e os requisitos são os seguintes:
 
 ### Docker
 
@@ -10,13 +16,13 @@ Apenas tenha o Docker instalado.
 
 ### Source
 
-- Make
-    - No Linux não precisa instalar porque já vem de fábrica
-    - [Windows](https://gnuwin32.sourceforge.net/packages/make.htm) (utilizado para rodar os scripts da aplicação)
+- Make (utilizado para rodar os scripts da aplicação)
+    - No Linux, procure o pacote específico para o seu sistema, se ele não vir por padrão
+    - No [Windows](https://gnuwin32.sourceforge.net/packages/make.htm)
 - [Go](https://go.dev/doc/install) (>=1.21)
     - [Air](https://github.com/cosmtrek/air) (responsável pelo *live reload* do código)
     - [Swag](https://github.com/swaggo/swag) (responsável por gerar a documentação do Swagger a partir dos comentários no código)
-- [Sqlite3](https://www.sqlite.org/download.html) (banco de dados)
+- [Sqlite3](https://www.sqlite.org/download.html) (banco de dados local)
 
 ## Como Iniciar o Ambiente de Desenvolvimento
 
@@ -34,13 +40,7 @@ git clone git@github.com:TheDevOpsCorp/redirectify.git
 cd redirectify
 ```
 
-3. Mude para a branch correta
-
-```bash
-git checkout main-but-it-works
-```
-
-3. Baixe as dependências do projeto
+3. Copie a configuração de ambiente
 
 ```bash
 cp .env.example .env
@@ -52,8 +52,8 @@ cp .env.example .env
 PORT=8080
 APP_ENV=local
 DB_URL=./storage/test.db
-JWT_SECRET=         # Insira uma chave segura aqui
-JWT_REFRESH_SECRET= # Insira uma outra chave segura aqui
+JWT_SECRET=insira-alguma-coisa-aqui
+JWT_REFRESH_SECRET=insira-alguma-coisa-aqui-2
 ```
 
 5. Roda o Docker
@@ -62,7 +62,7 @@ JWT_REFRESH_SECRET= # Insira uma outra chave segura aqui
 docker compose up
 ```
 
-6. Acesse a documentação no [servidor local](http://localhost:8080/api/swagger/index.html) (porta 8080 por padrão, modifique caso você tenha alterado a porta)
+6. Acesse a documentação no [servidor local](http://localhost:8080/docs/index.html) (porta 8080 por padrão, modifique caso você tenha alterado a porta)
 
 ### A partir do código-fonte
 
@@ -78,12 +78,6 @@ git clone git@github.com:TheDevOpsCorp/redirectify.git
 
 ```bash
 cd redirectify
-```
-
-3. Mude para a branch correta
-
-```bash
-git checkout main-but-it-works
 ```
 
 3. Baixe as dependências do projeto
@@ -104,8 +98,8 @@ cp .env.example .env
 PORT=8080
 APP_ENV=local
 DB_URL=./storage/test.db
-JWT_SECRET=         # Insira uma chave segura aqui
-JWT_REFRESH_SECRET= # Insira uma outra chave segura aqui
+JWT_SECRET=insira-alguma-coisa-aqui
+JWT_REFRESH_SECRET=insira-alguma-coisa-aqui-2
 ```
 
 6. Gere a documentação
@@ -128,7 +122,7 @@ make watch
 make run
 ```
 
-8. Acesse a documentação no [servidor local](http://localhost:8080/api/swagger/index.html) (porta 8080 por padrão, modifique caso você tenha alterado a porta)
+8. Acesse a documentação no [servidor local](http://localhost:8080/docs/index.html) (porta 8080 por padrão, modifique caso você tenha alterado a porta)
 
 ## Comandos `make`
 
