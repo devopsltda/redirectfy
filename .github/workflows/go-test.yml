@@ -1,4 +1,4 @@
-name: Go-test
+name: Build and Test
 on: [push, pull_request]
 
 jobs:
@@ -11,7 +11,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts'
+          node-version: '21.x'
       - name: Install dependencies Node
         run: npm install
       - name: Build Node
