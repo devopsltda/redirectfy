@@ -216,31 +216,31 @@ func UsuarioUpdate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça o CPF, nome, nome de usuário, email, senha, data de nascimento e plano de assinatura do usuário nos parâmetro 'cpf', 'nome', 'nome_de_usuario', 'email', 'senha', 'data_de_nascimento' e 'plano_de_assinatura', respectivamente.")
 	}
 
-	if err := utils.Validate.Var(parametros.Cpf, "numeric,max=11"); err != nil {
+	if err := utils.Validate.Var(parametros.Cpf, "numeric,max=11"); parametros.Cpf != "" && err != nil {
 		erros = append(erros, "Por favor, forneça um CPF válido (texto numérico com 11 dígitos) para o parâmetro 'cpf'.")
 	}
 
-	if err := utils.Validate.Var(parametros.Nome, "min=3,max=240"); err != nil {
+	if err := utils.Validate.Var(parametros.Nome, "min=3,max=240"); parametros.Nome != "" && err != nil {
 		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 240 caracteres) para o parâmetro 'nome'.")
 	}
 
-	if err := utils.Validate.Var(parametros.NomeDeUsuario, "min=3,max=120"); err != nil || !utils.ValidaNomeDeUsuario(parametros.NomeDeUsuario) {
+	if err := utils.Validate.Var(parametros.NomeDeUsuario, "min=3,max=120"); parametros.NomeDeUsuario != "" && err != nil || !utils.ValidaNomeDeUsuario(parametros.NomeDeUsuario) {
 		erros = append(erros, "Por favor, forneça um nome de usuário válido (texto de 3 a 120 caracteres, contendo apenas letras, número, '_' ou '-') para o parâmetro 'nome_de_usuario'.")
 	}
 
-	if err := utils.Validate.Var(parametros.Email, "email"); err != nil {
+	if err := utils.Validate.Var(parametros.Email, "email"); parametros.Email != "" && err != nil {
 		erros = append(erros, "Por favor, forneça um email válido para o parâmetro 'email'.")
 	}
 
-	if err := utils.Validate.Var(parametros.Senha, "min=8,max=72"); err != nil {
+	if err := utils.Validate.Var(parametros.Senha, "min=8,max=72"); parametros.Senha != "" && err != nil {
 		erros = append(erros, "Por favor, forneça uma senha válida (texto de 8 a 72 caracteres, podendo conter letras, números e símbolos) para o parâmetro 'senha'.")
 	}
 
-	if err := utils.Validate.Var(parametros.DataDeNascimento, "datetime=2006-01-02"); err != nil {
+	if err := utils.Validate.Var(parametros.DataDeNascimento, "datetime=2006-01-02"); parametros.DataDeNascimento != "" && err != nil {
 		erros = append(erros, "Por favor, forneça uma data de nascimento válida para o parâmetro 'data_de_nascimento'.")
 	}
 
-	if err := utils.Validate.Var(parametros.PlanoDeAssinatura, "gte=0"); err != nil {
+	if err := utils.Validate.Var(parametros.PlanoDeAssinatura, "gte=0"); parametros.PlanoDeAssinatura != 0 && err != nil {
 		erros = append(erros, "Por favor, forneça um plano de assinatura válido para o parâmetro 'plano_de_assinatura'.")
 	}
 

@@ -101,7 +101,7 @@ func LinkCreate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça um link de telegram válido para o parâmetro 'link_telegram'.")
 	}
 
-	if err := utils.Validate.Var(parametros.OrdemDeRedirecionamento, "required,max=120"); err != nil {
+	if err := utils.Validate.Var(parametros.OrdemDeRedirecionamento, "required,max=120,oneof=telegram0x2Cwhatsapp whatsapp0x2Ctelegram"); err != nil {
 		erros = append(erros, "Por favor, forneça uma ordem de redirecionamento válida para o parâmetro 'ordem_de_redirecionamento'.")
 	}
 
@@ -229,19 +229,19 @@ func LinkUpdate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça o nome, link do whatsapp, link do telegram, ordem de redirecionamento e usuário nos parâmetro 'nome', 'link_whatsapp', 'link_telegram', 'ordem_de_redirecionamento' e 'usuario', respectivamente.")
 	}
 
-	if err := utils.Validate.Var(parametros.Nome, "min=3,max=120"); err != nil {
+	if err := utils.Validate.Var(parametros.Nome, "min=3,max=120"); parametros.Nome != "" && err != nil {
 		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 120 caracteres) para o parâmetro 'nome'.")
 	}
 
-	if err := utils.Validate.Var(parametros.LinkWhatsapp, "max=120"); err != nil {
+	if err := utils.Validate.Var(parametros.LinkWhatsapp, "max=120"); parametros.LinkWhatsapp != "" && err != nil {
 		erros = append(erros, "Por favor, forneça um link de whatsapp válido para o parâmetro 'link_whatsapp'.")
 	}
 
-	if err := utils.Validate.Var(parametros.LinkTelegram, "max=120"); err != nil {
+	if err := utils.Validate.Var(parametros.LinkTelegram, "max=120"); parametros.LinkTelegram != "" && err != nil {
 		erros = append(erros, "Por favor, forneça um link de telegram válido para o parâmetro 'link_telegram'.")
 	}
 
-	if err := utils.Validate.Var(parametros.OrdemDeRedirecionamento, "max=120"); err != nil {
+	if err := utils.Validate.Var(parametros.OrdemDeRedirecionamento, "max=120,oneof=telegram0x2Cwhatsapp whatsapp0x2Ctelegram"); parametros.OrdemDeRedirecionamento != "" && err != nil {
 		erros = append(erros, "Por favor, forneça uma ordem de redirecionamento válida para o parâmetro 'ordem_de_redirecionamento'.")
 	}
 
