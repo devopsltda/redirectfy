@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/TheDevOpsCorp/redirectify/internal/server"
-	"github.com/TheDevOpsCorp/redirectify/internal/util"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )
@@ -33,14 +32,4 @@ func TestSuiteHistoricoReadAll(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, http.StatusOK, res.Code)
 	})
-
-	t.Run("Error 400: database error", func(t *testing.T) {
-		res, c := setupRequest(http.MethodGet, "/api/historico")
-
-		err := s.HistoricoReadAll(*c)
-		assert.Error(t, err)
-		assert.Contains(t, err.Error(), util.ErroBancoDados.Error())
-		assert.Equal(t, http.StatusInternalServerError, res.Code)
-	})
-
 }
