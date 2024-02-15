@@ -52,6 +52,7 @@ cp .env.example .env
 PORT=8080
 APP_ENV=local
 DB_URL=./storage/test.db
+PEPPER=insira-um-texto-forte-aqui
 JWT_SECRET=insira-alguma-coisa-aqui
 JWT_REFRESH_SECRET=insira-alguma-coisa-aqui-2
 ```
@@ -98,6 +99,7 @@ cp .env.example .env
 PORT=8080
 APP_ENV=local
 DB_URL=./storage/test.db
+PEPPER=insira-um-texto-forte-aqui
 JWT_SECRET=insira-alguma-coisa-aqui
 JWT_REFRESH_SECRET=insira-alguma-coisa-aqui-2
 ```
