@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/TheDevOpsCorp/redirectify/internal/handlers/api"
 	"github.com/TheDevOpsCorp/redirectify/internal/server"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
@@ -13,7 +14,7 @@ import (
 // TestSuiteHistoricoReadAll contains all tests for the HistoricoReadAll handler
 func TestSuiteHistoricoReadAll(t *testing.T) {
 	// Initialize the test server
-	s := server.NewTestServer()
+	_ = server.NewTestServer()
 	e := echo.New()
 
 	// Define the common request setup
@@ -28,7 +29,7 @@ func TestSuiteHistoricoReadAll(t *testing.T) {
 	t.Run("Pass 200: successful history retrieval", func(t *testing.T) {
 		res, c := setupRequest(http.MethodGet, "/api/historico")
 
-		err := s.HistoricoReadAll(*c)
+		err := api.HistoricoReadAll(*c)
 		assert.NoError(t, err)
 		assert.Equal(t, http.StatusOK, res.Code)
 	})

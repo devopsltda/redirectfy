@@ -14,26 +14,24 @@ var (
 	dburl = os.Getenv("DB_URL")
 )
 
-func New() *sql.DB {
-	db, err := sql.Open("sqlite3", dburl)
+func New() {
+	var err error
+	Db, err = sql.Open("sqlite3", dburl)
 
 	if err != nil {
 		// This will not be a connection error, but a DSN parse error or
 		// another initialization error.
 		log.Fatal(err)
 	}
-
-	return db
 }
 
-func NewTest() *sql.DB {
-	db, err := sql.Open("sqlite3", "../storage/test.db")
+func NewTest() {
+	var err error
+	Db, err = sql.Open("sqlite3", "../storage/test.db")
 
 	if err != nil {
 		// This will not be a connection error, but a DSN parse error or
 		// another initialization error.
 		log.Fatal(err)
 	}
-
-	return db
 }

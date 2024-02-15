@@ -1,14 +1,20 @@
-package util
+package utils
 
 import (
 	"math/rand"
 	"net/http"
+	"os"
 	"time"
 	"unicode"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
+
+	_ "github.com/joho/godotenv/autoload"
 )
+
+/*** Senha ***/
+var Pepper = os.Getenv("PEPPER")
 
 /*** Código Hash ***/
 var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))

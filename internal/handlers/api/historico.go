@@ -1,11 +1,12 @@
-package server
+package api
 
 import (
 	"log"
 	"net/http"
 
-	"github.com/TheDevOpsCorp/redirectify/internal/model"
-	"github.com/TheDevOpsCorp/redirectify/internal/util"
+	"github.com/TheDevOpsCorp/redirectify/internal/database"
+	"github.com/TheDevOpsCorp/redirectify/internal/models"
+	"github.com/TheDevOpsCorp/redirectify/internal/utils"
 	"github.com/labstack/echo/v4"
 )
 
@@ -15,16 +16,16 @@ import (
 // @Tags    Histórico
 // @Accept  json
 // @Produce json
-// @Success 200 {object} []model.Historico
+// @Success 200 {object} []models.Historico
 // @Failure 400 {object} Erro
 // @Failure 500 {object} Erro
 // @Router  /api/historico [get]
-func (s *Server) HistoricoReadAll(c echo.Context) error {
-	historico, err := model.HistoricoReadAll(s.db)
+func HistoricoReadAll(c echo.Context) error {
+	historico, err := models.HistoricoReadAll(database.Db)
 
 	if err != nil {
 		log.Printf("HistoricoReadAll: %v", err)
-		return util.ErroBancoDados
+		return utils.ErroBancoDados
 	}
 
 	return c.JSON(http.StatusOK, historico)

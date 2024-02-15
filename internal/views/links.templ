@@ -1,8 +1,8 @@
 package views
 
 import (
-	"github.com/TheDevOpsCorp/redirectify/cmd/web/components"
-	"github.com/TheDevOpsCorp/redirectify/internal/model"
+	"github.com/TheDevOpsCorp/redirectify/internal/components"
+	"github.com/TheDevOpsCorp/redirectify/internal/models"
 )
 
 script goToApp(linkWhatsapp, linkTelegram string) {
@@ -13,13 +13,13 @@ window.location = `tg://join?invite=${linkTelegram}`;
 }
 }
 
-templ LinkAccess(link model.Link) {
+templ LinkAccess(link models.Link) {
 	@Base() {
 		@goToApp(link.LinkWhatsapp, link.LinkTelegram)
 	}
 }
 
-templ Links(links []model.Link) {
+templ Links(links []models.Link) {
 	@Base() {
 		<main class="bg-rlightest flex h-screen items-center justify-between min-h-screen">
 			@components.Sidebar("Eduardo")

@@ -4,12 +4,14 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/TheDevOpsCorp/redirectify/cmd/web"
-	"github.com/TheDevOpsCorp/redirectify/cmd/web/views"
+	"github.com/TheDevOpsCorp/redirectify/cmd/resources"
+	"github.com/TheDevOpsCorp/redirectify/internal/handlers/api"
+	"github.com/TheDevOpsCorp/redirectify/internal/handlers/web"
 	"github.com/TheDevOpsCorp/redirectify/internal/auth"
+	"github.com/TheDevOpsCorp/redirectify/internal/views"
 	"github.com/a-h/templ"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/labstack/echo-jwt/v4"
+	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
@@ -39,7 +41,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.GET("/:codigo_hash", echo.WrapHandler(http.HandlerFunc(web.LinkAccessWebHandler)))
 
 	// Arquivos estáticos (CSS, JS, imagens, etc)
-	StaticFileServer := http.FileServer(http.FS(web.StaticFiles))
+	StaticFileServer := http.FileServer(http.FS(resources.StaticFiles))
 	e.GET("/static/*", echo.WrapHandler(StaticFileServer))
 
 	// API - Documentação Swagger
@@ -57,29 +59,29 @@ func (s *Server) RegisterRoutes() http.Handler {
 	}))
 
 	// API - Usuário
-	a.GET("/usuario", s.UsuarioReadAll)
-	a.GET("/usuario/:nome_de_usuario", s.UsuarioReadByNomeDeUsuario)
-	a.POST("/usuario", s.UsuarioCreate)
-	a.PATCH("/usuario/:nome_de_usuario", s.UsuarioUpdate)
-	a.DELETE("/usuario/:nome_de_usuario", s.UsuarioRemove)
-	a.POST("/usuario/login", s.UsuarioLogin)
+	a.GET("/usuario", api.UsuarioReadAll)
+	a.GET("/usuario/:nome_de_usuario", api.UsuarioReadByNomeDeUsuario)
+	a.POST("/usuario", api.UsuarioCreate)
+	a.PATCH("/usuario/:nome_de_usuario", api.UsuarioUpdate)
+	a.DELETE("/usuario/:nome_de_usuario", api.UsuarioRemove)
+	a.POST("/usuario/login", api.UsuarioLogin)
 
 	// API - Plano de Assinatura
-	a.GET("/plano_de_assinatura", s.PlanoDeAssinaturaReadAll)
-	a.GET("/plano_de_assinatura/:nome", s.PlanoDeAssinaturaReadByNome)
-	a.POST("/plano_de_assinatura", s.PlanoDeAssinaturaCreate)
-	a.PATCH("/plano_de_assinatura/:nome", s.PlanoDeAssinaturaUpdate)
-	a.DELETE("/plano_de_assinatura/:nome", s.PlanoDeAssinaturaRemove)
+	a.GET("/plano_de_assinatura", api.PlanoDeAssinaturaReadAll)
+	a.GET("/plano_de_assinatura/:nome", api.PlanoDeAssinaturaReadByNome)
+	a.POST("/plano_de_assinatura", api.PlanoDeAssinaturaCreate)
+	a.PATCH("/plano_de_assinatura/:nome", api.PlanoDeAssinaturaUpdate)
+	a.DELETE("/plano_de_assinatura/:nome", api.PlanoDeAssinaturaRemove)
 
 	// API - Link
-	a.GET("/link", s.LinkReadAll)
-	a.GET("/link/:codigo_hash", s.LinkReadByCodigoHash)
-	a.POST("/link", s.LinkCreate)
-	a.PATCH("/link/:codigo_hash", s.LinkUpdate)
-	a.DELETE("/link/:codigo_hash", s.LinkRemove)
+	a.GET("/link", api.LinkReadAll)
+	a.GET("/link/:codigo_hash", api.LinkReadByCodigoHash)
+	a.POST("/link", api.LinkCreate)
+	a.PATCH("/link/:codigo_hash", api.LinkUpdate)
+	a.DELETE("/link/:codigo_hash", api.LinkRemove)
 
 	// API - Histórico
-	a.GET("/historico", s.HistoricoReadAll)
+	a.GET("/historico", api.HistoricoReadAll)
 
 	// WEB
 	w := e.Group("/web")

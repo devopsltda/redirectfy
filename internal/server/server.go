@@ -15,19 +15,16 @@ import (
 type Server struct {
 	port int
 	db   *sql.DB
-	pepper string
 }
 
 func NewServer() *http.Server {
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
-	pepper := os.Getenv("PEPPER")
 
-	database.Db = database.New()
+	database.New()
 
 	NewServer := &Server{
 		port: port,
 		db:   database.Db,
-		pepper: pepper,
 	}
 
 	// Declare Server config
@@ -43,7 +40,9 @@ func NewServer() *http.Server {
 }
 
 func NewTestServer() *Server {
+	database.NewTest()
+
 	return &Server{
-		db: database.NewTest(),
+		db: database.Db,
 	}
 }

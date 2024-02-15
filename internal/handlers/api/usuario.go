@@ -1,12 +1,13 @@
-package server
+package api
 
 import (
 	"log"
 	"net/http"
 
 	"github.com/TheDevOpsCorp/redirectify/internal/auth"
-	"github.com/TheDevOpsCorp/redirectify/internal/model"
-	"github.com/TheDevOpsCorp/redirectify/internal/util"
+	"github.com/TheDevOpsCorp/redirectify/internal/database"
+	"github.com/TheDevOpsCorp/redirectify/internal/models"
+	"github.com/TheDevOpsCorp/redirectify/internal/utils"
 	"github.com/alexedwards/argon2id"
 	"github.com/labstack/echo/v4"
 
@@ -28,22 +29,22 @@ var senhaParams = &argon2id.Params{
 // @Accept  json
 // @Produce json
 // @Param   nome_de_usuario path     string  true  "Nome de Usuário"
-// @Success 200             {object} model.Usuario
-// @Failure 400             {object} util.Erro
-// @Failure 500             {object} util.Erro
+// @Success 200             {object} models.Usuario
+// @Failure 400             {object} utils.Erro
+// @Failure 500             {object} utils.Erro
 // @Router  /api/usuario/:nome_de_usuario [get]
-func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
+func UsuarioReadByNomeDeUsuario(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
 
-	if !util.ValidaNomeDeUsuario(nomeDeUsuario) {
-		return util.ErroValidacaoNomeDeUsuario
+	if !utils.ValidaNomeDeUsuario(nomeDeUsuario) {
+		return utils.ErroValidacaoNomeDeUsuario
 	}
 
-	usuario, err := model.UsuarioReadByNomeDeUsuario(s.db, nomeDeUsuario)
+	usuario, err := models.UsuarioReadByNomeDeUsuario(database.Db, nomeDeUsuario)
 
 	if err != nil {
 		log.Printf("UsuarioReadByNomeDeUsuario: %v", err)
-		return util.ErroBancoDados
+		return utils.ErroBancoDados
 	}
 
 	return c.JSON(http.StatusOK, usuario)
@@ -55,16 +56,16 @@ func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 // @Tags    Usuário
 // @Accept  json
 // @Produce json
-// @Success 200             {object} []model.Usuario
-// @Failure 400             {object} util.Erro
-// @Failure 500             {object} util.Erro
+// @Success 200             {object} []models.Usuario
+// @Failure 400             {object} utils.Erro
+// @Failure 500             {object} utils.Erro
 // @Router  /api/usuario [get]
-func (s *Server) UsuarioReadAll(c echo.Context) error {
-	usuarios, err := model.UsuarioReadAll(s.db)
+func UsuarioReadAll(c echo.Context) error {
+	usuarios, err := models.UsuarioReadAll(database.Db)
 
 	if err != nil {
 		log.Printf("UsuarioReadAll: %v", err)
-		return util.ErroBancoDados
+		return utils.ErroBancoDados
 	}
 
 	return c.JSON(http.StatusOK, usuarios)
@@ -84,10 +85,10 @@ func (s *Server) UsuarioReadAll(c echo.Context) error {
 // @Param   data_de_nascimento  body     string true "Data de Nascimento"
 // @Param   plano_de_assinatura body     int    true "Plano de Assinatura"
 // @Success 200                 {object} map[string]string
-// @Failure 400                 {object} util.Erro
-// @Failure 500                 {object} util.Erro
+// @Failure 400                 {object} utils.Erro
+// @Failure 500                 {object} utils.Erro
 // @Router  /api/usuario [post]
-func (s *Server) UsuarioCreate(c echo.Context) error {
+func UsuarioCreate(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
 
 	parametros := struct {
@@ -100,8 +101,8 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 		PlanoDeAssinatura int64  `json:"plano_de_assinatura"`
 	}{}
 
-	if !util.ValidaNomeDeUsuario(nomeDeUsuario) {
-		return util.ErroValidacaoNomeDeUsuario
+	if !utils.ValidaNomeDeUsuario(nomeDeUsuario) {
+		return utils.ErroValidacaoNomeDeUsuario
 	}
 
 	var erros []string
@@ -110,49 +111,49 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça o CPF, email, data de nascimento, nome, nome de usuário, senha e plano de assinatura do usuário nos parâmetro 'cpf', 'email', 'data_de_nascimento', 'nome', 'nome_de_usuario', 'senha' e 'plano_de_assinatura', respectivamente.")
 	}
 
-	if err := util.Validate.Var(parametros.Cpf, "required,numeric,len=11"); err != nil {
+	if err := utils.Validate.Var(parametros.Cpf, "required,numeric,len=11"); err != nil {
 		erros = append(erros, "Por favor, forneça um CPF válido (texto numérico com 11 dígitos) para o parâmetro 'cpf'.")
 	}
 
-	if err := util.Validate.Var(parametros.Nome, "required,min=3,max=240"); err != nil {
+	if err := utils.Validate.Var(parametros.Nome, "required,min=3,max=240"); err != nil {
 		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 240 caracteres) para o parâmetro 'nome'.")
 	}
 
-	if err := util.Validate.Var(parametros.NomeDeUsuario, "required,min=3,max=120"); err != nil || !util.ValidaNomeDeUsuario(parametros.NomeDeUsuario) {
+	if err := utils.Validate.Var(parametros.NomeDeUsuario, "required,min=3,max=120"); err != nil || !utils.ValidaNomeDeUsuario(parametros.NomeDeUsuario) {
 		erros = append(erros, "Por favor, forneça um nome de usuário válido (texto de 3 a 120 caracteres, contendo apenas letras, número, '_' ou '-') para o parâmetro 'nome_de_usuario'.")
 	}
 
-	if err := util.Validate.Var(parametros.Email, "required,email"); err != nil {
+	if err := utils.Validate.Var(parametros.Email, "required,email"); err != nil {
 		erros = append(erros, "Por favor, forneça um email válido para o parâmetro 'email'.")
 	}
 
-	if err := util.Validate.Var(parametros.Senha, "required,min=8,max=72"); err != nil {
+	if err := utils.Validate.Var(parametros.Senha, "required,min=8,max=72"); err != nil {
 		erros = append(erros, "Por favor, forneça uma senha válida (texto de 8 a 72 caracteres, podendo conter letras, números e símbolos) para o parâmetro 'senha'.")
 	}
 
-	if err := util.Validate.Var(parametros.DataDeNascimento, "required,datetime=2006-01-02"); err != nil {
+	if err := utils.Validate.Var(parametros.DataDeNascimento, "required,datetime=2006-01-02"); err != nil {
 		erros = append(erros, "Por favor, forneça uma data de nascimento válida para o parâmetro 'data_de_nascimento'.")
 	}
 
-	if err := util.Validate.Var(parametros.PlanoDeAssinatura, "required,gte=0"); err != nil {
+	if err := utils.Validate.Var(parametros.PlanoDeAssinatura, "required,gte=0"); err != nil {
 		erros = append(erros, "Por favor, forneça um plano de assinatura válido para o parâmetro 'plano_de_assinatura'.")
 	}
 
 	if len(erros) > 0 {
-		return util.ErroValidacaoParametro(erros)
+		return utils.ErroValidacaoParametro(erros)
 	}
 
-	senhaComHash, err := argon2id.CreateHash(parametros.Senha + s.pepper, senhaParams)
+	senhaComHash, err := argon2id.CreateHash(parametros.Senha + utils.Pepper, senhaParams)
 
 	if err != nil {
 		log.Printf("UsuarioCreate: %v", err)
-		return util.ErroCriacaoSenha
+		return utils.ErroCriacaoSenha
 	}
 
 	parametros.Senha = senhaComHash
 
-	err = model.UsuarioCreate(
-		s.db,
+	err = models.UsuarioCreate(
+		database.Db,
 		parametros.Cpf,
 		parametros.Nome,
 		parametros.NomeDeUsuario,
@@ -164,7 +165,7 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 
 	if err != nil {
 		log.Printf("UsuarioCreate: %v", err)
-		return util.ErroBancoDados
+		return utils.ErroBancoDados
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
@@ -187,10 +188,10 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 // @Param   data_de_nascimento  body     string false "Data de Nascimento"
 // @Param   plano_de_assinatura body     int    false "Plano de Assinatura"
 // @Success 200                 {object} map[string]string
-// @Failure 400                 {object} util.Erro
-// @Failure 500                 {object} util.Erro
+// @Failure 400                 {object} utils.Erro
+// @Failure 500                 {object} utils.Erro
 // @Router  /api/usuario/:nome_de_usuario [patch]
-func (s *Server) UsuarioUpdate(c echo.Context) error {
+func UsuarioUpdate(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
 
 	type parametrosUpdate struct {
@@ -205,8 +206,8 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 
 	parametros := parametrosUpdate{}
 
-	if !util.ValidaNomeDeUsuario(nomeDeUsuario) {
-		return util.ErroValidacaoNomeDeUsuario
+	if !utils.ValidaNomeDeUsuario(nomeDeUsuario) {
+		return utils.ErroValidacaoNomeDeUsuario
 	}
 
 	var erros []string
@@ -215,31 +216,31 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça o CPF, nome, nome de usuário, email, senha, data de nascimento e plano de assinatura do usuário nos parâmetro 'cpf', 'nome', 'nome_de_usuario', 'email', 'senha', 'data_de_nascimento' e 'plano_de_assinatura', respectivamente.")
 	}
 
-	if err := util.Validate.Var(parametros.Cpf, "numeric,max=11"); err != nil {
+	if err := utils.Validate.Var(parametros.Cpf, "numeric,max=11"); err != nil {
 		erros = append(erros, "Por favor, forneça um CPF válido (texto numérico com 11 dígitos) para o parâmetro 'cpf'.")
 	}
 
-	if err := util.Validate.Var(parametros.Nome, "min=3,max=240"); err != nil {
+	if err := utils.Validate.Var(parametros.Nome, "min=3,max=240"); err != nil {
 		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 240 caracteres) para o parâmetro 'nome'.")
 	}
 
-	if err := util.Validate.Var(parametros.NomeDeUsuario, "min=3,max=120"); err != nil || !util.ValidaNomeDeUsuario(parametros.NomeDeUsuario) {
+	if err := utils.Validate.Var(parametros.NomeDeUsuario, "min=3,max=120"); err != nil || !utils.ValidaNomeDeUsuario(parametros.NomeDeUsuario) {
 		erros = append(erros, "Por favor, forneça um nome de usuário válido (texto de 3 a 120 caracteres, contendo apenas letras, número, '_' ou '-') para o parâmetro 'nome_de_usuario'.")
 	}
 
-	if err := util.Validate.Var(parametros.Email, "email"); err != nil {
+	if err := utils.Validate.Var(parametros.Email, "email"); err != nil {
 		erros = append(erros, "Por favor, forneça um email válido para o parâmetro 'email'.")
 	}
 
-	if err := util.Validate.Var(parametros.Senha, "min=8,max=72"); err != nil {
+	if err := utils.Validate.Var(parametros.Senha, "min=8,max=72"); err != nil {
 		erros = append(erros, "Por favor, forneça uma senha válida (texto de 8 a 72 caracteres, podendo conter letras, números e símbolos) para o parâmetro 'senha'.")
 	}
 
-	if err := util.Validate.Var(parametros.DataDeNascimento, "datetime=2006-01-02"); err != nil {
+	if err := utils.Validate.Var(parametros.DataDeNascimento, "datetime=2006-01-02"); err != nil {
 		erros = append(erros, "Por favor, forneça uma data de nascimento válida para o parâmetro 'data_de_nascimento'.")
 	}
 
-	if err := util.Validate.Var(parametros.PlanoDeAssinatura, "gte=0"); err != nil {
+	if err := utils.Validate.Var(parametros.PlanoDeAssinatura, "gte=0"); err != nil {
 		erros = append(erros, "Por favor, forneça um plano de assinatura válido para o parâmetro 'plano_de_assinatura'.")
 	}
 
@@ -248,22 +249,22 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 	}
 
 	if len(erros) > 0 {
-		return util.ErroValidacaoParametro(erros)
+		return utils.ErroValidacaoParametro(erros)
 	}
 
 	if parametros.Senha != "" {
-		senhaComHash, err := argon2id.CreateHash(parametros.Senha + s.pepper, senhaParams)
+		senhaComHash, err := argon2id.CreateHash(parametros.Senha + utils.Pepper, senhaParams)
 
 		if err != nil {
 			log.Printf("UsuarioUpdate: %v", err)
-			return util.ErroCriacaoSenha
+			return utils.ErroCriacaoSenha
 		}
 
 		parametros.Senha = senhaComHash
 	}
 
-	err := model.UsuarioUpdate(
-		s.db,
+	err := models.UsuarioUpdate(
+		database.Db,
 		parametros.Cpf,
 		parametros.Nome,
 		parametros.NomeDeUsuario,
@@ -275,7 +276,7 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 
 	if err != nil {
 		log.Printf("UsuarioUpdate: %v", err)
-		return util.ErroBancoDados
+		return utils.ErroBancoDados
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
@@ -291,21 +292,21 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 // @Produce json
 // @Param   nome_de_usuario   path     string true "Nome de Usuário"
 // @Success 200               {object} map[string]string
-// @Failure 400               {object} util.Erro
-// @Failure 500               {object} util.Erro
+// @Failure 400               {object} utils.Erro
+// @Failure 500               {object} utils.Erro
 // @Router  /api/usuario/:nome_de_usuario [delete]
-func (s *Server) UsuarioRemove(c echo.Context) error {
+func UsuarioRemove(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
 
-	if !util.ValidaNomeDeUsuario(nomeDeUsuario) {
-		return util.ErroValidacaoNomeDeUsuario
+	if !utils.ValidaNomeDeUsuario(nomeDeUsuario) {
+		return utils.ErroValidacaoNomeDeUsuario
 	}
 
-	err := model.UsuarioRemove(s.db, nomeDeUsuario)
+	err := models.UsuarioRemove(database.Db, nomeDeUsuario)
 
 	if err != nil {
 		log.Printf("UsuarioRemove: %v", err)
-		return util.ErroBancoDados
+		return utils.ErroBancoDados
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
@@ -323,10 +324,10 @@ func (s *Server) UsuarioRemove(c echo.Context) error {
 // @Param   email             body     string false "Email"
 // @Param   senha             body     string true  "Senha"
 // @Success 200               {object} map[string]string
-// @Failure 400               {object} util.Erro
-// @Failure 500               {object} util.Erro
+// @Failure 400               {object} utils.Erro
+// @Failure 500               {object} utils.Erro
 // @Router  /api/usuario/login [post]
-func (s *Server) UsuarioLogin(c echo.Context) error {
+func UsuarioLogin(c echo.Context) error {
 	parametros := struct {
 		NomeDeUsuario string `json:"nome_de_usuario"`
 		Email         string `json:"email"`
@@ -339,15 +340,15 @@ func (s *Server) UsuarioLogin(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça o nome de usuário do usuário no parâmetro 'nome_de_usuario'.")
 	}
 
-	if err := util.Validate.Var(parametros.Email, "email"); parametros.Email != "" && err != nil {
+	if err := utils.Validate.Var(parametros.Email, "email"); parametros.Email != "" && err != nil {
 		erros = append(erros, "Por favor, forneça o email do usuário válido no parâmetro 'email'.")
 	}
 
-	if err := util.Validate.Var(parametros.NomeDeUsuario, "min=3,max=120"); parametros.NomeDeUsuario != "" && err != nil || !util.ValidaNomeDeUsuario(parametros.NomeDeUsuario) {
+	if err := utils.Validate.Var(parametros.NomeDeUsuario, "min=3,max=120"); parametros.NomeDeUsuario != "" && err != nil || !utils.ValidaNomeDeUsuario(parametros.NomeDeUsuario) {
 		erros = append(erros, "Por favor, forneça um nome de usuário válido (texto de 3 a 120 caracteres, contendo apenas letras, número, '_' ou '-') para o parâmetro 'nome_de_usuario'.")
 	}
 
-	if err := util.Validate.Var(parametros.Senha, "min=8,max=72"); err != nil {
+	if err := utils.Validate.Var(parametros.Senha, "min=8,max=72"); err != nil {
 		erros = append(erros, "Por favor, forneça uma senha válida (texto de 8 a 72 caracteres, podendo conter letras, números e símbolos) para o parâmetro 'senha'.")
 	}
 
@@ -356,28 +357,28 @@ func (s *Server) UsuarioLogin(c echo.Context) error {
 	}
 
 	if len(erros) > 0 {
-		return util.ErroValidacaoParametro(erros)
+		return utils.ErroValidacaoParametro(erros)
 	}
 
-	id, nome, nomeDeUsuario, senha, err := model.UsuarioLogin(s.db, parametros.Email, parametros.NomeDeUsuario)
+	id, nome, nomeDeUsuario, senha, err := models.UsuarioLogin(database.Db, parametros.Email, parametros.NomeDeUsuario)
 
 	if err != nil {
 		log.Printf("UsuarioLogin: %v", err)
-		return util.ErroLogin
+		return utils.ErroLogin
 	}
 
-	match, err := argon2id.ComparePasswordAndHash(parametros.Senha + s.pepper, senha)
+	match, err := argon2id.ComparePasswordAndHash(parametros.Senha + utils.Pepper, senha)
 
 	if !match || err != nil {
 		log.Printf("UsuarioLogin: %v", err)
-		return util.ErroLogin
+		return utils.ErroLogin
 	}
 
 	err = auth.GeraTokensESetaCookies(id, nome, nomeDeUsuario, c)
 
 	if err != nil {
 		log.Printf("UsuarioLogin: %v", err)
-		return util.ErroAssinaturaJWT
+		return utils.ErroAssinaturaJWT
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{

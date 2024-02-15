@@ -4,15 +4,15 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/TheDevOpsCorp/redirectify/cmd/web/components"
-	"github.com/TheDevOpsCorp/redirectify/cmd/web/views"
+	"github.com/TheDevOpsCorp/redirectify/internal/components"
 	"github.com/TheDevOpsCorp/redirectify/internal/database"
-	"github.com/TheDevOpsCorp/redirectify/internal/model"
-	"github.com/TheDevOpsCorp/redirectify/internal/util"
+	"github.com/TheDevOpsCorp/redirectify/internal/models"
+	"github.com/TheDevOpsCorp/redirectify/internal/utils"
+	"github.com/TheDevOpsCorp/redirectify/internal/views"
 )
 
 func MainWebHandler(w http.ResponseWriter, r *http.Request) {
-	links, err := model.LinkReadAll(database.Db)
+	links, err := models.LinkReadAll(database.Db)
 
 	if err != nil {
 		log.Printf("MainWebHandler: %v", err)
@@ -28,12 +28,12 @@ func MainWebHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func LinkAccessWebHandler(w http.ResponseWriter, r *http.Request) {
-	if !util.ValidaNomeDeUsuario(r.URL.Path[1:]) {
+	if !utils.ValidaNomeDeUsuario(r.URL.Path[1:]) {
 		http.Error(w, "Não foi Encontrado", http.StatusNotFound)
 		return
 	}
 
-	link, err := model.LinkReadByCodigoHash(database.Db, r.URL.Path[1:])
+	link, err := models.LinkReadByCodigoHash(database.Db, r.URL.Path[1:])
 
 	if err != nil {
 		log.Printf("LinkAccessWebHandler: %v", err)
@@ -65,16 +65,16 @@ func LinkCreateWebHandler(w http.ResponseWriter, r *http.Request) {
 	codigoHashExiste := true
 
 	for codigoHashExiste {
-		codigoHash = util.GeraHashCode(10)
+		codigoHash = utils.GeraHashCode(10)
 
-		codigoHashExiste, err = model.LinkCheckIfCodigoHashExists(database.Db, codigoHash)
+		codigoHashExiste, err = models.LinkCheckIfCodigoHashExists(database.Db, codigoHash)
 
 		if err != nil {
 			log.Printf("LinkCreateWebHandler: %v", err)
 		}
 	}
 
-	err = model.LinkCreate(
+	err = models.LinkCreate(
 		database.Db,
 		nome,
 		codigoHash,
