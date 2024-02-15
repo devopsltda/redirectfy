@@ -339,11 +339,11 @@ func (s *Server) UsuarioLogin(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça o nome de usuário do usuário no parâmetro 'nome_de_usuario'.")
 	}
 
-	if err := util.Validate.Var(parametros.Email, "email"); err != nil {
+	if err := util.Validate.Var(parametros.Email, "email"); parametros.Email != "" && err != nil {
 		erros = append(erros, "Por favor, forneça o email do usuário válido no parâmetro 'email'.")
 	}
 
-	if err := util.Validate.Var(parametros.NomeDeUsuario, "min=3,max=120"); err != nil || !util.ValidaNomeDeUsuario(parametros.NomeDeUsuario) {
+	if err := util.Validate.Var(parametros.NomeDeUsuario, "min=3,max=120"); parametros.NomeDeUsuario != "" && err != nil || !util.ValidaNomeDeUsuario(parametros.NomeDeUsuario) {
 		erros = append(erros, "Por favor, forneça um nome de usuário válido (texto de 3 a 120 caracteres, contendo apenas letras, número, '_' ou '-') para o parâmetro 'nome_de_usuario'.")
 	}
 
