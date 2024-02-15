@@ -19,8 +19,8 @@ type Usuario struct {
 	RemovidoEm        sql.NullString `json:"removido_em" swaggertype:"string"`
 } // @name Usuario
 
-func UsuarioReadByNomeDeUsuario(db *sql.DB, nomeDeUsuario string) (*Usuario, error) {
-	var usuario *Usuario
+func UsuarioReadByNomeDeUsuario(db *sql.DB, nomeDeUsuario string) (Usuario, error) {
+	var usuario Usuario
 
 	row := db.QueryRow(
 		"SELECT * FROM USUARIO WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = $1",
@@ -40,11 +40,11 @@ func UsuarioReadByNomeDeUsuario(db *sql.DB, nomeDeUsuario string) (*Usuario, err
 		&usuario.AtualizadoEm,
 		&usuario.RemovidoEm,
 	); err != nil {
-		return nil, err
+		return usuario, err
 	}
 
 	if err := row.Err(); err != nil {
-		return nil, err
+		return usuario, err
 	}
 
 	return usuario, nil
@@ -168,7 +168,7 @@ func UsuarioRemove(db *sql.DB, nomeDeUsuario string) error {
 	return nil
 }
 
-func UsuarioLogin(db *sql.DB, email, nomeDeUsuario string) (*int64, *string, *string, *string, error) {
+func UsuarioLogin(db *sql.DB, email, nomeDeUsuario string) (int64, string, string, string, error) {
 	var login string
 	var loginValue string
 
@@ -193,12 +193,12 @@ func UsuarioLogin(db *sql.DB, email, nomeDeUsuario string) (*int64, *string, *st
 	var senha string
 
 	if err := row.Scan(&idLogado, &nomeLogado, &nomeDeUsuarioLogado, &senha); err != nil {
-		return nil, nil, nil, nil, err
+		return 0, "", "", "", err
 	}
 
 	if err := row.Err(); err != nil {
-		return nil, nil, nil, nil, err
+		return 0, "", "", "", err
 	}
 
-	return &idLogado, &nomeLogado, &nomeDeUsuarioLogado, &senha, nil
+	return idLogado, nomeLogado, nomeDeUsuarioLogado, senha, nil
 }

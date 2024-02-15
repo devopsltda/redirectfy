@@ -28,6 +28,11 @@ func MainWebHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func LinkAccessWebHandler(w http.ResponseWriter, r *http.Request) {
+	if !util.ValidaNomeDeUsuario(r.URL.Path[1:]) {
+		http.Error(w, "Não foi Encontrado", http.StatusNotFound)
+		return
+	}
+
 	link, err := model.LinkReadByCodigoHash(database.Db, r.URL.Path[1:])
 
 	if err != nil {

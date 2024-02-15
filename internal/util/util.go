@@ -41,9 +41,8 @@ func ValidaNomeDeUsuario(s string) bool {
 /*** Erro ***/
 type Erro echo.HTTPError // @name Erro
 
-var ErroSenha *echo.HTTPError = echo.NewHTTPError(http.StatusBadRequest, "A senha fornecida está incorreta.")
+var ErroLogin *echo.HTTPError = echo.NewHTTPError(http.StatusBadRequest, "O nome de usuário, email ou senha fornecidos estão incorretos.")
 var ErroCriacaoSenha *echo.HTTPError = echo.NewHTTPError(http.StatusBadRequest, "Ocorreu um erro ao criar a senha.")
-var ErroUsuario *echo.HTTPError = echo.NewHTTPError(http.StatusBadRequest, "O nome de usuário ou email está incorreto.")
 var ErroAssinaturaJWT *echo.HTTPError = echo.NewHTTPError(http.StatusBadRequest, "Ocorreu um erro na assinatura do token JWT.")
 var ErroBancoDados *echo.HTTPError = echo.NewHTTPError(http.StatusInternalServerError, "Ocorreu um erro no banco de dados.")
 var ErroValidacaoNome *echo.HTTPError = echo.NewHTTPError(http.StatusBadRequest, "Por favor, forneça um nome válido.")

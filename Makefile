@@ -3,6 +3,15 @@
 # Build the application
 all: build
 
+# Create the database
+db:
+	@sqlite3 ./storage/test.db ".read internal/database/source.sql" 
+
+# Seed the database
+seed:
+	@sqlite3 ./storage/test.db ".read internal/database/seed.sql"
+
+# Build the application
 build:
 	@echo "Building..."
 	@templ generate
@@ -55,4 +64,4 @@ watch:
 	    fi; \
 	fi
 
-.PHONY: all build run test clean docs watch
+.PHONY: all db seed build run test clean docs watch

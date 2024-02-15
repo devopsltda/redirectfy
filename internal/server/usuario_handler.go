@@ -7,18 +7,18 @@ import (
 	"github.com/TheDevOpsCorp/redirectify/internal/auth"
 	"github.com/TheDevOpsCorp/redirectify/internal/model"
 	"github.com/TheDevOpsCorp/redirectify/internal/util"
+	"github.com/alexedwards/argon2id"
 	"github.com/labstack/echo/v4"
-	"golang.org/x/crypto/bcrypt"
 
 	_ "github.com/joho/godotenv/autoload"
 )
 
-func geraHashSenha(senha string) (string, error) {
-	senhaBytes := []byte(senha)
-
-	senhaComHash, err := bcrypt.GenerateFromPassword(senhaBytes, bcrypt.MinCost)
-
-	return string(senhaComHash), err
+var senhaParams = &argon2id.Params{
+	Memory: 19 * 1024,
+	Iterations: 2,
+	Parallelism: 1,
+	SaltLength: 16,
+	KeyLength: 32,
 }
 
 // UsuarioReadByNomeDeUsuario godoc
@@ -142,7 +142,7 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 		return util.ErroValidacaoParametro(erros)
 	}
 
-	senhaComHash, err := geraHashSenha(parametros.Senha)
+	senhaComHash, err := argon2id.CreateHash(parametros.Senha + s.pepper, senhaParams)
 
 	if err != nil {
 		log.Printf("UsuarioCreate: %v", err)
@@ -252,7 +252,7 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 	}
 
 	if parametros.Senha != "" {
-		senhaComHash, err := geraHashSenha(parametros.Senha)
+		senhaComHash, err := argon2id.CreateHash(parametros.Senha + s.pepper, senhaParams)
 
 		if err != nil {
 			log.Printf("UsuarioUpdate: %v", err)
@@ -363,17 +363,17 @@ func (s *Server) UsuarioLogin(c echo.Context) error {
 
 	if err != nil {
 		log.Printf("UsuarioLogin: %v", err)
-		return util.ErroUsuario
+		return util.ErroLogin
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(*senha), []byte(parametros.Senha))
+	match, err := argon2id.ComparePasswordAndHash(parametros.Senha + s.pepper, senha)
 
-	if err != nil {
+	if !match || err != nil {
 		log.Printf("UsuarioLogin: %v", err)
-		return util.ErroSenha
+		return util.ErroLogin
 	}
 
-	err = auth.GeraTokensESetaCookies(*id, *nome, *nomeDeUsuario, c)
+	err = auth.GeraTokensESetaCookies(id, nome, nomeDeUsuario, c)
 
 	if err != nil {
 		log.Printf("UsuarioLogin: %v", err)
