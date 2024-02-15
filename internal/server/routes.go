@@ -62,6 +62,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	a.GET("/usuario", api.UsuarioReadAll)
 	a.GET("/usuario/:nome_de_usuario", api.UsuarioReadByNomeDeUsuario)
 	a.POST("/usuario", api.UsuarioCreate)
+	a.PATCH("/usuario/:nome_de_usuario/autentica", api.UsuarioAutenticado)
 	a.PATCH("/usuario/:nome_de_usuario", api.UsuarioUpdate)
 	a.DELETE("/usuario/:nome_de_usuario", api.UsuarioRemove)
 	a.POST("/usuario/login", api.UsuarioLogin)
@@ -77,6 +78,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	a.GET("/link", api.LinkReadAll)
 	a.GET("/link/:codigo_hash", api.LinkReadByCodigoHash)
 	a.POST("/link", api.LinkCreate)
+	a.PATCH("/link/:codigo_hash/rehash", api.LinkRehash)
 	a.PATCH("/link/:codigo_hash", api.LinkUpdate)
 	a.DELETE("/link/:codigo_hash", api.LinkRemove)
 

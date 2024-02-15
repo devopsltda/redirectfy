@@ -13,6 +13,7 @@ type Usuario struct {
 	Email             string         `json:"email"`
 	Senha             string         `json:"senha"`
 	DataDeNascimento  string         `json:"data_de_nascimento"`
+	Autenticado       bool           `json:"autenticado"`
 	PlanoDeAssinatura int64          `json:"plano_de_assinatura"`
 	CriadoEm          string         `json:"criado_em"`
 	AtualizadoEm      string         `json:"atualizado_em"`
@@ -35,6 +36,7 @@ func UsuarioReadByNomeDeUsuario(db *sql.DB, nomeDeUsuario string) (Usuario, erro
 		&usuario.Email,
 		&usuario.Senha,
 		&usuario.DataDeNascimento,
+		&usuario.Autenticado,
 		&usuario.PlanoDeAssinatura,
 		&usuario.CriadoEm,
 		&usuario.AtualizadoEm,
@@ -72,6 +74,7 @@ func UsuarioReadAll(db *sql.DB) ([]Usuario, error) {
 			&usuario.Email,
 			&usuario.Senha,
 			&usuario.DataDeNascimento,
+			&usuario.Autenticado,
 			&usuario.PlanoDeAssinatura,
 			&usuario.CriadoEm,
 			&usuario.AtualizadoEm,
@@ -92,15 +95,30 @@ func UsuarioReadAll(db *sql.DB) ([]Usuario, error) {
 
 func UsuarioCreate(db *sql.DB, cpf, nome, nomeDeUsuario, email, senha, dataDeNascimento string, planoDeAssinatura int64) error {
 	_, err := db.Exec(
-		"INSERT INTO USUARIO (CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA, REMOVIDO_EM) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+		"INSERT INTO USUARIO (CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA) VALUES ($1, $2, $3, $4, $5, $6, $7)",
 		cpf,
 		nome,
 		nomeDeUsuario,
 		email,
 		senha,
 		dataDeNascimento,
+		false,
 		planoDeAssinatura,
-		nil,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func UsuarioAutenticado(db *sql.DB, nomeDeUsuario string) error {
+	sqlQuery := "UPDATE USUARIO SET ATUALIZADO_EM = CURRENT_TIMESTAMP, AUTENTICADO = 1 WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = $1"
+
+	_, err := db.Exec(
+		sqlQuery,
+		nomeDeUsuario,
 	)
 
 	if err != nil {
@@ -114,31 +132,31 @@ func UsuarioUpdate(db *sql.DB, cpf, nome, nomeDeUsuario, email, senha, dataDeNas
 	sqlQuery := "UPDATE USUARIO SET ATUALIZADO_EM = CURRENT_TIMESTAMP"
 
 	if cpf != "" {
-		sqlQuery += ", SET CPF = '" + cpf + "'"
+		sqlQuery += ", CPF = '" + cpf + "'"
 	}
 
 	if nome != "" {
-		sqlQuery += ", SET NOME = '" + nome + "'"
+		sqlQuery += ", NOME = '" + nome + "'"
 	}
 
 	if nomeDeUsuario != "" {
-		sqlQuery += ", SET NOME_DE_USUARIO = '" + nomeDeUsuario + "'"
+		sqlQuery += ", NOME_DE_USUARIO = '" + nomeDeUsuario + "'"
 	}
 
 	if email != "" {
-		sqlQuery += ", SET EMAIL = '" + email + "'"
+		sqlQuery += ", EMAIL = '" + email + "'"
 	}
 
 	if senha != "" {
-		sqlQuery += ", SET SENHA = '" + senha + "'"
+		sqlQuery += ", SENHA = '" + senha + "'"
 	}
 
 	if dataDeNascimento != "" {
-		sqlQuery += ", SET DATA_DE_NASCIMENTO = '" + dataDeNascimento + "'"
+		sqlQuery += ", DATA_DE_NASCIMENTO = '" + dataDeNascimento + "'"
 	}
 
 	if planoDeAssinatura != 0 {
-		sqlQuery += ", SET PLANO_DE_ASSINATURA = " + fmt.Sprint(planoDeAssinatura)
+		sqlQuery += ", PLANO_DE_ASSINATURA = " + fmt.Sprint(planoDeAssinatura)
 	}
 
 	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = $1"

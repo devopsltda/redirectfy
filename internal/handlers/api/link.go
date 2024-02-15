@@ -148,6 +148,51 @@ func LinkCreate(c echo.Context) error {
 	})
 }
 
+// LinkRehash godoc
+//
+// @Summary Recria o hash de um link
+// @Tags    Link
+// @Accept  json
+// @Produce json
+// @Param   codigo_hash path     string true "Código Hash"
+// @Success 200         {object} map[string]string
+// @Failure 400         {object} utils.Erro
+// @Failure 500         {object} utils.Erro
+// @Router  /api/link/rehash/:codigo_hash [patch]
+func LinkRehash(c echo.Context) error {
+	codigoHash := c.Param("codigo_hash")
+
+	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
+		return utils.ErroValidacaoCodigoHash
+	}
+
+	var err error
+	var codigoHashNovo string
+	codigoHashExiste := true
+
+	for codigoHashExiste {
+		codigoHashNovo = utils.GeraHashCode(10)
+
+		codigoHashExiste, err = models.LinkCheckIfCodigoHashExists(database.Db, codigoHashNovo)
+
+		if err != nil {
+			log.Printf("LinkRehash: %v", err)
+			return utils.ErroBancoDados
+		}
+	}
+
+	err = models.LinkRehash(database.Db, codigoHash, codigoHashNovo)
+
+	if err != nil {
+		log.Printf("LinkRehash: %v", err)
+		return utils.ErroBancoDados
+	}
+
+	return c.JSON(http.StatusOK, map[string]string{
+		"Mensagem": "O hash do link foi recriado com sucesso.",
+	})
+}
+
 // LinkUpdate godoc
 //
 // @Summary Atualiza um link

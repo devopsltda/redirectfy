@@ -109,14 +109,27 @@ func LinkCheckIfCodigoHashExists(db *sql.DB, codigoHash string) (bool, error) {
 
 func LinkCreate(db *sql.DB, nome, codigoHash, linkWhatsapp, linkTelegram, ordemDeRedirecionamento string, usuario int64) error {
 	_, err := db.Exec(
-		"INSERT INTO LINK (NOME, CODIGO_HASH, LINK_WHATSAPP, LINK_TELEGRAM, ORDEM_DE_REDIRECIONAMENTO, USUARIO, REMOVIDO_EM) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+		"INSERT INTO LINK (NOME, CODIGO_HASH, LINK_WHATSAPP, LINK_TELEGRAM, ORDEM_DE_REDIRECIONAMENTO, USUARIO) VALUES ($1, $2, $3, $4, $5, $6)",
 		nome,
 		codigoHash,
 		linkWhatsapp,
 		linkTelegram,
 		ordemDeRedirecionamento,
 		usuario,
-		nil,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func LinkRehash(db *sql.DB, codigoHashAntigo, codigoHashNovo string) error {
+	_, err := db.Exec(
+		"UPDATE LINK SET ATUALIZADO_EM = CURRENT_TIMESTAMP, CODIGO_HASH = $1 WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $2",
+		codigoHashNovo,
+		codigoHashAntigo,
 	)
 
 	if err != nil {
@@ -130,22 +143,22 @@ func LinkUpdate(db *sql.DB, nome, codigoHash, linkWhatsapp, linkTelegram, ordemD
 	sqlQuery := "UPDATE LINK SET ATUALIZADO_EM = CURRENT_TIMESTAMP"
 
 	if nome != "" {
-		sqlQuery += ", SET NOME = '" + nome + "'"
+		sqlQuery += ", NOME = '" + nome + "'"
 	}
 
 	if linkWhatsapp != "" {
-		sqlQuery += ", SET LINK_WHATSAPP = '" + linkWhatsapp + "'"
+		sqlQuery += ", LINK_WHATSAPP = '" + linkWhatsapp + "'"
 	}
 
 	if linkTelegram != "" {
-		sqlQuery += ", SET LINK_TELEGRAM = '" + linkTelegram + "'"
+		sqlQuery += ", LINK_TELEGRAM = '" + linkTelegram + "'"
 	}
 
 	if ordemDeRedirecionamento != "" {
-		sqlQuery += ", SET ORDEM_DE_REDIRECIONAMENTO = '" + ordemDeRedirecionamento + "'"
+		sqlQuery += ", ORDEM_DE_REDIRECIONAMENTO = '" + ordemDeRedirecionamento + "'"
 	}
 
-	sqlQuery += " WHERE CODIGO_HASH = $1"
+	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $1"
 
 	_, err := db.Exec(
 		sqlQuery,

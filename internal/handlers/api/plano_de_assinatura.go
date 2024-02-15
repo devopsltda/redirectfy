@@ -73,8 +73,10 @@ func PlanoDeAssinaturaReadAll(c echo.Context) error {
 // @Router  /api/plano_de_assinatura [post]
 func PlanoDeAssinaturaCreate(c echo.Context) error {
 	parametros := struct {
-		Nome        string `json:"nome"`
-		ValorMensal int64  `json:"valor_mensal"`
+		Nome          string `json:"nome"`
+		ValorMensal   int64  `json:"valor_mensal"`
+		Limite        int64  `json:"limite"`
+		PeriodoLimite string `json:"periodo_limite"`
 	}{}
 
 	var erros []string
@@ -91,11 +93,19 @@ func PlanoDeAssinaturaCreate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça um valor mensal válido no parâmetro 'valor_mensal'.")
 	}
 
+	if err := utils.Validate.Var(parametros.Limite, "required,gte=0"); err != nil {
+		erros = append(erros, "Por favor, forneça um limite válido no parâmetro 'limite'.")
+	}
+
+	if err := utils.Validate.Var(parametros.PeriodoLimite, "required,oneof=s m h d M"); err != nil {
+		erros = append(erros, "Por favor, forneça um período válido para o limite no parâmetro 'periodo_limite'.")
+	}
+
 	if len(erros) > 0 {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	err := models.PlanoDeAssinaturaCreate(database.Db, parametros.Nome, parametros.ValorMensal)
+	err := models.PlanoDeAssinaturaCreate(database.Db, parametros.Nome, parametros.ValorMensal, parametros.Limite, parametros.PeriodoLimite)
 
 	if err != nil {
 		log.Printf("PlanoDeAssinaturaCreate: %v", err)
@@ -122,8 +132,10 @@ func PlanoDeAssinaturaCreate(c echo.Context) error {
 // @Router  /api/plano_de_assinatura/:nome [patch]
 func PlanoDeAssinaturaUpdate(c echo.Context) error {
 	type parametrosUpdate struct {
-		Nome        string `json:"nome"`
-		ValorMensal int64  `json:"valor_mensal"`
+		Nome          string `json:"nome"`
+		ValorMensal   int64  `json:"valor_mensal"`
+		Limite        int64  `json:"limite"`
+		PeriodoLimite string `json:"periodo_limite"`
 	}
 
 	parametros := parametrosUpdate{}
@@ -140,12 +152,20 @@ func PlanoDeAssinaturaUpdate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça o nome do plano de assinatura no parâmetro 'nome' e o valor mensal no parâmetro 'valor_mensal'.")
 	}
 
-	if err := utils.Validate.Var(parametros.Nome, "min=3,max=120"); err != nil {
+	if err := utils.Validate.Var(parametros.Nome, "min=3,max=120"); parametros.Nome != "" && err != nil {
 		erros = append(erros, "Por favor, forneça um nome válido para o parâmetro 'nome'.")
 	}
 
-	if err := utils.Validate.Var(parametros.ValorMensal, "gte=0"); err != nil {
+	if err := utils.Validate.Var(parametros.ValorMensal, "gte=0"); parametros.ValorMensal != 0 && err != nil {
 		erros = append(erros, "Por favor, forneça um valor mensal válido no parâmetro 'valor_mensal'.")
+	}
+
+	if err := utils.Validate.Var(parametros.Limite, "gte=0"); parametros.Limite != 0 && err != nil {
+		erros = append(erros, "Por favor, forneça um limite válido no parâmetro 'limite'.")
+	}
+
+	if err := utils.Validate.Var(parametros.PeriodoLimite, "oneof=s m h d M"); parametros.PeriodoLimite != "" && err != nil {
+		erros = append(erros, "Por favor, forneça um período válido para o limite no parâmetro 'periodo_limite'.")
 	}
 
 	if (parametrosUpdate{}) == parametros {
@@ -156,7 +176,7 @@ func PlanoDeAssinaturaUpdate(c echo.Context) error {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	err := models.PlanoDeAssinaturaUpdate(database.Db, nome, parametros.Nome, parametros.ValorMensal)
+	err := models.PlanoDeAssinaturaUpdate(database.Db, nome, parametros.Nome, parametros.ValorMensal, parametros.Limite, parametros.PeriodoLimite)
 
 	if err != nil {
 		log.Printf("PlanoDeAssinaturaUpdate: %v", err)

@@ -284,6 +284,36 @@ func UsuarioUpdate(c echo.Context) error {
 	})
 }
 
+// UsuarioAutenticado godoc
+//
+// @Summary Autentica um usuário
+// @Tags    Usuário
+// @Accept  json
+// @Produce json
+// @Param   nome_de_usuario   path     string true "Nome de Usuário"
+// @Success 200               {object} map[string]string
+// @Failure 400               {object} utils.Erro
+// @Failure 500               {object} utils.Erro
+// @Router  /api/usuario/:nome_de_usuario/autentica [patch]
+func UsuarioAutenticado(c echo.Context) error {
+	nomeDeUsuario := c.Param("nome_de_usuario")
+
+	if !utils.ValidaNomeDeUsuario(nomeDeUsuario) {
+		return utils.ErroValidacaoNomeDeUsuario
+	}
+
+	err := models.UsuarioAutenticado(database.Db, nomeDeUsuario)
+
+	if err != nil {
+		log.Printf("UsuarioAutenticado: %v", err)
+		return utils.ErroBancoDados
+	}
+
+	return c.JSON(http.StatusOK, map[string]string{
+		"Mensagem": "O usuário foi autenticado com sucesso.",
+	})
+}
+
 // UsuarioRemove godoc
 //
 // @Summary Remove um usuário
