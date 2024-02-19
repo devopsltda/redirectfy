@@ -34,6 +34,7 @@ func RegisterRoutesV1(e *echo.Group) {
 
 	// API - Usuário
 	a.GET("/usuarios", UsuarioReadAll)
+	a.GET("/usuarios/historico", HistoricoUsuarioReadAll)
 	a.GET("/usuarios/:nome_de_usuario", UsuarioReadByNomeDeUsuario)
 	a.POST("/usuarios", UsuarioCreate)
 	a.PATCH("/usuarios/:nome_de_usuario/autentica", UsuarioAutenticado)
@@ -43,6 +44,7 @@ func RegisterRoutesV1(e *echo.Group) {
 
 	// API - Plano de Assinatura
 	a.GET("/planos_de_assinatura", PlanoDeAssinaturaReadAll)
+	a.GET("/planos_de_assinatura/historico", HistoricoPlanoDeAssinaturaReadAll)
 	a.GET("/planos_de_assinatura/:nome", PlanoDeAssinaturaReadByNome)
 	a.POST("/planos_de_assinatura", PlanoDeAssinaturaCreate)
 	a.PATCH("/planos_de_assinatura/:nome", PlanoDeAssinaturaUpdate)
@@ -50,12 +52,10 @@ func RegisterRoutesV1(e *echo.Group) {
 
 	// API - Link
 	a.GET("/links", LinkReadAll)
+	a.GET("/links/historico", HistoricoLinkReadAll)
 	a.GET("/links/:codigo_hash", LinkReadByCodigoHash)
 	a.POST("/links", LinkCreate)
 	a.PATCH("/links/:codigo_hash/rehash", LinkRehash)
 	a.PATCH("/links/:codigo_hash", LinkUpdate)
 	a.DELETE("/links/:codigo_hash", LinkRemove)
-
-	// API - Histórico
-	a.GET("/historico", HistoricoReadAll)
 }

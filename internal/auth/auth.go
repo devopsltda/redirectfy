@@ -18,7 +18,7 @@ type Claims struct {
 	Id            int64  `json:"id"`
 	Nome          string `json:"nome"`
 	NomeDeUsuario string `json:"nome_de_usuario"`
-	Autenticado   bool  `json:"autenticado"`
+	Autenticado   bool   `json:"autenticado"`
 	jwt.RegisteredClaims
 }
 

@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	Db *sql.DB
+	Db    *sql.DB
 	dburl = os.Getenv("DB_URL")
 )
 

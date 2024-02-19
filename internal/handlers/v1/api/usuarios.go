@@ -15,11 +15,11 @@ import (
 )
 
 var senhaParams = &argon2id.Params{
-	Memory: 19 * 1024,
-	Iterations: 2,
+	Memory:      19 * 1024,
+	Iterations:  2,
 	Parallelism: 1,
-	SaltLength: 16,
-	KeyLength: 32,
+	SaltLength:  16,
+	KeyLength:   32,
 }
 
 // UsuarioReadByNomeDeUsuario godoc
@@ -143,7 +143,7 @@ func UsuarioCreate(c echo.Context) error {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	senhaComHash, err := argon2id.CreateHash(parametros.Senha + utils.Pepper, senhaParams)
+	senhaComHash, err := argon2id.CreateHash(parametros.Senha+utils.Pepper, senhaParams)
 
 	if err != nil {
 		log.Printf("UsuarioCreate: %v", err)
@@ -251,7 +251,7 @@ func UsuarioUpdate(c echo.Context) error {
 	}
 
 	if parametros.Senha != "" {
-		senhaComHash, err := argon2id.CreateHash(parametros.Senha + utils.Pepper, senhaParams)
+		senhaComHash, err := argon2id.CreateHash(parametros.Senha+utils.Pepper, senhaParams)
 
 		if err != nil {
 			log.Printf("UsuarioUpdate: %v", err)
@@ -389,7 +389,7 @@ func UsuarioLogin(c echo.Context) error {
 		return utils.ErroLogin
 	}
 
-	match, err := argon2id.ComparePasswordAndHash(parametros.Senha + utils.Pepper, senha)
+	match, err := argon2id.ComparePasswordAndHash(parametros.Senha+utils.Pepper, senha)
 
 	if !match || err != nil {
 		log.Printf("UsuarioLogin: %v", err)

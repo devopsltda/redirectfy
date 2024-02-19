@@ -30,7 +30,6 @@ func GeraHashCode(length int) string {
 	return string(b)
 }
 
-
 /*** Validação ***/
 var Validate = validator.New()
 
