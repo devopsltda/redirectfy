@@ -25,14 +25,14 @@ var senhaParams = &argon2id.Params{
 // UsuarioReadByNomeDeUsuario godoc
 //
 // @Summary Retorna o usuário com o nome de usuário fornecido
-// @Tags    Usuário
+// @Tags    Usuários
 // @Accept  json
 // @Produce json
 // @Param   nome_de_usuario path     string  true  "Nome de Usuário"
 // @Success 200             {object} models.Usuario
 // @Failure 400             {object} utils.Erro
 // @Failure 500             {object} utils.Erro
-// @Router  /api/usuario/:nome_de_usuario [get]
+// @Router  /v1/api/usuarios/:nome_de_usuario [get]
 func UsuarioReadByNomeDeUsuario(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
 
@@ -53,13 +53,13 @@ func UsuarioReadByNomeDeUsuario(c echo.Context) error {
 // UsuarioReadAll godoc
 //
 // @Summary Retorna todos os usuários
-// @Tags    Usuário
+// @Tags    Usuários
 // @Accept  json
 // @Produce json
 // @Success 200             {object} []models.Usuario
 // @Failure 400             {object} utils.Erro
 // @Failure 500             {object} utils.Erro
-// @Router  /api/usuario [get]
+// @Router  /v1/api/usuarios [get]
 func UsuarioReadAll(c echo.Context) error {
 	usuarios, err := models.UsuarioReadAll(database.Db)
 
@@ -74,7 +74,7 @@ func UsuarioReadAll(c echo.Context) error {
 // UsuarioCreate godoc
 //
 // @Summary Cria um usuário
-// @Tags    Usuário
+// @Tags    Usuários
 // @Accept  json
 // @Produce json
 // @Param   cpf                 body     string true "CPF"
@@ -87,7 +87,7 @@ func UsuarioReadAll(c echo.Context) error {
 // @Success 200                 {object} map[string]string
 // @Failure 400                 {object} utils.Erro
 // @Failure 500                 {object} utils.Erro
-// @Router  /api/usuario [post]
+// @Router  /v1/api/usuarios [post]
 func UsuarioCreate(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
 
@@ -176,7 +176,7 @@ func UsuarioCreate(c echo.Context) error {
 // UsuarioUpdate godoc
 //
 // @Summary Atualiza um usuário
-// @Tags    Usuário
+// @Tags    Usuários
 // @Accept  json
 // @Produce json
 // @Param   nome_de_usuario     path     string true "Nome de Usuário"
@@ -190,7 +190,7 @@ func UsuarioCreate(c echo.Context) error {
 // @Success 200                 {object} map[string]string
 // @Failure 400                 {object} utils.Erro
 // @Failure 500                 {object} utils.Erro
-// @Router  /api/usuario/:nome_de_usuario [patch]
+// @Router  /v1/api/usuarios/:nome_de_usuario [patch]
 func UsuarioUpdate(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
 
@@ -287,14 +287,14 @@ func UsuarioUpdate(c echo.Context) error {
 // UsuarioAutenticado godoc
 //
 // @Summary Autentica um usuário
-// @Tags    Usuário
+// @Tags    Usuários
 // @Accept  json
 // @Produce json
 // @Param   nome_de_usuario   path     string true "Nome de Usuário"
 // @Success 200               {object} map[string]string
 // @Failure 400               {object} utils.Erro
 // @Failure 500               {object} utils.Erro
-// @Router  /api/usuario/:nome_de_usuario/autentica [patch]
+// @Router  /v1/api/usuarios/:nome_de_usuario/autentica [patch]
 func UsuarioAutenticado(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
 
@@ -317,14 +317,14 @@ func UsuarioAutenticado(c echo.Context) error {
 // UsuarioRemove godoc
 //
 // @Summary Remove um usuário
-// @Tags    Usuário
+// @Tags    Usuários
 // @Accept  json
 // @Produce json
 // @Param   nome_de_usuario   path     string true "Nome de Usuário"
 // @Success 200               {object} map[string]string
 // @Failure 400               {object} utils.Erro
 // @Failure 500               {object} utils.Erro
-// @Router  /api/usuario/:nome_de_usuario [delete]
+// @Router  /v1/api/usuarios/:nome_de_usuario [delete]
 func UsuarioRemove(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
 
@@ -347,7 +347,7 @@ func UsuarioRemove(c echo.Context) error {
 // UsuarioLogin godoc
 //
 // @Summary Autentica o usuário
-// @Tags    Usuário
+// @Tags    Usuários
 // @Accept  json
 // @Produce json
 // @Param   nome_de_usuario   body     string false "Nome de Usuário"
@@ -356,7 +356,7 @@ func UsuarioRemove(c echo.Context) error {
 // @Success 200               {object} map[string]string
 // @Failure 400               {object} utils.Erro
 // @Failure 500               {object} utils.Erro
-// @Router  /api/usuario/login [post]
+// @Router  /v1/api/usuarios/login [post]
 func UsuarioLogin(c echo.Context) error {
 	parametros := struct {
 		NomeDeUsuario string `json:"nome_de_usuario"`

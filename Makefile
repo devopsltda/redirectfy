@@ -35,12 +35,12 @@ clean:
 # Update docs
 docs:
 	@if command -v swag > /dev/null; then \
-			swag init --generalInfo routes.go --parseDependency --parseInternal --dir internal/server; \
+			swag init --generalInfo routes.go --parseDependency --parseInternal --dir internal/handlers/v1/api; \
 	else \
 	    read -p "Go's 'swag' is not installed on your machine. Do you want to install it? [Y/n] " choice; \
 	    if [ "$$choice" != "n" ] && [ "$$choice" != "N" ]; then \
 	        go install github.com/swaggo/swag/cmd/swag@latest; \
-					swag init --generalInfo routes.go --parseDependency --parseInternal --dir internal/server; \
+					swag init --generalInfo routes.go --parseDependency --parseInternal --dir internal/handlers/v1/api; \
 	    else \
 	        echo "You chose not to install swag. Exiting..."; \
 	        exit 1; \

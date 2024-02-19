@@ -55,7 +55,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/link": {
+        "/v1/api/links": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -64,7 +64,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Link"
+                    "Links"
                 ],
                 "summary": "Retorna os links",
                 "responses": {
@@ -99,7 +99,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Link"
+                    "Links"
                 ],
                 "summary": "Cria um link",
                 "parameters": [
@@ -171,7 +171,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/link/:codigo_hash": {
+        "/v1/api/links/:codigo_hash": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -180,7 +180,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Link"
+                    "Links"
                 ],
                 "summary": "Retorna o link com o código hash fornecido",
                 "parameters": [
@@ -221,7 +221,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Link"
+                    "Links"
                 ],
                 "summary": "Remove um link",
                 "parameters": [
@@ -265,7 +265,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Link"
+                    "Links"
                 ],
                 "summary": "Atualiza um link",
                 "parameters": [
@@ -334,7 +334,53 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/plano_de_assinatura": {
+        "/v1/api/links/rehash/:codigo_hash": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Links"
+                ],
+                "summary": "Recria o hash de um link",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Código Hash",
+                        "name": "codigo_hash",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/api/planos_de_assinatura": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -343,7 +389,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Plano de Assinatura"
+                    "Planos de Assinatura"
                 ],
                 "summary": "Retorna os planos de assinatura",
                 "responses": {
@@ -378,7 +424,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Plano de Assinatura"
+                    "Planos de Assinatura"
                 ],
                 "summary": "Cria um plano de assinatura",
                 "parameters": [
@@ -426,7 +472,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/plano_de_assinatura/:nome": {
+        "/v1/api/planos_de_assinatura/:nome": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -435,7 +481,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Plano de Assinatura"
+                    "Planos de Assinatura"
                 ],
                 "summary": "Retorna o plano de assinatura com o nome fornecido",
                 "parameters": [
@@ -476,7 +522,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Plano de Assinatura"
+                    "Planos de Assinatura"
                 ],
                 "summary": "Remove um plano de assinatura",
                 "parameters": [
@@ -520,7 +566,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Plano de Assinatura"
+                    "Planos de Assinatura"
                 ],
                 "summary": "Atualiza um plano de assinatura",
                 "parameters": [
@@ -573,7 +619,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/usuario": {
+        "/v1/api/usuarios": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -582,7 +628,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Usuário"
+                    "Usuários"
                 ],
                 "summary": "Retorna todos os usuários",
                 "responses": {
@@ -617,7 +663,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Usuário"
+                    "Usuários"
                 ],
                 "summary": "Cria um usuário",
                 "parameters": [
@@ -710,7 +756,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/usuario/:nome_de_usuario": {
+        "/v1/api/usuarios/:nome_de_usuario": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -719,7 +765,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Usuário"
+                    "Usuários"
                 ],
                 "summary": "Retorna o usuário com o nome de usuário fornecido",
                 "parameters": [
@@ -760,7 +806,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Usuário"
+                    "Usuários"
                 ],
                 "summary": "Remove um usuário",
                 "parameters": [
@@ -804,7 +850,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Usuário"
+                    "Usuários"
                 ],
                 "summary": "Atualiza um usuário",
                 "parameters": [
@@ -897,7 +943,53 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/usuario/login": {
+        "/v1/api/usuarios/:nome_de_usuario/autentica": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usuários"
+                ],
+                "summary": "Autentica um usuário",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Nome de Usuário",
+                        "name": "nome_de_usuario",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/api/usuarios/login": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -906,7 +998,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Usuário"
+                    "Usuários"
                 ],
                 "summary": "Autentica o usuário",
                 "parameters": [
@@ -1039,7 +1131,13 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "limite": {
+                    "type": "integer"
+                },
                 "nome": {
+                    "type": "string"
+                },
+                "periodo_limite": {
                     "type": "string"
                 },
                 "removido_em": {
@@ -1055,6 +1153,9 @@ const docTemplate = `{
             "properties": {
                 "atualizado_em": {
                     "type": "string"
+                },
+                "autenticado": {
+                    "type": "boolean"
                 },
                 "cpf": {
                     "type": "string"
@@ -1093,7 +1194,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.0.0-alpha",
+	Version:          "1.0.0",
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},

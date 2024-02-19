@@ -13,14 +13,14 @@ import (
 // PlanoDeAssinaturaReadByNome godoc
 //
 // @Summary Retorna o plano de assinatura com o nome fornecido
-// @Tags    Plano de Assinatura
+// @Tags    Planos de Assinatura
 // @Accept  json
 // @Produce json
 // @Param   nome path     string  true  "Nome"
 // @Success 200  {object} models.PlanoDeAssinatura
 // @Failure 400  {object} utils.Erro
 // @Failure 500  {object} utils.Erro
-// @Router  /api/plano_de_assinatura/:nome [get]
+// @Router  /v1/api/planos_de_assinatura/:nome [get]
 func PlanoDeAssinaturaReadByNome(c echo.Context) error {
 	nome := c.Param("nome")
 
@@ -41,13 +41,13 @@ func PlanoDeAssinaturaReadByNome(c echo.Context) error {
 // PlanoDeAssinaturaReadAll godoc
 //
 // @Summary Retorna os planos de assinatura
-// @Tags    Plano de Assinatura
+// @Tags    Planos de Assinatura
 // @Accept  json
 // @Produce json
 // @Success 200  {object} []models.PlanoDeAssinatura
 // @Failure 400  {object} utils.Erro
 // @Failure 500  {object} utils.Erro
-// @Router  /api/plano_de_assinatura [get]
+// @Router  /v1/api/planos_de_assinatura [get]
 func PlanoDeAssinaturaReadAll(c echo.Context) error {
 	planosDeAssinatura, err := models.PlanoDeAssinaturaReadAll(database.Db)
 
@@ -62,7 +62,7 @@ func PlanoDeAssinaturaReadAll(c echo.Context) error {
 // PlanoDeAssinaturaCreate godoc
 //
 // @Summary Cria um plano de assinatura
-// @Tags    Plano de Assinatura
+// @Tags    Planos de Assinatura
 // @Accept  json
 // @Produce json
 // @Param   nome         body     string true "Nome"
@@ -70,7 +70,7 @@ func PlanoDeAssinaturaReadAll(c echo.Context) error {
 // @Success 200          {object} map[string]string
 // @Failure 400          {object} utils.Erro
 // @Failure 500          {object} utils.Erro
-// @Router  /api/plano_de_assinatura [post]
+// @Router  /v1/api/planos_de_assinatura [post]
 func PlanoDeAssinaturaCreate(c echo.Context) error {
 	parametros := struct {
 		Nome          string `json:"nome"`
@@ -120,7 +120,7 @@ func PlanoDeAssinaturaCreate(c echo.Context) error {
 // PlanoDeAssinaturaUpdate godoc
 //
 // @Summary Atualiza um plano de assinatura
-// @Tags    Plano de Assinatura
+// @Tags    Planos de Assinatura
 // @Accept  json
 // @Produce json
 // @Param   nome         path     string true  "Nome"
@@ -129,7 +129,7 @@ func PlanoDeAssinaturaCreate(c echo.Context) error {
 // @Success 200          {object} map[string]string
 // @Failure 400          {object} utils.Erro
 // @Failure 500          {object} utils.Erro
-// @Router  /api/plano_de_assinatura/:nome [patch]
+// @Router  /v1/api/planos_de_assinatura/:nome [patch]
 func PlanoDeAssinaturaUpdate(c echo.Context) error {
 	type parametrosUpdate struct {
 		Nome          string `json:"nome"`
@@ -191,14 +191,14 @@ func PlanoDeAssinaturaUpdate(c echo.Context) error {
 // PlanoDeAssinaturaRemove godoc
 //
 // @Summary Remove um plano de assinatura
-// @Tags    Plano de Assinatura
+// @Tags    Planos de Assinatura
 // @Accept  json
 // @Produce json
 // @Param   nome path     string true "Nome"
 // @Success 200  {object} map[string]string
 // @Failure 400  {object} utils.Erro
 // @Failure 500  {object} utils.Erro
-// @Router  /api/plano_de_assinatura/:nome [delete]
+// @Router  /v1/api/planos_de_assinatura/:nome [delete]
 func PlanoDeAssinaturaRemove(c echo.Context) error {
 	nome := c.Param("nome")
 

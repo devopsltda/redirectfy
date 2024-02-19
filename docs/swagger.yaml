@@ -49,7 +49,11 @@ definitions:
         type: string
       id:
         type: integer
+      limite:
+        type: integer
       nome:
+        type: string
+      periodo_limite:
         type: string
       removido_em:
         type: integer
@@ -60,6 +64,8 @@ definitions:
     properties:
       atualizado_em:
         type: string
+      autenticado:
+        type: boolean
       cpf:
         type: string
       criado_em:
@@ -87,7 +93,7 @@ info:
     name: Equipe da DevOps (Pablo, Guilherme e Eduardo)
   description: API para interagir com o Redirect Max
   title: API do Redirect Max
-  version: 0.0.0-alpha
+  version: 1.0.0
 paths:
   /api/historico:
     get:
@@ -113,7 +119,7 @@ paths:
       summary: Retorna o histórico de ações no sistema
       tags:
       - Histórico
-  /api/link:
+  /v1/api/links:
     get:
       consumes:
       - application/json
@@ -136,7 +142,7 @@ paths:
             $ref: '#/definitions/Erro'
       summary: Retorna os links
       tags:
-      - Link
+      - Links
     post:
       consumes:
       - application/json
@@ -187,8 +193,8 @@ paths:
             $ref: '#/definitions/Erro'
       summary: Cria um link
       tags:
-      - Link
-  /api/link/:codigo_hash:
+      - Links
+  /v1/api/links/:codigo_hash:
     delete:
       consumes:
       - application/json
@@ -217,7 +223,7 @@ paths:
             $ref: '#/definitions/Erro'
       summary: Remove um link
       tags:
-      - Link
+      - Links
     get:
       consumes:
       - application/json
@@ -244,7 +250,7 @@ paths:
             $ref: '#/definitions/Erro'
       summary: Retorna o link com o código hash fornecido
       tags:
-      - Link
+      - Links
     patch:
       consumes:
       - application/json
@@ -293,8 +299,38 @@ paths:
             $ref: '#/definitions/Erro'
       summary: Atualiza um link
       tags:
-      - Link
-  /api/plano_de_assinatura:
+      - Links
+  /v1/api/links/rehash/:codigo_hash:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Código Hash
+        in: path
+        name: codigo_hash
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Erro'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Erro'
+      summary: Recria o hash de um link
+      tags:
+      - Links
+  /v1/api/planos_de_assinatura:
     get:
       consumes:
       - application/json
@@ -317,7 +353,7 @@ paths:
             $ref: '#/definitions/Erro'
       summary: Retorna os planos de assinatura
       tags:
-      - Plano de Assinatura
+      - Planos de Assinatura
     post:
       consumes:
       - application/json
@@ -353,8 +389,8 @@ paths:
             $ref: '#/definitions/Erro'
       summary: Cria um plano de assinatura
       tags:
-      - Plano de Assinatura
-  /api/plano_de_assinatura/:nome:
+      - Planos de Assinatura
+  /v1/api/planos_de_assinatura/:nome:
     delete:
       consumes:
       - application/json
@@ -383,7 +419,7 @@ paths:
             $ref: '#/definitions/Erro'
       summary: Remove um plano de assinatura
       tags:
-      - Plano de Assinatura
+      - Planos de Assinatura
     get:
       consumes:
       - application/json
@@ -410,7 +446,7 @@ paths:
             $ref: '#/definitions/Erro'
       summary: Retorna o plano de assinatura com o nome fornecido
       tags:
-      - Plano de Assinatura
+      - Planos de Assinatura
     patch:
       consumes:
       - application/json
@@ -449,8 +485,8 @@ paths:
             $ref: '#/definitions/Erro'
       summary: Atualiza um plano de assinatura
       tags:
-      - Plano de Assinatura
-  /api/usuario:
+      - Planos de Assinatura
+  /v1/api/usuarios:
     get:
       consumes:
       - application/json
@@ -473,7 +509,7 @@ paths:
             $ref: '#/definitions/Erro'
       summary: Retorna todos os usuários
       tags:
-      - Usuário
+      - Usuários
     post:
       consumes:
       - application/json
@@ -539,8 +575,8 @@ paths:
             $ref: '#/definitions/Erro'
       summary: Cria um usuário
       tags:
-      - Usuário
-  /api/usuario/:nome_de_usuario:
+      - Usuários
+  /v1/api/usuarios/:nome_de_usuario:
     delete:
       consumes:
       - application/json
@@ -569,7 +605,7 @@ paths:
             $ref: '#/definitions/Erro'
       summary: Remove um usuário
       tags:
-      - Usuário
+      - Usuários
     get:
       consumes:
       - application/json
@@ -596,7 +632,7 @@ paths:
             $ref: '#/definitions/Erro'
       summary: Retorna o usuário com o nome de usuário fornecido
       tags:
-      - Usuário
+      - Usuários
     patch:
       consumes:
       - application/json
@@ -660,8 +696,38 @@ paths:
             $ref: '#/definitions/Erro'
       summary: Atualiza um usuário
       tags:
-      - Usuário
-  /api/usuario/login:
+      - Usuários
+  /v1/api/usuarios/:nome_de_usuario/autentica:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Nome de Usuário
+        in: path
+        name: nome_de_usuario
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Erro'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Erro'
+      summary: Autentica um usuário
+      tags:
+      - Usuários
+  /v1/api/usuarios/login:
     post:
       consumes:
       - application/json
@@ -701,5 +767,5 @@ paths:
             $ref: '#/definitions/Erro'
       summary: Autentica o usuário
       tags:
-      - Usuário
+      - Usuários
 swagger: "2.0"

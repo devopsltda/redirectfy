@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/TheDevOpsCorp/redirectify/internal/handlers/api"
+	"github.com/TheDevOpsCorp/redirectify/internal/handlers/v1/api"
 	"github.com/TheDevOpsCorp/redirectify/internal/server"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"

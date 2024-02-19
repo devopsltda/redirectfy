@@ -13,14 +13,14 @@ import (
 // LinkReadByCodigoHash godoc
 //
 // @Summary Retorna o link com o código hash fornecido
-// @Tags    Link
+// @Tags    Links
 // @Accept  json
 // @Produce json
 // @Param   codigo_hash path     string true "Nome de Usuário"
 // @Success 200         {object} models.Link
 // @Failure 400         {object} utils.Erro
 // @Failure 500         {object} utils.Erro
-// @Router  /api/link/:codigo_hash [get]
+// @Router  /v1/api/links/:codigo_hash [get]
 func LinkReadByCodigoHash(c echo.Context) error {
 	codigoHash := c.Param("codigo_hash")
 
@@ -41,13 +41,13 @@ func LinkReadByCodigoHash(c echo.Context) error {
 // LinkReadAll godoc
 //
 // @Summary Retorna os links
-// @Tags    Link
+// @Tags    Links
 // @Accept  json
 // @Produce json
 // @Success 200 {object} []models.Link
 // @Failure 400 {object} utils.Erro
 // @Failure 500 {object} utils.Erro
-// @Router  /api/link [get]
+// @Router  /v1/api/links [get]
 func LinkReadAll(c echo.Context) error {
 	links, err := models.LinkReadAll(database.Db)
 
@@ -62,7 +62,7 @@ func LinkReadAll(c echo.Context) error {
 // LinkCreate godoc
 //
 // @Summary Cria um link
-// @Tags    Link
+// @Tags    Links
 // @Accept  json
 // @Produce json
 // @Param   nome                      body     string true  "Nome"
@@ -73,7 +73,7 @@ func LinkReadAll(c echo.Context) error {
 // @Success 200                       {object} map[string]string
 // @Failure 400                       {object} utils.Erro
 // @Failure 500                       {object} utils.Erro
-// @Router  /api/link [post]
+// @Router  /v1/api/links [post]
 func LinkCreate(c echo.Context) error {
 	parametros := struct {
 		Nome                    string `json:"nome"`
@@ -151,14 +151,14 @@ func LinkCreate(c echo.Context) error {
 // LinkRehash godoc
 //
 // @Summary Recria o hash de um link
-// @Tags    Link
+// @Tags    Links
 // @Accept  json
 // @Produce json
 // @Param   codigo_hash path     string true "Código Hash"
 // @Success 200         {object} map[string]string
 // @Failure 400         {object} utils.Erro
 // @Failure 500         {object} utils.Erro
-// @Router  /api/link/rehash/:codigo_hash [patch]
+// @Router  /v1/api/links/rehash/:codigo_hash [patch]
 func LinkRehash(c echo.Context) error {
 	codigoHash := c.Param("codigo_hash")
 
@@ -196,7 +196,7 @@ func LinkRehash(c echo.Context) error {
 // LinkUpdate godoc
 //
 // @Summary Atualiza um link
-// @Tags    Link
+// @Tags    Links
 // @Accept  json
 // @Produce json
 // @Param   codigo_hash               path     string true  "Código Hash"
@@ -207,7 +207,7 @@ func LinkRehash(c echo.Context) error {
 // @Success 200                       {object} map[string]string
 // @Failure 400                       {object} utils.Erro
 // @Failure 500                       {object} utils.Erro
-// @Router  /api/link/:codigo_hash [patch]
+// @Router  /v1/api/links/:codigo_hash [patch]
 func LinkUpdate(c echo.Context) error {
 	parametros := struct {
 		Nome                    string `json:"nome"`
@@ -264,14 +264,14 @@ func LinkUpdate(c echo.Context) error {
 // LinkRemove godoc
 //
 // @Summary Remove um link
-// @Tags    Link
+// @Tags    Links
 // @Accept  json
 // @Produce json
 // @Param   codigo_hash path     string true "Código Hash"
 // @Success 200         {object} map[string]string
 // @Failure 400         {object} utils.Erro
 // @Failure 500         {object} utils.Erro
-// @Router  /api/link/:codigo_hash [delete]
+// @Router  /v1/api/links/:codigo_hash [delete]
 func LinkRemove(c echo.Context) error {
 	codigoHash := c.Param("codigo_hash")
 
