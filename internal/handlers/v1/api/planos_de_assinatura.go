@@ -112,9 +112,7 @@ func PlanoDeAssinaturaCreate(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	return c.JSON(http.StatusOK, map[string]string{
-		"Mensagem": "O plano de assinatura foi adicionado com sucesso.",
-	})
+	return c.JSON(http.StatusOK, utils.MensagemPlanoDeAssinaturaCriadoComSucesso)
 }
 
 // PlanoDeAssinaturaUpdate godoc
@@ -183,9 +181,7 @@ func PlanoDeAssinaturaUpdate(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	return c.JSON(http.StatusOK, map[string]string{
-		"Mensagem": "O plano de assinatura foi atualizado com sucesso.",
-	})
+	return c.JSON(http.StatusOK, utils.MensagemPlanoDeAssinaturaAtualizadoComSucesso)
 }
 
 // PlanoDeAssinaturaRemove godoc
@@ -213,7 +209,5 @@ func PlanoDeAssinaturaRemove(c echo.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, map[string]string{
-		"Mensagem": "O plano de assinatura foi removido com sucesso.",
-	})
+	return c.JSON(http.StatusOK, utils.MensagemPlanoDeAssinaturaRemovidoComSucesso)
 }

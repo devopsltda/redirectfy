@@ -168,9 +168,7 @@ func UsuarioCreate(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	return c.JSON(http.StatusOK, map[string]string{
-		"Mensagem": "O novo usuário foi adicionado com sucesso.",
-	})
+	return c.JSON(http.StatusOK, utils.MensagemUsuarioCriadoComSucesso)
 }
 
 // UsuarioUpdate godoc
@@ -279,9 +277,7 @@ func UsuarioUpdate(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	return c.JSON(http.StatusOK, map[string]string{
-		"Mensagem": "O usuário foi atualizado com sucesso.",
-	})
+	return c.JSON(http.StatusOK, utils.MensagemUsuarioAtualizadoComSucesso)
 }
 
 // UsuarioAutenticado godoc
@@ -309,9 +305,7 @@ func UsuarioAutenticado(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	return c.JSON(http.StatusOK, map[string]string{
-		"Mensagem": "O usuário foi autenticado com sucesso.",
-	})
+	return c.JSON(http.StatusOK, utils.MensagemUsuarioAutenticadoComSucesso)
 }
 
 // UsuarioRemove godoc
@@ -339,9 +333,7 @@ func UsuarioRemove(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	return c.JSON(http.StatusOK, map[string]string{
-		"Mensagem": "O usuário foi removido com sucesso.",
-	})
+	return c.JSON(http.StatusOK, utils.MensagemUsuarioRemovidoComSucesso)
 }
 
 // UsuarioLogin godoc
@@ -390,7 +382,7 @@ func UsuarioLogin(c echo.Context) error {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	id, nome, nomeDeUsuario, senha, err := models.UsuarioLogin(database.Db, parametros.Email, parametros.NomeDeUsuario)
+	id, nome, nomeDeUsuario, autenticado, senha, err := models.UsuarioLogin(database.Db, parametros.Email, parametros.NomeDeUsuario)
 
 	if err != nil {
 		log.Printf("UsuarioLogin: %v", err)
@@ -404,14 +396,12 @@ func UsuarioLogin(c echo.Context) error {
 		return utils.ErroLogin
 	}
 
-	err = auth.GeraTokensESetaCookies(id, nome, nomeDeUsuario, c)
+	err = auth.GeraTokensESetaCookies(id, nome, nomeDeUsuario, autenticado, c)
 
 	if err != nil {
 		log.Printf("UsuarioLogin: %v", err)
 		return utils.ErroAssinaturaJWT
 	}
 
-	return c.JSON(http.StatusOK, map[string]string{
-		"Mensagem": "O usuário foi logado com sucesso.",
-	})
+	return c.JSON(http.StatusOK, utils.MensagemUsuarioLogadoComSucesso)
 }

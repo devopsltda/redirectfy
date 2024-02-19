@@ -44,16 +44,34 @@ func ValidaNomeDeUsuario(s string) bool {
 	return true
 }
 
+/*** Mensagens de Confirmação ***/
+var MensagemPlanoDeAssinaturaCriadoComSucesso = "O plano de assinatura foi adicionado com sucesso."
+var MensagemPlanoDeAssinaturaAtualizadoComSucesso = "O plano de assinatura foi atualizado com sucesso."
+var MensagemPlanoDeAssinaturaRemovidoComSucesso = "O plano de assinatura foi removido com sucesso."
+
+var MensagemLinkAtualizadoComSucesso = "O link foi atualizado com sucesso."
+var MensagemLinkRemovidoComSucesso = "O link foi removido com sucesso."
+
+var MensagemUsuarioCriadoComSucesso = "O usuário foi adicionado com sucesso."
+var MensagemUsuarioAtualizadoComSucesso = "O usuário foi atualizado com sucesso."
+var MensagemUsuarioAutenticadoComSucesso = "O usuário foi autenticado com sucesso."
+var MensagemUsuarioRemovidoComSucesso = "O usuário foi removido com sucesso."
+var MensagemUsuarioLogadoComSucesso = "O usuário foi logado com sucesso."
+var MensagemUsuarioNaoAutenticado = "O usuário não está autenticado."
+
+var MensagemJWTInvalido = "Token JWT Inválido."
+
 /*** Erro ***/
 type Erro echo.HTTPError // @name Erro
 
-var ErroLogin *echo.HTTPError = echo.NewHTTPError(http.StatusBadRequest, "O nome de usuário, email ou senha fornecidos estão incorretos.")
-var ErroCriacaoSenha *echo.HTTPError = echo.NewHTTPError(http.StatusBadRequest, "Ocorreu um erro ao criar a senha.")
-var ErroAssinaturaJWT *echo.HTTPError = echo.NewHTTPError(http.StatusBadRequest, "Ocorreu um erro na assinatura do token JWT.")
-var ErroBancoDados *echo.HTTPError = echo.NewHTTPError(http.StatusInternalServerError, "Ocorreu um erro no banco de dados.")
-var ErroValidacaoNome *echo.HTTPError = echo.NewHTTPError(http.StatusBadRequest, "Por favor, forneça um nome válido.")
-var ErroValidacaoCodigoHash *echo.HTTPError = echo.NewHTTPError(http.StatusBadRequest, "Por favor, forneça um código hash válido (apenas contém letras, números ou os símbolos '-' e '_' e tem 10 caracteres).")
-var ErroValidacaoNomeDeUsuario *echo.HTTPError = echo.NewHTTPError(http.StatusBadRequest, "Por favor, forneça um nome de usuário válido (apenas contém letras, números ou os símbolos '-' e '_').")
+var ErroLogin = echo.NewHTTPError(http.StatusBadRequest, "O nome de usuário, email ou senha fornecidos estão incorretos.")
+var ErroCriacaoSenha = echo.NewHTTPError(http.StatusBadRequest, "Ocorreu um erro ao criar a senha.")
+var ErroAssinaturaJWT = echo.NewHTTPError(http.StatusBadRequest, "Ocorreu um erro na assinatura do token JWT.")
+var ErroBancoDados = echo.NewHTTPError(http.StatusInternalServerError, "Ocorreu um erro no banco de dados.")
+var ErroValidacaoNome = echo.NewHTTPError(http.StatusBadRequest, "Por favor, forneça um nome válido.")
+var ErroValidacaoCodigoHash = echo.NewHTTPError(http.StatusBadRequest, "Por favor, forneça um código hash válido (apenas contém letras, números ou os símbolos '-' e '_' e tem 10 caracteres).")
+var ErroValidacaoNomeDeUsuario = echo.NewHTTPError(http.StatusBadRequest, "Por favor, forneça um nome de usuário válido (apenas contém letras, números ou os símbolos '-' e '_').")
+var ErroUsuarioNaoAutenticado = echo.NewHTTPError(http.StatusUnauthorized, "Por favor, autentique seu usuário no email enviado ou solicite um novo email.")
 
 func ErroValidacaoParametro(mensagem []string) *echo.HTTPError {
 	return echo.NewHTTPError(

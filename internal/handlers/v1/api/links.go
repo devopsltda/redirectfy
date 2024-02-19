@@ -143,9 +143,7 @@ func LinkCreate(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	return c.JSON(http.StatusOK, map[string]string{
-		"Mensagem": "O link foi adicionado com sucesso.",
-	})
+	return c.JSON(http.StatusCreated, codigoHash)
 }
 
 // LinkRehash godoc
@@ -188,9 +186,7 @@ func LinkRehash(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	return c.JSON(http.StatusOK, map[string]string{
-		"Mensagem": "O hash do link foi recriado com sucesso.",
-	})
+	return c.JSON(http.StatusOK, codigoHashNovo)
 }
 
 // LinkUpdate godoc
@@ -256,9 +252,7 @@ func LinkUpdate(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	return c.JSON(http.StatusOK, map[string]string{
-		"Mensagem": "O link foi atualizado com sucesso.",
-	})
+	return c.JSON(http.StatusOK, utils.MensagemLinkAtualizadoComSucesso)
 }
 
 // LinkRemove godoc
@@ -286,7 +280,5 @@ func LinkRemove(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	return c.JSON(http.StatusOK, map[string]string{
-		"Mensagem": "O link foi removido com sucesso.",
-	})
+	return c.JSON(http.StatusOK, utils.MensagemLinkRemovidoComSucesso)
 }

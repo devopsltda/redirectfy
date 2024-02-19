@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/TheDevOpsCorp/redirectify/internal/utils"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 
@@ -17,14 +18,15 @@ type Claims struct {
 	Id            int64  `json:"id"`
 	Nome          string `json:"nome"`
 	NomeDeUsuario string `json:"nome_de_usuario"`
+	Autenticado   int64  `json:"autenticado"`
 	jwt.RegisteredClaims
 }
 
 var ChaveDeAcesso = os.Getenv("JWT_SECRET")
 var ChaveDeRefresh = os.Getenv("JWT_REFRESH_SECRET")
 
-func GeraTokensESetaCookies(id int64, nome, nomeDeUsuario string, c echo.Context) error {
-	accessToken, exp, err := GeraTokenAcesso(id, nome, nomeDeUsuario)
+func GeraTokensESetaCookies(id int64, nome, nomeDeUsuario string, autenticado int64, c echo.Context) error {
+	accessToken, exp, err := GeraTokenAcesso(id, nome, nomeDeUsuario, autenticado)
 
 	if err != nil {
 		return err
@@ -33,7 +35,7 @@ func GeraTokensESetaCookies(id int64, nome, nomeDeUsuario string, c echo.Context
 	SetCookieToken("access-token", accessToken, exp, c)
 	SetCookieUsuario(nomeDeUsuario, exp, c)
 
-	refreshToken, exp, err := GeraTokenRefresh(id, nome, nomeDeUsuario)
+	refreshToken, exp, err := GeraTokenRefresh(id, nome, nomeDeUsuario, autenticado)
 
 	if err != nil {
 		return err
@@ -44,23 +46,28 @@ func GeraTokensESetaCookies(id int64, nome, nomeDeUsuario string, c echo.Context
 	return nil
 }
 
-func GeraTokenAcesso(id int64, nome, nomeDeUsuario string) (string, time.Time, error) {
+func GeraTokenAcesso(id int64, nome, nomeDeUsuario string, autenticado int64) (string, time.Time, error) {
 	expiraEm := time.Now().Add(1 * time.Hour)
 
-	return GeraToken(id, nome, nomeDeUsuario, expiraEm, []byte(ChaveDeAcesso))
+	return GeraToken(id, nome, nomeDeUsuario, autenticado, expiraEm, []byte(ChaveDeAcesso))
 }
 
-func GeraTokenRefresh(id int64, nome, nomeDeUsuario string) (string, time.Time, error) {
+func GeraTokenRefresh(id int64, nome, nomeDeUsuario string, autenticado int64) (string, time.Time, error) {
 	expiraEm := time.Now().Add(24 * time.Hour)
 
-	return GeraToken(id, nome, nomeDeUsuario, expiraEm, []byte(ChaveDeRefresh))
+	return GeraToken(id, nome, nomeDeUsuario, autenticado, expiraEm, []byte(ChaveDeRefresh))
 }
 
-func GeraToken(id int64, nome, nomeDeUsuario string, expiraEm time.Time, chave []byte) (string, time.Time, error) {
+func GeraToken(id int64, nome, nomeDeUsuario string, autenticado int64, expiraEm time.Time, chave []byte) (string, time.Time, error) {
+	if autenticado != 1 {
+		return "", time.Now(), fmt.Errorf(utils.MensagemUsuarioNaoAutenticado)
+	}
+
 	claims := &Claims{
 		Id:            id,
 		Nome:          nome,
 		NomeDeUsuario: nomeDeUsuario,
+		Autenticado:   autenticado,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: &jwt.NumericDate{Time: expiraEm},
 		},
@@ -87,7 +94,7 @@ func VerificaToken(tokenFornecido string) error {
 	}
 
 	if !token.Valid {
-		return fmt.Errorf("Token JWT inválido.")
+		return fmt.Errorf(utils.MensagemJWTInvalido)
 	}
 
 	return nil
@@ -127,6 +134,10 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		claims := nomeDeUsuario.Claims.(*Claims)
 
+		if claims.Autenticado != 1 {
+			return utils.ErroUsuarioNaoAutenticado
+		}
+
 		if time.Until(claims.RegisteredClaims.ExpiresAt.Time) < 15*time.Minute {
 			refreshCookie, err := c.Cookie("refresh-token")
 
@@ -137,15 +148,15 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 				if err != nil {
 					if err == jwt.ErrSignatureInvalid {
-						return c.JSON(http.StatusUnauthorized, "")
+						return utils.ErroAssinaturaJWT
 					}
 				}
 
 				if token != nil && token.Valid {
-					err = GeraTokensESetaCookies(nomeDeUsuario.Claims.(*Claims).Id, nomeDeUsuario.Claims.(*Claims).Nome, nomeDeUsuario.Claims.(*Claims).NomeDeUsuario, c)
+					err = GeraTokensESetaCookies(claims.Id, claims.Nome, claims.NomeDeUsuario, claims.Autenticado, c)
 
 					if err != nil {
-						return c.JSON(http.StatusInternalServerError, "")
+						return utils.ErroAssinaturaJWT
 					}
 				}
 			}

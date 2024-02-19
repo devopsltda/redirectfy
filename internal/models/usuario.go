@@ -186,7 +186,7 @@ func UsuarioRemove(db *sql.DB, nomeDeUsuario string) error {
 	return nil
 }
 
-func UsuarioLogin(db *sql.DB, email, nomeDeUsuario string) (int64, string, string, string, error) {
+func UsuarioLogin(db *sql.DB, email, nomeDeUsuario string) (int64, string, string, int64, string, error) {
 	var login string
 	var loginValue string
 
@@ -201,22 +201,23 @@ func UsuarioLogin(db *sql.DB, email, nomeDeUsuario string) (int64, string, strin
 	}
 
 	row := db.QueryRow(
-		"SELECT ID, NOME, NOME_DE_USUARIO, SENHA FROM USUARIO WHERE REMOVIDO_EM IS NULL AND "+login,
+		"SELECT ID, NOME, NOME_DE_USUARIO, AUTENTICADO, SENHA FROM USUARIO WHERE REMOVIDO_EM IS NULL AND "+login,
 		loginValue,
 	)
 
 	var idLogado int64
 	var nomeLogado string
 	var nomeDeUsuarioLogado string
+	var autenticadoLogado int64
 	var senha string
 
-	if err := row.Scan(&idLogado, &nomeLogado, &nomeDeUsuarioLogado, &senha); err != nil {
-		return 0, "", "", "", err
+	if err := row.Scan(&idLogado, &nomeLogado, &nomeDeUsuarioLogado, &autenticadoLogado, &senha); err != nil {
+		return 0, "", "", 0, "", err
 	}
 
 	if err := row.Err(); err != nil {
-		return 0, "", "", "", err
+		return 0, "", "", 0, "", err
 	}
 
-	return idLogado, nomeLogado, nomeDeUsuarioLogado, senha, nil
+	return idLogado, nomeLogado, nomeDeUsuarioLogado, autenticadoLogado, senha, nil
 }
