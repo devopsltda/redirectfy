@@ -18,14 +18,14 @@ type Claims struct {
 	Id            int64  `json:"id"`
 	Nome          string `json:"nome"`
 	NomeDeUsuario string `json:"nome_de_usuario"`
-	Autenticado   int64  `json:"autenticado"`
+	Autenticado   bool  `json:"autenticado"`
 	jwt.RegisteredClaims
 }
 
 var ChaveDeAcesso = os.Getenv("JWT_SECRET")
 var ChaveDeRefresh = os.Getenv("JWT_REFRESH_SECRET")
 
-func GeraTokensESetaCookies(id int64, nome, nomeDeUsuario string, autenticado int64, c echo.Context) error {
+func GeraTokensESetaCookies(id int64, nome, nomeDeUsuario string, autenticado bool, c echo.Context) error {
 	accessToken, exp, err := GeraTokenAcesso(id, nome, nomeDeUsuario, autenticado)
 
 	if err != nil {
@@ -46,20 +46,20 @@ func GeraTokensESetaCookies(id int64, nome, nomeDeUsuario string, autenticado in
 	return nil
 }
 
-func GeraTokenAcesso(id int64, nome, nomeDeUsuario string, autenticado int64) (string, time.Time, error) {
+func GeraTokenAcesso(id int64, nome, nomeDeUsuario string, autenticado bool) (string, time.Time, error) {
 	expiraEm := time.Now().Add(1 * time.Hour)
 
 	return GeraToken(id, nome, nomeDeUsuario, autenticado, expiraEm, []byte(ChaveDeAcesso))
 }
 
-func GeraTokenRefresh(id int64, nome, nomeDeUsuario string, autenticado int64) (string, time.Time, error) {
+func GeraTokenRefresh(id int64, nome, nomeDeUsuario string, autenticado bool) (string, time.Time, error) {
 	expiraEm := time.Now().Add(24 * time.Hour)
 
 	return GeraToken(id, nome, nomeDeUsuario, autenticado, expiraEm, []byte(ChaveDeRefresh))
 }
 
-func GeraToken(id int64, nome, nomeDeUsuario string, autenticado int64, expiraEm time.Time, chave []byte) (string, time.Time, error) {
-	if autenticado != 1 {
+func GeraToken(id int64, nome, nomeDeUsuario string, autenticado bool, expiraEm time.Time, chave []byte) (string, time.Time, error) {
+	if !autenticado {
 		return "", time.Now(), fmt.Errorf(utils.MensagemUsuarioNaoAutenticado)
 	}
 
@@ -121,7 +121,7 @@ func SetCookieUsuario(nomeDeUsuario string, expiraEm time.Time, c echo.Context) 
 }
 
 func PathWithNoAuthRequired(c echo.Context) bool {
-	return c.Path() == "/v1/api/usuario/login" || (c.Path() == "/v1/api/usuario" && c.Request().Method == "POST") || strings.Contains(c.Path(), "/v1/api/docs")
+	return c.Path() == "/v1/api/usuarios/login" || (c.Path() == "/v1/api/usuarios" && c.Request().Method == "POST") || strings.Contains(c.Path(), "/v1/api/docs")
 }
 
 func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
@@ -134,7 +134,7 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		claims := nomeDeUsuario.Claims.(*Claims)
 
-		if claims.Autenticado != 1 {
+		if !claims.Autenticado {
 			return utils.ErroUsuarioNaoAutenticado
 		}
 

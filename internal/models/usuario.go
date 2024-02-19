@@ -186,7 +186,7 @@ func UsuarioRemove(db *sql.DB, nomeDeUsuario string) error {
 	return nil
 }
 
-func UsuarioLogin(db *sql.DB, email, nomeDeUsuario string) (int64, string, string, int64, string, error) {
+func UsuarioLogin(db *sql.DB, email, nomeDeUsuario string) (int64, string, string, bool, string, error) {
 	var login string
 	var loginValue string
 
@@ -208,15 +208,15 @@ func UsuarioLogin(db *sql.DB, email, nomeDeUsuario string) (int64, string, strin
 	var idLogado int64
 	var nomeLogado string
 	var nomeDeUsuarioLogado string
-	var autenticadoLogado int64
+	var autenticadoLogado bool
 	var senha string
 
 	if err := row.Scan(&idLogado, &nomeLogado, &nomeDeUsuarioLogado, &autenticadoLogado, &senha); err != nil {
-		return 0, "", "", 0, "", err
+		return 0, "", "", false, "", err
 	}
 
 	if err := row.Err(); err != nil {
-		return 0, "", "", 0, "", err
+		return 0, "", "", false, "", err
 	}
 
 	return idLogado, nomeLogado, nomeDeUsuarioLogado, autenticadoLogado, senha, nil
