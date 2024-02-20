@@ -93,9 +93,9 @@ func UsuarioReadAll(db *sql.DB) ([]Usuario, error) {
 	return usuarios, nil
 }
 
-func UsuarioCreate(db *sql.DB, cpf, nome, nomeDeUsuario, email, senha, dataDeNascimento string, planoDeAssinatura int64) error {
-	_, err := db.Exec(
-		"INSERT INTO USUARIO (CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+func UsuarioCreate(db *sql.DB, cpf, nome, nomeDeUsuario, email, senha, dataDeNascimento string, planoDeAssinatura int64) (int64, error) {
+	result, err := db.Exec(
+		"INSERT INTO USUARIO (CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING ID",
 		cpf,
 		nome,
 		nomeDeUsuario,
@@ -107,18 +107,24 @@ func UsuarioCreate(db *sql.DB, cpf, nome, nomeDeUsuario, email, senha, dataDeNas
 	)
 
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	return nil
+	id, err := result.LastInsertId()
+
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
 }
 
-func UsuarioAutenticado(db *sql.DB, nomeDeUsuario string) error {
-	sqlQuery := "UPDATE USUARIO SET ATUALIZADO_EM = CURRENT_TIMESTAMP, AUTENTICADO = 1 WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = $1"
+func UsuarioAutenticado(db *sql.DB, id int64) error {
+	sqlQuery := "UPDATE USUARIO SET ATUALIZADO_EM = CURRENT_TIMESTAMP, AUTENTICADO = 1 WHERE REMOVIDO_EM IS NULL AND ID = $1"
 
 	_, err := db.Exec(
 		sqlQuery,
-		nomeDeUsuario,
+		id,
 	)
 
 	if err != nil {

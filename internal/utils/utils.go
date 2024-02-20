@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 	"unicode"
 
@@ -13,8 +14,9 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
-/*** Senha ***/
+/*** Variáveis de Ambient ***/
 var Pepper = os.Getenv("PEPPER")
+var TempoExpiracao, _ = strconv.Atoi(os.Getenv("VALIDATION_EXPIRE_TIME"))
 
 /*** Código Hash ***/
 var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))

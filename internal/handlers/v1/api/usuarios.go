@@ -152,7 +152,7 @@ func UsuarioCreate(c echo.Context) error {
 
 	parametros.Senha = senhaComHash
 
-	err = models.UsuarioCreate(
+	usuarioId, err := models.UsuarioCreate(
 		database.Db,
 		parametros.Cpf,
 		parametros.Nome,
@@ -165,6 +165,27 @@ func UsuarioCreate(c echo.Context) error {
 
 	if err != nil {
 		log.Printf("UsuarioCreate: %v", err)
+		return utils.ErroBancoDados
+	}
+
+	var valor string
+	valorExiste := true
+
+	for valorExiste {
+		valor = utils.GeraHashCode(120)
+
+		valorExiste, err = models.EmailAutenticacaoCheckIfValorExists(database.Db, valor)
+
+		if err != nil {
+			log.Printf("LinkCreate: %v", err)
+			return utils.ErroBancoDados
+		}
+	}
+
+	err = models.EmailAutenticacaoCreate(database.Db, valor, "validacao", usuarioId)
+
+	if err != nil {
+		log.Printf("LinkCreate: %v", err)
 		return utils.ErroBancoDados
 	}
 
@@ -286,19 +307,26 @@ func UsuarioUpdate(c echo.Context) error {
 // @Tags    Usuários
 // @Accept  json
 // @Produce json
-// @Param   nome_de_usuario   path     string true "Nome de Usuário"
+// @Param   valor             path     string true "Valor"
 // @Success 200               {object} map[string]string
 // @Failure 400               {object} utils.Erro
 // @Failure 500               {object} utils.Erro
-// @Router  /v1/api/usuarios/:nome_de_usuario/autentica [patch]
+// @Router  /v1/api/usuarios/autentica/:valor [patch]
 func UsuarioAutenticado(c echo.Context) error {
-	nomeDeUsuario := c.Param("nome_de_usuario")
+	valor := c.Param("valor")
 
-	if !utils.ValidaNomeDeUsuario(nomeDeUsuario) {
+	if !utils.ValidaNomeDeUsuario(valor) {
 		return utils.ErroValidacaoNomeDeUsuario
 	}
 
-	err := models.UsuarioAutenticado(database.Db, nomeDeUsuario)
+	usuario, err := models.EmailAutenticacaoCheckIfValorExistsAndIsValid(database.Db, valor)
+
+	if err != nil {
+		log.Printf("UsuarioAutenticado: %v", err)
+		return utils.ErroBancoDados
+	}
+
+	err = models.UsuarioAutenticado(database.Db, usuario)
 
 	if err != nil {
 		log.Printf("UsuarioAutenticado: %v", err)

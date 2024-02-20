@@ -37,10 +37,12 @@ func RegisterRoutesV1(e *echo.Group) {
 	a.GET("/usuarios/historico", HistoricoUsuarioReadAll)
 	a.GET("/usuarios/:nome_de_usuario", UsuarioReadByNomeDeUsuario)
 	a.POST("/usuarios", UsuarioCreate)
-	a.PATCH("/usuarios/:nome_de_usuario/autentica", UsuarioAutenticado)
 	a.PATCH("/usuarios/:nome_de_usuario", UsuarioUpdate)
 	a.DELETE("/usuarios/:nome_de_usuario", UsuarioRemove)
 	a.POST("/usuarios/login", UsuarioLogin)
+
+	// API - Autenticação
+	a.POST("/autenticacao/:valor", UsuarioAutenticado)
 
 	// API - Plano de Assinatura
 	a.GET("/planos_de_assinatura", PlanoDeAssinaturaReadAll)

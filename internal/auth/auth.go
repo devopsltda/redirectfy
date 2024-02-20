@@ -121,7 +121,10 @@ func SetCookieUsuario(nomeDeUsuario string, expiraEm time.Time, c echo.Context) 
 }
 
 func PathWithNoAuthRequired(c echo.Context) bool {
-	return c.Path() == "/v1/api/usuarios/login" || (c.Path() == "/v1/api/usuarios" && c.Request().Method == "POST") || strings.Contains(c.Path(), "/v1/api/docs")
+	return c.Path() == "/v1/api/usuarios/login" ||
+				 (c.Path() == "/v1/api/usuarios" && c.Request().Method == "POST") ||
+				 strings.Contains(c.Path(), "/v1/api/docs") ||
+				 strings.Contains(c.Path(), "/v1/api/autenticacao")
 }
 
 func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
