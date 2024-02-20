@@ -1,27 +1,13 @@
-# fly.toml app configuration file generated for redirectify on 2024-02-20T17:26:49-03:00
+# fly.toml app configuration file generated for redirectify-still-feather-9055 on 2024-02-20T17:48:26-03:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'redirectify'
+app = 'redirectify-still-feather-9055'
 primary_region = 'gig'
 
 [build]
-  [build.args]
-    GO_VERSION = '1.21.6'
-    CGO_ENABLED = 1
-
-[deploy]
-  release_command = "bin/main"
-
-[env]
-  PORT = "8080"
-  APP_ENV = "production"
-  DB_URL = "./storage/test.db"
-  PEPPER = "insira-algum-texto-aqui"
-  JWT_SECRET = "insira-algum-texto-aqui-2"
-  JWT_REFRESH_SECRET = "insira-algum-texto-aqui-3"
-  VALIDATION_EXPIRE_TIME = 15
+  dockerfile = 'Dockerfile'
 
 [http_service]
   internal_port = 8080
@@ -29,7 +15,7 @@ primary_region = 'gig'
   auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 0
-  processes = ['main']
+  processes = ['app']
 
 [[vm]]
   memory = '1gb'
