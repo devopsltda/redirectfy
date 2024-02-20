@@ -1,15 +1,16 @@
-# fly.toml app configuration file generated for redirectify on 2024-02-20T17:26:49-03:00
+# fly.toml app configuration file generated for redirectify-still-feather-9055 on 2024-02-20T17:48:26-03:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'redirectify'
+app = 'redirectify-still-feather-9055'
 primary_region = 'gig'
 
 [build]
+  dockerfile = 'Dockerfile'
 
 [http_service]
-  internal_port = 3000
+  internal_port = 8080
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
