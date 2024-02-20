@@ -1,0 +1,13 @@
+FROM env as builder
+
+COPY ./app ./
+RUN go build -o /go/bin/main ./cmd/api/main.go
+
+FROM alpine as exec
+
+RUN apk add --update bash ca-certificates gcc gcompat git make musl-dev sqlite
+
+WORKDIR /app
+COPY --from=builder /go/bin/main ./
+
+ENTRYPOINT ["/app/main"]
