@@ -24,7 +24,7 @@ func UsuarioReadByNomeDeUsuario(db *sql.DB, nomeDeUsuario string) (Usuario, erro
 	var usuario Usuario
 
 	row := db.QueryRow(
-		"SELECT * FROM USUARIO WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = $1",
+		"SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, AUTENTICADO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = $1",
 		nomeDeUsuario,
 	)
 
@@ -55,7 +55,7 @@ func UsuarioReadByNomeDeUsuario(db *sql.DB, nomeDeUsuario string) (Usuario, erro
 func UsuarioReadAll(db *sql.DB) ([]Usuario, error) {
 	var usuarios []Usuario
 
-	rows, err := db.Query("SELECT * FROM USUARIO WHERE REMOVIDO_EM IS NULL")
+	rows, err := db.Query("SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, AUTENTICADO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL")
 
 	if err != nil {
 		return nil, err

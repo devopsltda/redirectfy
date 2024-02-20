@@ -16,7 +16,7 @@ func EmailAutenticacaoReadByValor(db *sql.DB, valor string) (EmailAutenticacao, 
 	var emailAutenticacao EmailAutenticacao
 
 	row := db.QueryRow(
-		"SELECT * FROM EMAIL_AUTENTICACAO WHERE VALOR = $1",
+		"SELECT ID, VALOR, TIPO, EXPIRA_EM, USUARIO FROM EMAIL_AUTENTICACAO WHERE VALOR = $1",
 		valor,
 	)
 

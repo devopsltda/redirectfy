@@ -21,7 +21,7 @@ func PlanoDeAssinaturaReadByNome(db *sql.DB, nome string) (PlanoDeAssinatura, er
 	var planoDeAssinatura PlanoDeAssinatura
 
 	row := db.QueryRow(
-		"SELECT * FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL AND NOME = $1",
+		"SELECT ID, NOME, VALOR_MENSAL, LIMITE, PERIODO_LIMITE, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL AND NOME = $1",
 		nome,
 	)
 
@@ -48,7 +48,7 @@ func PlanoDeAssinaturaReadByNome(db *sql.DB, nome string) (PlanoDeAssinatura, er
 func PlanoDeAssinaturaReadAll(db *sql.DB) ([]PlanoDeAssinatura, error) {
 	var planosDeAssinatura []PlanoDeAssinatura
 
-	rows, err := db.Query("SELECT * FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL")
+	rows, err := db.Query("SELECT ID, NOME, VALOR_MENSAL, LIMITE, PERIODO_LIMITE, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL")
 
 	if err != nil {
 		return nil, err

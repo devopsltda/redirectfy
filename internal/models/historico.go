@@ -68,7 +68,7 @@ type HistoricoLink struct {
 func HistoricoPlanoDeAssinaturaReadAll(db *sql.DB) ([]HistoricoPlanoDeAssinatura, error) {
 	var historico []HistoricoPlanoDeAssinatura
 
-	rows, err := db.Query("SELECT * FROM HISTORICO_PLANO_DE_ASSINATURA")
+	rows, err := db.Query("SELECT _ROWID, ID, NOME, VALOR_MENSAL, LIMITE, PERIODO_LIMITE, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM, VERSAO, BITMASK, _CRIADO_EM FROM HISTORICO_PLANO_DE_ASSINATURA")
 
 	if err != nil {
 		return nil, err
@@ -109,7 +109,7 @@ func HistoricoPlanoDeAssinaturaReadAll(db *sql.DB) ([]HistoricoPlanoDeAssinatura
 func HistoricoUsuarioReadAll(db *sql.DB) ([]HistoricoUsuario, error) {
 	var historico []HistoricoUsuario
 
-	rows, err := db.Query("SELECT * FROM HISTORICO_USUARIO")
+	rows, err := db.Query("SELECT _ROWID, ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, AUTENTICADO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM, VERSAO, BITMASK, _CRIADO_EM FROM HISTORICO_USUARIO")
 
 	if err != nil {
 		return nil, err
@@ -154,7 +154,7 @@ func HistoricoUsuarioReadAll(db *sql.DB) ([]HistoricoUsuario, error) {
 func HistoricoEmailAutenticacaoReadAll(db *sql.DB) ([]HistoricoEmailAutenticacao, error) {
 	var historico []HistoricoEmailAutenticacao
 
-	rows, err := db.Query("SELECT * FROM HISTORICO_EMAIL_AUTENTICACAO")
+	rows, err := db.Query("SELECT _ROWID, ID, VALOR, TIPO, EXPIRA_EM, USUARIO, VERSAO, BITMASK, _CRIADO_EM FROM HISTORICO_EMAIL_AUTENTICACAO")
 
 	if err != nil {
 		return nil, err
@@ -191,7 +191,7 @@ func HistoricoEmailAutenticacaoReadAll(db *sql.DB) ([]HistoricoEmailAutenticacao
 func HistoricoLinkReadAll(db *sql.DB) ([]HistoricoLink, error) {
 	var historico []HistoricoLink
 
-	rows, err := db.Query("SELECT * FROM HISTORICO_LINK")
+	rows, err := db.Query("SELECT _ROWID, ID, NOME, CODIGO_HASH, LINK_WHATSAPP, LINK_TELEGRAM, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM, VERSAO, BITMASK, _CRIADO_EM FROM HISTORICO_LINK")
 
 	if err != nil {
 		return nil, err

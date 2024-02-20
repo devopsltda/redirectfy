@@ -21,7 +21,7 @@ func LinkReadByCodigoHash(db *sql.DB, codigoHash string) (Link, error) {
 	var link Link
 
 	row := db.QueryRow(
-		"SELECT * FROM LINK WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $1",
+		"SELECT ID, NOME, CODIGO_HASH, LINK_WHATSAPP, LINK_TELEGRAM, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM LINK WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $1",
 		codigoHash,
 	)
 
@@ -50,7 +50,7 @@ func LinkReadByCodigoHash(db *sql.DB, codigoHash string) (Link, error) {
 func LinkReadAll(db *sql.DB) ([]Link, error) {
 	var links []Link
 
-	rows, err := db.Query("SELECT * FROM LINK WHERE REMOVIDO_EM IS NULL")
+	rows, err := db.Query("SELECT ID, NOME, CODIGO_HASH, LINK_WHATSAPP, LINK_TELEGRAM, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM LINK WHERE REMOVIDO_EM IS NULL")
 
 	if err != nil {
 		return nil, err
