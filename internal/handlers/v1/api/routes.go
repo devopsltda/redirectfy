@@ -11,12 +11,12 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
-// @title API do Redirect Max
+// @title API do Redirectify
 // @version 1.0.0
-// @description API para interagir com o Redirect Max
+// @description API para interagir com o Redirectify
 
-// @contact.name Equipe da DevOps (Pablo, Guilherme e Eduardo)
-// @contact.email test@test.com
+// @contact.name Equipe da DevOps (Pablo Eduardo, Guilherme Bernardo e Eduardo Henrique)
+// @contact.email comercialdevops@gmail.com
 func RegisterRoutesV1(e *echo.Group) {
 	// API
 	a := e.Group("/api")
