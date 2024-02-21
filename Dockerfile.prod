@@ -4,21 +4,19 @@ ENV CGO_ENABLED=1
 
 WORKDIR /app
 
-COPY ./.env .
+COPY . .
 
-RUN apk update && apk add -U --no-cache --progress bash curl gcc gcompat git make musl-dev nodejs npm sqlite
-
-RUN go install github.com/swaggo/swag/cmd/swag@latest && \
+RUN apk update && \
+    apk add -U --no-cache --progress bash curl gcc gcompat git make musl-dev nodejs npm sqlite && \
+    go install github.com/swaggo/swag/cmd/swag@latest && \
     go install github.com/cosmtrek/air@latest && \
     go install github.com/a-h/templ/cmd/templ@latest
-
-COPY . .
 
 RUN templ generate && \
     swag init --generalInfo routes.go --parseDependency --parseInternal --dir internal/handlers/v1/api && \
     go build -o /go/bin/main ./cmd/api/main.go
 
-FROM alpine as exec
+FROM alpine:3.19 as exec
 
 WORKDIR /app
 
