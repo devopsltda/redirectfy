@@ -1,13 +1,29 @@
-FROM env as builder
+FROM golang:1.22.0-alpine3.19 as builder
 
-COPY ./app ./
-RUN go build -o /go/bin/main ./cmd/api/main.go
+ENV CGO_ENABLED=1
+
+WORKDIR /app
+
+COPY ./.env .
+
+RUN apk update && apk add -U --no-cache --progress bash curl gcc gcompat git make musl-dev nodejs npm sqlite
+
+RUN go install github.com/swaggo/swag/cmd/swag@latest && \
+    go install github.com/cosmtrek/air@latest && \
+    go install github.com/a-h/templ/cmd/templ@latest
+
+COPY . .
+
+RUN templ generate && \
+    swag init --generalInfo routes.go --parseDependency --parseInternal --dir internal/handlers/v1/api && \
+    go build -o /go/bin/main ./cmd/api/main.go
 
 FROM alpine as exec
 
-RUN apk add --update bash ca-certificates gcc gcompat git make musl-dev sqlite
-
 WORKDIR /app
-COPY --from=builder /go/bin/main ./
+
+COPY --from=builder /go/bin/main /app/.env ./
+
+EXPOSE 8080
 
 ENTRYPOINT ["/app/main"]

@@ -7,10 +7,9 @@ import (
 
 	"github.com/TheDevOpsCorp/redirectify/internal/handlers/v1/api"
 	"github.com/TheDevOpsCorp/redirectify/internal/server"
+	"github.com/TheDevOpsCorp/redirectify/internal/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
-	"github.com/TheDevOpsCorp/redirectify/internal/utils"
-
 )
 
 // TestSuiteUsuario contains all tests for the Usuario handlers
@@ -27,7 +26,6 @@ func TestSuiteUsuario(t *testing.T) {
 		return res, &c
 	}
 
-
 	var usuarioReadAllMock = api.UsuarioReadAll
 
 	// Test cases
@@ -38,7 +36,7 @@ func TestSuiteUsuario(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, http.StatusOK, res.Code)
 
-		expectedBody := `{"message": "expected response body"}`  //FALTA ALTERAR AQUI AINDA
+		expectedBody := `{"message": "expected response body"}` //FALTA ALTERAR AQUI AINDA
 		assert.Equal(t, expectedBody, res.Body.String())
 	})
 
@@ -55,12 +53,12 @@ func TestSuiteUsuario(t *testing.T) {
 	})
 	t.Run("Fail   500: database error", func(t *testing.T) {
 		res, c := setupRequest(http.MethodGet, "/api/usuarios")
-	
+
 		// Mock the error
 		usuarioReadAllMock = func(c echo.Context) error {
 			return utils.ErroBancoDados
 		}
-	
+
 		err := usuarioReadAllMock(*c)
 		assert.Error(t, err)
 		assert.Equal(t, http.StatusInternalServerError, res.Code)

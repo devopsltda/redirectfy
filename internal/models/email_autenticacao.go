@@ -46,7 +46,7 @@ func EmailAutenticacaoCreate(db *sql.DB, valor, tipo string, usuario int64) erro
 		"INSERT INTO EMAIL_AUTENTICACAO (VALOR, TIPO, EXPIRA_EM, USUARIO) VALUES ($1, $2, $3, $4)",
 		valor,
 		tipo,
-		time.Now().Add(time.Minute * time.Duration(utils.TempoExpiracao)).Format("2006-01-02 03:04:05"),
+		time.Now().Add(time.Minute*time.Duration(utils.TempoExpiracao)).Format("2006-01-02 03:04:05"),
 		usuario,
 	)
 
