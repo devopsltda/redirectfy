@@ -12,6 +12,7 @@ module.exports = {
     extend: {
       colors: {
         "rblack": "#000000",
+        "rgray": "#898989",
         "rdarker": "#773d04",
         "rdark": "#a65505",
         "rprimary": "#ed7a07",

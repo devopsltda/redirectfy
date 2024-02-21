@@ -1,0 +1,25 @@
+package components
+
+templ ButtonSubmit(alvo, endpoint, texto, troca string) {
+	<button class="border border-rgray bg-rlightest flex items-center justify-center p-3 text-base text-rprimary w-full" type="submit" hx-post={ endpoint } hx-trigger="click" hx-target={ alvo } hx-swap={ troca }>
+		{ texto }
+	</button>
+}
+
+templ ButtonChange(alvo, endpoint, texto, troca string) {
+	<button class="border border-rgray bg-rlightest flex items-center justify-center p-3 text-base text-rprimary w-full" type="button" hx-get={ endpoint } hx-trigger="click" hx-target={ alvo } hx-swap={ troca }>
+		{ texto }
+	</button>
+}
+
+templ AccentButtonSubmit(alvo, endpoint, texto, troca string) {
+	<button class="flex items-center justify-center p-3 text-base text-rlightest w-full" type="submit" hx-post={ endpoint } hx-trigger="click" hx-target={ alvo } hx-swap={ troca }>
+		{ texto }
+	</button>
+}
+
+templ AccentButtonChange(alvo, endpoint, texto, troca string) {
+	<button class="flex items-center justify-center p-3 text-base text-rlightest w-full" type="button" hx-get={ endpoint } hx-trigger="click" hx-target={ alvo } hx-swap={ troca }>
+		{ texto }
+	</button>
+}
