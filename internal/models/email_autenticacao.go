@@ -46,7 +46,7 @@ func EmailAutenticacaoCreate(db *sql.DB, valor, tipo string, usuario int64) erro
 		"INSERT INTO EMAIL_AUTENTICACAO (VALOR, TIPO, EXPIRA_EM, USUARIO) VALUES ($1, $2, $3, $4)",
 		valor,
 		tipo,
-		time.Now().Add(time.Minute*time.Duration(utils.TempoExpiracao)).Format("2006-01-02 03:04:05"),
+		time.Now().Add(time.Minute*time.Duration(utils.TempoExpiracao)).Format("2006-01-02 15:04:05"),
 		usuario,
 	)
 
@@ -78,8 +78,8 @@ func EmailAutenticacaoCheckIfValorExists(db *sql.DB, valor string) (bool, error)
 	return true, nil
 }
 
-func EmailAutenticacaoCheckIfValorExistsAndIsValid(db *sql.DB, valor string) (int64, error) {
-	var tipo string
+func EmailAutenticacaoCheckIfValorExistsAndIsValid(db *sql.DB, valor, tipo string) (int64, error) {
+	var tipoRetornado string
 	var usuario int64
 
 	row := db.QueryRow(
@@ -87,7 +87,7 @@ func EmailAutenticacaoCheckIfValorExistsAndIsValid(db *sql.DB, valor string) (in
 		valor,
 	)
 
-	if err := row.Scan(&tipo, &usuario); err != nil {
+	if err := row.Scan(&tipoRetornado, &usuario); err != nil {
 		if err == sql.ErrNoRows {
 			return 0, err
 		} else {
@@ -99,9 +99,22 @@ func EmailAutenticacaoCheckIfValorExistsAndIsValid(db *sql.DB, valor string) (in
 		return 0, err
 	}
 
-	if tipo != "validacao" {
-		return 0, fmt.Errorf("Tipo do email de autenticação não é 'validacao'.")
+	if tipoRetornado != tipo {
+		return 0, fmt.Errorf("Tipo do email de retornado não é '%s'.", tipo)
 	}
 
 	return usuario, nil
+}
+
+func EmailAutenticacaoExpirar(db *sql.DB, valor string) error {
+	_, err := db.Exec(
+		"UPDATE EMAIL_AUTENTICACAO SET EXPIRA_EM = CURRENT_TIMESTAMP WHERE VALOR = $1",
+		valor,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

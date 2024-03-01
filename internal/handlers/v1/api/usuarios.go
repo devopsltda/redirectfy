@@ -319,7 +319,7 @@ func UsuarioAutenticado(c echo.Context) error {
 		return utils.ErroValidacaoNomeDeUsuario
 	}
 
-	usuario, err := models.EmailAutenticacaoCheckIfValorExistsAndIsValid(database.Db, valor)
+	usuario, err := models.EmailAutenticacaoCheckIfValorExistsAndIsValid(database.Db, valor, "validacao")
 
 	if err != nil {
 		log.Printf("UsuarioAutenticado: %v", err)
@@ -333,7 +333,127 @@ func UsuarioAutenticado(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
+	err = models.EmailAutenticacaoExpirar(database.Db, valor)
+
+	if err != nil {
+		log.Printf("UsuarioAutenticado: %v", err)
+		return utils.ErroBancoDados
+	}
+
 	return c.JSON(http.StatusOK, utils.MensagemUsuarioAutenticadoComSucesso)
+}
+
+// UsuarioTrocaDeSenhaExigir godoc
+//
+// @Summary Exige a troca de senha de um usuário
+// @Tags    Usuários
+// @Accept  json
+// @Produce json
+// @Param   nome_de_usuario   path     string true "Nome de Usuário"
+// @Success 200               {object} map[string]string
+// @Failure 400               {object} utils.Erro
+// @Failure 500               {object} utils.Erro
+// @Router  /v1/api/usuarios/:nome_de_usuario/troca_de_senha [patch]
+func UsuarioTrocaDeSenhaExigir(c echo.Context) error {
+	nomeDeUsuario := c.Param("nome_de_usuario")
+
+	if !utils.ValidaNomeDeUsuario(nomeDeUsuario) {
+		return utils.ErroValidacaoNomeDeUsuario
+	}
+
+	var err error
+
+	usuario, err := models.UsuarioReadByNomeDeUsuario(database.Db, nomeDeUsuario)
+
+	if err != nil {
+		log.Printf("UsuarioTrocaDeSenhaExigir: %v", err)
+		return utils.ErroBancoDados
+	}
+
+	var valor string
+	valorExiste := true
+
+	for valorExiste {
+		valor = utils.GeraHashCode(120)
+
+		valorExiste, err = models.EmailAutenticacaoCheckIfValorExists(database.Db, valor)
+
+		if err != nil {
+			log.Printf("LinkCreate: %v", err)
+			return utils.ErroBancoDados
+		}
+	}
+
+	err = models.EmailAutenticacaoCreate(database.Db, valor, "senha", usuario.Id)
+
+	if err != nil {
+		log.Printf("UsuarioTrocaDeSenhaExigir: %v", err)
+		return utils.ErroBancoDados
+	}
+
+	return c.JSON(http.StatusOK, utils.MensagemUsuarioSenhaTrocadaComSucesso)
+}
+
+// UsuarioTrocaDeSenha godoc
+//
+// @Summary Troca a senha de um usuário
+// @Tags    Usuários
+// @Accept  json
+// @Produce json
+// @Param   valor             path     string true "Valor"
+// @Param   senha_nova        body     string true "Senha Nova"
+// @Success 200               {object} map[string]string
+// @Failure 400               {object} utils.Erro
+// @Failure 500               {object} utils.Erro
+// @Router  /v1/api/usuarios/troca_de_senha/:valor [patch]
+func UsuarioTrocaDeSenha(c echo.Context) error {
+	valor := c.Param("valor")
+
+	if !utils.ValidaNomeDeUsuario(valor) {
+		return utils.ErroValidacaoNomeDeUsuario
+	}
+
+	parametros := struct {
+		SenhaNova             string `json:"senha_nova"`
+	}{}
+
+	if err := c.Bind(&parametros); err != nil {
+		return utils.ErroCriacaoSenha
+	}
+
+	if err := utils.Validate.Var(parametros.SenhaNova, "required,min=8,max=72"); err != nil {
+		return utils.ErroCriacaoSenha
+	}
+
+	usuario, err := models.EmailAutenticacaoCheckIfValorExistsAndIsValid(database.Db, valor, "senha")
+
+	if err != nil {
+		log.Printf("UsuarioTrocaDeSenha: %v", err)
+		return utils.ErroBancoDados
+	}
+
+	senhaComHash, err := argon2id.CreateHash(parametros.SenhaNova+utils.Pepper, senhaParams)
+
+	if err != nil {
+		log.Printf("UsuarioTrocaDeSenha: %v", err)
+		return utils.ErroCriacaoSenha
+	}
+
+	err = models.UsuarioTrocaSenha(database.Db, usuario, senhaComHash)
+
+	if err != nil {
+		log.Printf("UsuarioTrocaDeSenha: %v", err)
+		return utils.ErroBancoDados
+	}
+
+	err = models.EmailAutenticacaoExpirar(database.Db, valor)
+
+	if err != nil {
+		log.Printf("UsuarioTrocaDeSenha: %v", err)
+		return utils.ErroBancoDados
+	}
+
+	return c.JSON(http.StatusOK, utils.MensagemUsuarioSenhaTrocadaComSucesso)
 }
 
 // UsuarioRemove godoc

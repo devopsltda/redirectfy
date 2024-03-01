@@ -134,6 +134,26 @@ func UsuarioAutenticado(db *sql.DB, id int64) error {
 	return nil
 }
 
+func UsuarioTrocaSenha(db *sql.DB, id int64, senha string) error {
+	sqlQuery := "UPDATE USUARIO SET ATUALIZADO_EM = CURRENT_TIMESTAMP"
+
+	if senha != "" {
+		sqlQuery += ", SENHA = '" + senha + "'"
+	}
+	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND ID = $1"
+
+	_, err := db.Exec(
+		sqlQuery,
+		id,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func UsuarioUpdate(db *sql.DB, cpf, nome, nomeDeUsuario, email, senha, dataDeNascimento string, planoDeAssinatura int64) error {
 	sqlQuery := "UPDATE USUARIO SET ATUALIZADO_EM = CURRENT_TIMESTAMP"
 
