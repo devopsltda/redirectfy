@@ -4,15 +4,14 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/TheDevOpsCorp/redirectify/cmd/resources"
-	"github.com/TheDevOpsCorp/redirectify/internal/handlers/v1/api"
-	"github.com/TheDevOpsCorp/redirectify/internal/handlers/web"
-	"github.com/TheDevOpsCorp/redirectify/internal/views"
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"redirectify/cmd/resources"
+	"redirectify/internal/handlers/v1/api"
+	"redirectify/internal/handlers/web"
+	"redirectify/internal/views"
 
-	_ "github.com/TheDevOpsCorp/redirectify/docs"
 	_ "github.com/joho/godotenv/autoload"
 )
 

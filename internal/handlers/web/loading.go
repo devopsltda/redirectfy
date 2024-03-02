@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/TheDevOpsCorp/redirectify/internal/views"
+	"redirectify/internal/views"
 )
 
 func LoadingWebHandler(w http.ResponseWriter, r *http.Request) {

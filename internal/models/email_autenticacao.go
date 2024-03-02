@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/TheDevOpsCorp/redirectify/internal/utils"
+	"redirectify/internal/utils"
 )
 
 type EmailAutenticacao struct {

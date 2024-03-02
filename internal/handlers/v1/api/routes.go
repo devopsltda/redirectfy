@@ -1,14 +1,14 @@
 package api
 
 import (
-	"github.com/TheDevOpsCorp/redirectify/internal/auth"
 	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	echoSwagger "github.com/swaggo/echo-swagger"
+	"redirectify/internal/auth"
 
-	_ "github.com/TheDevOpsCorp/redirectify/docs"
 	_ "github.com/joho/godotenv/autoload"
+	_ "redirectify/docs"
 )
 
 // @title API do Redirectify

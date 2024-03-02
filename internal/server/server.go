@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/TheDevOpsCorp/redirectify/internal/database"
 	_ "github.com/joho/godotenv/autoload"
+	"redirectify/internal/services/database"
 )
 
 type Server struct {

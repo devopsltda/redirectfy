@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/TheDevOpsCorp/redirectify/internal/utils"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
+	"redirectify/internal/utils"
 
 	_ "github.com/joho/godotenv/autoload"
 )

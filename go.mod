@@ -1,4 +1,4 @@
-module github.com/TheDevOpsCorp/redirectify
+module redirectify
 
 go 1.21.6
 

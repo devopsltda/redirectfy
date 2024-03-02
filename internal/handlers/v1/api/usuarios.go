@@ -4,12 +4,12 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/TheDevOpsCorp/redirectify/internal/auth"
-	"github.com/TheDevOpsCorp/redirectify/internal/database"
-	"github.com/TheDevOpsCorp/redirectify/internal/models"
-	"github.com/TheDevOpsCorp/redirectify/internal/utils"
 	"github.com/alexedwards/argon2id"
 	"github.com/labstack/echo/v4"
+	"redirectify/internal/auth"
+	"redirectify/internal/models"
+	"redirectify/internal/services/database"
+	"redirectify/internal/utils"
 
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -414,7 +414,7 @@ func UsuarioTrocaDeSenha(c echo.Context) error {
 	}
 
 	parametros := struct {
-		SenhaNova             string `json:"senha_nova"`
+		SenhaNova string `json:"senha_nova"`
 	}{}
 
 	if err := c.Bind(&parametros); err != nil {

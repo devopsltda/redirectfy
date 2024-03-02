@@ -4,10 +4,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/TheDevOpsCorp/redirectify/internal/database"
-	"github.com/TheDevOpsCorp/redirectify/internal/models"
-	"github.com/TheDevOpsCorp/redirectify/internal/utils"
 	"github.com/labstack/echo/v4"
+	"redirectify/internal/models"
+	"redirectify/internal/services/database"
+	"redirectify/internal/utils"
 )
 
 // HistoricoPlanoDeAssinaturaReadAll godoc

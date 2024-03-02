@@ -4,11 +4,11 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/TheDevOpsCorp/redirectify/internal/components"
-	"github.com/TheDevOpsCorp/redirectify/internal/database"
-	"github.com/TheDevOpsCorp/redirectify/internal/models"
-	"github.com/TheDevOpsCorp/redirectify/internal/utils"
-	"github.com/TheDevOpsCorp/redirectify/internal/views"
+	"redirectify/internal/components"
+	"redirectify/internal/models"
+	"redirectify/internal/services/database"
+	"redirectify/internal/utils"
+	"redirectify/internal/views"
 )
 
 func MainWebHandler(w http.ResponseWriter, r *http.Request) {
