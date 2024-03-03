@@ -7,9 +7,10 @@ import (
 	"strings"
 	"time"
 
+	"redirectify/internal/utils"
+
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
-	"redirectify/internal/utils"
 
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -121,10 +122,12 @@ func SetCookieUsuario(nomeDeUsuario string, expiraEm time.Time, c echo.Context) 
 }
 
 func PathWithNoAuthRequired(c echo.Context) bool {
-	return c.Path() == "/v1/api/usuarios/login" ||
+	return (c.Path() == "/v1/api/usuarios/login" && c.Request().Method == "POST") ||
 		(c.Path() == "/v1/api/usuarios" && c.Request().Method == "POST") ||
-		strings.Contains(c.Path(), "/v1/api/docs") ||
-		strings.Contains(c.Path(), "/v1/api/autenticacao")
+		(c.Path() == "/v1/api/usuarios/troca_de_senha/:valor" && c.Request().Method == "PATCH") ||
+		(c.Path() == "/v1/api/usuarios/:nome_de_usuario/troca_de_senha" && c.Request().Method == "POST") ||
+		(c.Path() == "/v1/api/docs/*" && c.Request().Method == "GET") ||
+		(c.Path() == "/v1/api/autenticacao/:valor" && c.Request().Method == "PATCH")
 }
 
 func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {

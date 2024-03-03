@@ -4,12 +4,14 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/alexedwards/argon2id"
-	"github.com/labstack/echo/v4"
 	"redirectify/internal/auth"
 	"redirectify/internal/models"
 	"redirectify/internal/services/database"
+	"redirectify/internal/services/email"
 	"redirectify/internal/utils"
+
+	"github.com/alexedwards/argon2id"
+	"github.com/labstack/echo/v4"
 
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -177,15 +179,22 @@ func UsuarioCreate(c echo.Context) error {
 		valorExiste, err = models.EmailAutenticacaoCheckIfValorExists(database.Db, valor)
 
 		if err != nil {
-			log.Printf("LinkCreate: %v", err)
+			log.Printf("UsuarioCreate: %v", err)
 			return utils.ErroBancoDados
 		}
 	}
 
-	err = models.EmailAutenticacaoCreate(database.Db, valor, "validacao", usuarioId)
+	id, err := models.EmailAutenticacaoCreate(database.Db, valor, "validacao", usuarioId)
 
 	if err != nil {
-		log.Printf("LinkCreate: %v", err)
+		log.Printf("UsuarioCreate: %v", err)
+		return utils.ErroBancoDados
+	}
+
+	err = email.SendEmailValidacao(id, parametros.Nome, valor, parametros.Email)
+
+	if err != nil {
+		log.Printf("UsuarioCreate: %v", err)
 		return utils.ErroBancoDados
 	}
 
@@ -379,12 +388,19 @@ func UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 		valorExiste, err = models.EmailAutenticacaoCheckIfValorExists(database.Db, valor)
 
 		if err != nil {
-			log.Printf("LinkCreate: %v", err)
+			log.Printf("UsuarioTrocaDeSenhaExigir: %v", err)
 			return utils.ErroBancoDados
 		}
 	}
 
-	err = models.EmailAutenticacaoCreate(database.Db, valor, "senha", usuario.Id)
+	id, err := models.EmailAutenticacaoCreate(database.Db, valor, "senha", usuario.Id)
+
+	if err != nil {
+		log.Printf("UsuarioTrocaDeSenhaExigir: %v", err)
+		return utils.ErroBancoDados
+	}
+
+	err = email.SendEmailTrocaDeSenha(id, usuario.Nome, valor, usuario.Email)
 
 	if err != nil {
 		log.Printf("UsuarioTrocaDeSenhaExigir: %v", err)
@@ -418,10 +434,12 @@ func UsuarioTrocaDeSenha(c echo.Context) error {
 	}{}
 
 	if err := c.Bind(&parametros); err != nil {
+		log.Printf("UsuarioTrocaDeSenha: %v", err)
 		return utils.ErroCriacaoSenha
 	}
 
 	if err := utils.Validate.Var(parametros.SenhaNova, "required,min=8,max=72"); err != nil {
+		log.Printf("UsuarioTrocaDeSenha: %v", err)
 		return utils.ErroCriacaoSenha
 	}
 

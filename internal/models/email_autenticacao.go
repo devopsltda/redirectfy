@@ -41,9 +41,9 @@ func EmailAutenticacaoReadByValor(db *sql.DB, valor string) (EmailAutenticacao, 
 	return emailAutenticacao, nil
 }
 
-func EmailAutenticacaoCreate(db *sql.DB, valor, tipo string, usuario int64) error {
-	_, err := db.Exec(
-		"INSERT INTO EMAIL_AUTENTICACAO (VALOR, TIPO, EXPIRA_EM, USUARIO) VALUES ($1, $2, $3, $4)",
+func EmailAutenticacaoCreate(db *sql.DB, valor, tipo string, usuario int64) (int64, error) {
+	result, err := db.Exec(
+		"INSERT INTO EMAIL_AUTENTICACAO (VALOR, TIPO, EXPIRA_EM, USUARIO) VALUES ($1, $2, $3, $4) RETURNING ID",
 		valor,
 		tipo,
 		time.Now().Add(time.Minute*time.Duration(utils.TempoExpiracao)).Format("2006-01-02 15:04:05"),
@@ -51,10 +51,16 @@ func EmailAutenticacaoCreate(db *sql.DB, valor, tipo string, usuario int64) erro
 	)
 
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	return nil
+	id, err := result.LastInsertId()
+
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
 }
 
 func EmailAutenticacaoCheckIfValorExists(db *sql.DB, valor string) (bool, error) {
