@@ -1,0 +1,21 @@
+package views
+
+import "redirectify/internal/components"
+
+templ Login() {
+  @components.BaseNoAuth("Login") {
+    <div class="mt-10 flex flex-col gap-10 items-center justify-between">
+      <p class="text-justify">
+      Seja bem vindo ao Redirectify, seu manager de links número um. Insira seus dados ou cadastre-se para continuar.
+      </p>
+      <form class="flex flex-col gap-6 w-full">
+        @components.Input("Nome de Usuário ou Email", "", "text", "")
+        @components.Input("Senha", "", "text", "")
+        <div class="mt-6 space-y-4">
+          @components.ButtonPrimary("Fazer login", "submit")
+          @components.ButtonSecondary("Cadastrar-se", "button")
+        </div>
+      </form>
+    </div>
+  }
+}

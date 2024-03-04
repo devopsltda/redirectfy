@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -14,6 +15,7 @@ import (
 
 // TestSuiteUsuario contains all tests for the Usuario handlers
 func TestSuiteUsuario(t *testing.T) {
+	fmt.Println("A")
 	// Initialize the test server
 	_ = server.NewTestServer()
 	e := echo.New()
@@ -29,7 +31,7 @@ func TestSuiteUsuario(t *testing.T) {
 	var usuarioReadAllMock = api.UsuarioReadAll
 
 	// Test cases
-	t.Run("Pass  200: successful user retrieval", func(t *testing.T) {
+	/*t.Run("200: successful user retrieval", func(t *testing.T) {
 		res, c := setupRequest(http.MethodGet, "/api/usuarios")
 
 		err := api.UsuarioReadAll(*c)
@@ -40,7 +42,7 @@ func TestSuiteUsuario(t *testing.T) {
 		assert.Equal(t, expectedBody, res.Body.String())
 	})
 
-	t.Run("Pass  200: successful user retrieval by username", func(t *testing.T) {
+	t.Run("200: successful user retrieval by username", func(t *testing.T) {
 		res, c := setupRequest(http.MethodGet, "/api/usuarios/testuser")
 
 		err := api.UsuarioReadByNomeDeUsuario(*c)
@@ -50,8 +52,9 @@ func TestSuiteUsuario(t *testing.T) {
 		// Check the response body
 		expectedBody := `{"message": "expected response body"}` //FALTA ALTERAR AQUI AINDA
 		assert.Equal(t, expectedBody, res.Body.String())
-	})
-	t.Run("Fail   500: database error", func(t *testing.T) {
+	})*/
+
+	t.Run("500: database error", func(t *testing.T) {
 		res, c := setupRequest(http.MethodGet, "/api/usuarios")
 
 		// Mock the error

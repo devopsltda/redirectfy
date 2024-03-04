@@ -14,22 +14,14 @@ window.location = `tg://join?invite=${linkTelegram}`;
 }
 
 templ LinkAccess(link models.Link) {
-	@Base() {
+	@components.BaseNoAuth("") {
 		@goToApp(link.LinkWhatsapp, link.LinkTelegram)
 	}
 }
 
 templ Links(links []models.Link) {
-	@Base() {
+	@components.BaseNoAuth("") {
 		<main class="bg-rlightest flex h-screen items-center justify-between min-h-screen">
-			@components.Sidebar("Eduardo")
-			<section class="flex flex-col gap-5 h-full items-center justify-center w-full">
-				for _, link := range links {
-					@components.Link(link.Nome, link.CodigoHash, link.LinkWhatsapp, link.LinkTelegram,
-						link.OrdemDeRedirecionamento)
-				}
-				@components.LinkCreateButton()
-			</section>
 		</main>
 	}
 }
