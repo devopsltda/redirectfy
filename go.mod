@@ -3,7 +3,7 @@ module redirectify
 go 1.21.6
 
 require (
-	github.com/a-h/templ v0.2.590
+	github.com/a-h/templ v0.2.598
 	github.com/alexedwards/argon2id v1.0.0
 	github.com/go-playground/validator/v10 v10.17.0
 	github.com/golang-jwt/jwt/v5 v5.2.0

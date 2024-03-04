@@ -36,7 +36,9 @@ func RegisterRoutes() http.Handler {
 	e.GET("/static/*", echo.WrapHandler(StaticFileServer))
 
 	// WEB
-	e.GET("/", echo.WrapHandler(templ.Handler(views.Login())))
+	e.GET("/login", echo.WrapHandler(templ.Handler(views.Login())))
+	e.GET("/signup", echo.WrapHandler(templ.Handler(views.Signup())))
+	e.GET("/account_created", echo.WrapHandler(templ.Handler(views.AccountCreated())))
 
 	// Roteamento Dinâmico
 	// e.GET("/to/:codigo_hash", echo.WrapHandler(http.HandlerFunc(web.LinkAccessWebHandler)))
