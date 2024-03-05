@@ -139,8 +139,12 @@ func LinkRemove(db *sql.DB, id int64, codigoHash string) error {
 }
 
 func LinkPicker(links []Link) (*Link, *Link, error) {
-	var linksWhatsapp []Link
-	var linksTelegram []Link
+	var (
+		linkWhatsapp *Link
+		linkTelegram *Link
+		linksWhatsapp []Link
+		linksTelegram []Link
+	)
 
 	for _, link := range links {
 		switch link.Plataforma {
@@ -153,15 +157,17 @@ func LinkPicker(links []Link) (*Link, *Link, error) {
 		}
 	}
 
-	var linkWhatsapp *Link
-
-	if len(linksWhatsapp) > 0 {
+	switch {
+	case len(linksWhatsapp) == 1:
+		linkWhatsapp = &linksWhatsapp[0]
+	case len(linksWhatsapp) > 0:
 		linkWhatsapp = &linksWhatsapp[rand.IntN(len(linksWhatsapp))]
 	}
 
-	var linkTelegram *Link
-
-	if len(linksTelegram) > 0 {
+	switch {
+	case len(linksTelegram) == 1:
+		linkTelegram = &linksTelegram[0]
+	case len(linksTelegram) > 0:
 		linkTelegram = &linksTelegram[rand.IntN(len(linksTelegram))]
 	}
 
