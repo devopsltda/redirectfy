@@ -4,12 +4,14 @@ import (
 	"net/http"
 	"strings"
 
+	"redirectify/cmd/resources"
+	"redirectify/internal/handlers/v1/api"
+	"redirectify/internal/handlers/web"
+	"redirectify/internal/views"
+
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"redirectify/cmd/resources"
-	"redirectify/internal/handlers/v1/api"
-	"redirectify/internal/views"
 
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -41,7 +43,7 @@ func RegisterRoutes() http.Handler {
 	e.GET("/account_created", echo.WrapHandler(templ.Handler(views.AccountCreated())))
 
 	// Roteamento Dinâmico
-	// e.GET("/to/:codigo_hash", echo.WrapHandler(http.HandlerFunc(web.LinkAccessWebHandler)))
+	e.GET("/to/:codigo_hash", web.GoToLinkWebHandler)
 
 	// API - v1
 	v1 := e.Group("/v1")

@@ -5,11 +5,11 @@ all: build
 
 # Create the database
 db:
-	@sqlite3 ./storage/test.db ".read internal/database/source.sql" 
+	@sqlite3 ./storage/test.db ".read internal/services/database/source.sql" 
 
 # Seed the database
 seed:
-	@sqlite3 ./storage/test.db ".read internal/database/seed.sql"
+	@sqlite3 ./storage/test.db ".read internal/services/database/seed.sql"
 
 # Build the application
 build:
