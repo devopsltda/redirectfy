@@ -88,6 +88,7 @@ func LinkReadAll(c echo.Context) error {
 // @Accept  json
 // @Produce json
 // @Param   codigo_hash         path     string true "Código Hash"
+// @Param   nome                body     string true "Nome"
 // @Param   link                body     string true "Link"
 // @Param   plataforma          body     string true "Plataforma"
 // @Success 200                 {object} map[string]string
@@ -97,6 +98,7 @@ func LinkReadAll(c echo.Context) error {
 func LinkCreate(c echo.Context) error {
 	parametros := struct {
 		CodigoHash string `path:"codigo_hash"`
+		Nome       string `json:"nome"`
 		Link       string `json:"link"`
 		Plataforma string `json:"plataforma"`
 	}{}
@@ -109,6 +111,10 @@ func LinkCreate(c echo.Context) error {
 
 	if err := utils.Validate.Var(parametros.CodigoHash, "required,len=10"); err != nil {
 		erros = append(erros, "Por favor, forneça um código hash válido para o parâmetro 'codigo_hash'.")
+	}
+
+	if err := utils.Validate.Var(parametros.Nome, "required,min=3,max=120"); err != nil {
+		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 120 caracteres) para o parâmetro 'nome'.")
 	}
 
 	if err := utils.Validate.Var(parametros.Link, "required"); err != nil {
@@ -125,6 +131,7 @@ func LinkCreate(c echo.Context) error {
 
 	err := models.LinkCreate(
 		database.Db,
+		parametros.Nome,
 		parametros.Link,
 		parametros.Plataforma,
 		parametros.CodigoHash,
@@ -146,6 +153,7 @@ func LinkCreate(c echo.Context) error {
 // @Produce json
 // @Param   codigo_hash path     string true  "Código Hash"
 // @Param   id          path     int    true  "Id"
+// @Param   nome        body     string false "Nome"
 // @Param   link        body     string false "Link"
 // @Param   plataforma  body     string false "Plataforma"
 // @Success 200         {object} map[string]string
@@ -156,6 +164,7 @@ func LinkUpdate(c echo.Context) error {
 	parametros := struct {
 		CodigoHash string `path:"codigo_hash"`
 		Id         int64  `path:"id"`
+		Nome       string `json:"nome"`
 		Link       string `json:"link"`
 		Plataforma string `json:"plataforma"`
 	}{}
@@ -174,7 +183,11 @@ func LinkUpdate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça um id válido para o parâmetro 'id'.")
 	}
 
-	if err := utils.Validate.Var(parametros.Plataforma, "oneof=whatsapp telegram"); err != nil {
+	if err := utils.Validate.Var(parametros.Nome, "min=3,max=120"); parametros.Nome != "" && err != nil {
+		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 120 caracteres) para o parâmetro 'nome'.")
+	}
+
+	if err := utils.Validate.Var(parametros.Plataforma, "oneof=whatsapp telegram"); parametros.Plataforma != "" && err != nil {
 		erros = append(erros, "Por favor, forneça uma plataforma válida para o parâmetro 'plataforma'.")
 	}
 
@@ -182,7 +195,7 @@ func LinkUpdate(c echo.Context) error {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	err := models.LinkUpdate(database.Db, parametros.Id, parametros.CodigoHash, parametros.Link, parametros.Plataforma)
+	err := models.LinkUpdate(database.Db, parametros.Id, parametros.CodigoHash, parametros.Nome, parametros.Link, parametros.Plataforma)
 
 	if err != nil {
 		log.Printf("LinkUpdate: %v", err)

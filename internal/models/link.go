@@ -8,6 +8,7 @@ import (
 
 type Link struct {
 	Id             int64          `json:"id"`
+	Nome           string         `json:"nome"`
 	Link           string         `json:"link"`
 	Plataforma     string         `json:"plataforma"`
 	Redirecionador string         `json:"redirecionador"`
@@ -20,13 +21,14 @@ func LinkReadById(db *sql.DB, id int64, codigoHash string) (Link, error) {
 	var link Link
 
 	row := db.QueryRow(
-		"SELECT ID, LINK, PLATAFORMA, REDIRECIONADOR, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM LINK WHERE REMOVIDO_EM IS NULL AND ID = $1 AND REDIRECIONADOR = $2",
+		"SELECT ID, NOME, LINK, PLATAFORMA, REDIRECIONADOR, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM LINK WHERE REMOVIDO_EM IS NULL AND ID = $1 AND REDIRECIONADOR = $2",
 		id,
 		codigoHash,
 	)
 
 	if err := row.Scan(
 		&link.Id,
+		&link.Nome,
 		&link.Link,
 		&link.Plataforma,
 		&link.Redirecionador,
@@ -48,7 +50,7 @@ func LinkReadAll(db *sql.DB, codigoHash string) ([]Link, error) {
 	var links []Link
 
 	rows, err := db.Query(
-		"SELECT ID, LINK, PLATAFORMA, REDIRECIONADOR, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM LINK WHERE REMOVIDO_EM IS NULL AND REDIRECIONADOR = $1",
+		"SELECT ID, NOME, LINK, PLATAFORMA, REDIRECIONADOR, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM LINK WHERE REMOVIDO_EM IS NULL AND REDIRECIONADOR = $1",
 		codigoHash,
 	)
 
@@ -63,6 +65,7 @@ func LinkReadAll(db *sql.DB, codigoHash string) ([]Link, error) {
 
 		if err := rows.Scan(
 			&link.Id,
+			&link.Nome,
 			&link.Link,
 			&link.Plataforma,
 			&link.Redirecionador,
@@ -83,9 +86,10 @@ func LinkReadAll(db *sql.DB, codigoHash string) ([]Link, error) {
 	return links, nil
 }
 
-func LinkCreate(db *sql.DB, link, plataforma, redirecionador string) error {
+func LinkCreate(db *sql.DB, nome, link, plataforma, redirecionador string) error {
 	_, err := db.Exec(
-		"INSERT INTO LINK (LINK, PLATAFORMA, REDIRECIONADOR) VALUES ($1, $2, $3)",
+		"INSERT INTO LINK (NOME, LINK, PLATAFORMA, REDIRECIONADOR) VALUES ($1, $2, $3, $4)",
+		nome,
 		link,
 		plataforma,
 		redirecionador,
@@ -98,8 +102,12 @@ func LinkCreate(db *sql.DB, link, plataforma, redirecionador string) error {
 	return nil
 }
 
-func LinkUpdate(db *sql.DB, id int64, codigoHash, link, plataforma string) error {
+func LinkUpdate(db *sql.DB, id int64, codigoHash, nome, link, plataforma string) error {
 	sqlQuery := "UPDATE LINK SET ATUALIZADO_EM = CURRENT_TIMESTAMP"
+
+	if nome != "" {
+		sqlQuery += ", NOME = '" + nome + "'"
+	}
 
 	if link != "" {
 		sqlQuery += ", LINK = '" + link + "'"
