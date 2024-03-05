@@ -25,7 +25,8 @@ run:
 # Test the application
 test:
 	@echo "Testing..."
-	@go test ./tests -v
+	@cp .env tests/.env
+	@APP_ENV=test go test ./tests -v
 
 # Clean the binary
 clean:

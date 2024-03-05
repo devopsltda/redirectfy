@@ -12,17 +12,7 @@ import (
 
 	"github.com/alexedwards/argon2id"
 	"github.com/labstack/echo/v4"
-
-	_ "github.com/joho/godotenv/autoload"
 )
-
-var senhaParams = &argon2id.Params{
-	Memory:      19 * 1024,
-	Iterations:  2,
-	Parallelism: 1,
-	SaltLength:  16,
-	KeyLength:   32,
-}
 
 // UsuarioReadByNomeDeUsuario godoc
 //
@@ -145,7 +135,7 @@ func UsuarioCreate(c echo.Context) error {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	senhaComHash, err := argon2id.CreateHash(parametros.Senha+utils.Pepper, senhaParams)
+	senhaComHash, err := argon2id.CreateHash(parametros.Senha+utils.Pepper, utils.SenhaParams)
 
 	if err != nil {
 		log.Printf("UsuarioCreate: %v", err)
@@ -281,7 +271,7 @@ func UsuarioUpdate(c echo.Context) error {
 	}
 
 	if parametros.Senha != "" {
-		senhaComHash, err := argon2id.CreateHash(parametros.Senha+utils.Pepper, senhaParams)
+		senhaComHash, err := argon2id.CreateHash(parametros.Senha+utils.Pepper, utils.SenhaParams)
 
 		if err != nil {
 			log.Printf("UsuarioUpdate: %v", err)
@@ -450,7 +440,7 @@ func UsuarioTrocaDeSenha(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	senhaComHash, err := argon2id.CreateHash(parametros.SenhaNova+utils.Pepper, senhaParams)
+	senhaComHash, err := argon2id.CreateHash(parametros.SenhaNova+utils.Pepper, utils.SenhaParams)
 
 	if err != nil {
 		log.Printf("UsuarioTrocaDeSenha: %v", err)

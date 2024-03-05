@@ -14,6 +14,11 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
+var (
+	ChaveDeAcesso  = os.Getenv("JWT_SECRET")
+	ChaveDeRefresh = os.Getenv("JWT_REFRESH_SECRET")
+)
+
 type Claims struct {
 	Id            int64  `json:"id"`
 	Nome          string `json:"nome"`
@@ -21,9 +26,6 @@ type Claims struct {
 	Autenticado   bool   `json:"autenticado"`
 	jwt.RegisteredClaims
 }
-
-var ChaveDeAcesso = os.Getenv("JWT_SECRET")
-var ChaveDeRefresh = os.Getenv("JWT_REFRESH_SECRET")
 
 func GeraTokensESetaCookies(id int64, nome, nomeDeUsuario string, autenticado bool, c echo.Context) error {
 	accessToken, exp, err := GeraTokenAcesso(id, nome, nomeDeUsuario, autenticado)

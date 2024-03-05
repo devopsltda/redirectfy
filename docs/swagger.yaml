@@ -3,43 +3,138 @@ definitions:
     properties:
       message: {}
     type: object
-  Historico:
+  HistoricoLink:
     properties:
+      atualizado_em:
+        $ref: '#/definitions/sql.NullString'
+      bitmask:
+        type: integer
       criado_em:
+        $ref: '#/definitions/sql.NullString'
+      criado_em_:
         type: string
       id:
-        type: integer
-      tabela_modificada:
+        $ref: '#/definitions/sql.NullInt64'
+      link:
+        $ref: '#/definitions/sql.NullString'
+      plataforma:
+        $ref: '#/definitions/sql.NullString'
+      redirecionador:
+        $ref: '#/definitions/sql.NullInt64'
+      removido_em:
         type: string
+      rowid:
+        type: integer
+      versao:
+        type: integer
+    type: object
+  HistoricoPlanoDeAssinatura:
+    properties:
+      atualizado_em:
+        $ref: '#/definitions/sql.NullString'
+      bitmask:
+        type: integer
+      criado_em:
+        $ref: '#/definitions/sql.NullString'
+      criado_em_:
+        type: string
+      id:
+        $ref: '#/definitions/sql.NullInt64'
+      limite:
+        $ref: '#/definitions/sql.NullInt64'
+      nome:
+        $ref: '#/definitions/sql.NullString'
+      periodo_limite:
+        $ref: '#/definitions/sql.NullString'
+      removido_em:
+        type: integer
+      rowid:
+        type: integer
+      valor_mensal:
+        $ref: '#/definitions/sql.NullInt64'
+      versao:
+        type: integer
+    type: object
+  HistoricoRedirecionador:
+    properties:
+      atualizado_em:
+        $ref: '#/definitions/sql.NullString'
+      bitmask:
+        type: integer
+      codigo_hash:
+        $ref: '#/definitions/sql.NullString'
+      criado_em:
+        $ref: '#/definitions/sql.NullString'
+      criado_em_:
+        type: string
+      id:
+        $ref: '#/definitions/sql.NullInt64'
+      nome:
+        $ref: '#/definitions/sql.NullString'
+      ordem_de_redirecionamento:
+        $ref: '#/definitions/sql.NullString'
+      removido_em:
+        type: string
+      rowid:
+        type: integer
       usuario:
+        $ref: '#/definitions/sql.NullInt64'
+      versao:
         type: integer
-      valor_novo:
+    type: object
+  HistoricoUsuario:
+    properties:
+      atualizado_em:
+        $ref: '#/definitions/sql.NullString'
+      autenticado:
+        $ref: '#/definitions/sql.NullBool'
+      bitmask:
+        type: integer
+      cpf:
+        $ref: '#/definitions/sql.NullString'
+      criado_em:
+        $ref: '#/definitions/sql.NullString'
+      criado_em_:
         type: string
-      valor_original:
+      data_de_nascimento:
+        $ref: '#/definitions/sql.NullString'
+      email:
+        $ref: '#/definitions/sql.NullString'
+      id:
+        $ref: '#/definitions/sql.NullInt64'
+      nome:
+        $ref: '#/definitions/sql.NullString'
+      nome_de_usuario:
+        $ref: '#/definitions/sql.NullString'
+      plano_de_assinatura:
+        $ref: '#/definitions/sql.NullInt64'
+      removido_em:
         type: string
+      rowid:
+        type: integer
+      senha:
+        $ref: '#/definitions/sql.NullString'
+      versao:
+        type: integer
     type: object
   Link:
     properties:
       atualizado_em:
         type: string
-      codigo_hash:
-        type: string
       criado_em:
         type: string
       id:
         type: integer
-      link_telegram:
-        type: string
-      link_whatsapp:
+      link:
         type: string
       nome:
         type: string
-      ordem_de_redirecionamento:
+      plataforma:
+        type: string
+      redirecionador:
         type: string
       removido_em:
         type: string
-      usuario:
-        type: integer
     type: object
   PlanoDeAssinatura:
     properties:
@@ -58,6 +153,25 @@ definitions:
       removido_em:
         type: integer
       valor_mensal:
+        type: integer
+    type: object
+  Redirecionador:
+    properties:
+      atualizado_em:
+        type: string
+      codigo_hash:
+        type: string
+      criado_em:
+        type: string
+      id:
+        type: integer
+      nome:
+        type: string
+      ordem_de_redirecionamento:
+        type: string
+      removido_em:
+        type: string
+      usuario:
         type: integer
     type: object
   Usuario:
@@ -87,15 +201,39 @@ definitions:
       senha:
         type: string
     type: object
+  sql.NullBool:
+    properties:
+      bool:
+        type: boolean
+      valid:
+        description: Valid is true if Bool is not NULL
+        type: boolean
+    type: object
+  sql.NullInt64:
+    properties:
+      int64:
+        type: integer
+      valid:
+        description: Valid is true if Int64 is not NULL
+        type: boolean
+    type: object
+  sql.NullString:
+    properties:
+      string:
+        type: string
+      valid:
+        description: Valid is true if String is not NULL
+        type: boolean
+    type: object
 info:
   contact:
-    email: test@test.com
-    name: Equipe da DevOps (Pablo, Guilherme e Eduardo)
-  description: API para interagir com o Redirect Max
-  title: API do Redirect Max
+    email: comercialdevops@gmail.com
+    name: Equipe da DevOps (Pablo Eduardo, Guilherme Bernardo e Eduardo Henrique)
+  description: API para interagir com o Redirectify
+  title: API do Redirectify
   version: 1.0.0
 paths:
-  /api/historico:
+  /v1/api/links/historico:
     get:
       consumes:
       - application/json
@@ -106,7 +244,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/Historico'
+              $ref: '#/definitions/HistoricoLink'
             type: array
         "400":
           description: Bad Request
@@ -116,220 +254,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/Erro'
-      summary: Retorna o histórico de ações no sistema
+      summary: Retorna o histórico de ações relativas a links no sistema
       tags:
       - Histórico
-  /v1/api/links:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/Link'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/Erro'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/Erro'
-      summary: Retorna os links
-      tags:
-      - Links
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Nome
-        in: body
-        name: nome
-        required: true
-        schema:
-          type: string
-      - description: Link Whatsapp
-        in: body
-        name: link_whatsapp
-        schema:
-          type: string
-      - description: Link Telegram
-        in: body
-        name: link_telegram
-        schema:
-          type: string
-      - description: Ordem de Redirecionamento
-        in: body
-        name: ordem_de_redirecionamento
-        required: true
-        schema:
-          type: string
-      - description: Usuário
-        in: body
-        name: usuario
-        schema:
-          type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/Erro'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/Erro'
-      summary: Cria um link
-      tags:
-      - Links
-  /v1/api/links/:codigo_hash:
-    delete:
-      consumes:
-      - application/json
-      parameters:
-      - description: Código Hash
-        in: path
-        name: codigo_hash
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/Erro'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/Erro'
-      summary: Remove um link
-      tags:
-      - Links
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: Nome de Usuário
-        in: path
-        name: codigo_hash
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/Link'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/Erro'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/Erro'
-      summary: Retorna o link com o código hash fornecido
-      tags:
-      - Links
-    patch:
-      consumes:
-      - application/json
-      parameters:
-      - description: Código Hash
-        in: path
-        name: codigo_hash
-        required: true
-        type: string
-      - description: Nome
-        in: body
-        name: nome
-        schema:
-          type: string
-      - description: Link Whatsapp
-        in: body
-        name: link_whatsapp
-        schema:
-          type: string
-      - description: Link Telegram
-        in: body
-        name: link_telegram
-        schema:
-          type: string
-      - description: Ordem de Redirecionamento
-        in: body
-        name: ordem_de_redirecionamento
-        schema:
-          type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/Erro'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/Erro'
-      summary: Atualiza um link
-      tags:
-      - Links
-  /v1/api/links/rehash/:codigo_hash:
-    patch:
-      consumes:
-      - application/json
-      parameters:
-      - description: Código Hash
-        in: path
-        name: codigo_hash
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/Erro'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/Erro'
-      summary: Recria o hash de um link
-      tags:
-      - Links
   /v1/api/planos_de_assinatura:
     get:
       consumes:
@@ -486,6 +413,440 @@ paths:
       summary: Atualiza um plano de assinatura
       tags:
       - Planos de Assinatura
+  /v1/api/planos_de_assinatura/historico:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/HistoricoPlanoDeAssinatura'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Erro'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Erro'
+      summary: Retorna o histórico de ações relativas a planos de assinatura no sistema
+      tags:
+      - Histórico
+  /v1/api/redirecionadores:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/Redirecionador'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Erro'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Erro'
+      summary: Retorna os redirecionadores
+      tags:
+      - Redirecionadores
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Nome
+        in: body
+        name: nome
+        required: true
+        schema:
+          type: string
+      - description: Ordem de Redirecionamento
+        in: body
+        name: ordem_de_redirecionamento
+        required: true
+        schema:
+          type: string
+      - description: Usuário
+        in: body
+        name: usuario
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Erro'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Erro'
+      summary: Cria um redirecionador
+      tags:
+      - Redirecionadores
+  /v1/api/redirecionadores/:codigo_hash:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Código Hash
+        in: path
+        name: codigo_hash
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Erro'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Erro'
+      summary: Remove um redirecionador
+      tags:
+      - Redirecionadors
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Código Hash
+        in: path
+        name: codigo_hash
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Redirecionador'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Erro'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Erro'
+      summary: Retorna o redirecionador com o código hash fornecido
+      tags:
+      - Redirecionadors
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Código Hash
+        in: path
+        name: codigo_hash
+        required: true
+        type: string
+      - description: Nome
+        in: body
+        name: nome
+        schema:
+          type: string
+      - description: Ordem de Redirecionamento
+        in: body
+        name: ordem_de_redirecionamento
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Erro'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Erro'
+      summary: Atualiza um redirecionador
+      tags:
+      - Redirecionadores
+  /v1/api/redirecionadores/:codigo_hash/link/:id:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Código Hash
+        in: path
+        name: codigo_hash
+        required: true
+        type: string
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Erro'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Erro'
+      summary: Remove um link específico de um redirecionador específico
+      tags:
+      - Links
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Código Hash
+        in: path
+        name: codigo_hash
+        required: true
+        type: string
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Nome
+        in: body
+        name: nome
+        schema:
+          type: string
+      - description: Link
+        in: body
+        name: link
+        schema:
+          type: string
+      - description: Plataforma
+        in: body
+        name: plataforma
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Erro'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Erro'
+      summary: Atualiza um link específico de um redirecionador específico
+      tags:
+      - Links
+  /v1/api/redirecionadores/:codigo_hash/links:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Código Hash
+        in: path
+        name: codigo_hash
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/Link'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Erro'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Erro'
+      summary: Retorna os links do redirecionador com o código hash fornecido
+      tags:
+      - Links
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Código Hash
+        in: path
+        name: codigo_hash
+        required: true
+        type: string
+      - description: Nome
+        in: body
+        name: nome
+        required: true
+        schema:
+          type: string
+      - description: Link
+        in: body
+        name: link
+        required: true
+        schema:
+          type: string
+      - description: Plataforma
+        in: body
+        name: plataforma
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Erro'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Erro'
+      summary: Cria um link no redirecionador com o código hash fornecido
+      tags:
+      - Links
+  /v1/api/redirecionadores/:codigo_hash/links/:id:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Código Hash
+        in: path
+        name: codigo_hash
+        required: true
+        type: string
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Link'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Erro'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Erro'
+      summary: Retorna o link com o id fornecido do redirecionador com o código hash
+        fornecido
+      tags:
+      - Links
+  /v1/api/redirecionadores/historico:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/HistoricoRedirecionador'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Erro'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Erro'
+      summary: Retorna o histórico de ações relativas a redirecionadores no sistema
+      tags:
+      - Histórico
+  /v1/api/redirecionadores/rehash/:codigo_hash:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Código Hash
+        in: path
+        name: codigo_hash
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Erro'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Erro'
+      summary: Recria o hash de um redirecionador
+      tags:
+      - Redirecionadores
   /v1/api/usuarios:
     get:
       consumes:
@@ -697,7 +1058,7 @@ paths:
       summary: Atualiza um usuário
       tags:
       - Usuários
-  /v1/api/usuarios/:nome_de_usuario/autentica:
+  /v1/api/usuarios/:nome_de_usuario/troca_de_senha:
     patch:
       consumes:
       - application/json
@@ -724,9 +1085,63 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/Erro'
+      summary: Exige a troca de senha de um usuário
+      tags:
+      - Usuários
+  /v1/api/usuarios/autentica/:valor:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Valor
+        in: path
+        name: valor
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Erro'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Erro'
       summary: Autentica um usuário
       tags:
       - Usuários
+  /v1/api/usuarios/historico:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/HistoricoUsuario'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Erro'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Erro'
+      summary: Retorna o histórico de ações relativas a usuários no sistema
+      tags:
+      - Histórico
   /v1/api/usuarios/login:
     post:
       consumes:
@@ -766,6 +1181,42 @@ paths:
           schema:
             $ref: '#/definitions/Erro'
       summary: Autentica o usuário
+      tags:
+      - Usuários
+  /v1/api/usuarios/troca_de_senha/:valor:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Valor
+        in: path
+        name: valor
+        required: true
+        type: string
+      - description: Senha Nova
+        in: body
+        name: senha_nova
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Erro'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Erro'
+      summary: Troca a senha de um usuário
       tags:
       - Usuários
 swagger: "2.0"

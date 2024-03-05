@@ -7,7 +7,6 @@ import (
 	echoSwagger "github.com/swaggo/echo-swagger"
 	"redirectify/internal/auth"
 
-	_ "github.com/joho/godotenv/autoload"
 	_ "redirectify/docs"
 )
 

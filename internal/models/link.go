@@ -148,8 +148,8 @@ func LinkRemove(db *sql.DB, id int64, codigoHash string) error {
 
 func LinkPicker(links []Link) (*Link, *Link, error) {
 	var (
-		linkWhatsapp *Link
-		linkTelegram *Link
+		linkWhatsapp  *Link
+		linkTelegram  *Link
 		linksWhatsapp []Link
 		linksTelegram []Link
 	)

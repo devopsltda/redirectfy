@@ -11,12 +11,19 @@ import (
 
 var (
 	Db    *sql.DB
-	dburl = os.Getenv("DB_URL")
+	dbUrl = os.Getenv("DB_URL")
 )
 
 func New() {
 	var err error
-	Db, err = sql.Open("sqlite3", dburl)
+
+	switch os.Getenv("APP_ENV") {
+	case "test":
+		Db, err = sql.Open("sqlite3", "file::memory:?cache=shared")
+		seed(os.Getenv("DB_SOURCE_PATH"))
+	default:
+		Db, err = sql.Open("sqlite3", dbUrl)
+	}
 
 	if err != nil {
 		// This will not be a connection error, but a DSN parse error or
@@ -25,13 +32,14 @@ func New() {
 	}
 }
 
-func NewTest() {
-	var err error
-	Db, err = sql.Open("sqlite3", "../storage/test.db")
+func seed(dbSeedPath string) error {
+	query, err := os.ReadFile(dbSeedPath)
 
 	if err != nil {
-		// This will not be a connection error, but a DSN parse error or
-		// another initialization error.
-		log.Fatal(err)
+		return err
 	}
+
+	_, err = Db.Exec(string(query))
+
+	return err
 }

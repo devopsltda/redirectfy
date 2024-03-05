@@ -38,11 +38,3 @@ func NewServer() *http.Server {
 
 	return server
 }
-
-func NewTestServer() *Server {
-	database.NewTest()
-
-	return &Server{
-		db: database.Db,
-	}
-}

@@ -10,15 +10,15 @@ const docTemplate = `{
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
         "contact": {
-            "name": "Equipe da DevOps (Pablo, Guilherme e Eduardo)",
-            "email": "test@test.com"
+            "name": "Equipe da DevOps (Pablo Eduardo, Guilherme Bernardo e Eduardo Henrique)",
+            "email": "comercialdevops@gmail.com"
         },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/historico": {
+        "/v1/api/links/historico": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -29,339 +29,14 @@ const docTemplate = `{
                 "tags": [
                     "Histórico"
                 ],
-                "summary": "Retorna o histórico de ações no sistema",
+                "summary": "Retorna o histórico de ações relativas a links no sistema",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/Historico"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/Erro"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/Erro"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/api/links": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Links"
-                ],
-                "summary": "Retorna os links",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Link"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/Erro"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/Erro"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Links"
-                ],
-                "summary": "Cria um link",
-                "parameters": [
-                    {
-                        "description": "Nome",
-                        "name": "nome",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Link Whatsapp",
-                        "name": "link_whatsapp",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Link Telegram",
-                        "name": "link_telegram",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Ordem de Redirecionamento",
-                        "name": "ordem_de_redirecionamento",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Usuário",
-                        "name": "usuario",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/Erro"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/Erro"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/api/links/:codigo_hash": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Links"
-                ],
-                "summary": "Retorna o link com o código hash fornecido",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Nome de Usuário",
-                        "name": "codigo_hash",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/Link"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/Erro"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/Erro"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Links"
-                ],
-                "summary": "Remove um link",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Código Hash",
-                        "name": "codigo_hash",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/Erro"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/Erro"
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Links"
-                ],
-                "summary": "Atualiza um link",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Código Hash",
-                        "name": "codigo_hash",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Nome",
-                        "name": "nome",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Link Whatsapp",
-                        "name": "link_whatsapp",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Link Telegram",
-                        "name": "link_telegram",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Ordem de Redirecionamento",
-                        "name": "ordem_de_redirecionamento",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/Erro"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/Erro"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/api/links/rehash/:codigo_hash": {
-            "patch": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Links"
-                ],
-                "summary": "Recria o hash de um link",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Código Hash",
-                        "name": "codigo_hash",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
+                                "$ref": "#/definitions/HistoricoLink"
                             }
                         }
                     },
@@ -592,6 +267,668 @@ const docTemplate = `{
                         "schema": {
                             "type": "integer"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/api/planos_de_assinatura/historico": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Histórico"
+                ],
+                "summary": "Retorna o histórico de ações relativas a planos de assinatura no sistema",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/HistoricoPlanoDeAssinatura"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/api/redirecionadores": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Redirecionadores"
+                ],
+                "summary": "Retorna os redirecionadores",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Redirecionador"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Redirecionadores"
+                ],
+                "summary": "Cria um redirecionador",
+                "parameters": [
+                    {
+                        "description": "Nome",
+                        "name": "nome",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Ordem de Redirecionamento",
+                        "name": "ordem_de_redirecionamento",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Usuário",
+                        "name": "usuario",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/api/redirecionadores/:codigo_hash": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Redirecionadors"
+                ],
+                "summary": "Retorna o redirecionador com o código hash fornecido",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Código Hash",
+                        "name": "codigo_hash",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Redirecionador"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Redirecionadors"
+                ],
+                "summary": "Remove um redirecionador",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Código Hash",
+                        "name": "codigo_hash",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Redirecionadores"
+                ],
+                "summary": "Atualiza um redirecionador",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Código Hash",
+                        "name": "codigo_hash",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Nome",
+                        "name": "nome",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Ordem de Redirecionamento",
+                        "name": "ordem_de_redirecionamento",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/api/redirecionadores/:codigo_hash/link/:id": {
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Links"
+                ],
+                "summary": "Remove um link específico de um redirecionador específico",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Código Hash",
+                        "name": "codigo_hash",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Links"
+                ],
+                "summary": "Atualiza um link específico de um redirecionador específico",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Código Hash",
+                        "name": "codigo_hash",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Nome",
+                        "name": "nome",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Link",
+                        "name": "link",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Plataforma",
+                        "name": "plataforma",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/api/redirecionadores/:codigo_hash/links": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Links"
+                ],
+                "summary": "Retorna os links do redirecionador com o código hash fornecido",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Código Hash",
+                        "name": "codigo_hash",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Link"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Links"
+                ],
+                "summary": "Cria um link no redirecionador com o código hash fornecido",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Código Hash",
+                        "name": "codigo_hash",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Nome",
+                        "name": "nome",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Link",
+                        "name": "link",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Plataforma",
+                        "name": "plataforma",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/api/redirecionadores/:codigo_hash/links/:id": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Links"
+                ],
+                "summary": "Retorna o link com o id fornecido do redirecionador com o código hash fornecido",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Código Hash",
+                        "name": "codigo_hash",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Link"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/api/redirecionadores/historico": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Histórico"
+                ],
+                "summary": "Retorna o histórico de ações relativas a redirecionadores no sistema",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/HistoricoRedirecionador"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/api/redirecionadores/rehash/:codigo_hash": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Redirecionadores"
+                ],
+                "summary": "Recria o hash de um redirecionador",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Código Hash",
+                        "name": "codigo_hash",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -943,7 +1280,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/usuarios/:nome_de_usuario/autentica": {
+        "/v1/api/usuarios/:nome_de_usuario/troca_de_senha": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -954,7 +1291,7 @@ const docTemplate = `{
                 "tags": [
                     "Usuários"
                 ],
-                "summary": "Autentica um usuário",
+                "summary": "Exige a troca de senha de um usuário",
                 "parameters": [
                     {
                         "type": "string",
@@ -971,6 +1308,89 @@ const docTemplate = `{
                             "type": "object",
                             "additionalProperties": {
                                 "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/api/usuarios/autentica/:valor": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usuários"
+                ],
+                "summary": "Autentica um usuário",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Valor",
+                        "name": "valor",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/api/usuarios/historico": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Histórico"
+                ],
+                "summary": "Retorna o histórico de ações relativas a usuários no sistema",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/HistoricoUsuario"
                             }
                         }
                     },
@@ -1052,6 +1472,61 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/v1/api/usuarios/troca_de_senha/:valor": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usuários"
+                ],
+                "summary": "Troca a senha de um usuário",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Valor",
+                        "name": "valor",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Senha Nova",
+                        "name": "senha_nova",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1061,26 +1536,176 @@ const docTemplate = `{
                 "message": {}
             }
         },
-        "Historico": {
+        "HistoricoLink": {
             "type": "object",
             "properties": {
+                "atualizado_em": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "bitmask": {
+                    "type": "integer"
+                },
                 "criado_em": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "criado_em_": {
                     "type": "string"
                 },
                 "id": {
+                    "$ref": "#/definitions/sql.NullInt64"
+                },
+                "link": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "plataforma": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "redirecionador": {
+                    "$ref": "#/definitions/sql.NullInt64"
+                },
+                "removido_em": {
+                    "type": "string"
+                },
+                "rowid": {
                     "type": "integer"
                 },
-                "tabela_modificada": {
+                "versao": {
+                    "type": "integer"
+                }
+            }
+        },
+        "HistoricoPlanoDeAssinatura": {
+            "type": "object",
+            "properties": {
+                "atualizado_em": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "bitmask": {
+                    "type": "integer"
+                },
+                "criado_em": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "criado_em_": {
                     "type": "string"
+                },
+                "id": {
+                    "$ref": "#/definitions/sql.NullInt64"
+                },
+                "limite": {
+                    "$ref": "#/definitions/sql.NullInt64"
+                },
+                "nome": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "periodo_limite": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "removido_em": {
+                    "type": "integer"
+                },
+                "rowid": {
+                    "type": "integer"
+                },
+                "valor_mensal": {
+                    "$ref": "#/definitions/sql.NullInt64"
+                },
+                "versao": {
+                    "type": "integer"
+                }
+            }
+        },
+        "HistoricoRedirecionador": {
+            "type": "object",
+            "properties": {
+                "atualizado_em": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "bitmask": {
+                    "type": "integer"
+                },
+                "codigo_hash": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "criado_em": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "criado_em_": {
+                    "type": "string"
+                },
+                "id": {
+                    "$ref": "#/definitions/sql.NullInt64"
+                },
+                "nome": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "ordem_de_redirecionamento": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "removido_em": {
+                    "type": "string"
+                },
+                "rowid": {
+                    "type": "integer"
                 },
                 "usuario": {
+                    "$ref": "#/definitions/sql.NullInt64"
+                },
+                "versao": {
+                    "type": "integer"
+                }
+            }
+        },
+        "HistoricoUsuario": {
+            "type": "object",
+            "properties": {
+                "atualizado_em": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "autenticado": {
+                    "$ref": "#/definitions/sql.NullBool"
+                },
+                "bitmask": {
                     "type": "integer"
                 },
-                "valor_novo": {
+                "cpf": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "criado_em": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "criado_em_": {
                     "type": "string"
                 },
-                "valor_original": {
+                "data_de_nascimento": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "email": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "id": {
+                    "$ref": "#/definitions/sql.NullInt64"
+                },
+                "nome": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "nome_de_usuario": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "plano_de_assinatura": {
+                    "$ref": "#/definitions/sql.NullInt64"
+                },
+                "removido_em": {
                     "type": "string"
+                },
+                "rowid": {
+                    "type": "integer"
+                },
+                "senha": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "versao": {
+                    "type": "integer"
                 }
             }
         },
@@ -1090,32 +1715,26 @@ const docTemplate = `{
                 "atualizado_em": {
                     "type": "string"
                 },
-                "codigo_hash": {
-                    "type": "string"
-                },
                 "criado_em": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
-                "link_telegram": {
-                    "type": "string"
-                },
-                "link_whatsapp": {
+                "link": {
                     "type": "string"
                 },
                 "nome": {
                     "type": "string"
                 },
-                "ordem_de_redirecionamento": {
+                "plataforma": {
+                    "type": "string"
+                },
+                "redirecionador": {
                     "type": "string"
                 },
                 "removido_em": {
                     "type": "string"
-                },
-                "usuario": {
-                    "type": "integer"
                 }
             }
         },
@@ -1144,6 +1763,35 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "valor_mensal": {
+                    "type": "integer"
+                }
+            }
+        },
+        "Redirecionador": {
+            "type": "object",
+            "properties": {
+                "atualizado_em": {
+                    "type": "string"
+                },
+                "codigo_hash": {
+                    "type": "string"
+                },
+                "criado_em": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "nome": {
+                    "type": "string"
+                },
+                "ordem_de_redirecionamento": {
+                    "type": "string"
+                },
+                "removido_em": {
+                    "type": "string"
+                },
+                "usuario": {
                     "type": "integer"
                 }
             }
@@ -1188,6 +1836,42 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "sql.NullBool": {
+            "type": "object",
+            "properties": {
+                "bool": {
+                    "type": "boolean"
+                },
+                "valid": {
+                    "description": "Valid is true if Bool is not NULL",
+                    "type": "boolean"
+                }
+            }
+        },
+        "sql.NullInt64": {
+            "type": "object",
+            "properties": {
+                "int64": {
+                    "type": "integer"
+                },
+                "valid": {
+                    "description": "Valid is true if Int64 is not NULL",
+                    "type": "boolean"
+                }
+            }
+        },
+        "sql.NullString": {
+            "type": "object",
+            "properties": {
+                "string": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if String is not NULL",
+                    "type": "boolean"
+                }
+            }
         }
     }
 }`
@@ -1198,8 +1882,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "API do Redirect Max",
-	Description:      "API para interagir com o Redirect Max",
+	Title:            "API do Redirectify",
+	Description:      "API para interagir com o Redirectify",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
