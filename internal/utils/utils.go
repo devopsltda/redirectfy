@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"math/rand"
+	"math/rand/v2"
 	"net/http"
 	"os"
 	"strconv"
@@ -19,14 +19,14 @@ var Pepper = os.Getenv("PEPPER")
 var TempoExpiracao, _ = strconv.Atoi(os.Getenv("VALIDATION_EXPIRE_TIME"))
 
 /*** Código Hash ***/
-var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
+var seededRand *rand.Rand = rand.New(rand.NewPCG(uint64(time.Now().Unix()), uint64(time.Now().Add(10*time.Second).Unix())))
 var symbols []byte = []byte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_")
 
 func GeraHashCode(length int) string {
 	b := make([]byte, length)
 
 	for i := range b {
-		b[i] = symbols[seededRand.Intn(len(symbols))]
+		b[i] = symbols[seededRand.IntN(len(symbols))]
 	}
 
 	return string(b)
@@ -49,6 +49,9 @@ func ValidaNomeDeUsuario(s string) bool {
 var MensagemPlanoDeAssinaturaCriadoComSucesso = "O plano de assinatura foi adicionado com sucesso."
 var MensagemPlanoDeAssinaturaAtualizadoComSucesso = "O plano de assinatura foi atualizado com sucesso."
 var MensagemPlanoDeAssinaturaRemovidoComSucesso = "O plano de assinatura foi removido com sucesso."
+
+var MensagemRedirecionadorAtualizadoComSucesso = "O redirecionador foi atualizado com sucesso."
+var MensagemRedirecionadorRemovidoComSucesso = "O redirecionador foi removido com sucesso."
 
 var MensagemLinkAtualizadoComSucesso = "O link foi atualizado com sucesso."
 var MensagemLinkRemovidoComSucesso = "O link foi removido com sucesso."
@@ -83,3 +86,5 @@ func ErroValidacaoParametro(mensagem []string) *echo.HTTPError {
 		},
 	)
 }
+
+/*** Links ***/

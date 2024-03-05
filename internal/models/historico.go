@@ -48,13 +48,11 @@ type HistoricoEmailAutenticacao struct {
 	CriadoEm_ string         `json:"criado_em_"`
 } // @name HistoricoEmailAutenticacao
 
-type HistoricoLink struct {
+type HistoricoRedirecionador struct {
 	RowId                   int64          `json:"rowid"`
 	Id                      sql.NullInt64  `json:"id"`
 	Nome                    sql.NullString `json:"nome"`
 	CodigoHash              sql.NullString `json:"codigo_hash"`
-	LinkWhatsapp            sql.NullString `json:"link_whatsapp"`
-	LinkTelegram            sql.NullString `json:"link_telegram"`
 	OrdemDeRedirecionamento sql.NullString `json:"ordem_de_redirecionamento"`
 	Usuario                 sql.NullInt64  `json:"usuario"`
 	CriadoEm                sql.NullString `json:"criado_em"`
@@ -63,6 +61,20 @@ type HistoricoLink struct {
 	Versao                  int64          `json:"versao"`
 	Bitmask                 int64          `json:"bitmask"`
 	CriadoEm_               string         `json:"criado_em_"`
+} // @name HistoricoRedirecionador
+
+type HistoricoLink struct {
+	RowId          int64          `json:"rowid"`
+	Id             sql.NullInt64  `json:"id"`
+	Link           sql.NullString `json:"link"`
+	Plataforma     sql.NullString `json:"plataforma"`
+	Redirecionador sql.NullInt64  `json:"redirecionador"`
+	CriadoEm       sql.NullString `json:"criado_em"`
+	AtualizadoEm   sql.NullString `json:"atualizado_em"`
+	RemovidoEm     sql.NullString `json:"removido_em" swaggertype:"string"`
+	Versao         int64          `json:"versao"`
+	Bitmask        int64          `json:"bitmask"`
+	CriadoEm_      string         `json:"criado_em_"`
 } // @name HistoricoLink
 
 func HistoricoPlanoDeAssinaturaReadAll(db *sql.DB) ([]HistoricoPlanoDeAssinatura, error) {
@@ -188,10 +200,52 @@ func HistoricoEmailAutenticacaoReadAll(db *sql.DB) ([]HistoricoEmailAutenticacao
 
 	return historico, nil
 }
+
+func HistoricoRedirecionadorReadAll(db *sql.DB) ([]HistoricoRedirecionador, error) {
+	var historico []HistoricoRedirecionador
+
+	rows, err := db.Query("SELECT _ROWID, ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM, VERSAO, BITMASK, _CRIADO_EM FROM HISTORICO_REDIRECIONADOR")
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var registro HistoricoRedirecionador
+
+		if err := rows.Scan(
+			&registro.RowId,
+			&registro.Id,
+			&registro.Nome,
+			&registro.CodigoHash,
+			&registro.OrdemDeRedirecionamento,
+			&registro.Usuario,
+			&registro.CriadoEm,
+			&registro.AtualizadoEm,
+			&registro.RemovidoEm,
+			&registro.Versao,
+			&registro.Bitmask,
+			&registro.CriadoEm_,
+		); err != nil {
+			return nil, err
+		}
+
+		historico = append(historico, registro)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return historico, nil
+}
+
 func HistoricoLinkReadAll(db *sql.DB) ([]HistoricoLink, error) {
 	var historico []HistoricoLink
 
-	rows, err := db.Query("SELECT _ROWID, ID, NOME, CODIGO_HASH, LINK_WHATSAPP, LINK_TELEGRAM, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM, VERSAO, BITMASK, _CRIADO_EM FROM HISTORICO_LINK")
+	rows, err := db.Query("SELECT _ROWID, ID, LINK, PLATAFORMA, REDIRECIONADOR, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM, VERSAO, BITMASK, _CRIADO_EM FROM HISTORICO_LINK")
 
 	if err != nil {
 		return nil, err
@@ -205,12 +259,9 @@ func HistoricoLinkReadAll(db *sql.DB) ([]HistoricoLink, error) {
 		if err := rows.Scan(
 			&registro.RowId,
 			&registro.Id,
-			&registro.Nome,
-			&registro.CodigoHash,
-			&registro.LinkWhatsapp,
-			&registro.LinkTelegram,
-			&registro.OrdemDeRedirecionamento,
-			&registro.Usuario,
+			&registro.Link,
+			&registro.Plataforma,
+			&registro.Redirecionador,
 			&registro.CriadoEm,
 			&registro.AtualizadoEm,
 			&registro.RemovidoEm,

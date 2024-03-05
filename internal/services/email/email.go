@@ -47,18 +47,18 @@ Content-Disposition: inline
   </div>
 <html>`
 
-tmpl, err := template.New("").Parse(message)
+	tmpl, err := template.New("").Parse(message)
 
 	if err != nil {
 		return err
 	}
 
 	err = tmpl.Execute(&messageTemplate, map[string]string{
-		"Id": fmt.Sprint(id),
-		"Nome": nome,
+		"Id":    fmt.Sprint(id),
+		"Nome":  nome,
 		"Valor": valor,
 		"Email": email,
-		"From": from,
+		"From":  from,
 	})
 
 	if err != nil {
@@ -96,18 +96,18 @@ Content-Disposition: inline
   </div>
 <html>`
 
-tmpl, err := template.New("").Parse(message)
+	tmpl, err := template.New("").Parse(message)
 
 	if err != nil {
 		return err
 	}
 
 	err = tmpl.Execute(&messageTemplate, map[string]string{
-		"Id": fmt.Sprint(id),
-		"Nome": nome,
+		"Id":    fmt.Sprint(id),
+		"Nome":  nome,
 		"Valor": valor,
 		"Email": email,
-		"From": from,
+		"From":  from,
 	})
 
 	if err != nil {

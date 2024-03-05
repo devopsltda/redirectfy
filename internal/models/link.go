@@ -2,37 +2,34 @@ package models
 
 import (
 	"database/sql"
+	"errors"
+	"math/rand/v2"
 )
 
 type Link struct {
-	Id                      int64          `json:"id"`
-	Nome                    string         `json:"nome"`
-	CodigoHash              string         `json:"codigo_hash"`
-	LinkWhatsapp            string         `json:"link_whatsapp"`
-	LinkTelegram            string         `json:"link_telegram"`
-	OrdemDeRedirecionamento string         `json:"ordem_de_redirecionamento"`
-	Usuario                 int64          `json:"usuario"`
-	CriadoEm                string         `json:"criado_em"`
-	AtualizadoEm            string         `json:"atualizado_em"`
-	RemovidoEm              sql.NullString `json:"removido_em" swaggertype:"string"`
+	Id             int64          `json:"id"`
+	Link           string         `json:"link"`
+	Plataforma     string         `json:"plataforma"`
+	Redirecionador string         `json:"redirecionador"`
+	CriadoEm       string         `json:"criado_em"`
+	AtualizadoEm   string         `json:"atualizado_em"`
+	RemovidoEm     sql.NullString `json:"removido_em" swaggertype:"string"`
 } // @name Link
 
-func LinkReadByCodigoHash(db *sql.DB, codigoHash string) (Link, error) {
+func LinkReadById(db *sql.DB, id int64, codigoHash string) (Link, error) {
 	var link Link
 
 	row := db.QueryRow(
-		"SELECT ID, NOME, CODIGO_HASH, LINK_WHATSAPP, LINK_TELEGRAM, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM LINK WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $1",
+		"SELECT ID, LINK, PLATAFORMA, REDIRECIONADOR, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM LINK WHERE REMOVIDO_EM IS NULL AND ID = $1 AND REDIRECIONADOR = $2",
+		id,
 		codigoHash,
 	)
 
 	if err := row.Scan(
 		&link.Id,
-		&link.Nome,
-		&link.CodigoHash,
-		&link.LinkWhatsapp,
-		&link.LinkTelegram,
-		&link.OrdemDeRedirecionamento,
-		&link.Usuario,
+		&link.Link,
+		&link.Plataforma,
+		&link.Redirecionador,
 		&link.CriadoEm,
 		&link.AtualizadoEm,
 		&link.RemovidoEm,
@@ -47,10 +44,13 @@ func LinkReadByCodigoHash(db *sql.DB, codigoHash string) (Link, error) {
 	return link, nil
 }
 
-func LinkReadAll(db *sql.DB) ([]Link, error) {
+func LinkReadAll(db *sql.DB, codigoHash string) ([]Link, error) {
 	var links []Link
 
-	rows, err := db.Query("SELECT ID, NOME, CODIGO_HASH, LINK_WHATSAPP, LINK_TELEGRAM, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM LINK WHERE REMOVIDO_EM IS NULL")
+	rows, err := db.Query(
+		"SELECT ID, LINK, PLATAFORMA, REDIRECIONADOR, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM LINK WHERE REMOVIDO_EM IS NULL AND REDIRECIONADOR = $1",
+		codigoHash,
+	)
 
 	if err != nil {
 		return nil, err
@@ -63,12 +63,9 @@ func LinkReadAll(db *sql.DB) ([]Link, error) {
 
 		if err := rows.Scan(
 			&link.Id,
-			&link.Nome,
-			&link.CodigoHash,
-			&link.LinkWhatsapp,
-			&link.LinkTelegram,
-			&link.OrdemDeRedirecionamento,
-			&link.Usuario,
+			&link.Link,
+			&link.Plataforma,
+			&link.Redirecionador,
 			&link.CriadoEm,
 			&link.AtualizadoEm,
 			&link.RemovidoEm,
@@ -86,36 +83,12 @@ func LinkReadAll(db *sql.DB) ([]Link, error) {
 	return links, nil
 }
 
-func LinkCheckIfCodigoHashExists(db *sql.DB, codigoHash string) (bool, error) {
-	row := db.QueryRow(
-		"SELECT '' FROM LINK WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $1",
-		codigoHash,
-	)
-
-	if err := row.Scan(); err != nil {
-		if err == sql.ErrNoRows {
-			return false, nil
-		} else {
-			return false, err
-		}
-	}
-
-	if err := row.Err(); err != nil {
-		return false, err
-	}
-
-	return true, nil
-}
-
-func LinkCreate(db *sql.DB, nome, codigoHash, linkWhatsapp, linkTelegram, ordemDeRedirecionamento string, usuario int64) error {
+func LinkCreate(db *sql.DB, link, plataforma, redirecionador string) error {
 	_, err := db.Exec(
-		"INSERT INTO LINK (NOME, CODIGO_HASH, LINK_WHATSAPP, LINK_TELEGRAM, ORDEM_DE_REDIRECIONAMENTO, USUARIO) VALUES ($1, $2, $3, $4, $5, $6)",
-		nome,
-		codigoHash,
-		linkWhatsapp,
-		linkTelegram,
-		ordemDeRedirecionamento,
-		usuario,
+		"INSERT INTO LINK (LINK, PLATAFORMA, REDIRECIONADOR) VALUES ($1, $2, $3)",
+		link,
+		plataforma,
+		redirecionador,
 	)
 
 	if err != nil {
@@ -125,43 +98,22 @@ func LinkCreate(db *sql.DB, nome, codigoHash, linkWhatsapp, linkTelegram, ordemD
 	return nil
 }
 
-func LinkRehash(db *sql.DB, codigoHashAntigo, codigoHashNovo string) error {
-	_, err := db.Exec(
-		"UPDATE LINK SET ATUALIZADO_EM = CURRENT_TIMESTAMP, CODIGO_HASH = $1 WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $2",
-		codigoHashNovo,
-		codigoHashAntigo,
-	)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func LinkUpdate(db *sql.DB, nome, codigoHash, linkWhatsapp, linkTelegram, ordemDeRedirecionamento string) error {
+func LinkUpdate(db *sql.DB, id int64, codigoHash, link, plataforma string) error {
 	sqlQuery := "UPDATE LINK SET ATUALIZADO_EM = CURRENT_TIMESTAMP"
 
-	if nome != "" {
-		sqlQuery += ", NOME = '" + nome + "'"
+	if link != "" {
+		sqlQuery += ", LINK = '" + link + "'"
 	}
 
-	if linkWhatsapp != "" {
-		sqlQuery += ", LINK_WHATSAPP = '" + linkWhatsapp + "'"
+	if plataforma != "" {
+		sqlQuery += ", PLATAFORMA = '" + plataforma + "'"
 	}
 
-	if linkTelegram != "" {
-		sqlQuery += ", LINK_TELEGRAM = '" + linkTelegram + "'"
-	}
-
-	if ordemDeRedirecionamento != "" {
-		sqlQuery += ", ORDEM_DE_REDIRECIONAMENTO = '" + ordemDeRedirecionamento + "'"
-	}
-
-	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $1"
+	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND ID = $1 AND REDIRECIONADOR = $2"
 
 	_, err := db.Exec(
 		sqlQuery,
+		id,
 		codigoHash,
 	)
 
@@ -172,9 +124,10 @@ func LinkUpdate(db *sql.DB, nome, codigoHash, linkWhatsapp, linkTelegram, ordemD
 	return nil
 }
 
-func LinkRemove(db *sql.DB, codigoHash string) error {
+func LinkRemove(db *sql.DB, id int64, codigoHash string) error {
 	_, err := db.Exec(
-		"UPDATE LINK SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE CODIGO_HASH = $1",
+		"UPDATE LINK SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE ID = $1 AND REDIRECIONADOR = $2",
+		id,
 		codigoHash,
 	)
 
@@ -183,4 +136,34 @@ func LinkRemove(db *sql.DB, codigoHash string) error {
 	}
 
 	return nil
+}
+
+func LinkPicker(links []Link) (*Link, *Link, error) {
+	var linksWhatsapp []Link
+	var linksTelegram []Link
+
+	for _, link := range links {
+		switch link.Plataforma {
+		case "whatsapp":
+			linksWhatsapp = append(linksWhatsapp, link)
+		case "telegram":
+			linksTelegram = append(linksTelegram, link)
+		default:
+			return nil, nil, errors.New("Plataforma não identificada nos links")
+		}
+	}
+
+	var linkWhatsapp *Link
+
+	if len(linksWhatsapp) > 0 {
+		linkWhatsapp = &linksWhatsapp[rand.IntN(len(linksWhatsapp))]
+	}
+
+	var linkTelegram *Link
+
+	if len(linksTelegram) > 0 {
+		linkTelegram = &linksTelegram[rand.IntN(len(linksTelegram))]
+	}
+
+	return linkWhatsapp, linkTelegram, nil
 }

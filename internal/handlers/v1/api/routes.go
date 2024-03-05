@@ -54,12 +54,20 @@ func RegisterRoutesV1(e *echo.Group) {
 	a.PATCH("/planos_de_assinatura/:nome", PlanoDeAssinaturaUpdate)
 	a.DELETE("/planos_de_assinatura/:nome", PlanoDeAssinaturaRemove)
 
+	// API - Redirecionador
+	a.GET("/redirecionadores", RedirecionadorReadAll)
+	a.GET("/redirecionadores/historico", HistoricoRedirecionadorReadAll)
+	a.GET("/redirecionadores/:codigo_hash", RedirecionadorReadByCodigoHash)
+	a.POST("/redirecionadores", RedirecionadorCreate)
+	a.PATCH("/redirecionadores/:codigo_hash/rehash", RedirecionadorRehash)
+	a.PATCH("/redirecionadores/:codigo_hash", RedirecionadorUpdate)
+	a.DELETE("/redirecionadores/:codigo_hash", RedirecionadorRemove)
+
 	// API - Link
-	a.GET("/links", LinkReadAll)
-	a.GET("/links/historico", HistoricoLinkReadAll)
-	a.GET("/links/:codigo_hash", LinkReadByCodigoHash)
-	a.POST("/links", LinkCreate)
-	a.PATCH("/links/:codigo_hash/rehash", LinkRehash)
-	a.PATCH("/links/:codigo_hash", LinkUpdate)
-	a.DELETE("/links/:codigo_hash", LinkRemove)
+	a.GET("/redirecionadores/:codigo_hash/links", LinkReadAll)
+	a.GET("/redirecionadores/:codigo_hash/links/historico", HistoricoLinkReadAll)
+	a.GET("/redirecionadores/:codigo_hash/links/:id", LinkReadById)
+	a.POST("/redirecionadores/:codigo_hash/links", LinkCreate)
+	a.PATCH("/redirecionadores/:codigo_hash/links/:id", LinkUpdate)
+	a.DELETE("/redirecionadores/:codigo_hash/links/:id", LinkRemove)
 }

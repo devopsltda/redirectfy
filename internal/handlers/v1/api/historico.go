@@ -24,7 +24,7 @@ func HistoricoPlanoDeAssinaturaReadAll(c echo.Context) error {
 	historico, err := models.HistoricoPlanoDeAssinaturaReadAll(database.Db)
 
 	if err != nil {
-		log.Printf("HistoricoReadAll: %v", err)
+		log.Printf("HistoricoPlanoDeAssinaturaReadAll: %v", err)
 		return utils.ErroBancoDados
 	}
 
@@ -45,7 +45,28 @@ func HistoricoUsuarioReadAll(c echo.Context) error {
 	historico, err := models.HistoricoUsuarioReadAll(database.Db)
 
 	if err != nil {
-		log.Printf("HistoricoReadAll: %v", err)
+		log.Printf("HistoricoUsuarioReadAll: %v", err)
+		return utils.ErroBancoDados
+	}
+
+	return c.JSON(http.StatusOK, historico)
+}
+
+// HistoricoRedirecionadorReadAll godoc
+//
+// @Summary Retorna o histórico de ações relativas a redirecionadores no sistema
+// @Tags    Histórico
+// @Accept  json
+// @Produce json
+// @Success 200 {object} []models.HistoricoRedirecionador
+// @Failure 400 {object} Erro
+// @Failure 500 {object} Erro
+// @Router  /v1/api/redirecionadores/historico [get]
+func HistoricoRedirecionadorReadAll(c echo.Context) error {
+	historico, err := models.HistoricoRedirecionadorReadAll(database.Db)
+
+	if err != nil {
+		log.Printf("HistoricoRedirecionadorReadAll: %v", err)
 		return utils.ErroBancoDados
 	}
 
@@ -66,7 +87,7 @@ func HistoricoLinkReadAll(c echo.Context) error {
 	historico, err := models.HistoricoLinkReadAll(database.Db)
 
 	if err != nil {
-		log.Printf("HistoricoReadAll: %v", err)
+		log.Printf("HistoricoLinkReadAll: %v", err)
 		return utils.ErroBancoDados
 	}
 

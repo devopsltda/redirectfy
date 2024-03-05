@@ -20,7 +20,7 @@ func GoToLinkWebHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Insira o HTML de erro 4xx aqui")
 	}
 
-	link, err := models.LinkReadByCodigoHash(database.Db, codigoHash)
+	links, err := models.LinkReadAll(database.Db, codigoHash)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -31,7 +31,9 @@ func GoToLinkWebHandler(c echo.Context) error {
 		}
 	}
 
-	component := views.GoToLink(link)
+	linkWhatsapp, linkTelegram, err := models.LinkPicker(links)
+
+	component := views.GoToLink(linkWhatsapp, linkTelegram)
 	err = component.Render(c.Request().Context(), c.Response().Writer)
 
 	if err != nil {
