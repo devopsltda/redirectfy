@@ -24,6 +24,7 @@ var SenhaParams = &argon2id.Params{
 }
 
 /*** Variáveis de Ambient ***/
+var AppEnv = os.Getenv("APP_ENV")
 var Pepper = os.Getenv("PEPPER")
 var TempoExpiracao, _ = strconv.Atoi(os.Getenv("VALIDATION_EXPIRE_TIME"))
 

@@ -2,7 +2,7 @@ package web
 
 import (
 	"database/sql"
-	"log"
+	"log/slog"
 	"net/http"
 
 	"redirectify/internal/models"
@@ -26,7 +26,7 @@ func GoToLinkWebHandler(c echo.Context) error {
 		if err == sql.ErrNoRows {
 			return echo.NewHTTPError(http.StatusNotFound, "Insira o HTML de erro 404 aqui")
 		} else {
-			log.Printf("GoToLinkWebHandler: %v", err)
+			slog.Error("GoToLinkWebHandler", slog.Any("error", err))
 			return echo.NewHTTPError(http.StatusInternalServerError, "Insira o HTML de erro 5xx aqui")
 		}
 	}
@@ -37,7 +37,7 @@ func GoToLinkWebHandler(c echo.Context) error {
 	err = component.Render(c.Request().Context(), c.Response().Writer)
 
 	if err != nil {
-		log.Printf("GoToLinkWebHandler: %v", err)
+		slog.Error("GoToLinkWebHandler", slog.Any("error", err))
 		return echo.NewHTTPError(http.StatusInternalServerError, "Insira o HTML de erro 5xx aqui")
 	}
 

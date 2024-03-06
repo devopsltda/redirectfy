@@ -3,7 +3,6 @@ package models
 import (
 	"database/sql"
 	"fmt"
-	"log"
 )
 
 type PlanoDeAssinatura struct {
@@ -118,8 +117,6 @@ func PlanoDeAssinaturaUpdate(db *sql.DB, nomeParam, nome string, valorMensal, li
 	}
 
 	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND NOME = $1"
-
-	log.Println(nomeParam, sqlQuery)
 
 	_, err := db.Exec(
 		sqlQuery,

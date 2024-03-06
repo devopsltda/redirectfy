@@ -1,7 +1,7 @@
 package api
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
 	"strconv"
 
@@ -39,14 +39,14 @@ func LinkReadById(c echo.Context) error {
 	parsedId, err := strconv.ParseInt(id, 10, 64)
 
 	if err != nil {
-		log.Printf("LinkReadById: %v", err)
+		slog.Error("LinkReadById", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
 	link, err := models.LinkReadById(database.Db, parsedId, codigoHash)
 
 	if err != nil {
-		log.Printf("LinkReadById: %v", err)
+		slog.Error("LinkReadById", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -74,7 +74,7 @@ func LinkReadAll(c echo.Context) error {
 	links, err := models.LinkReadAll(database.Db, codigoHash)
 
 	if err != nil {
-		log.Printf("LinkReadAll: %v", err)
+		slog.Error("LinkReadAll", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -138,7 +138,7 @@ func LinkCreate(c echo.Context) error {
 	)
 
 	if err != nil {
-		log.Printf("LinkCreate: %v", err)
+		slog.Error("LinkCreate", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -198,7 +198,7 @@ func LinkUpdate(c echo.Context) error {
 	err := models.LinkUpdate(database.Db, parametros.Id, parametros.CodigoHash, parametros.Nome, parametros.Link, parametros.Plataforma)
 
 	if err != nil {
-		log.Printf("LinkUpdate: %v", err)
+		slog.Error("LinkUpdate", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -232,14 +232,14 @@ func LinkRemove(c echo.Context) error {
 	parsedId, err := strconv.ParseInt(id, 10, 64)
 
 	if err != nil {
-		log.Printf("LinkReadById: %v", err)
+		slog.Error("LinkRemove", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
 	err = models.LinkRemove(database.Db, parsedId, codigoHash)
 
 	if err != nil {
-		log.Printf("LinkReadById: %v", err)
+		slog.Error("LinkRemove", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 

@@ -1,9 +1,11 @@
 package components
 
-templ Input(label, placeholder, inputType, hangingText string) {
+templ Input(name, label, placeholder, inputType, hangingText string) {
 	<div class="flex flex-col">
-		<label class="font-bold text-rgraydarker text-md mb-2.5">{ label }</label>
-		<input class="form-input border-b border-b-rblack bg-rgraylightest h-10 text-rblack text-bold p-2 placeholder:text-rgraydark" type={ inputType } placeholder={ placeholder } />
+		<div class="flex flex-col relative">
+			<label for={ name } class="font-bold text-rgraydarker text-md mb-2.5">{ label }</label>
+			<input id={ name } name={ name } class="border-0 border-b-2 border-b-rgraylighter h-10 text-rblack text-bold p-2 transition ease-in-out delay-50 duration-150 placeholder:text-rgraydark focus:ring-0 focus:border-rlight focus:border-b-4 focus:outline-none" type={ inputType } placeholder={ placeholder }></input>
+		</div>
 
 		if hangingText != "" {
 			<span class="mt-1 text-rgraydarker text-sm text-end">{ hangingText }</span>

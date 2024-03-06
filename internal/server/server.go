@@ -3,13 +3,16 @@ package server
 import (
 	"database/sql"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
 
-	_ "github.com/joho/godotenv/autoload"
 	"redirectify/internal/services/database"
+	"redirectify/internal/utils"
+
+	_ "github.com/joho/godotenv/autoload"
 )
 
 type Server struct {
@@ -18,6 +21,13 @@ type Server struct {
 }
 
 func NewServer() *http.Server {
+	if utils.AppEnv == "debug" {
+		appLevel := new(slog.LevelVar)
+		h := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: appLevel})
+		slog.SetDefault(slog.New(h))
+		appLevel.Set(slog.LevelDebug)
+	}
+
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 
 	database.New()

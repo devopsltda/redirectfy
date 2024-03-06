@@ -72,6 +72,14 @@ module.exports = {
 
       addUtilities(newUtilities, variants('boxShadow'))
     }),
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        ".text-last-center": {
+          "textAlignLast": "center",
+
+        },
+      })
+    })
   ],
 }
 

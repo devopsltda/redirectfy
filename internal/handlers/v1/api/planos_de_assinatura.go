@@ -1,7 +1,7 @@
 package api
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -31,7 +31,7 @@ func PlanoDeAssinaturaReadByNome(c echo.Context) error {
 	planoDeAssinatura, err := models.PlanoDeAssinaturaReadByNome(database.Db, nome)
 
 	if err != nil {
-		log.Printf("PlanoDeAssinaturaReadByNome: %v", err)
+		slog.Error("PlanoDeAssinaturaReadByNome", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -52,7 +52,7 @@ func PlanoDeAssinaturaReadAll(c echo.Context) error {
 	planosDeAssinatura, err := models.PlanoDeAssinaturaReadAll(database.Db)
 
 	if err != nil {
-		log.Printf("PlanoDeAssinaturaReadAll: %v", err)
+		slog.Error("PlanoDeAssinaturaReadAll", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -108,7 +108,7 @@ func PlanoDeAssinaturaCreate(c echo.Context) error {
 	err := models.PlanoDeAssinaturaCreate(database.Db, parametros.Nome, parametros.ValorMensal, parametros.Limite, parametros.PeriodoLimite)
 
 	if err != nil {
-		log.Printf("PlanoDeAssinaturaCreate: %v", err)
+		slog.Error("PlanoDeAssinaturaCreate", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -177,7 +177,7 @@ func PlanoDeAssinaturaUpdate(c echo.Context) error {
 	err := models.PlanoDeAssinaturaUpdate(database.Db, nome, parametros.Nome, parametros.ValorMensal, parametros.Limite, parametros.PeriodoLimite)
 
 	if err != nil {
-		log.Printf("PlanoDeAssinaturaUpdate: %v", err)
+		slog.Error("PlanoDeAssinaturaUpdate", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -205,7 +205,7 @@ func PlanoDeAssinaturaRemove(c echo.Context) error {
 	err := models.PlanoDeAssinaturaRemove(database.Db, nome)
 
 	if err != nil {
-		log.Printf("PlanoDeAssinaturaRemove: %v", err)
+		slog.Error("PlanoDeAssinaturaRemove", slog.Any("error", err))
 		return err
 	}
 

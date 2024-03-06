@@ -1,7 +1,7 @@
 package api
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -31,7 +31,7 @@ func RedirecionadorReadByCodigoHash(c echo.Context) error {
 	redirecionador, err := models.RedirecionadorReadByCodigoHash(database.Db, codigoHash)
 
 	if err != nil {
-		log.Printf("RedirecionadorReadByCodigoHash: %v", err)
+		slog.Error("RedirecionadorReadByCodigoHash", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -52,7 +52,7 @@ func RedirecionadorReadAll(c echo.Context) error {
 	redirecionadores, err := models.RedirecionadorReadAll(database.Db)
 
 	if err != nil {
-		log.Printf("RedirecionadorReadAll: %v", err)
+		slog.Error("RedirecionadorReadAll", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -111,7 +111,7 @@ func RedirecionadorCreate(c echo.Context) error {
 		codigoHashExiste, err = models.RedirecionadorCheckIfCodigoHashExists(database.Db, codigoHash)
 
 		if err != nil {
-			log.Printf("RedirecionadorCreate: %v", err)
+			slog.Error("RedirecionadorCreate", slog.Any("error", err))
 			return utils.ErroBancoDados
 		}
 	}
@@ -125,7 +125,7 @@ func RedirecionadorCreate(c echo.Context) error {
 	)
 
 	if err != nil {
-		log.Printf("RedirecionadorCreate: %v", err)
+		slog.Error("RedirecionadorCreate", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -160,7 +160,7 @@ func RedirecionadorRehash(c echo.Context) error {
 		codigoHashExiste, err = models.RedirecionadorCheckIfCodigoHashExists(database.Db, codigoHashNovo)
 
 		if err != nil {
-			log.Printf("RedirecionadorRehash: %v", err)
+			slog.Error("RedirecionadorRehash", slog.Any("error", err))
 			return utils.ErroBancoDados
 		}
 	}
@@ -168,7 +168,7 @@ func RedirecionadorRehash(c echo.Context) error {
 	err = models.RedirecionadorRehash(database.Db, codigoHash, codigoHashNovo)
 
 	if err != nil {
-		log.Printf("RedirecionadorRehash: %v", err)
+		slog.Error("RedirecionadorRehash", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -199,7 +199,7 @@ func RedirecionadorUpdate(c echo.Context) error {
 	codigoHash := c.Param("codigo_hash")
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
-		log.Printf("RedirecionadorUpdate: %v", err)
+		slog.Error("RedirecionadorUpdate", slog.Any("error", err))
 		return utils.ErroValidacaoCodigoHash
 	}
 
@@ -222,7 +222,7 @@ func RedirecionadorUpdate(c echo.Context) error {
 	err := models.RedirecionadorUpdate(database.Db, parametros.Nome, codigoHash, parametros.OrdemDeRedirecionamento)
 
 	if err != nil {
-		log.Printf("RedirecionadorUpdate: %v", err)
+		slog.Error("RedirecionadorUpdate", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -250,7 +250,7 @@ func RedirecionadorRemove(c echo.Context) error {
 	err := models.RedirecionadorRemove(database.Db, codigoHash)
 
 	if err != nil {
-		log.Printf("RedirecionadorRemove: %v", err)
+		slog.Error("RedirecionadorRemove", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 

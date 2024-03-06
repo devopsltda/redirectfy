@@ -1,7 +1,7 @@
 package api
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
 
 	"redirectify/internal/auth"
@@ -35,7 +35,7 @@ func UsuarioReadByNomeDeUsuario(c echo.Context) error {
 	usuario, err := models.UsuarioReadByNomeDeUsuario(database.Db, nomeDeUsuario)
 
 	if err != nil {
-		log.Printf("UsuarioReadByNomeDeUsuario: %v", err)
+		slog.Error("UsuarioReadByNomeDeUsuario", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -56,7 +56,7 @@ func UsuarioReadAll(c echo.Context) error {
 	usuarios, err := models.UsuarioReadAll(database.Db)
 
 	if err != nil {
-		log.Printf("UsuarioReadAll: %v", err)
+		slog.Error("UsuarioReadAll", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -138,7 +138,7 @@ func UsuarioCreate(c echo.Context) error {
 	senhaComHash, err := argon2id.CreateHash(parametros.Senha+utils.Pepper, utils.SenhaParams)
 
 	if err != nil {
-		log.Printf("UsuarioCreate: %v", err)
+		slog.Error("UsuarioCreate", slog.Any("error", err))
 		return utils.ErroCriacaoSenha
 	}
 
@@ -156,7 +156,7 @@ func UsuarioCreate(c echo.Context) error {
 	)
 
 	if err != nil {
-		log.Printf("UsuarioCreate: %v", err)
+		slog.Error("UsuarioCreate", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -169,7 +169,7 @@ func UsuarioCreate(c echo.Context) error {
 		valorExiste, err = models.EmailAutenticacaoCheckIfValorExists(database.Db, valor)
 
 		if err != nil {
-			log.Printf("UsuarioCreate: %v", err)
+			slog.Error("UsuarioCreate", slog.Any("error", err))
 			return utils.ErroBancoDados
 		}
 	}
@@ -177,14 +177,14 @@ func UsuarioCreate(c echo.Context) error {
 	id, err := models.EmailAutenticacaoCreate(database.Db, valor, "validacao", usuarioId)
 
 	if err != nil {
-		log.Printf("UsuarioCreate: %v", err)
+		slog.Error("UsuarioCreate", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
 	err = email.SendEmailValidacao(id, parametros.Nome, valor, parametros.Email)
 
 	if err != nil {
-		log.Printf("UsuarioCreate: %v", err)
+		slog.Error("UsuarioCreate", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -274,7 +274,7 @@ func UsuarioUpdate(c echo.Context) error {
 		senhaComHash, err := argon2id.CreateHash(parametros.Senha+utils.Pepper, utils.SenhaParams)
 
 		if err != nil {
-			log.Printf("UsuarioUpdate: %v", err)
+			slog.Error("UsuarioUpdate", slog.Any("error", err))
 			return utils.ErroCriacaoSenha
 		}
 
@@ -293,7 +293,7 @@ func UsuarioUpdate(c echo.Context) error {
 	)
 
 	if err != nil {
-		log.Printf("UsuarioUpdate: %v", err)
+		slog.Error("UsuarioUpdate", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -321,21 +321,21 @@ func UsuarioAutenticado(c echo.Context) error {
 	usuario, err := models.EmailAutenticacaoCheckIfValorExistsAndIsValid(database.Db, valor, "validacao")
 
 	if err != nil {
-		log.Printf("UsuarioAutenticado: %v", err)
+		slog.Error("UsuarioAutenticado", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
 	err = models.UsuarioAutenticado(database.Db, usuario)
 
 	if err != nil {
-		log.Printf("UsuarioAutenticado: %v", err)
+		slog.Error("UsuarioAutenticado", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
 	err = models.EmailAutenticacaoExpirar(database.Db, valor)
 
 	if err != nil {
-		log.Printf("UsuarioAutenticado: %v", err)
+		slog.Error("UsuarioAutenticado", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -365,7 +365,7 @@ func UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 	usuario, err := models.UsuarioReadByNomeDeUsuario(database.Db, nomeDeUsuario)
 
 	if err != nil {
-		log.Printf("UsuarioTrocaDeSenhaExigir: %v", err)
+		slog.Error("UsuarioTrocaDeSenhaExigir", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -378,7 +378,7 @@ func UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 		valorExiste, err = models.EmailAutenticacaoCheckIfValorExists(database.Db, valor)
 
 		if err != nil {
-			log.Printf("UsuarioTrocaDeSenhaExigir: %v", err)
+			slog.Error("UsuarioTrocaDeSenhaExigir", slog.Any("error", err))
 			return utils.ErroBancoDados
 		}
 	}
@@ -386,14 +386,14 @@ func UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 	id, err := models.EmailAutenticacaoCreate(database.Db, valor, "senha", usuario.Id)
 
 	if err != nil {
-		log.Printf("UsuarioTrocaDeSenhaExigir: %v", err)
+		slog.Error("UsuarioTrocaDeSenhaExigir", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
 	err = email.SendEmailTrocaDeSenha(id, usuario.Nome, valor, usuario.Email)
 
 	if err != nil {
-		log.Printf("UsuarioTrocaDeSenhaExigir: %v", err)
+		slog.Error("UsuarioTrocaDeSenhaExigir", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -424,40 +424,40 @@ func UsuarioTrocaDeSenha(c echo.Context) error {
 	}{}
 
 	if err := c.Bind(&parametros); err != nil {
-		log.Printf("UsuarioTrocaDeSenha: %v", err)
+		slog.Error("UsuarioTrocaDeSenha", slog.Any("error", err))
 		return utils.ErroCriacaoSenha
 	}
 
 	if err := utils.Validate.Var(parametros.SenhaNova, "required,min=8,max=72"); err != nil {
-		log.Printf("UsuarioTrocaDeSenha: %v", err)
+		slog.Error("UsuarioTrocaDeSenha", slog.Any("error", err))
 		return utils.ErroCriacaoSenha
 	}
 
 	usuario, err := models.EmailAutenticacaoCheckIfValorExistsAndIsValid(database.Db, valor, "senha")
 
 	if err != nil {
-		log.Printf("UsuarioTrocaDeSenha: %v", err)
+		slog.Error("UsuarioTrocaDeSenha", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
 	senhaComHash, err := argon2id.CreateHash(parametros.SenhaNova+utils.Pepper, utils.SenhaParams)
 
 	if err != nil {
-		log.Printf("UsuarioTrocaDeSenha: %v", err)
+		slog.Error("UsuarioTrocaDeSenha", slog.Any("error", err))
 		return utils.ErroCriacaoSenha
 	}
 
 	err = models.UsuarioTrocaSenha(database.Db, usuario, senhaComHash)
 
 	if err != nil {
-		log.Printf("UsuarioTrocaDeSenha: %v", err)
+		slog.Error("UsuarioTrocaDeSenha", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
 	err = models.EmailAutenticacaoExpirar(database.Db, valor)
 
 	if err != nil {
-		log.Printf("UsuarioTrocaDeSenha: %v", err)
+		slog.Error("UsuarioTrocaDeSenha", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -485,7 +485,7 @@ func UsuarioRemove(c echo.Context) error {
 	err := models.UsuarioRemove(database.Db, nomeDeUsuario)
 
 	if err != nil {
-		log.Printf("UsuarioRemove: %v", err)
+		slog.Error("UsuarioRemove", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -541,21 +541,21 @@ func UsuarioLogin(c echo.Context) error {
 	id, nome, nomeDeUsuario, autenticado, senha, err := models.UsuarioLogin(database.Db, parametros.Email, parametros.NomeDeUsuario)
 
 	if err != nil {
-		log.Printf("UsuarioLogin: %v", err)
+		slog.Error("UsuarioLogin", slog.Any("error", err))
 		return utils.ErroLogin
 	}
 
 	match, err := argon2id.ComparePasswordAndHash(parametros.Senha+utils.Pepper, senha)
 
 	if !match || err != nil {
-		log.Printf("UsuarioLogin: %v", err)
+		slog.Error("UsuarioLogin", slog.Any("error", err))
 		return utils.ErroLogin
 	}
 
 	err = auth.GeraTokensESetaCookies(id, nome, nomeDeUsuario, autenticado, c)
 
 	if err != nil {
-		log.Printf("UsuarioLogin: %v", err)
+		slog.Error("UsuarioLogin", slog.Any("error", err))
 		return utils.ErroAssinaturaJWT
 	}
 

@@ -1,7 +1,7 @@
 package api
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -24,7 +24,7 @@ func HistoricoPlanoDeAssinaturaReadAll(c echo.Context) error {
 	historico, err := models.HistoricoPlanoDeAssinaturaReadAll(database.Db)
 
 	if err != nil {
-		log.Printf("HistoricoPlanoDeAssinaturaReadAll: %v", err)
+		slog.Error("HistoricoPlanoDeAssinaturaReadAll", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -45,7 +45,7 @@ func HistoricoUsuarioReadAll(c echo.Context) error {
 	historico, err := models.HistoricoUsuarioReadAll(database.Db)
 
 	if err != nil {
-		log.Printf("HistoricoUsuarioReadAll: %v", err)
+		slog.Error("HistoricoUsuarioReadAll", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -66,7 +66,7 @@ func HistoricoRedirecionadorReadAll(c echo.Context) error {
 	historico, err := models.HistoricoRedirecionadorReadAll(database.Db)
 
 	if err != nil {
-		log.Printf("HistoricoRedirecionadorReadAll: %v", err)
+		slog.Error("HistoricoRedirecionadorReadAll", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -87,7 +87,7 @@ func HistoricoLinkReadAll(c echo.Context) error {
 	historico, err := models.HistoricoLinkReadAll(database.Db)
 
 	if err != nil {
-		log.Printf("HistoricoLinkReadAll: %v", err)
+		slog.Error("HistoricoLinkReadAll", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 

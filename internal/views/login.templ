@@ -5,12 +5,12 @@ import "redirectify/internal/components"
 templ Login() {
   @components.BaseNoAuth("Login") {
     <div class="mt-10 flex flex-col gap-10 items-center justify-between">
-      <p class="text-justify">
+      <p class="text-justify text-last-center">
       Seja bem vindo ao Redirectify, seu manager de links número um. Insira seus dados ou cadastre-se para continuar.
       </p>
       <form class="flex flex-col gap-4 w-full">
-        @components.Input("Nome de Usuário ou Email", "", "text", "")
-        @components.Input("Senha", "", "password", "")
+        @components.Input("login", "Nome de Usuário ou Email", "", "text", "")
+        @components.Input("senha", "Senha", "", "password", "")
         <div class="mt-6 space-y-4">
           @components.ButtonPrimary("Fazer login", "submit")
           @components.ButtonSecondary("Cadastrar-se", "button")
@@ -23,14 +23,14 @@ templ Login() {
 templ Signup() {
   @components.BaseNoAuth("Criar Conta") {
     <div class="mt-10 flex flex-col gap-10 items-center justify-between">
-      <p class="text-justify">
+      <p class="text-justify text-last-center">
       Seja bem vindo ao Redirectify, seu manager de links número um. Insira seus dados ou cadastre-se para continuar.
       </p>
       <form class="flex flex-col gap-4 w-full">
-        @components.Input("Nome de Usuário", "", "text", "")
-        @components.Input("Email", "", "email", "")
-        @components.Input("Senha", "", "password", "")
-        @components.Input("Confirmar senha", "", "password", "")
+        @components.Input("nome_de_usuario", "Nome de Usuário", "", "text", "")
+        @components.Input("email", "Email", "", "email", "")
+        @components.Input("senha", "Senha", "", "password", "")
+        @components.Input("confirmacao_senha", "Confirmar senha", "", "password", "")
         <ul class="text-sm">
           <li>- Um mínimo de 8 caracteres</li>
         </ul>
@@ -48,7 +48,7 @@ templ AccountCreated() {
       <svg class="text-rprimary w-28 h-28" viewBox="0 0 103 103" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M51.5 0C23.072 0 0 23.072 0 51.5C0 79.928 23.072 103 51.5 103C79.928 103 103 79.928 103 51.5C103 23.072 79.928 0 51.5 0ZM51.5 92.7C28.7885 92.7 10.3 74.2115 10.3 51.5C10.3 28.7885 28.7885 10.3 51.5 10.3C74.2115 10.3 92.7 28.7885 92.7 51.5C92.7 74.2115 74.2115 92.7 51.5 92.7ZM75.1385 28.737L41.2 62.6755L27.8615 49.3885L20.6 56.65L41.2 77.25L82.4 36.05L75.1385 28.737Z" fill="currentColor"/>
       </svg>
-      <p class="text-justify">
+      <p class="text-justify text-last-center">
         Parabéns! Sua conta do Redirectify foi criada com sucesso. Para acessá-la, valide seu email pelo link que foi enviado a ele.
       </p>
       @components.ButtonPrimary("Concluir", "button")
