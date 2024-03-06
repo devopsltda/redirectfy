@@ -4,14 +4,23 @@ import (
 	"database/sql"
 	"log"
 	"os"
+	"path/filepath"
+	"time"
+
+	"github.com/libsql/go-libsql"
 
 	_ "github.com/joho/godotenv/autoload"
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 )
 
 var (
-	Db    *sql.DB
-	dbUrl = os.Getenv("DB_URL")
+	dbUrl   = os.Getenv("DB_URL")
+	dbName  = os.Getenv("DB_NAME")
+	dbToken = os.Getenv("DB_TOKEN")
+
+	Db          *sql.DB
+	TempDir     string
+	DbConnector *libsql.Connector
 )
 
 func New() {
@@ -19,10 +28,23 @@ func New() {
 
 	switch os.Getenv("APP_ENV") {
 	case "test":
-		Db, err = sql.Open("sqlite3", "file::memory:?cache=shared")
+		Db, err = sql.Open("sqlite", "file::memory:?cache=shared")
 		seed(os.Getenv("DB_SOURCE_PATH"))
 	default:
-		Db, err = sql.Open("sqlite3", dbUrl)
+		TempDir, err := os.MkdirTemp("", "libsql-*")
+
+		if err != nil {
+			log.Fatal("Erro ao criar um diretório temporário:", err)
+		}
+
+		dbPath := filepath.Join(TempDir, dbName)
+		DbConnector, err = libsql.NewEmbeddedReplicaConnector(dbPath, dbUrl, libsql.WithAuthToken(dbToken), libsql.WithAutoSync(15*time.Minute))
+
+		if err != nil {
+			log.Fatal("Erro ao criar um conector:", err)
+		}
+
+		Db = sql.OpenDB(DbConnector)
 	}
 
 	if err != nil {
@@ -32,14 +54,26 @@ func New() {
 	}
 }
 
-func seed(dbSeedPath string) error {
-	query, err := os.ReadFile(dbSeedPath)
+func seed(dbSourcePath string) error {
+	queryDDL, err := os.ReadFile(dbSourcePath+"ddl.sql")
 
 	if err != nil {
 		return err
 	}
 
-	_, err = Db.Exec(string(query))
+	_, err = Db.Exec(string(queryDDL))
+
+	if err != nil {
+		return err
+	}
+
+	queryTriggers, err := os.ReadFile(dbSourcePath+"triggers.sql")
+
+	if err != nil {
+		return err
+	}
+
+	_, err = Db.Exec(string(queryTriggers))
 
 	return err
 }

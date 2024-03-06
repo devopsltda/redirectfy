@@ -6,12 +6,11 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	_ "github.com/joho/godotenv/autoload"
 )
 
 func TestDatabase(t *testing.T) {
 	database.New()
+	defer database.Db.Close()
 
 	t.Run("Consultar usuários do banco de dados", func(t *testing.T) {
 		_, err := models.UsuarioReadAll(database.Db)

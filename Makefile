@@ -5,7 +5,8 @@ all: build
 
 # Create the database
 db:
-	@sqlite3 ./storage/test.db ".read internal/services/database/source.sql" 
+	@sqlite3 ./storage/test.db ".read internal/services/database/source/ddl.sql" 
+	@sqlite3 ./storage/test.db ".read internal/services/database/source/triggers.sql" 
 
 # Seed the database
 seed:
