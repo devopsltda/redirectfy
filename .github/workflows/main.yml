@@ -25,5 +25,7 @@ jobs:
         run: go install github.com/a-h/templ/cmd/templ@latest
       - name: Build Go
         run: templ generate && go build -v ./...
+      - name: Copy .env.example
+        run: cp .env.example .env
       - name: Test with the Go CLI
         run: make test
