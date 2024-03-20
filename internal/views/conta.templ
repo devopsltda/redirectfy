@@ -1,0 +1,171 @@
+package views
+
+import "redirectify/internal/components"
+
+templ SelectPlan() {
+  @components.BaseNoAuth("Selecionar plano") {
+    <div class="mt-10 flex flex-col gap-10 items-center justify-between">
+      <p class="text-justify text-last-center">
+        Escolha o plano que melhor atenda as suas necessidades.
+      </p>
+      <h2 class="text-rblack text-lg text-center font-bold">Planos</h2>
+      @components.CardPlan("Standard", "2", "100", "39,99", false)
+      @components.CardPlan("Standard", "5", "1k", "49,99", false)
+      @components.CardBestPlan("Standard", "20", "100k", "69,99", true)
+      <form class="flex flex-col gap-4 w-full">
+        <div class="mt-6 space-y-4">
+          @components.ButtonSecondary("Confirmar", "button")
+        </div>
+      </form>
+    </div>
+  }
+}
+
+templ Login() {
+  @components.BaseNoAuth("Login") {
+    <div class="mt-10 flex flex-col gap-10 items-center justify-between">
+      <p class="text-justify text-last-center">
+      Seja bem vindo ao Redirectify, seu manager de links número um. Insira seus dados ou cadastre-se para continuar.
+      </p>
+      <form class="flex flex-col gap-4 w-full">
+        @components.Input("login", "Nome de Usuário ou Email", "", "text", "")
+        @components.Input("senha", "Senha", "", "password", "")
+        <a class="text-rgraydark text-sm text-end underline" href="/forgot_password">Esqueceu sua senha?</a>
+        <div class="mt-6 space-y-4">
+          @components.ButtonPrimary("Fazer login", "submit")
+          @components.ButtonSecondary("Cadastrar-se", "button")
+        </div>
+      </form>
+    </div>
+  }
+}
+
+templ Signup() {
+  @components.BaseNoAuth("Criar Conta") {
+    <div class="mt-10 flex flex-col gap-10 items-center justify-between">
+      <p class="text-justify text-last-center">
+      Seja bem vindo ao Redirectify, seu manager de links número um. Insira seus dados ou cadastre-se para continuar.
+      </p>
+      <form class="flex flex-col gap-4 w-full">
+        @components.Input("nome_de_usuario", "Nome de Usuário", "", "text", "")
+        @components.Input("email", "Email", "", "email", "")
+        @components.Input("senha", "Senha", "", "password", "")
+        @components.Input("confirmacao_senha", "Confirmar senha", "", "password", "")
+        <ul class="text-rgraydarker text-sm">
+          <li>- Um mínimo de 8 caracteres</li>
+        </ul>
+        <div class="mt-6 space-y-4">
+          @components.ButtonPrimary("Cadastrar-se", "submit")
+        </div>
+      </form>
+    </div>
+  }
+}
+
+templ ForgotPassword() {
+  @components.BaseNoAuth("Esqueci minha senha") {
+    <div class="mt-10 flex flex-col gap-10 items-center justify-between">
+      <p class="text-justify text-last-center">
+        Insira abaixo seu email para enviarmos um link de recuperação.
+      </p>
+      <form class="flex flex-col gap-4 w-full">
+        @components.Input("email", "Email de Cadastro", "", "email", "")
+        <span class="text-rgraydark text-sm text-end">Voltar para <a class="underline" href="/login">página de login</a></span>
+        <div class="mt-6 space-y-4">
+          @components.ButtonPrimary("Enviar link de recuperação", "submit")
+        </div>
+      </form>
+    </div>
+  }
+}
+
+templ PasswordForgotten() {
+  @components.BaseNoAuth("Link de recuperação enviado") {
+    <div class="mt-10 flex flex-col gap-10 items-center justify-between">
+      <svg class="text-rprimary w-28 h-28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4">
+        <path fill-rule="evenodd" d="M11.89 4.111a5.5 5.5 0 1 0 0 7.778.75.75 0 1 1 1.06 1.061A7 7 0 1 1 15 8a2.5 2.5 0 0 1-4.083 1.935A3.5 3.5 0 1 1 11.5 8a1 1 0 0 0 2 0 5.48 5.48 0 0 0-1.61-3.889ZM10 8a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z" clip-rule="evenodd" />
+      </svg>
+      <p class="text-justify text-last-center">
+        Enviamos um link de recuperação para seu email. Verifique sua caixa de entrada.
+      </p>
+      @components.ButtonPrimary("Voltar", "button")
+    </div>
+  }
+}
+
+templ AccountCreated() {
+  @components.BaseNoAuth("Conta validada com sucesso") {
+    <div class="mt-10 flex flex-col gap-10 items-center justify-between">
+      <svg class="text-rprimary w-28 h-28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4">
+        <path fill-rule="evenodd" d="M11.89 4.111a5.5 5.5 0 1 0 0 7.778.75.75 0 1 1 1.06 1.061A7 7 0 1 1 15 8a2.5 2.5 0 0 1-4.083 1.935A3.5 3.5 0 1 1 11.5 8a1 1 0 0 0 2 0 5.48 5.48 0 0 0-1.61-3.889ZM10 8a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z" clip-rule="evenodd" />
+      </svg>
+      <p class="text-justify text-last-center">
+        Parabéns! Sua conta do Redirectify foi criada com sucesso. Para acessá-la, valide seu email pelo link que foi enviado a ele.
+      </p>
+      @components.ButtonPrimary("Voltar", "button")
+    </div>
+  }
+}
+
+templ ChangePassword() {
+  @components.BaseNoAuth("Criar Conta") {
+    <div class="mt-10 flex flex-col gap-10 items-center justify-between">
+      <p class="text-justify text-last-center">
+        Insira uma nova senha para podermos redefiní-la.
+      </p>
+      <form class="flex flex-col gap-4 w-full">
+        @components.Input("senha", "Senha", "", "password", "")
+        @components.Input("confirmacao_senha", "Confirmar senha", "", "password", "")
+        <ul class="text-rgraydarker text-sm">
+          <li>- Um mínimo de 8 caracteres</li>
+        </ul>
+        <div class="mt-6 space-y-4">
+          @components.ButtonSecondary("Redefinir senha", "submit")
+        </div>
+        <span class="text-rgraydark text-sm text-end">Voltar para <a class="underline" href="/login">página de login</a></span>
+      </form>
+    </div>
+  }
+}
+
+templ PasswordChanged() {
+  @components.BaseNoAuth("Senha mudada com sucesso") {
+    <div class="mt-10 flex flex-col gap-10 items-center justify-between">
+      <svg class="text-rprimary w-28 h-28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4">
+        <path fill-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd" />
+      </svg>
+      <p class="text-justify text-last-center">
+        A senha da sua conta do Redirectify foi redefinida com sucesso. Para acessá-la, faça login.
+      </p>
+      @components.ButtonPrimary("Fazer login", "button")
+    </div>
+  }
+}
+
+templ AccountValidated() {
+  @components.BaseNoAuth("Validação expirada") {
+    <div class="mt-10 flex flex-col gap-10 items-center justify-between">
+      <svg class="text-rprimary w-28 h-28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4">
+        <path fill-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd" />
+      </svg>
+      <p class="text-justify text-last-center">
+        Sua conta do Redirectify foi validada com sucesso. Para acessá-la, faça login.
+      </p>
+      @components.ButtonPrimary("Fazer login", "button")
+    </div>
+  }
+}
+
+templ AccountNotValidated() {
+  @components.BaseNoAuth("Conta criada com sucesso") {
+    <div class="mt-10 flex flex-col gap-10 items-center justify-between">
+      <svg class="text-rprimary w-28 h-28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4">
+        <path fill-rule="evenodd" d="M3.05 3.05a7 7 0 1 1 9.9 9.9 7 7 0 0 1-9.9-9.9Zm1.627.566 7.707 7.707a5.501 5.501 0 0 0-7.707-7.707Zm6.646 8.768L3.616 4.677a5.501 5.501 0 0 0 7.707 7.707Z" clip-rule="evenodd" />
+      </svg>
+      <p class="text-justify text-last-center">
+        O link de validação estava expirado, solicite um novo abaixo.
+      </p>
+      @components.ButtonPrimary("Solicitar um novo link", "button")
+    </div>
+  }
+}

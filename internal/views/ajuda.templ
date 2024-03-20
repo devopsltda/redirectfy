@@ -1,0 +1,14 @@
+package views
+
+import "redirectify/internal/components"
+
+templ Ajuda() {
+  @components.Base("Ajuda") {
+    <div class="mt-10 flex flex-col gap-10 items-center justify-between">
+      <h2 class="text-rblack text-8xl text-center font-extrabold">5xx</h2>
+      <h3 class="text-rblack text-lg text-center font-bold">Ops! Ocorreu um erro</h3>
+      <p class="text-justify text-last-center">Desculpe o transtorno, ocorreu um pequeno problema. Tente novamente mais tarde.</p>
+      @components.ButtonPrimary("Voltar", "button")
+    </div>
+  }
+}

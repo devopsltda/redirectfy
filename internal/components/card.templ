@@ -1,0 +1,77 @@
+package components
+
+templ CardPlan(name, linkAmount, redirectionsAmount, price string, betterSupport bool) {
+	<div class="relative flex bg-rwhite pr-3 pb-3 text-rblack w-full">
+		<div class="flex flex-col bg-rgraylightest border-b-4 border-l-4 border-rdark gap-2 p-3 w-full">
+			<div class="flex gap-2">
+				<svg
+					class="h-14 w-14 text-rprimary"
+					viewBox="0 0 106 106"
+					fill="none"
+					xmlns="http://www.w3.org/2000/svg"
+					aria-hidden="true"
+				>
+					<path
+						fill-rule="evenodd"
+						clip-rule="evenodd"
+						d="M11 0H95H106V11V71H95H67.5H63L46 53.8603V71H35V46V35H46H71V46H53.7782L67.7782 60H95V11H11V95H106V106H11H0V95V11V0H11Z"
+						fill="currentColor"
+					></path>
+				</svg>
+				<div class="flex flex-col justify-between">
+					<h3 class="font-semibold text-xl">Redirectify</h3>
+					<h4 class="text-rdark">{ name }</h4>
+				</div>
+			</div>
+			<ul class="text-sm">
+				<li>Limite de { linkAmount } links</li>
+				<li>Limite de { redirectionsAmount } redirecionamentos</li>
+
+				if betterSupport {
+					<li>Suporte diferenciado</li>
+				} else {
+					<li>Suporte não diferenciado</li>
+				}
+			</ul>
+			<span class="absolute bg-rdark bottom-0 right-0 font-semibold text-rwhite py-1 px-1.5">R$ { price }/mês</span>
+		</div>
+	</div>
+}
+
+templ CardBestPlan(name, linkAmount, redirectionsAmount, price string, betterSupport bool) {
+	<div class="relative flex bg-rwhite pr-3 pb-3 text-rwhite w-full">
+		<div class="flex flex-col bg-rdark border-b-4 border-l-4 border-rlight gap-2 p-3 w-full">
+			<div class="flex gap-2">
+				<svg
+					class="h-14 w-14 text-rwhite"
+					viewBox="0 0 106 106"
+					fill="none"
+					xmlns="http://www.w3.org/2000/svg"
+					aria-hidden="true"
+				>
+					<path
+						fill-rule="evenodd"
+						clip-rule="evenodd"
+						d="M11 0H95H106V11V71H95H67.5H63L46 53.8603V71H35V46V35H46H71V46H53.7782L67.7782 60H95V11H11V95H106V106H11H0V95V11V0H11Z"
+						fill="currentColor"
+					></path>
+				</svg>
+				<div class="flex flex-col justify-between">
+					<h3 class="font-semibold text-xl text-rlight">Redirectify</h3>
+					<h4>{ name }</h4>
+				</div>
+			</div>
+			<ul class="text-sm">
+				<li>Limite de { linkAmount } links</li>
+				<li>Limite de { redirectionsAmount } redirecionamentos</li>
+
+				if betterSupport {
+					<li>Suporte diferenciado</li>
+				} else {
+					<li>Suporte não diferenciado</li>
+				}
+			</ul>
+			<span class="absolute bg-rlight bottom-0 right-0 font-semibold text-rdark py-1 px-1.5">R$ { price }/mês</span>
+		</div>
+	</div>
+}
