@@ -8,7 +8,7 @@ import (
 	"redirectify/internal/utils"
 	"time"
 
-	"github.com/libsql/go-libsql"
+	"github.com/tursodatabase/go-libsql"
 
 	_ "github.com/joho/godotenv/autoload"
 	_ "modernc.org/sqlite"
@@ -40,7 +40,7 @@ func New() {
 		}
 
 		dbPath := filepath.Join(TempDir, dbName)
-		DbConnector, err = libsql.NewEmbeddedReplicaConnector(dbPath, dbUrl, libsql.WithAuthToken(dbToken), libsql.WithAutoSync(15*time.Minute))
+		DbConnector, err = libsql.NewEmbeddedReplicaConnector(dbPath, dbUrl, libsql.WithAuthToken(dbToken), libsql.WithSyncInterval(15*time.Minute))
 
 		if err != nil {
 			slog.Error("BancoDeDados", slog.Any("error", err))
