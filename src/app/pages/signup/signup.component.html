@@ -1,0 +1,41 @@
+<app-grid>
+  <header class="flex w-full h-fit justify-center mt-12">
+    <app-redirectify-logo-name></app-redirectify-logo-name>
+  </header>
+  <div class="flex flex-col h-full w-full items-center ">
+    <p class="text-sm mt-12">
+      Insira suas informações abaixo para <br> prosseguir.
+    </p>
+    <form action="" class="flex flex-col mt-14 w-full items-center" (ngSubmit)="onSubmit()" >
+      <div class="gap-10 flex flex-col w-full items-center">
+        <span class="p-float-label ">
+          <input id="email" type="text" pInputText class="border w-60 h-10 focus:border-teal-500 hover:border-teal-500 pl-2"/>
+          <label for="email">Nome</label>
+        </span>
+        <span class="p-float-label">
+          <input id="nome" type="text" pInputText class="border w-60 h-10 focus:border-teal-500 hover:border-teal-500 pl-2"/>
+          <label for="nome">Email</label>
+        </span>
+        <span class="p-float-label">
+          <input id="password" type="password" pInputText class="border w-60 h-10 focus:border-teal-500 hover:border-teal-500 pl-2"/>
+          <label for="password">Senha</label>
+        </span>
+        <span class="p-float-label">
+          <input id="passwordConfirm" type="password" pInputText class="border w-60 h-10 focus:border-teal-500 hover:border-teal-500 pl-2"/>
+          <label for="passwordConfirm">Confirme a senha</label>
+        </span>
+      </div>
+      <span class="flex w-72 pl-7 mb-1">
+        <h4 class="text-sm text-[#838383]  mt-4">A senha deve conter</h4>
+      </span>
+      <ul class="list-disc text-sm text-[#838383]">
+        <li>Um mínimo de 6 caracteres</li>
+        <li>Pelo menos um número</li>
+      </ul>
+      <div class="flex flex-col gap-3 mt-10 w-full items-center">
+        <app-button-primary class="w-64" title="Cadastrar" type="submit" routerLink="./complete"></app-button-primary>
+        <app-button-secundary class="w-64" title="Voltar" routerLink="/login"></app-button-secundary>
+      </div>
+    </form>
+  </div>
+</app-grid>
