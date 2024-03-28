@@ -32,14 +32,14 @@ func NewServer() *http.Server {
 
 	database.New()
 
-	NewServer := &Server{
+	newServer := &Server{
 		port: port,
 		db:   database.Db,
 	}
 
 	// Declare Server config
 	server := &http.Server{
-		Addr:         fmt.Sprintf(":%d", NewServer.port),
+		Addr:         fmt.Sprintf(":%d", newServer.port),
 		Handler:      RegisterRoutes(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,

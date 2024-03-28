@@ -27,39 +27,43 @@ var (
 func New() {
 	var err error
 
-	switch utils.AppEnv {
-	case "debug", "test":
+	if utils.AppEnv == "test" {
 		Db, err = sql.Open("sqlite", "file::memory:?cache=shared")
 		seed(os.Getenv("DB_SOURCE_PATH"))
-	default:
-		TempDir, err := os.MkdirTemp("", "libsql-*")
 
 		if err != nil {
 			slog.Error("BancoDeDados", slog.Any("error", err))
 			os.Exit(1)
 		}
 
-		dbPath := filepath.Join(TempDir, dbName)
-		DbConnector, err = libsql.NewEmbeddedReplicaConnector(dbPath, dbUrl, libsql.WithAuthToken(dbToken), libsql.WithSyncInterval(15*time.Minute))
-
-		if err != nil {
-			slog.Error("BancoDeDados", slog.Any("error", err))
-			os.Exit(1)
-		}
-
-		Db = sql.OpenDB(DbConnector)
+		return
 	}
 
+	TempDir, err := os.MkdirTemp("", "libsql-*")
+
 	if err != nil {
-		// This will not be a connection error, but a DSN parse error or
-		// another initialization error.
+		slog.Error("BancoDeDados", slog.Any("error", err))
+		os.Exit(1)
+	}
+
+	dbPath := filepath.Join(TempDir, dbName)
+	DbConnector, err = libsql.NewEmbeddedReplicaConnector(dbPath, dbUrl, libsql.WithAuthToken(dbToken), libsql.WithSyncInterval(15*time.Minute))
+
+	if err != nil {
+		slog.Error("BancoDeDados", slog.Any("error", err))
+		os.Exit(1)
+	}
+
+	Db = sql.OpenDB(DbConnector)
+
+	if err != nil {
 		slog.Error("BancoDeDados", slog.Any("error", err))
 		os.Exit(1)
 	}
 }
 
 func seed(dbSourcePath string) error {
-	queryDDL, err := os.ReadFile(dbSourcePath+"ddl.sql")
+	queryDDL, err := os.ReadFile(dbSourcePath + "ddl.sql")
 
 	if err != nil {
 		return err
@@ -71,7 +75,7 @@ func seed(dbSourcePath string) error {
 		return err
 	}
 
-	queryTriggers, err := os.ReadFile(dbSourcePath+"triggers.sql")
+	queryTriggers, err := os.ReadFile(dbSourcePath + "triggers.sql")
 
 	if err != nil {
 		return err
