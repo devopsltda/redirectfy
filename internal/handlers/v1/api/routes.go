@@ -38,11 +38,11 @@ func RegisterRoutesV1(e *echo.Group) {
 	a.POST("/usuarios", UsuarioCreate)
 	a.PATCH("/usuarios/:nome_de_usuario", UsuarioUpdate)
 	a.DELETE("/usuarios/:nome_de_usuario", UsuarioRemove)
+
+	// API - Autenticação
 	a.POST("/usuarios/login", UsuarioLogin)
 	a.PATCH("/usuarios/troca_de_senha/:valor", UsuarioTrocaDeSenha)
 	a.POST("/usuarios/:nome_de_usuario/troca_de_senha", UsuarioTrocaDeSenhaExigir)
-
-	// API - Autenticação
 	a.PATCH("/autenticacao/:valor", UsuarioAutenticado)
 
 	// API - Plano de Assinatura
