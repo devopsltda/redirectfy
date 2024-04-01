@@ -6,6 +6,9 @@ import { RecoveryPasswordComponent } from './pages/recovery-password/recovery-pa
 import { RecoverySendComponent } from './pages/recovery-send/recovery-send.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { ResetCompleteComponent } from './pages/reset-complete/reset-complete.component';
+import { HomeComponent } from './pages/home/home.component';
+import { CreateRedirectComponent } from './pages/create-redirect/create-redirect.component';
+
 
 export const routes: Routes = [
   {path:'',pathMatch:'full',redirectTo:'login'},
@@ -15,6 +18,7 @@ export const routes: Routes = [
   {path:'recovery',component:RecoveryPasswordComponent},
   {path:'recoverySend',component:RecoverySendComponent},
   {path:'newPassword',component:ResetPasswordComponent},
-  {path:'newPasswordComplete',component:ResetCompleteComponent}
-
+  {path:'newPasswordComplete',component:ResetCompleteComponent},
+  {path:'home',component:HomeComponent},
+  {path:'newRedirect',component:CreateRedirectComponent}
 ];
