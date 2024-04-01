@@ -1,0 +1,127 @@
+<div class="flex flex-col w-full h-full">
+@if (formStep == 'init') {
+  <!-- Init -->
+  <div @fadeIn500ms class="flex flex-col w-full h-full items-center gap-8">
+      <span class="flex w-full h-20 px-3 justify-center items-center relative ">
+        <h4 class=" flex text-lg h-full whitespace-nowrap items-center  text-gray-500 font-semibold w-full justify-center  ">Selecione uma plataforma.</h4>
+      </span>
+      <p class="text-sm text-gray-400">Escolha qual a plataforma do seu link.</p>
+      <div class="flex flex-col gap-5 items-center">
+        <button (click)="formStep = 'formAddW'" class="flex text-lg active: text-[#3CB339] active:text-white active:bg-green-400 active:bg-opacity-20 hover:bg-[#3CB339] hover:border-transparent hover:bg-opacity-70 hover:text-white  items-center justify-center border-2 gap-3 border-[#3CB339] rounded-lg w-64 h-12 ease-in-out duration-300  ">
+        <app-icon-whatsapp ngClass="w-5 h-5"></app-icon-whatsapp>
+          Whatsapp
+        </button>
+        <button (click)="formStep = 'formAddT'" class="flex text-lg active: text-[#28A9EA] items-center justify-center border-2 gap-3 border-[#28A9EA] rounded-lg w-64 h-12 active:text-white active:bg-[#28A9EA] active:bg-opacity-20 hover:bg-[#28A9EA] hover:border-transparent hover:bg-opacity-70 hover:text-white ease-in-out duration-300">
+          <app-icon-telegram ngClass="w-5 h-5"></app-icon-telegram>
+          Telegram
+        </button>
+      </div>
+    </div>
+    <div class="flex flex-col w-full h-full items-center gap-4 pt-4 font-medium text-[#A9A9A9]">
+      <button (click)="formStep = 'getWContacts'" class="flex w-72 h-10 bg-[#F7F7F7] shadow-md text-sm items-center justify-around rounded-md border-l-4 border-l-green-400">
+      <app-icon-whatsapp ngClass="w-5 h-5"></app-icon-whatsapp>
+       Contatos do WhatsApp
+      <svg class="w-5 h-5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_485_711)">
+        <path d="M6.44238 12.4425L9.87738 9L6.44238 5.5575L7.49988 4.5L11.9999 9L7.49988 13.5L6.44238 12.4425Z" fill="#257F7A" fill-opacity="0.6"/>
+        </g>
+        <defs>
+        <clipPath id="clip0_485_711">
+        <rect width="18" height="18" fill="white"/>
+        </clipPath>
+        </defs>
+      </svg>
+    </button>
+    <button class="flex w-72 h-10 bg-[#F7F7F7] shadow-md text-sm items-center justify-between px-[0.95rem] rounded-md border-l-4 border-l-[#28A9EA]">
+      <app-icon-telegram ngClass="w-[1.1rem] h-5"></app-icon-telegram>
+       Links do Telegram
+      <svg class="w-5 h-5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_485_711)">
+        <path d="M6.44238 12.4425L9.87738 9L6.44238 5.5575L7.49988 4.5L11.9999 9L7.49988 13.5L6.44238 12.4425Z" fill="#257F7A" fill-opacity="0.6"/>
+        </g>
+        <defs>
+        <clipPath id="clip0_485_711">
+        <rect width="18" height="18" fill="white"/>
+        </clipPath>
+        </defs>
+      </svg>
+    </button>
+    </div>
+}
+@else if (formStep == 'formAddW') {
+  <div @fadeIn500ms class="flex flex-col w-full h-full items-center gap-8 ">
+      <span class="flex w-full h-20 p-3 justify-center items-center relative">
+        <h4 class=" flex text-xl whitespace-nowrap text-gray-500 font-semibold w-fit justify-center items-center">Informações do Contato</h4>
+      </span>
+      <div class="flex flex-col h-full gap-8 items-center">
+        <div class="flex gap-2">
+            <label for="w-numero" class="flex  gap-2 items-center ease-in-out duration-300"> <app-icon-whatsapp ngClass="w-5 h-5"></app-icon-whatsapp></label>
+            <input id="w-numero" placeholder="+XX (XX) 91234-5678" type="text" pInputText class="flex border-l-4 border-l-green-400  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
+        </div>
+        <div class="flex gap-2">
+          <label for="w-numero" class="flex  gap-2 items-center ease-in-out duration-300">
+            <svg class="w-5 h-5" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_485_732)">
+            <path d="M13.3333 1.33331H2.66659C1.93325 1.33331 1.33992 1.93331 1.33992 2.66665L1.33325 14.6666L3.99992 12H13.3333C14.0666 12 14.6666 11.4 14.6666 10.6666V2.66665C14.6666 1.93331 14.0666 1.33331 13.3333 1.33331ZM13.3333 10.6666H3.44659L3.05325 11.06L2.66659 11.4466V2.66665H13.3333V10.6666ZM6.99992 9.33331H11.9999V7.99998H8.33325L6.99992 9.33331ZM9.57325 5.41998C9.70658 5.28665 9.70658 5.07998 9.57325 4.94665L8.39325 3.76665C8.25992 3.63331 8.05325 3.63331 7.91992 3.76665L3.99992 7.68665V9.33331H5.64659L9.57325 5.41998Z" fill="#257F7A"/>
+            </g>
+            <defs>
+            <clipPath id="clip0_485_732">
+            <rect width="16" height="16" fill="white"/>
+            </clipPath>
+            </defs>
+            </svg>
+          </label>
+          <input id="w-numero" placeholder="Nome do Contato (Opcional)" type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
+        </div>
+        <div class="flex flex-col w-full h-40 justify-center gap-5 "><app-button-primary class="h-12" title="Adicionar Contato"></app-button-primary> <app-button-secundary (click)="formStep = 'init'" title="Voltar" ></app-button-secundary></div>
+      </div>
+  </div>
+}
+@else if (formStep == 'formAddT'){
+  <div  @fadeIn500ms class="flex flex-col w-full h-full items-center gap-8 ">
+    <span class="flex w-full h-20 p-3 justify-center items-center relative">
+      <h4 class=" flex text-xl whitespace-nowrap text-gray-500 font-semibold w-fit justify-center items-center">Informações do Contato</h4>
+    </span>
+    <div class="flex flex-col h-full gap-8 items-center">
+      <div class="flex gap-2">
+          <label for="t-numero" class="flex  gap-2 items-center ease-in-out duration-300"> <app-icon-telegram ngClass="w-5 h-5"></app-icon-telegram></label>
+          <input id="t-numero" placeholder="https://t.me/exemplo" type="text" pInputText class="flex border-l-4 border-l-[#26A5E5]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
+      </div>
+      <div class="flex gap-2">
+        <label for="t-nome" class="flex  gap-2 items-center ease-in-out duration-300">
+          <svg class="w-5 h-5" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#clip0_485_732)">
+          <path d="M13.3333 1.33331H2.66659C1.93325 1.33331 1.33992 1.93331 1.33992 2.66665L1.33325 14.6666L3.99992 12H13.3333C14.0666 12 14.6666 11.4 14.6666 10.6666V2.66665C14.6666 1.93331 14.0666 1.33331 13.3333 1.33331ZM13.3333 10.6666H3.44659L3.05325 11.06L2.66659 11.4466V2.66665H13.3333V10.6666ZM6.99992 9.33331H11.9999V7.99998H8.33325L6.99992 9.33331ZM9.57325 5.41998C9.70658 5.28665 9.70658 5.07998 9.57325 4.94665L8.39325 3.76665C8.25992 3.63331 8.05325 3.63331 7.91992 3.76665L3.99992 7.68665V9.33331H5.64659L9.57325 5.41998Z" fill="#257F7A"/>
+          </g>
+          <defs>
+          <clipPath id="clip0_485_732">
+          <rect width="16" height="16" fill="white"/>
+          </clipPath>
+          </defs>
+          </svg>
+        </label>
+        <input id="" placeholder="Nome do Contato (Opcional)" type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
+      </div>
+      <div class="flex flex-col w-full h-40 justify-center gap-5 "><app-button-primary class="h-12" title="Adicionar Contato"></app-button-primary> <app-button-secundary title="Voltar" (click)="formStep = 'init'" ></app-button-secundary></div>
+    </div>
+  </div>
+
+}
+@else if (formStep == 'getWContacts') {
+  <div @fadeIn500ms class="flex flex-col w-full h-full items-center gap-8 px-3">
+    <span class="flex w-full h-20 px-3 justify-center items-center relative ">
+      <h4 class=" flex text-lg h-full whitespace-nowrap items-center  text-gray-500 font-semibold w-full justify-center  ">WhatsApps Vinculados</h4>
+    </span>
+    <div class="w-96 h-full flex text-sm font-semibold flex-col items-center">
+    <span class=" flex w-full  h-10  justify-evenly items-center border-b group  border-b-gray-200"> <input class="" disabled type="radio" name="" id=""> <p class="w-24">Nome</p> <p class="w-28">Número</p>
+    </span>
+      <label for="contatoWppSelecionado1" class="flex w-full h-14  justify-evenly items-center border-b border-b-gray-100 text-[#C2C2C2]"> <input class="" type="radio" name="contatoWppSelecionado" id="contatoWppSelecionado1">
+        <p class="w-28">Joao Pedro Pagao Pagado</p>
+        <p>+5598991085854</p>
+      </label>
+    <div class="flex flex-col w-full h-40 justify-center gap-5 "><app-button-primary class="h-12" title="Editar"></app-button-primary> <app-button-secundary (click)="formStep = 'init'" title="Voltar" ></app-button-secundary></div>
+    </div>
+  </div>
+}
+
+</div>
