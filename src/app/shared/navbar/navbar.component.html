@@ -1,0 +1,78 @@
+<div class="md:hidden">
+  <header class="flex h-20 w-full z-0  shadow-md relative">
+    <!-- SideBar buttom-->
+    <button class=" flex h-full w-16 bg-transparent justify-center items-center absolute  " (click)="toggle()">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
+      </svg>
+    </button>
+    <!-- END SideBar buttom-->
+    <!-- Header Content -->
+    <div class="flex w-full h-full gap-3  justify-center  items-center text-2xl" >
+      <div class="flex items-center gap-3">
+        <app-icon-redirectify-logo width="40" hight="20" ></app-icon-redirectify-logo>
+        <p class=" font-['DM Sans'] font-bold ">Redirectfy</p>
+      </div>
+    </div>
+    <!-- END Header Content -->
+  </header>
+  <!-- nav -->
+  <nav [ngClass]="sidebarVisible? 'translate-x-0' : '-translate-x-full'"  class="flex border flex-col bg-white w-64 h-full absolute top-0 left-0 z-20 ease-in-out duration-500">
+    <span class="flex w-full h-20 items-center font-semibold justify-center border-b">
+      <p class="w-full text-center">Pablo Eduardo</p>
+      <button class="p-4 bg-white  h-full" (click)="toggle()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-6 h-6">
+          <path fill-rule="evenodd" d="M14 8a.75.75 0 0 1-.75.75H4.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L4.56 7.25h8.69A.75.75 0 0 1 14 8Z" clip-rule="evenodd" />
+        </svg>
+      </button>
+    </span>
+    <!-- container botões -->
+    <div class="flex flex-col h-80 justify-evenly w-full pl-2">
+      <button class=" flex text-lg w-52 gap-3 font-medium pl-5 h-16 hover:shadow-sm items-center text-[#35B5AE] active:bg-[rgba(53,181,174,0.3)]  hover:border-[#35B5AE] hover:border-l-4  hover:bg-gray-100 hover:bg-opacity-80 hover:text-[#35B5AE] active:text-white transition-colors  duration-100 rounded-ee-3xl focus:bg-[#35B5AE] focus:border-transparent focus:border-l-4 focus:text-white " [routerLink]="'/home'" >
+        <app-icon-redirectify-logo  ngClass="fill-current" width="20" height="20"  ></app-icon-redirectify-logo> Meus Redirects
+      </button>
+      <button class="  flex text-lg w-52 gap-3 font-medium pl-5 h-16 hover:shadow-sm items-center text-[#35B5AE] active:bg-[rgba(53,181,174,0.3)]  hover:border-[#35B5AE] hover:border-l-4  hover:bg-gray-100 hover:bg-opacity-80 hover:text-[#35B5AE] active:text-white transition-colors  duration-100 rounded-ee-3xl focus:bg-[#35B5AE] focus:border-transparent focus:border-l-4 focus:text-white " routerLink="account" >
+      <app-icon-user ngClass="fill-current" width="25" height="25"  ></app-icon-user> Minha Conta
+    </button>
+    <button  class=" flex text-lg w-52 gap-3 font-medium pl-5 h-16 hover:shadow-sm items-center text-[#35B5AE] active:bg-[rgba(53,181,174,0.3)]  hover:border-[#35B5AE] hover:border-l-4  hover:bg-gray-100 hover:bg-opacity-80 hover:text-[#35B5AE] active:text-white transition-colors  duration-100 rounded-ee-3xl focus:bg-[#35B5AE] focus:border-transparent focus:border-l-4 focus:text-white " routerLink="settings">
+      <app-icon-settings ngClass="fill-current" width="25" height="25"></app-icon-settings> Configurações
+    </button>
+  </div>
+  <!-- end c.botoes -->
+  </nav>
+  <!-- end nav -->
+  <!-- overlay -->
+  <div [ngClass]="sidebarVisible? 'block':'hidden'" class="absolute w-full h-full top-0 bg-gray-500 bg-opacity-20 z-10 transition-all ease-in-out duration-1000" (click)="toggle()">
+
+  </div>
+</div>
+
+<div (mouseenter)="this.isHovered = !isHovered" (mouseleave)="this.isHovered = !isHovered" class="group hidden items-center font-semibold md:flex flex-col h-full w-20 hover:w-60 ease-in-out duration-500 ">
+<span class=" pl-6 mt-5 flex gap-2 w-full items-center ">
+  <app-icon-redirectify-logo  width="35" ></app-icon-redirectify-logo>
+  <p  class="text-white text-2xl group-hover:text-black ease-in-out duration-500">Redirectfy</p>
+</span>
+<div class=" items-center gap-4  w-full flex flex-col h-full pt-5 mt-5">
+<button routerLink="/home" class="flex gap-2 w-48 h-12 text-lg text-nowrap items-center {{isHovered?'text-gray-400':'text-transparent'}} hover:text-[#34B0A9] justify-center translate-x-[4.4rem] group-hover:translate-x-0 transition  hover:border-l-2 hover:drop-shadow-md hover:border-[#34B0A9] hover:bg-gray-50 rounded-ee-3xl ease-in-out duration-300 active:bg-[#34B0A9] active:bg-opacity-60 active:text-white "> <app-icon-redirectify-logo width="28" [color]="isHovered?'rgba(27,91,87,1)':'#C2C2C2'"></app-icon-redirectify-logo> Meus Redirects</button>
+<button routerLink="/account" class="flex pl-2 gap-1 w-48 h-12 text-lg text-nowrap items-center {{isHovered?'text-gray-400':'text-transparent'}} hover:text-[#34B0A9]  translate-x-[4.3rem] group-hover:translate-x-0 transition  hover:border-l-2 hover:drop-shadow-md hover:border-[#34B0A9] hover:bg-gray-50 rounded-ee-3xl ease-in-out duration-300 active:bg-[#34B0A9] active:bg-opacity-60 active:text-white ">
+  <svg class="fill-gray-400 group-hover:fill-[rgba(27,91,87,1)] w-9 h-9"  viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g clip-path="url(#clip0_703_2102)">
+  <path d="M17.0003 8.50001C18.5587 8.50001 19.8337 9.77501 19.8337 11.3333C19.8337 12.8917 18.5587 14.1667 17.0003 14.1667C15.442 14.1667 14.167 12.8917 14.167 11.3333C14.167 9.77501 15.442 8.50001 17.0003 8.50001ZM17.0003 22.6667C20.8253 22.6667 25.217 24.4942 25.5003 25.5H8.50033C8.82616 24.48 13.1895 22.6667 17.0003 22.6667ZM17.0003 5.66667C13.8695 5.66667 11.3337 8.20251 11.3337 11.3333C11.3337 14.4642 13.8695 17 17.0003 17C20.1312 17 22.667 14.4642 22.667 11.3333C22.667 8.20251 20.1312 5.66667 17.0003 5.66667ZM17.0003 19.8333C13.2178 19.8333 5.66699 21.7317 5.66699 25.5V28.3333H28.3337V25.5C28.3337 21.7317 20.7828 19.8333 17.0003 19.8333Z" />
+  </g>
+  <defs>
+  <clipPath id="clip0_703_2102">
+  <rect width="34" height="34" fill="white"/>
+  </clipPath>
+  </defs>
+  </svg>
+  Minha Conta
+</button>
+<button routerLink="settings" class="flex pl-2 gap-2 w-48 h-12 text-lg text-nowrap items-center {{isHovered?'text-gray-400':'text-transparent'}} hover:text-[#34B0A9]  translate-x-[4.4rem] group-hover:translate-x-0 transition  hover:border-l-2 hover:drop-shadow-md hover:border-[#34B0A9] hover:bg-gray-50 rounded-ee-3xl ease-in-out duration-300 active:bg-[#34B0A9] active:bg-opacity-60 active:text-white ">
+  <svg  class="fill-gray-400 group-hover:fill-[rgba(27,91,87,1)] w-8 h-8" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M27.3174 11.3174V4.68258H20.6826L16 0L11.3174 4.68258H4.68258V11.3174L0 16L4.68258 20.6826V27.3174H11.3174L16 32L20.6826 27.3174H27.3174V20.6826L32 16L27.3174 11.3174ZM24.4881 19.5084V24.4881H19.5084L16 27.9965L12.4916 24.4881H7.51194V19.5084L4.00354 16L7.51194 12.4916V7.51194H12.4916L16 4.00354L19.5084 7.51194H24.4881V12.4916L27.9965 16L24.4881 19.5084ZM16 8.21928C11.7135 8.21928 8.21928 11.7135 8.21928 16C8.21928 20.2865 11.7135 23.7807 16 23.7807C20.2865 23.7807 23.7807 20.2865 23.7807 16C23.7807 11.7135 20.2865 8.21928 16 8.21928ZM16 20.9514C13.2697 20.9514 11.0486 18.7303 11.0486 16C11.0486 13.2697 13.2697 11.0486 16 11.0486C18.7303 11.0486 20.9514 13.2697 20.9514 16C20.9514 18.7303 18.7303 20.9514 16 20.9514Z"/>
+  </svg>
+  Configurações
+</button>
+</div>
+</div>
+
