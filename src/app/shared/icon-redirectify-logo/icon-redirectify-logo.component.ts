@@ -10,4 +10,7 @@ import { Component, Input } from '@angular/core';
 })
 export class IconRedirectifyLogoComponent {
   @Input() ngClass!:string
+  @Input() width:string = '59'
+  @Input() height:string = '56'
+  @Input() color:string = '#35B5AE'
 }
