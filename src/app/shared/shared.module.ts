@@ -9,6 +9,18 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { IconCheckCircledComponent } from './icon-check-circled/icon-check-circled.component';
 import { IconMailComponent } from './icon-mail/icon-mail.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { IconUserComponent } from './icon-user/icon-user.component';
+import { IconSettingsComponent } from './icon-settings/icon-settings.component';
+import { IconBoxEmptyComponent } from './icon-box-empty/icon-box-empty.component';
+import { ButtonAddComponent } from './button-add/button-add.component';
+import { ButtonDeleteComponent } from './button-delete/button-delete.component';
+import { ButtonCopyComponent } from './button-copy/button-copy.component';
+import { ButtonShareComponent } from './button-share/button-share.component';
+import { CardItemLinkComponent } from './card-item-link/card-item-link.component';
+import { HeaderComponent } from './header/header.component';
+import { ContentWindowComponent } from './content-window/content-window.component';
+import { ContentGridComponent } from './content-grid/content-grid.component';
 
 
 
@@ -24,6 +36,20 @@ import { IconMailComponent } from './icon-mail/icon-mail.component';
     ButtonModule,
     IconCheckCircledComponent,
     IconMailComponent,
+    NavbarComponent,
+    IconUserComponent,
+    IconSettingsComponent,
+    IconBoxEmptyComponent,
+    ButtonAddComponent,
+    ButtonDeleteComponent,
+    ButtonCopyComponent,
+    ButtonShareComponent,
+    CardItemLinkComponent,
+    HeaderComponent,
+    ContentWindowComponent,
+    ContentGridComponent
+
+
   ],
   exports:[
     GridComponent,
@@ -34,7 +60,19 @@ import { IconMailComponent } from './icon-mail/icon-mail.component';
     InputTextModule,
     ButtonModule,
     IconCheckCircledComponent,
-    IconMailComponent
+    IconMailComponent,
+    NavbarComponent,
+    IconUserComponent,
+    IconSettingsComponent,
+    IconBoxEmptyComponent,
+    ButtonAddComponent,
+    ButtonDeleteComponent,
+    ButtonCopyComponent,
+    ButtonShareComponent,
+    CardItemLinkComponent,
+    HeaderComponent,
+    ContentWindowComponent,
+    ContentGridComponent
   ]
 })
 export class SharedModule { }
