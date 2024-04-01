@@ -20,15 +20,9 @@ import { Router, RouterLink, RouterModule } from '@angular/router';
 export class NavbarComponent {
 
   sidebarVisible:boolean = false;
+  isHovered:boolean = false;
+
   toggle(){
     this.sidebarVisible = !this.sidebarVisible
   }
-  isHovered:boolean = false;
-
-  constructor(private router:Router){}
-
-  onClick(path:string){
-    return this.router.navigate(['/',path])
-  }
-
 }

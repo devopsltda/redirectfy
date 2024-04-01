@@ -1,1 +1,5 @@
-<button class="w-full h-full text-lg font-semibold text-center border-[0.1px] border-gray-200  text-teal-600 py-2  rounded-md hover:bg-teal-800 hover:text-white transition duration-500" [type]="type">{{title}}</button>
+<button class="w-full h-full text-lg font-semibold text-center border-[2px] border-[#257F7A]  text-[#257F7A] py-2  rounded-md hover:bg-[#257F7A] hover:text-white transition duration-500" [type]="type">
+  <span class="flex w-full h-full items-center justify-center gap-2">
+    <ng-content></ng-content>{{title}}
+  </span>
+</button>

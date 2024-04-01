@@ -3,11 +3,12 @@ import { IconWhatsappComponent } from '../icon-whatsapp/icon-whatsapp.component'
 import { IconTelegramComponent } from '../icon-telegram/icon-telegram.component';
 import { SharedModule } from '../shared.module';
 import { AnimationsModule, fadeInOutAnimation } from '../../animations/animations.module';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-form-create-redirect',
   standalone: true,
-  imports: [IconWhatsappComponent,IconTelegramComponent,SharedModule,AnimationsModule],
+  imports: [IconWhatsappComponent,IconTelegramComponent,SharedModule,AnimationsModule,RouterModule],
   animations:[fadeInOutAnimation],
   templateUrl: './form-create-redirect.component.html',
   styleUrl: './form-create-redirect.component.scss'
