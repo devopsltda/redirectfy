@@ -8,7 +8,6 @@ import { ResetPasswordComponent } from './pages/reset-password/reset-password.co
 import { ResetCompleteComponent } from './pages/reset-complete/reset-complete.component';
 import { HomeComponent } from './pages/home/home.component';
 import { CreateRedirectComponent } from './pages/create-redirect/create-redirect.component';
-import path from 'path';
 import { Error404Component } from './pages/404/404.component';
 
 
