@@ -9,6 +9,7 @@ import { ResetCompleteComponent } from './pages/reset-complete/reset-complete.co
 import { HomeComponent } from './pages/home/home.component';
 import { CreateRedirectComponent } from './pages/create-redirect/create-redirect.component';
 import { Error404Component } from './pages/404/404.component';
+import { MyAccountComponent } from './pages/my-account/my-account.component';
 
 
 export const routes: Routes = [
@@ -21,6 +22,7 @@ export const routes: Routes = [
   {path:'newPassword',component:ResetPasswordComponent},
   {path:'newPasswordComplete',component:ResetCompleteComponent},
   {path:'home',component:HomeComponent},
+  {path:'myaccount',component:MyAccountComponent},
   {path:'newRedirect',component:CreateRedirectComponent},
 
 
