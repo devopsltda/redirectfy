@@ -1,6 +1,6 @@
-<app-grid  >
-<app-navbar ></app-navbar>
-<div  @fadeIn500ms class="flex flex-col w-full h-full  py-5 px-2 bg-gray-100 overflow-hidden ">
+<app-grid>
+<app-navbar></app-navbar>
+<div  @fadeIn500ms class="flex flex-col w-full h-full  pt-5 px-2 bg-gray-100 overflow-hidden ">
   <app-header title="Meus Redirects"></app-header>
   @if (false) {
     <div class="flex flex-col w-full h-full  border rounded-lg gap-8 drop-shadow items-center justify-center bg-white">
@@ -10,11 +10,11 @@
     </div>
   }
   <app-content-window class=" w-full h-full">
-    <div class="flex flex-col w-full h-full overflow-y-scroll">
+    <div class="flex flex-col w-full h-full overflow-y">
       <span class="flex w-full h-20 py-4  items-center justify-center ">
         <app-button-add routerLink="/newRedirect" class="w-64 h-12" title="Criar Redirect"></app-button-add>
       </span>
-      <div class="flex flex-col lg:flex-row  flex-wrap py-2 items-center lg:items-start lg:justify-center  gap-6 w-full h-fit px-2 pt-6">
+      <div class="flex flex-col lg:flex-row  flex-wrap py-2 items-center lg:items-start lg:justify-center  gap-6 w-full h-fit px-2 pt-6 ">
       <app-card-item-link cardTitle="Terminal Da Senhorarinha Falsa"></app-card-item-link>
       <app-card-item-link ></app-card-item-link>
       <app-card-item-link></app-card-item-link>
