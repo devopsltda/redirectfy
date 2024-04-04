@@ -2,63 +2,86 @@
 @if (formStep == 'init') {
   <!-- Init -->
   <div @fadeIn500ms class="flex flex-col w-full h-full items-center gap-8">
-      <span class="flex w-full h-20 px-3 justify-center items-center relative ">
-        <h4 class=" flex text-lg h-full whitespace-nowrap items-center  text-gray-500 font-semibold w-full justify-center  ">Selecione uma plataforma.</h4>
+      <span class="flex w-full h-20 md:h-40 px-3 justify-center items-center relative ">
+        <h4 class=" flex text-lg h-full whitespace-nowrap items-center  text-gray-500 font-semibold w-full justify-center md:text-3xl  ">Selecione uma plataforma.</h4>
       </span>
-      <p class="text-sm text-gray-400">Escolha qual a plataforma do seu link.</p>
-      <div class="flex flex-col gap-5 items-center">
-        <button (click)="formStep = 'formAddW'" class="flex text-lg active: text-[#3CB339] active:text-white active:bg-green-400 active:bg-opacity-20 hover:bg-[#3CB339] hover:border-transparent hover:bg-opacity-70 hover:text-white  items-center justify-center border-2 gap-3 border-[#3CB339] rounded-lg w-64 h-12 ease-in-out duration-300  ">
+      <p class="text-sm text-gray-400 md:text-lg">Escolha qual a plataforma do seu link.</p>
+      <div class="flex flex-col md:flex-row gap-5 items-center">
+        <button (click)="formStep = 'formAddW'" class="flex text-lg bg-[#F7F7F7]  text-[#3CB339] active:text-white active:bg-green-400 active:bg-opacity-20 hover:bg-green-500 hover:border-transparent hover:bg-opacity-70 hover:text-white  items-center justify-center border-l-4 border-l-[#3CB339] hover:bg-gradient-to-r   hover:to-[#3CB339] gap-3 drop-shadow  rounded-lg w-64 h-12 transition-all ease-in-out duration-300  ">
         <app-icon-whatsapp ngClass="w-5 h-5"></app-icon-whatsapp>
           Whatsapp
         </button>
-        <button (click)="formStep = 'formAddT'" class="flex text-lg active: text-[#28A9EA] items-center justify-center border-2 gap-3 border-[#28A9EA] rounded-lg w-64 h-12 active:text-white active:bg-[#28A9EA] active:bg-opacity-20 hover:bg-[#28A9EA] hover:border-transparent hover:bg-opacity-70 hover:text-white ease-in-out duration-300">
+        <button (click)="formStep = 'formAddT'" class="flex text-lg bg-[#F7F7F7] active: text-[#28A9EA] items-center justify-center border-l-4 gap-3 border-[#28A9EA] rounded-lg w-64 h-12 active:text-white active:bg-[#28A9EA] active:bg-opacity-20 hover:bg-blue-400 hover:border-transparent hover:bg-opacity-70 hover:text-white ease-in-out transition-colors drop-shadow duration-300">
           <app-icon-telegram ngClass="w-5 h-5"></app-icon-telegram>
           Telegram
         </button>
       </div>
     </div>
-    <div class="flex flex-col w-full h-full items-center gap-4 pt-4 font-medium text-[#A9A9A9]">
-      <button (click)="formStep = 'getWContacts'" class="flex w-72 h-10 bg-[#F7F7F7] shadow-md text-sm items-center justify-around rounded-md border-l-4 border-l-green-400">
-      <app-icon-whatsapp ngClass="w-5 h-5"></app-icon-whatsapp>
-       Contatos do WhatsApp
-      <svg class="w-5 h-5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g clip-path="url(#clip0_485_711)">
-        <path d="M6.44238 12.4425L9.87738 9L6.44238 5.5575L7.49988 4.5L11.9999 9L7.49988 13.5L6.44238 12.4425Z" fill="#257F7A" fill-opacity="0.6"/>
+    <div class="flex flex-col w-full h-full  items-center gap-4 pt-4 font-medium text-[#A9A9A9]">
+      <div class="flex md:flex-row h-fit  flex-col md:items-center  gap-4 md:gap-8">
+        <div class="md:flex flex-col hidden text-sm   gap-4  h-full items-center">
+          <p>Prioridade</p>
+          <button class="bg-[#F7F7F7] w-14 h-14 rounded-md drop-shadow group hover:bg-[rgb(53,181,174,1)] flex items-center justify-center transition-all ease-in-out duration-300">
+            <svg class="w-8 h-8 fill-[#257F7A] group-hover:fill-white" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g clip-path="url(#clip0_827_1903)">
+              <path d="M7.875 2.625L4.375 6.11625H7V12.25H8.75V6.11625H11.375L7.875 2.625ZM14 14.8837V8.75H12.25V14.8837H9.625L13.125 18.375L16.625 14.8837H14Z"/>
+              </g>
+              <defs>
+              <clipPath id="clip0_827_1903">
+              <rect width="21" height="21" fill="white"/>
+              </clipPath>
+              </defs>
+              </svg>
+          </button>
+        </div>
+        <div class="flex flex-col gap-5 md:gap-8 md:pr-40 md:pl-8">
+          <button (click)="formStep = 'getWContacts'" class="flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7]  shadow-md text-sm items-center justify-around rounded-md border-l-4 border-l-green-400">
+          <app-icon-whatsapp ngClass="w-5 h-5"></app-icon-whatsapp>
+           Contatos do WhatsApp
+          <svg class="w-5 h-5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_485_711)">
+            <path d="M6.44238 12.4425L9.87738 9L6.44238 5.5575L7.49988 4.5L11.9999 9L7.49988 13.5L6.44238 12.4425Z" fill="#257F7A" fill-opacity="0.6"/>
+            </g>
+            <defs>
+            <clipPath id="clip0_485_711">
+            <rect width="18" height="18" fill="white"/>
+            </clipPath>
+            </defs>
+          </svg>
+          </button>
+          <button class="flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7] shadow-md text-sm items-center justify-between px-[0.95rem]  rounded-md border-l-4 border-l-[#28A9EA]">
+          <app-icon-telegram ngClass="w-[1.1rem] h-5"></app-icon-telegram>
+           Links do Telegram
+            <svg class="w-5 h-5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g clip-path="url(#clip0_485_711)">
+              <path d="M6.44238 12.4425L9.87738 9L6.44238 5.5575L7.49988 4.5L11.9999 9L7.49988 13.5L6.44238 12.4425Z" fill="#257F7A" fill-opacity="0.6"/>
+              </g>
+              <defs>
+              <clipPath id="clip0_485_711">
+              <rect width="18" height="18" fill="white"/>
+              </clipPath>
+              </defs>
+            </svg>
+        </button>
+        </div>
+
+      </div>
+    <div class="flex flex-col w-fit md:w-full md:flex-row-reverse md:pt-16  md:pb-10 md:px-10  gap-5 md:justify-evenly">
+      <app-button-primary (click)="formStep = 'enterName'" class="w-72 md:m-0 mt-5"  title="Finalizar"></app-button-primary>
+      <app-button-secundary  class=" w-72 h-12 hidden md:flex"title="Cancelar"></app-button-secundary>
+      <app-button-secundary  class="w-72 group md:hidden"title="Alternar Prioridade">
+        <svg class="w-5 h-5 fill-[#257F7A] group-hover:fill-white" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_827_1903)">
+        <path d="M7.875 2.625L4.375 6.11625H7V12.25H8.75V6.11625H11.375L7.875 2.625ZM14 14.8837V8.75H12.25V14.8837H9.625L13.125 18.375L16.625 14.8837H14Z"/>
         </g>
         <defs>
-        <clipPath id="clip0_485_711">
-        <rect width="18" height="18" fill="white"/>
+        <clipPath id="clip0_827_1903">
+        <rect width="21" height="21" fill="white"/>
         </clipPath>
         </defs>
-      </svg>
-      </button>
-      <button class="flex w-72 h-10 bg-[#F7F7F7] shadow-md text-sm items-center justify-between px-[0.95rem]  rounded-md border-l-4 border-l-[#28A9EA]">
-      <app-icon-telegram ngClass="w-[1.1rem] h-5"></app-icon-telegram>
-       Links do Telegram
-        <svg class="w-5 h-5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g clip-path="url(#clip0_485_711)">
-          <path d="M6.44238 12.4425L9.87738 9L6.44238 5.5575L7.49988 4.5L11.9999 9L7.49988 13.5L6.44238 12.4425Z" fill="#257F7A" fill-opacity="0.6"/>
-          </g>
-          <defs>
-          <clipPath id="clip0_485_711">
-          <rect width="18" height="18" fill="white"/>
-          </clipPath>
-          </defs>
         </svg>
-    </button>
-    <app-button-primary (click)="formStep = 'enterName'" class="w-72 mt-5"  title="Finalizar"></app-button-primary>
-    <app-button-secundary  class="w-72 group"title="Alternar Prioridade">
-      <svg class="w-5 h-5 fill-[#257F7A] group-hover:fill-white" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g clip-path="url(#clip0_827_1903)">
-      <path d="M7.875 2.625L4.375 6.11625H7V12.25H8.75V6.11625H11.375L7.875 2.625ZM14 14.8837V8.75H12.25V14.8837H9.625L13.125 18.375L16.625 14.8837H14Z"/>
-      </g>
-      <defs>
-      <clipPath id="clip0_827_1903">
-      <rect width="21" height="21" fill="white"/>
-      </clipPath>
-      </defs>
-      </svg>
-      </app-button-secundary>
+        </app-button-secundary>
+    </div>
   </div>
 }
 @else if (formStep == 'formAddW') {
