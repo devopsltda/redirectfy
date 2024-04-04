@@ -90,5 +90,43 @@ func TestDatabaseUsuarioAuth(t *testing.T) {
 	defer db.Close()
 	u := models.UsuarioModel{DB: db}
 
-	t.Run("Autenticar ")
+	t.Run("Login do usuario no Banco de dados", func(t *testing.T) {
+		_, _, _, _, _, err := u.Login(
+			"bguilherme51@gmail.com",
+			"GuilhermeBN",
+		)
+		assert.NoError(t, err)
+	})
+
+	t.Run("Validação de email no banco de dados", func(t *testing.T) {
+		err := u.Autenticado(
+			1,
+		)
+		assert.NoError(t, err)
+	})
+}
+
+func TestDatabaseLinksRedirect(t *testing.T) {
+	db := database.New()
+	defer db.Close()
+	l := models.LinkModel{DB: db}
+	t.Run("Criando redirecionador", func(t *testing.T) {
+		
+	})
+	t.Run("Criando Link no banco de dados", func(t *testing.T) {
+		err := l.Create(
+			"rock garai",
+			"saodaido",
+			"askjdasjk",
+			"askdkjasd",
+		)
+		assert.NoError(t, err)
+	})
+	
+	t.Run("Pegar todas os links", func(t *testing.T) {
+		_, err := l.ReadAll(
+			"osdsaoid10i912id0asd",
+		)
+		assert.NoError(t, err)
+	})
 }
