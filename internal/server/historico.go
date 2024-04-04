@@ -1,12 +1,10 @@
-package api
+package server
 
 import (
 	"log/slog"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"redirectify/internal/models"
-	"redirectify/internal/services/database"
 	"redirectify/internal/utils"
 )
 
@@ -20,8 +18,8 @@ import (
 // @Failure 400 {object} Erro
 // @Failure 500 {object} Erro
 // @Router  /v1/api/planos_de_assinatura/historico [get]
-func HistoricoPlanoDeAssinaturaReadAll(c echo.Context) error {
-	historico, err := models.HistoricoPlanoDeAssinaturaReadAll(database.Db)
+func (s *Server) HistoricoPlanoDeAssinaturaReadAll(c echo.Context) error {
+	historico, err := s.HistoricoModel.PlanoDeAssinaturaReadAll()
 
 	if err != nil {
 		slog.Error("HistoricoPlanoDeAssinaturaReadAll", slog.Any("error", err))
@@ -41,8 +39,8 @@ func HistoricoPlanoDeAssinaturaReadAll(c echo.Context) error {
 // @Failure 400 {object} Erro
 // @Failure 500 {object} Erro
 // @Router  /v1/api/usuarios/historico [get]
-func HistoricoUsuarioReadAll(c echo.Context) error {
-	historico, err := models.HistoricoUsuarioReadAll(database.Db)
+func (s *Server) HistoricoUsuarioReadAll(c echo.Context) error {
+	historico, err := s.HistoricoModel.UsuarioReadAll()
 
 	if err != nil {
 		slog.Error("HistoricoUsuarioReadAll", slog.Any("error", err))
@@ -62,8 +60,8 @@ func HistoricoUsuarioReadAll(c echo.Context) error {
 // @Failure 400 {object} Erro
 // @Failure 500 {object} Erro
 // @Router  /v1/api/redirecionadores/historico [get]
-func HistoricoRedirecionadorReadAll(c echo.Context) error {
-	historico, err := models.HistoricoRedirecionadorReadAll(database.Db)
+func (s *Server) HistoricoRedirecionadorReadAll(c echo.Context) error {
+	historico, err := s.HistoricoModel.RedirecionadorReadAll()
 
 	if err != nil {
 		slog.Error("HistoricoRedirecionadorReadAll", slog.Any("error", err))
@@ -83,8 +81,8 @@ func HistoricoRedirecionadorReadAll(c echo.Context) error {
 // @Failure 400 {object} Erro
 // @Failure 500 {object} Erro
 // @Router  /v1/api/links/historico [get]
-func HistoricoLinkReadAll(c echo.Context) error {
-	historico, err := models.HistoricoLinkReadAll(database.Db)
+func (s *Server) HistoricoLinkReadAll(c echo.Context) error {
+	historico, err := s.HistoricoModel.LinkReadAll()
 
 	if err != nil {
 		slog.Error("HistoricoLinkReadAll", slog.Any("error", err))

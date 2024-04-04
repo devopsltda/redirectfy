@@ -1,12 +1,10 @@
-package api
+package server
 
 import (
 	"log/slog"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"redirectify/internal/models"
-	"redirectify/internal/services/database"
 	"redirectify/internal/utils"
 )
 
@@ -21,14 +19,14 @@ import (
 // @Failure 400         {object} utils.Erro
 // @Failure 500         {object} utils.Erro
 // @Router  /v1/api/redirecionadores/:codigo_hash [get]
-func RedirecionadorReadByCodigoHash(c echo.Context) error {
+func (s *Server) RedirecionadorReadByCodigoHash(c echo.Context) error {
 	codigoHash := c.Param("codigo_hash")
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
 		return utils.ErroValidacaoCodigoHash
 	}
 
-	redirecionador, err := models.RedirecionadorReadByCodigoHash(database.Db, codigoHash)
+	redirecionador, err := s.RedirecionadorModel.ReadByCodigoHash(codigoHash)
 
 	if err != nil {
 		slog.Error("RedirecionadorReadByCodigoHash", slog.Any("error", err))
@@ -48,8 +46,8 @@ func RedirecionadorReadByCodigoHash(c echo.Context) error {
 // @Failure 400 {object} utils.Erro
 // @Failure 500 {object} utils.Erro
 // @Router  /v1/api/redirecionadores [get]
-func RedirecionadorReadAll(c echo.Context) error {
-	redirecionadores, err := models.RedirecionadorReadAll(database.Db)
+func (s *Server) RedirecionadorReadAll(c echo.Context) error {
+	redirecionadores, err := s.RedirecionadorModel.ReadAll()
 
 	if err != nil {
 		slog.Error("RedirecionadorReadAll", slog.Any("error", err))
@@ -72,7 +70,7 @@ func RedirecionadorReadAll(c echo.Context) error {
 // @Failure 400                       {object} utils.Erro
 // @Failure 500                       {object} utils.Erro
 // @Router  /v1/api/redirecionadores [post]
-func RedirecionadorCreate(c echo.Context) error {
+func (s *Server) RedirecionadorCreate(c echo.Context) error {
 	parametros := struct {
 		Nome                    string `json:"nome"`
 		OrdemDeRedirecionamento string `json:"ordem_de_redirecionamento"`
@@ -108,7 +106,7 @@ func RedirecionadorCreate(c echo.Context) error {
 	for codigoHashExiste {
 		codigoHash = utils.GeraHashCode(10)
 
-		codigoHashExiste, err = models.RedirecionadorCheckIfCodigoHashExists(database.Db, codigoHash)
+		codigoHashExiste, err = s.RedirecionadorModel.CheckIfCodigoHashExists(codigoHash)
 
 		if err != nil {
 			slog.Error("RedirecionadorCreate", slog.Any("error", err))
@@ -116,8 +114,7 @@ func RedirecionadorCreate(c echo.Context) error {
 		}
 	}
 
-	_, err = models.RedirecionadorCreate(
-		database.Db,
+	_, err = s.RedirecionadorModel.Create(
 		parametros.Nome,
 		codigoHash,
 		parametros.OrdemDeRedirecionamento,
@@ -143,7 +140,7 @@ func RedirecionadorCreate(c echo.Context) error {
 // @Failure 400         {object} utils.Erro
 // @Failure 500         {object} utils.Erro
 // @Router  /v1/api/redirecionadores/rehash/:codigo_hash [patch]
-func RedirecionadorRehash(c echo.Context) error {
+func (s *Server) RedirecionadorRehash(c echo.Context) error {
 	codigoHash := c.Param("codigo_hash")
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
@@ -157,7 +154,7 @@ func RedirecionadorRehash(c echo.Context) error {
 	for codigoHashExiste {
 		codigoHashNovo = utils.GeraHashCode(10)
 
-		codigoHashExiste, err = models.RedirecionadorCheckIfCodigoHashExists(database.Db, codigoHashNovo)
+		codigoHashExiste, err = s.RedirecionadorModel.CheckIfCodigoHashExists(codigoHashNovo)
 
 		if err != nil {
 			slog.Error("RedirecionadorRehash", slog.Any("error", err))
@@ -165,7 +162,7 @@ func RedirecionadorRehash(c echo.Context) error {
 		}
 	}
 
-	err = models.RedirecionadorRehash(database.Db, codigoHash, codigoHashNovo)
+	err = s.RedirecionadorModel.Rehash(codigoHash, codigoHashNovo)
 
 	if err != nil {
 		slog.Error("RedirecionadorRehash", slog.Any("error", err))
@@ -188,7 +185,7 @@ func RedirecionadorRehash(c echo.Context) error {
 // @Failure 400                       {object} utils.Erro
 // @Failure 500                       {object} utils.Erro
 // @Router  /v1/api/redirecionadores/:codigo_hash [patch]
-func RedirecionadorUpdate(c echo.Context) error {
+func (s *Server) RedirecionadorUpdate(c echo.Context) error {
 	parametros := struct {
 		Nome                    string `json:"nome"`
 		OrdemDeRedirecionamento string `json:"ordem_de_redirecionamento"`
@@ -219,7 +216,7 @@ func RedirecionadorUpdate(c echo.Context) error {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	err := models.RedirecionadorUpdate(database.Db, parametros.Nome, codigoHash, parametros.OrdemDeRedirecionamento)
+	err := s.RedirecionadorModel.Update(parametros.Nome, codigoHash, parametros.OrdemDeRedirecionamento)
 
 	if err != nil {
 		slog.Error("RedirecionadorUpdate", slog.Any("error", err))
@@ -240,14 +237,14 @@ func RedirecionadorUpdate(c echo.Context) error {
 // @Failure 400         {object} utils.Erro
 // @Failure 500         {object} utils.Erro
 // @Router  /v1/api/redirecionadores/:codigo_hash [delete]
-func RedirecionadorRemove(c echo.Context) error {
+func (s *Server) RedirecionadorRemove(c echo.Context) error {
 	codigoHash := c.Param("codigo_hash")
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
 		return utils.ErroValidacaoCodigoHash
 	}
 
-	err := models.RedirecionadorRemove(database.Db, codigoHash)
+	err := s.RedirecionadorModel.Remove(codigoHash)
 
 	if err != nil {
 		slog.Error("RedirecionadorRemove", slog.Any("error", err))

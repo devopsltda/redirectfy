@@ -19,24 +19,23 @@ var (
 	dbName  = os.Getenv("DB_NAME")
 	dbToken = os.Getenv("DB_TOKEN")
 
-	Db          *sql.DB
 	TempDir     string
-	DbConnector *libsql.Connector
+	dbConnector *libsql.Connector
 )
 
-func New() {
+func New() *sql.DB {
 	var err error
 
 	if utils.AppEnv == "test" {
-		Db, err = sql.Open("sqlite", "file::memory:?cache=shared")
-		seed(os.Getenv("DB_SOURCE_PATH"))
+		db, err := sql.Open("sqlite", "file::memory:?cache=shared")
+		seed(db, os.Getenv("DB_SOURCE_PATH"))
 
 		if err != nil {
 			slog.Error("BancoDeDados", slog.Any("error", err))
 			os.Exit(1)
 		}
 
-		return
+		return db
 	}
 
 	TempDir, err := os.MkdirTemp("", "libsql-*")
@@ -47,29 +46,31 @@ func New() {
 	}
 
 	dbPath := filepath.Join(TempDir, dbName)
-	DbConnector, err = libsql.NewEmbeddedReplicaConnector(dbPath, dbUrl, libsql.WithAuthToken(dbToken), libsql.WithSyncInterval(15*time.Minute))
+	dbConnector, err = libsql.NewEmbeddedReplicaConnector(dbPath, dbUrl, libsql.WithAuthToken(dbToken), libsql.WithSyncInterval(15*time.Minute))
 
 	if err != nil {
 		slog.Error("BancoDeDados", slog.Any("error", err))
 		os.Exit(1)
 	}
 
-	Db = sql.OpenDB(DbConnector)
+	db := sql.OpenDB(dbConnector)
 
 	if err != nil {
 		slog.Error("BancoDeDados", slog.Any("error", err))
 		os.Exit(1)
 	}
+
+	return db
 }
 
-func seed(dbSourcePath string) error {
+func seed(db *sql.DB, dbSourcePath string) error {
 	queryDDL, err := os.ReadFile(dbSourcePath + "ddl.sql")
 
 	if err != nil {
 		return err
 	}
 
-	_, err = Db.Exec(string(queryDDL))
+	_, err = db.Exec(string(queryDDL))
 
 	if err != nil {
 		return err
@@ -81,7 +82,7 @@ func seed(dbSourcePath string) error {
 		return err
 	}
 
-	_, err = Db.Exec(string(queryTriggers))
+	_, err = db.Exec(string(queryTriggers))
 
 	return err
 }

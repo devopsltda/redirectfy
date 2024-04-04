@@ -16,10 +16,14 @@ type EmailAutenticacao struct {
 	Usuario  int64  `json:"usuario"`
 } // @name EmailAutenticacao
 
-func EmailAutenticacaoReadByValor(db *sql.DB, valor string) (EmailAutenticacao, error) {
+type EmailAutenticacaoModel struct {
+	DB *sql.DB
+}
+
+func (ea *EmailAutenticacaoModel) ReadByValor(valor string) (EmailAutenticacao, error) {
 	var emailAutenticacao EmailAutenticacao
 
-	row := db.QueryRow(
+	row := ea.DB.QueryRow(
 		"SELECT ID, VALOR, TIPO, EXPIRA_EM, USUARIO FROM EMAIL_AUTENTICACAO WHERE VALOR = $1",
 		valor,
 	)
@@ -41,8 +45,8 @@ func EmailAutenticacaoReadByValor(db *sql.DB, valor string) (EmailAutenticacao, 
 	return emailAutenticacao, nil
 }
 
-func EmailAutenticacaoCreate(db *sql.DB, valor, tipo string, usuario int64) (int64, error) {
-	result, err := db.Exec(
+func (ea *EmailAutenticacaoModel) Create(valor, tipo string, usuario int64) (int64, error) {
+	result, err := ea.DB.Exec(
 		"INSERT INTO EMAIL_AUTENTICACAO (VALOR, TIPO, EXPIRA_EM, USUARIO) VALUES ($1, $2, $3, $4) RETURNING ID",
 		valor,
 		tipo,
@@ -63,8 +67,8 @@ func EmailAutenticacaoCreate(db *sql.DB, valor, tipo string, usuario int64) (int
 	return id, nil
 }
 
-func EmailAutenticacaoCheckIfValorExists(db *sql.DB, valor string) (bool, error) {
-	row := db.QueryRow(
+func (ea *EmailAutenticacaoModel) CheckIfValorExists(valor string) (bool, error) {
+	row := ea.DB.QueryRow(
 		"SELECT '' FROM EMAIL_AUTENTICACAO WHERE VALOR = $1",
 		valor,
 	)
@@ -84,11 +88,11 @@ func EmailAutenticacaoCheckIfValorExists(db *sql.DB, valor string) (bool, error)
 	return true, nil
 }
 
-func EmailAutenticacaoCheckIfValorExistsAndIsValid(db *sql.DB, valor, tipo string) (int64, error) {
+func (ea *EmailAutenticacaoModel) CheckIfValorExistsAndIsValid(valor, tipo string) (int64, error) {
 	var tipoRetornado string
 	var usuario int64
 
-	row := db.QueryRow(
+	row := ea.DB.QueryRow(
 		"SELECT TIPO, USUARIO FROM EMAIL_AUTENTICACAO WHERE VALOR = $1 AND EXPIRA_EM > CURRENT_TIMESTAMP",
 		valor,
 	)
@@ -112,8 +116,8 @@ func EmailAutenticacaoCheckIfValorExistsAndIsValid(db *sql.DB, valor, tipo strin
 	return usuario, nil
 }
 
-func EmailAutenticacaoExpirar(db *sql.DB, valor string) error {
-	_, err := db.Exec(
+func (ea *EmailAutenticacaoModel) Expirar(valor string) error {
+	_, err := ea.DB.Exec(
 		"UPDATE EMAIL_AUTENTICACAO SET EXPIRA_EM = CURRENT_TIMESTAMP WHERE VALOR = $1",
 		valor,
 	)

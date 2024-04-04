@@ -34,8 +34,6 @@ func main() {
 		panic(fmt.Sprintf("O servidor não pôde ser finalizado graciosamente: %s", err))
 	}
 
-	_ = database.Db.Close()
-	_ = database.DbConnector.Close()
 	_ = os.RemoveAll(database.TempDir)
 	fmt.Println("O servidor parou.")
 }

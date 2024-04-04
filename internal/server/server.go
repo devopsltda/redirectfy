@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"time"
 
+	"redirectify/internal/models"
 	"redirectify/internal/services/database"
 	"redirectify/internal/utils"
 
@@ -18,6 +19,12 @@ import (
 type Server struct {
 	port int
 	db   *sql.DB
+	EmailAutenticacaoModel *models.EmailAutenticacaoModel
+	HistoricoModel *models.HistoricoModel
+	LinkModel *models.LinkModel
+	PlanoDeAssinaturaModel *models.PlanoDeAssinaturaModel
+	RedirecionadorModel *models.RedirecionadorModel
+	UsuarioModel *models.UsuarioModel
 }
 
 func NewServer() *http.Server {
@@ -30,17 +37,23 @@ func NewServer() *http.Server {
 
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 
-	database.New()
+	db := database.New()
 
 	newServer := &Server{
 		port: port,
-		db:   database.Db,
+		db:   database.New(),
+		EmailAutenticacaoModel: &models.EmailAutenticacaoModel{ DB: db },
+		HistoricoModel: &models.HistoricoModel{ DB: db },
+		LinkModel: &models.LinkModel{ DB: db },
+		PlanoDeAssinaturaModel: &models.PlanoDeAssinaturaModel{ DB: db },
+		RedirecionadorModel: &models.RedirecionadorModel{ DB: db },
+		UsuarioModel: &models.UsuarioModel{ DB: db },
 	}
 
 	// Declare Server config
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%d", newServer.port),
-		Handler:      RegisterRoutes(),
+		Handler:      newServer.RegisterRoutes(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,

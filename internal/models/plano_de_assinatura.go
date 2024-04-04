@@ -16,10 +16,14 @@ type PlanoDeAssinatura struct {
 	RemovidoEm    sql.NullString `json:"removido_em" swaggertype:"integer"`
 } // @name PlanoDeAssinatura
 
-func PlanoDeAssinaturaReadByNome(db *sql.DB, nome string) (PlanoDeAssinatura, error) {
+type PlanoDeAssinaturaModel struct {
+	DB *sql.DB
+}
+
+func (pa *PlanoDeAssinaturaModel) ReadByNome(nome string) (PlanoDeAssinatura, error) {
 	var planoDeAssinatura PlanoDeAssinatura
 
-	row := db.QueryRow(
+	row := pa.DB.QueryRow(
 		"SELECT ID, NOME, VALOR_MENSAL, LIMITE, PERIODO_LIMITE, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL AND NOME = $1",
 		nome,
 	)
@@ -44,10 +48,10 @@ func PlanoDeAssinaturaReadByNome(db *sql.DB, nome string) (PlanoDeAssinatura, er
 	return planoDeAssinatura, nil
 }
 
-func PlanoDeAssinaturaReadAll(db *sql.DB) ([]PlanoDeAssinatura, error) {
+func (pa *PlanoDeAssinaturaModel) ReadAll() ([]PlanoDeAssinatura, error) {
 	var planosDeAssinatura []PlanoDeAssinatura
 
-	rows, err := db.Query("SELECT ID, NOME, VALOR_MENSAL, LIMITE, PERIODO_LIMITE, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL")
+	rows, err := pa.DB.Query("SELECT ID, NOME, VALOR_MENSAL, LIMITE, PERIODO_LIMITE, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL")
 
 	if err != nil {
 		return nil, err
@@ -81,8 +85,8 @@ func PlanoDeAssinaturaReadAll(db *sql.DB) ([]PlanoDeAssinatura, error) {
 	return planosDeAssinatura, nil
 }
 
-func PlanoDeAssinaturaCreate(db *sql.DB, nome string, valorMensal, limite int64, periodoLimite string) error {
-	_, err := db.Exec(
+func (pa *PlanoDeAssinaturaModel) Create(nome string, valorMensal, limite int64, periodoLimite string) error {
+	_, err := pa.DB.Exec(
 		"INSERT INTO PLANO_DE_ASSINATURA (NOME, VALOR_MENSAL, LIMITE, PERIODO_LIMITE) VALUES ($1, $2, $3, $4)",
 		nome,
 		valorMensal,
@@ -97,7 +101,7 @@ func PlanoDeAssinaturaCreate(db *sql.DB, nome string, valorMensal, limite int64,
 	return nil
 }
 
-func PlanoDeAssinaturaUpdate(db *sql.DB, nomeParam, nome string, valorMensal, limite int64, periodoLimite string) error {
+func (pa *PlanoDeAssinaturaModel) Update(nomeParam, nome string, valorMensal, limite int64, periodoLimite string) error {
 	sqlQuery := "UPDATE PLANO_DE_ASSINATURA SET ATUALIZADO_EM = CURRENT_TIMESTAMP"
 
 	if nome != "" {
@@ -118,7 +122,7 @@ func PlanoDeAssinaturaUpdate(db *sql.DB, nomeParam, nome string, valorMensal, li
 
 	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND NOME = $1"
 
-	_, err := db.Exec(
+	_, err := pa.DB.Exec(
 		sqlQuery,
 		nomeParam,
 	)
@@ -130,8 +134,8 @@ func PlanoDeAssinaturaUpdate(db *sql.DB, nomeParam, nome string, valorMensal, li
 	return nil
 }
 
-func PlanoDeAssinaturaRemove(db *sql.DB, nome string) error {
-	_, err := db.Exec(
+func (pa *PlanoDeAssinaturaModel) Remove(nome string) error {
+	_, err := pa.DB.Exec(
 		"UPDATE PLANO_DE_ASSINATURA SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE NOME = $1",
 		nome,
 	)

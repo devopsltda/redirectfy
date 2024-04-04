@@ -77,10 +77,14 @@ type HistoricoLink struct {
 	CriadoEm_      string         `json:"criado_em_"`
 } // @name HistoricoLink
 
-func HistoricoPlanoDeAssinaturaReadAll(db *sql.DB) ([]HistoricoPlanoDeAssinatura, error) {
+type HistoricoModel struct {
+	DB *sql.DB
+}
+
+func (h *HistoricoModel) PlanoDeAssinaturaReadAll() ([]HistoricoPlanoDeAssinatura, error) {
 	var historico []HistoricoPlanoDeAssinatura
 
-	rows, err := db.Query("SELECT _ROWID, ID, NOME, VALOR_MENSAL, LIMITE, PERIODO_LIMITE, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM, VERSAO, BITMASK, _CRIADO_EM FROM HISTORICO_PLANO_DE_ASSINATURA")
+	rows, err := h.DB.Query("SELECT _ROWID, ID, NOME, VALOR_MENSAL, LIMITE, PERIODO_LIMITE, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM, VERSAO, BITMASK, _CRIADO_EM FROM HISTORICO_PLANO_DE_ASSINATURA")
 
 	if err != nil {
 		return nil, err
@@ -118,10 +122,10 @@ func HistoricoPlanoDeAssinaturaReadAll(db *sql.DB) ([]HistoricoPlanoDeAssinatura
 	return historico, nil
 }
 
-func HistoricoUsuarioReadAll(db *sql.DB) ([]HistoricoUsuario, error) {
+func (h *HistoricoModel) UsuarioReadAll() ([]HistoricoUsuario, error) {
 	var historico []HistoricoUsuario
 
-	rows, err := db.Query("SELECT _ROWID, ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, AUTENTICADO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM, VERSAO, BITMASK, _CRIADO_EM FROM HISTORICO_USUARIO")
+	rows, err := h.DB.Query("SELECT _ROWID, ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, AUTENTICADO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM, VERSAO, BITMASK, _CRIADO_EM FROM HISTORICO_USUARIO")
 
 	if err != nil {
 		return nil, err
@@ -163,10 +167,10 @@ func HistoricoUsuarioReadAll(db *sql.DB) ([]HistoricoUsuario, error) {
 	return historico, nil
 }
 
-func HistoricoEmailAutenticacaoReadAll(db *sql.DB) ([]HistoricoEmailAutenticacao, error) {
+func (h *HistoricoModel) EmailAutenticacaoReadAll() ([]HistoricoEmailAutenticacao, error) {
 	var historico []HistoricoEmailAutenticacao
 
-	rows, err := db.Query("SELECT _ROWID, ID, VALOR, TIPO, EXPIRA_EM, USUARIO, VERSAO, BITMASK, _CRIADO_EM FROM HISTORICO_EMAIL_AUTENTICACAO")
+	rows, err := h.DB.Query("SELECT _ROWID, ID, VALOR, TIPO, EXPIRA_EM, USUARIO, VERSAO, BITMASK, _CRIADO_EM FROM HISTORICO_EMAIL_AUTENTICACAO")
 
 	if err != nil {
 		return nil, err
@@ -201,10 +205,10 @@ func HistoricoEmailAutenticacaoReadAll(db *sql.DB) ([]HistoricoEmailAutenticacao
 	return historico, nil
 }
 
-func HistoricoRedirecionadorReadAll(db *sql.DB) ([]HistoricoRedirecionador, error) {
+func (h *HistoricoModel) RedirecionadorReadAll() ([]HistoricoRedirecionador, error) {
 	var historico []HistoricoRedirecionador
 
-	rows, err := db.Query("SELECT _ROWID, ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM, VERSAO, BITMASK, _CRIADO_EM FROM HISTORICO_REDIRECIONADOR")
+	rows, err := h.DB.Query("SELECT _ROWID, ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM, VERSAO, BITMASK, _CRIADO_EM FROM HISTORICO_REDIRECIONADOR")
 
 	if err != nil {
 		return nil, err
@@ -242,10 +246,10 @@ func HistoricoRedirecionadorReadAll(db *sql.DB) ([]HistoricoRedirecionador, erro
 	return historico, nil
 }
 
-func HistoricoLinkReadAll(db *sql.DB) ([]HistoricoLink, error) {
+func (h *HistoricoModel) LinkReadAll() ([]HistoricoLink, error) {
 	var historico []HistoricoLink
 
-	rows, err := db.Query("SELECT _ROWID, ID, LINK, PLATAFORMA, REDIRECIONADOR, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM, VERSAO, BITMASK, _CRIADO_EM FROM HISTORICO_LINK")
+	rows, err := h.DB.Query("SELECT _ROWID, ID, LINK, PLATAFORMA, REDIRECIONADOR, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM, VERSAO, BITMASK, _CRIADO_EM FROM HISTORICO_LINK")
 
 	if err != nil {
 		return nil, err

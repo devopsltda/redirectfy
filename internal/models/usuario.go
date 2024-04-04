@@ -20,10 +20,14 @@ type Usuario struct {
 	RemovidoEm        sql.NullString `json:"removido_em" swaggertype:"string"`
 } // @name Usuario
 
-func UsuarioReadByNomeDeUsuario(db *sql.DB, nomeDeUsuario string) (Usuario, error) {
+type UsuarioModel struct {
+	DB *sql.DB
+}
+
+func (u *UsuarioModel) ReadByNomeDeUsuario(nomeDeUsuario string) (Usuario, error) {
 	var usuario Usuario
 
-	row := db.QueryRow(
+	row := u.DB.QueryRow(
 		"SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, AUTENTICADO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = $1",
 		nomeDeUsuario,
 	)
@@ -52,10 +56,10 @@ func UsuarioReadByNomeDeUsuario(db *sql.DB, nomeDeUsuario string) (Usuario, erro
 	return usuario, nil
 }
 
-func UsuarioReadAll(db *sql.DB) ([]Usuario, error) {
+func (u *UsuarioModel) ReadAll() ([]Usuario, error) {
 	var usuarios []Usuario
 
-	rows, err := db.Query("SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, AUTENTICADO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL")
+	rows, err := u.DB.Query("SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, AUTENTICADO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL")
 
 	if err != nil {
 		return nil, err
@@ -93,8 +97,8 @@ func UsuarioReadAll(db *sql.DB) ([]Usuario, error) {
 	return usuarios, nil
 }
 
-func UsuarioCreate(db *sql.DB, cpf, nome, nomeDeUsuario, email, senha, dataDeNascimento string, planoDeAssinatura int64) (int64, error) {
-	result, err := db.Exec(
+func (u *UsuarioModel) Create(cpf, nome, nomeDeUsuario, email, senha, dataDeNascimento string, planoDeAssinatura int64) (int64, error) {
+	result, err := u.DB.Exec(
 		"INSERT INTO USUARIO (CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING ID",
 		cpf,
 		nome,
@@ -119,10 +123,10 @@ func UsuarioCreate(db *sql.DB, cpf, nome, nomeDeUsuario, email, senha, dataDeNas
 	return id, nil
 }
 
-func UsuarioAutenticado(db *sql.DB, id int64) error {
+func (u *UsuarioModel) Autenticado(id int64) error {
 	sqlQuery := "UPDATE USUARIO SET ATUALIZADO_EM = CURRENT_TIMESTAMP, AUTENTICADO = 1 WHERE REMOVIDO_EM IS NULL AND ID = $1"
 
-	_, err := db.Exec(
+	_, err := u.DB.Exec(
 		sqlQuery,
 		id,
 	)
@@ -134,7 +138,7 @@ func UsuarioAutenticado(db *sql.DB, id int64) error {
 	return nil
 }
 
-func UsuarioTrocaSenha(db *sql.DB, id int64, senha string) error {
+func (u *UsuarioModel) TrocaSenha(id int64, senha string) error {
 	sqlQuery := "UPDATE USUARIO SET ATUALIZADO_EM = CURRENT_TIMESTAMP"
 
 	if senha != "" {
@@ -142,7 +146,7 @@ func UsuarioTrocaSenha(db *sql.DB, id int64, senha string) error {
 	}
 	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND ID = $1"
 
-	_, err := db.Exec(
+	_, err := u.DB.Exec(
 		sqlQuery,
 		id,
 	)
@@ -154,7 +158,7 @@ func UsuarioTrocaSenha(db *sql.DB, id int64, senha string) error {
 	return nil
 }
 
-func UsuarioUpdate(db *sql.DB, cpf, nome, nomeDeUsuario, email, senha, dataDeNascimento string, planoDeAssinatura int64) error {
+func (u *UsuarioModel) Update(cpf, nome, nomeDeUsuario, email, senha, dataDeNascimento string, planoDeAssinatura int64) error {
 	sqlQuery := "UPDATE USUARIO SET ATUALIZADO_EM = CURRENT_TIMESTAMP"
 
 	if cpf != "" {
@@ -187,7 +191,7 @@ func UsuarioUpdate(db *sql.DB, cpf, nome, nomeDeUsuario, email, senha, dataDeNas
 
 	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = $1"
 
-	_, err := db.Exec(
+	_, err := u.DB.Exec(
 		sqlQuery,
 		nomeDeUsuario,
 	)
@@ -199,8 +203,8 @@ func UsuarioUpdate(db *sql.DB, cpf, nome, nomeDeUsuario, email, senha, dataDeNas
 	return nil
 }
 
-func UsuarioRemove(db *sql.DB, nomeDeUsuario string) error {
-	_, err := db.Exec(
+func (u *UsuarioModel) Remove(nomeDeUsuario string) error {
+	_, err := u.DB.Exec(
 		"UPDATE USUARIO SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE NOME_DE_USUARIO = $1",
 		nomeDeUsuario,
 	)
@@ -212,7 +216,7 @@ func UsuarioRemove(db *sql.DB, nomeDeUsuario string) error {
 	return nil
 }
 
-func UsuarioLogin(db *sql.DB, email, nomeDeUsuario string) (int64, string, string, bool, string, error) {
+func (u *UsuarioModel) Login(email, nomeDeUsuario string) (int64, string, string, bool, string, error) {
 	var login string
 	var loginValue string
 
@@ -226,7 +230,7 @@ func UsuarioLogin(db *sql.DB, email, nomeDeUsuario string) (int64, string, strin
 		loginValue = nomeDeUsuario
 	}
 
-	row := db.QueryRow(
+	row := u.DB.QueryRow(
 		"SELECT ID, NOME, NOME_DE_USUARIO, AUTENTICADO, SENHA FROM USUARIO WHERE REMOVIDO_EM IS NULL AND "+login,
 		loginValue,
 	)

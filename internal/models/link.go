@@ -17,10 +17,14 @@ type Link struct {
 	RemovidoEm     sql.NullString `json:"removido_em" swaggertype:"string"`
 } // @name Link
 
-func LinkReadById(db *sql.DB, id int64, codigoHash string) (Link, error) {
+type LinkModel struct {
+	DB *sql.DB
+}
+
+func (l *LinkModel) ReadById(id int64, codigoHash string) (Link, error) {
 	var link Link
 
-	row := db.QueryRow(
+	row := l.DB.QueryRow(
 		"SELECT ID, NOME, LINK, PLATAFORMA, REDIRECIONADOR, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM LINK WHERE REMOVIDO_EM IS NULL AND ID = $1 AND REDIRECIONADOR = $2",
 		id,
 		codigoHash,
@@ -46,10 +50,10 @@ func LinkReadById(db *sql.DB, id int64, codigoHash string) (Link, error) {
 	return link, nil
 }
 
-func LinkReadAll(db *sql.DB, codigoHash string) ([]Link, error) {
+func (l *LinkModel) ReadAll(codigoHash string) ([]Link, error) {
 	var links []Link
 
-	rows, err := db.Query(
+	rows, err := l.DB.Query(
 		"SELECT ID, NOME, LINK, PLATAFORMA, REDIRECIONADOR, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM LINK WHERE REMOVIDO_EM IS NULL AND REDIRECIONADOR = $1",
 		codigoHash,
 	)
@@ -86,8 +90,8 @@ func LinkReadAll(db *sql.DB, codigoHash string) ([]Link, error) {
 	return links, nil
 }
 
-func LinkCreate(db *sql.DB, nome, link, plataforma, redirecionador string) error {
-	_, err := db.Exec(
+func (l *LinkModel)  Create(nome, link, plataforma, redirecionador string) error {
+	_, err := l.DB.Exec(
 		"INSERT INTO LINK (NOME, LINK, PLATAFORMA, REDIRECIONADOR) VALUES ($1, $2, $3, $4)",
 		nome,
 		link,
@@ -102,7 +106,7 @@ func LinkCreate(db *sql.DB, nome, link, plataforma, redirecionador string) error
 	return nil
 }
 
-func LinkUpdate(db *sql.DB, id int64, codigoHash, nome, link, plataforma string) error {
+func (l *LinkModel) Update(id int64, codigoHash, nome, link, plataforma string) error {
 	sqlQuery := "UPDATE LINK SET ATUALIZADO_EM = CURRENT_TIMESTAMP"
 
 	if nome != "" {
@@ -119,7 +123,7 @@ func LinkUpdate(db *sql.DB, id int64, codigoHash, nome, link, plataforma string)
 
 	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND ID = $1 AND REDIRECIONADOR = $2"
 
-	_, err := db.Exec(
+	_, err := l.DB.Exec(
 		sqlQuery,
 		id,
 		codigoHash,
@@ -132,8 +136,8 @@ func LinkUpdate(db *sql.DB, id int64, codigoHash, nome, link, plataforma string)
 	return nil
 }
 
-func LinkRemove(db *sql.DB, id int64, codigoHash string) error {
-	_, err := db.Exec(
+func (l *LinkModel) Remove(id int64, codigoHash string) error {
+	_, err := l.DB.Exec(
 		"UPDATE LINK SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE ID = $1 AND REDIRECIONADOR = $2",
 		id,
 		codigoHash,

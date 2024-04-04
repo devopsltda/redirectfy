@@ -1,12 +1,10 @@
-package api
+package server
 
 import (
 	"log/slog"
 	"net/http"
 	"strconv"
 
-	"redirectify/internal/models"
-	"redirectify/internal/services/database"
 	"redirectify/internal/utils"
 
 	"github.com/labstack/echo/v4"
@@ -24,7 +22,7 @@ import (
 // @Failure 400         {object} utils.Erro
 // @Failure 500         {object} utils.Erro
 // @Router  /v1/api/redirecionadores/:codigo_hash/links/:id [get]
-func LinkReadById(c echo.Context) error {
+func (s *Server) LinkReadById(c echo.Context) error {
 	id := c.Param("id")
 	codigoHash := c.Param("codigo_hash")
 
@@ -43,7 +41,7 @@ func LinkReadById(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	link, err := models.LinkReadById(database.Db, parsedId, codigoHash)
+	link, err := s.LinkModel.ReadById(parsedId, codigoHash)
 
 	if err != nil {
 		slog.Error("LinkReadById", slog.Any("error", err))
@@ -64,14 +62,14 @@ func LinkReadById(c echo.Context) error {
 // @Failure 400         {object} utils.Erro
 // @Failure 500         {object} utils.Erro
 // @Router  /v1/api/redirecionadores/:codigo_hash/links [get]
-func LinkReadAll(c echo.Context) error {
+func (s *Server) LinkReadAll(c echo.Context) error {
 	codigoHash := c.Param("codigo_hash")
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
 		return utils.ErroValidacaoCodigoHash
 	}
 
-	links, err := models.LinkReadAll(database.Db, codigoHash)
+	links, err := s.LinkModel.ReadAll(codigoHash)
 
 	if err != nil {
 		slog.Error("LinkReadAll", slog.Any("error", err))
@@ -95,7 +93,7 @@ func LinkReadAll(c echo.Context) error {
 // @Failure 400                 {object} utils.Erro
 // @Failure 500                 {object} utils.Erro
 // @Router  /v1/api/redirecionadores/:codigo_hash/links [post]
-func LinkCreate(c echo.Context) error {
+func (s *Server) LinkCreate(c echo.Context) error {
 	parametros := struct {
 		CodigoHash string `path:"codigo_hash"`
 		Nome       string `json:"nome"`
@@ -129,8 +127,7 @@ func LinkCreate(c echo.Context) error {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	err := models.LinkCreate(
-		database.Db,
+	err := s.LinkModel.Create(
 		parametros.Nome,
 		parametros.Link,
 		parametros.Plataforma,
@@ -160,7 +157,7 @@ func LinkCreate(c echo.Context) error {
 // @Failure 400         {object} utils.Erro
 // @Failure 500         {object} utils.Erro
 // @Router  /v1/api/redirecionadores/:codigo_hash/link/:id [patch]
-func LinkUpdate(c echo.Context) error {
+func (s *Server) LinkUpdate(c echo.Context) error {
 	parametros := struct {
 		CodigoHash string `path:"codigo_hash"`
 		Id         int64  `path:"id"`
@@ -195,7 +192,7 @@ func LinkUpdate(c echo.Context) error {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	err := models.LinkUpdate(database.Db, parametros.Id, parametros.CodigoHash, parametros.Nome, parametros.Link, parametros.Plataforma)
+	err := s.LinkModel.Update(parametros.Id, parametros.CodigoHash, parametros.Nome, parametros.Link, parametros.Plataforma)
 
 	if err != nil {
 		slog.Error("LinkUpdate", slog.Any("error", err))
@@ -217,7 +214,7 @@ func LinkUpdate(c echo.Context) error {
 // @Failure 400         {object} utils.Erro
 // @Failure 500         {object} utils.Erro
 // @Router  /v1/api/redirecionadores/:codigo_hash/link/:id [delete]
-func LinkRemove(c echo.Context) error {
+func (s *Server) LinkRemove(c echo.Context) error {
 	id := c.Param("id")
 	codigoHash := c.Param("codigo_hash")
 
@@ -236,7 +233,7 @@ func LinkRemove(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	err = models.LinkRemove(database.Db, parsedId, codigoHash)
+	err = s.LinkModel.Remove(parsedId, codigoHash)
 
 	if err != nil {
 		slog.Error("LinkRemove", slog.Any("error", err))

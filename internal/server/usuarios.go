@@ -1,12 +1,10 @@
-package api
+package server
 
 import (
 	"log/slog"
 	"net/http"
 
 	"redirectify/internal/auth"
-	"redirectify/internal/models"
-	"redirectify/internal/services/database"
 	"redirectify/internal/services/email"
 	"redirectify/internal/utils"
 
@@ -25,14 +23,14 @@ import (
 // @Failure 400             {object} utils.Erro
 // @Failure 500             {object} utils.Erro
 // @Router  /v1/api/usuarios/:nome_de_usuario [get]
-func UsuarioReadByNomeDeUsuario(c echo.Context) error {
+func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
 
 	if !utils.ValidaNomeDeUsuario(nomeDeUsuario) {
 		return utils.ErroValidacaoNomeDeUsuario
 	}
 
-	usuario, err := models.UsuarioReadByNomeDeUsuario(database.Db, nomeDeUsuario)
+	usuario, err := s.UsuarioModel.ReadByNomeDeUsuario(nomeDeUsuario)
 
 	if err != nil {
 		slog.Error("UsuarioReadByNomeDeUsuario", slog.Any("error", err))
@@ -52,8 +50,8 @@ func UsuarioReadByNomeDeUsuario(c echo.Context) error {
 // @Failure 400             {object} utils.Erro
 // @Failure 500             {object} utils.Erro
 // @Router  /v1/api/usuarios [get]
-func UsuarioReadAll(c echo.Context) error {
-	usuarios, err := models.UsuarioReadAll(database.Db)
+func (s *Server) UsuarioReadAll(c echo.Context) error {
+	usuarios, err := s.UsuarioModel.ReadAll()
 
 	if err != nil {
 		slog.Error("UsuarioReadAll", slog.Any("error", err))
@@ -80,7 +78,7 @@ func UsuarioReadAll(c echo.Context) error {
 // @Failure 400                 {object} utils.Erro
 // @Failure 500                 {object} utils.Erro
 // @Router  /v1/api/usuarios [post]
-func UsuarioCreate(c echo.Context) error {
+func (s *Server) UsuarioCreate(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
 
 	parametros := struct {
@@ -144,8 +142,7 @@ func UsuarioCreate(c echo.Context) error {
 
 	parametros.Senha = senhaComHash
 
-	usuarioId, err := models.UsuarioCreate(
-		database.Db,
+	usuarioId, err := s.UsuarioModel.Create(
 		parametros.Cpf,
 		parametros.Nome,
 		parametros.NomeDeUsuario,
@@ -166,7 +163,7 @@ func UsuarioCreate(c echo.Context) error {
 	for valorExiste {
 		valor = utils.GeraHashCode(120)
 
-		valorExiste, err = models.EmailAutenticacaoCheckIfValorExists(database.Db, valor)
+		valorExiste, err = s.EmailAutenticacaoModel.CheckIfValorExists(valor)
 
 		if err != nil {
 			slog.Error("UsuarioCreate", slog.Any("error", err))
@@ -174,7 +171,7 @@ func UsuarioCreate(c echo.Context) error {
 		}
 	}
 
-	id, err := models.EmailAutenticacaoCreate(database.Db, valor, "validacao", usuarioId)
+	id, err := s.EmailAutenticacaoModel.Create(valor, "validacao", usuarioId)
 
 	if err != nil {
 		slog.Error("UsuarioCreate", slog.Any("error", err))
@@ -209,7 +206,7 @@ func UsuarioCreate(c echo.Context) error {
 // @Failure 400                 {object} utils.Erro
 // @Failure 500                 {object} utils.Erro
 // @Router  /v1/api/usuarios/:nome_de_usuario [patch]
-func UsuarioUpdate(c echo.Context) error {
+func (s *Server) UsuarioUpdate(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
 
 	type parametrosUpdate struct {
@@ -281,8 +278,7 @@ func UsuarioUpdate(c echo.Context) error {
 		parametros.Senha = senhaComHash
 	}
 
-	err := models.UsuarioUpdate(
-		database.Db,
+	err := s.UsuarioModel.Update(
 		parametros.Cpf,
 		parametros.Nome,
 		parametros.NomeDeUsuario,
@@ -311,28 +307,28 @@ func UsuarioUpdate(c echo.Context) error {
 // @Failure 400               {object} utils.Erro
 // @Failure 500               {object} utils.Erro
 // @Router  /v1/api/usuarios/autentica/:valor [patch]
-func UsuarioAutenticado(c echo.Context) error {
+func (s *Server) UsuarioAutenticado(c echo.Context) error {
 	valor := c.Param("valor")
 
 	if !utils.ValidaNomeDeUsuario(valor) {
 		return utils.ErroValidacaoNomeDeUsuario
 	}
 
-	usuario, err := models.EmailAutenticacaoCheckIfValorExistsAndIsValid(database.Db, valor, "validacao")
+	usuario, err := s.EmailAutenticacaoModel.CheckIfValorExistsAndIsValid(valor, "validacao")
 
 	if err != nil {
 		slog.Error("UsuarioAutenticado", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
-	err = models.UsuarioAutenticado(database.Db, usuario)
+	err = s.UsuarioModel.Autenticado(usuario)
 
 	if err != nil {
 		slog.Error("UsuarioAutenticado", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
-	err = models.EmailAutenticacaoExpirar(database.Db, valor)
+	err = s.EmailAutenticacaoModel.Expirar(valor)
 
 	if err != nil {
 		slog.Error("UsuarioAutenticado", slog.Any("error", err))
@@ -353,7 +349,7 @@ func UsuarioAutenticado(c echo.Context) error {
 // @Failure 400               {object} utils.Erro
 // @Failure 500               {object} utils.Erro
 // @Router  /v1/api/usuarios/:nome_de_usuario/troca_de_senha [patch]
-func UsuarioTrocaDeSenhaExigir(c echo.Context) error {
+func (s *Server) UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
 
 	if !utils.ValidaNomeDeUsuario(nomeDeUsuario) {
@@ -362,7 +358,7 @@ func UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 
 	var err error
 
-	usuario, err := models.UsuarioReadByNomeDeUsuario(database.Db, nomeDeUsuario)
+	usuario, err := s.UsuarioModel.ReadByNomeDeUsuario(nomeDeUsuario)
 
 	if err != nil {
 		slog.Error("UsuarioTrocaDeSenhaExigir", slog.Any("error", err))
@@ -375,7 +371,7 @@ func UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 	for valorExiste {
 		valor = utils.GeraHashCode(120)
 
-		valorExiste, err = models.EmailAutenticacaoCheckIfValorExists(database.Db, valor)
+		valorExiste, err = s.EmailAutenticacaoModel.CheckIfValorExists(valor)
 
 		if err != nil {
 			slog.Error("UsuarioTrocaDeSenhaExigir", slog.Any("error", err))
@@ -383,7 +379,7 @@ func UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 		}
 	}
 
-	id, err := models.EmailAutenticacaoCreate(database.Db, valor, "senha", usuario.Id)
+	id, err := s.EmailAutenticacaoModel.Create(valor, "senha", usuario.Id)
 
 	if err != nil {
 		slog.Error("UsuarioTrocaDeSenhaExigir", slog.Any("error", err))
@@ -412,7 +408,7 @@ func UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 // @Failure 400               {object} utils.Erro
 // @Failure 500               {object} utils.Erro
 // @Router  /v1/api/usuarios/troca_de_senha/:valor [patch]
-func UsuarioTrocaDeSenha(c echo.Context) error {
+func (s *Server) UsuarioTrocaDeSenha(c echo.Context) error {
 	valor := c.Param("valor")
 
 	if !utils.ValidaNomeDeUsuario(valor) {
@@ -433,7 +429,7 @@ func UsuarioTrocaDeSenha(c echo.Context) error {
 		return utils.ErroCriacaoSenha
 	}
 
-	usuario, err := models.EmailAutenticacaoCheckIfValorExistsAndIsValid(database.Db, valor, "senha")
+	usuario, err := s.EmailAutenticacaoModel.CheckIfValorExistsAndIsValid(valor, "senha")
 
 	if err != nil {
 		slog.Error("UsuarioTrocaDeSenha", slog.Any("error", err))
@@ -447,14 +443,14 @@ func UsuarioTrocaDeSenha(c echo.Context) error {
 		return utils.ErroCriacaoSenha
 	}
 
-	err = models.UsuarioTrocaSenha(database.Db, usuario, senhaComHash)
+	err = s.UsuarioModel.TrocaSenha(usuario, senhaComHash)
 
 	if err != nil {
 		slog.Error("UsuarioTrocaDeSenha", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
-	err = models.EmailAutenticacaoExpirar(database.Db, valor)
+	err = s.EmailAutenticacaoModel.Expirar(valor)
 
 	if err != nil {
 		slog.Error("UsuarioTrocaDeSenha", slog.Any("error", err))
@@ -475,14 +471,14 @@ func UsuarioTrocaDeSenha(c echo.Context) error {
 // @Failure 400               {object} utils.Erro
 // @Failure 500               {object} utils.Erro
 // @Router  /v1/api/usuarios/:nome_de_usuario [delete]
-func UsuarioRemove(c echo.Context) error {
+func (s *Server) UsuarioRemove(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
 
 	if !utils.ValidaNomeDeUsuario(nomeDeUsuario) {
 		return utils.ErroValidacaoNomeDeUsuario
 	}
 
-	err := models.UsuarioRemove(database.Db, nomeDeUsuario)
+	err := s.UsuarioModel.Remove(nomeDeUsuario)
 
 	if err != nil {
 		slog.Error("UsuarioRemove", slog.Any("error", err))
@@ -505,7 +501,7 @@ func UsuarioRemove(c echo.Context) error {
 // @Failure 400               {object} utils.Erro
 // @Failure 500               {object} utils.Erro
 // @Router  /v1/api/usuarios/login [post]
-func UsuarioLogin(c echo.Context) error {
+func (s *Server) UsuarioLogin(c echo.Context) error {
 	parametros := struct {
 		NomeDeUsuario string `json:"nome_de_usuario"`
 		Email         string `json:"email"`
@@ -538,7 +534,7 @@ func UsuarioLogin(c echo.Context) error {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	id, nome, nomeDeUsuario, autenticado, senha, err := models.UsuarioLogin(database.Db, parametros.Email, parametros.NomeDeUsuario)
+	id, nome, nomeDeUsuario, autenticado, senha, err := s.UsuarioModel.Login(parametros.Email, parametros.NomeDeUsuario)
 
 	if err != nil {
 		slog.Error("UsuarioLogin", slog.Any("error", err))

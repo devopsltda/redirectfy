@@ -1,12 +1,10 @@
-package api
+package server
 
 import (
 	"log/slog"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"redirectify/internal/models"
-	"redirectify/internal/services/database"
 	"redirectify/internal/utils"
 )
 
@@ -21,14 +19,14 @@ import (
 // @Failure 400  {object} utils.Erro
 // @Failure 500  {object} utils.Erro
 // @Router  /v1/api/planos_de_assinatura/:nome [get]
-func PlanoDeAssinaturaReadByNome(c echo.Context) error {
+func (s *Server) PlanoDeAssinaturaReadByNome(c echo.Context) error {
 	nome := c.Param("nome")
 
 	if err := utils.Validate.Var(nome, "required,min=3,max=120"); err != nil {
 		return utils.ErroValidacaoNome
 	}
 
-	planoDeAssinatura, err := models.PlanoDeAssinaturaReadByNome(database.Db, nome)
+	planoDeAssinatura, err := s.PlanoDeAssinaturaModel.ReadByNome(nome)
 
 	if err != nil {
 		slog.Error("PlanoDeAssinaturaReadByNome", slog.Any("error", err))
@@ -48,8 +46,8 @@ func PlanoDeAssinaturaReadByNome(c echo.Context) error {
 // @Failure 400  {object} utils.Erro
 // @Failure 500  {object} utils.Erro
 // @Router  /v1/api/planos_de_assinatura [get]
-func PlanoDeAssinaturaReadAll(c echo.Context) error {
-	planosDeAssinatura, err := models.PlanoDeAssinaturaReadAll(database.Db)
+func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
+	planosDeAssinatura, err := s.PlanoDeAssinaturaModel.ReadAll()
 
 	if err != nil {
 		slog.Error("PlanoDeAssinaturaReadAll", slog.Any("error", err))
@@ -71,7 +69,7 @@ func PlanoDeAssinaturaReadAll(c echo.Context) error {
 // @Failure 400          {object} utils.Erro
 // @Failure 500          {object} utils.Erro
 // @Router  /v1/api/planos_de_assinatura [post]
-func PlanoDeAssinaturaCreate(c echo.Context) error {
+func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 	parametros := struct {
 		Nome          string `json:"nome"`
 		ValorMensal   int64  `json:"valor_mensal"`
@@ -105,7 +103,7 @@ func PlanoDeAssinaturaCreate(c echo.Context) error {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	err := models.PlanoDeAssinaturaCreate(database.Db, parametros.Nome, parametros.ValorMensal, parametros.Limite, parametros.PeriodoLimite)
+	err := s.PlanoDeAssinaturaModel.Create(parametros.Nome, parametros.ValorMensal, parametros.Limite, parametros.PeriodoLimite)
 
 	if err != nil {
 		slog.Error("PlanoDeAssinaturaCreate", slog.Any("error", err))
@@ -128,7 +126,7 @@ func PlanoDeAssinaturaCreate(c echo.Context) error {
 // @Failure 400          {object} utils.Erro
 // @Failure 500          {object} utils.Erro
 // @Router  /v1/api/planos_de_assinatura/:nome [patch]
-func PlanoDeAssinaturaUpdate(c echo.Context) error {
+func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 	type parametrosUpdate struct {
 		Nome          string `json:"nome"`
 		ValorMensal   int64  `json:"valor_mensal"`
@@ -174,7 +172,7 @@ func PlanoDeAssinaturaUpdate(c echo.Context) error {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	err := models.PlanoDeAssinaturaUpdate(database.Db, nome, parametros.Nome, parametros.ValorMensal, parametros.Limite, parametros.PeriodoLimite)
+	err := s.PlanoDeAssinaturaModel.Update(nome, parametros.Nome, parametros.ValorMensal, parametros.Limite, parametros.PeriodoLimite)
 
 	if err != nil {
 		slog.Error("PlanoDeAssinaturaUpdate", slog.Any("error", err))
@@ -195,14 +193,14 @@ func PlanoDeAssinaturaUpdate(c echo.Context) error {
 // @Failure 400  {object} utils.Erro
 // @Failure 500  {object} utils.Erro
 // @Router  /v1/api/planos_de_assinatura/:nome [delete]
-func PlanoDeAssinaturaRemove(c echo.Context) error {
+func (s *Server) PlanoDeAssinaturaRemove(c echo.Context) error {
 	nome := c.Param("nome")
 
 	if err := utils.Validate.Var(nome, "required,min=3,max=120"); err != nil {
 		return utils.ErroValidacaoNome
 	}
 
-	err := models.PlanoDeAssinaturaRemove(database.Db, nome)
+	err := s.PlanoDeAssinaturaModel.Remove(nome)
 
 	if err != nil {
 		slog.Error("PlanoDeAssinaturaRemove", slog.Any("error", err))

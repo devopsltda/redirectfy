@@ -15,10 +15,14 @@ type Redirecionador struct {
 	RemovidoEm              sql.NullString `json:"removido_em" swaggertype:"string"`
 } // @name Redirecionador
 
-func RedirecionadorReadByCodigoHash(db *sql.DB, codigoHash string) (Redirecionador, error) {
+type RedirecionadorModel struct {
+	DB *sql.DB
+}
+
+func (r *RedirecionadorModel) ReadByCodigoHash(codigoHash string) (Redirecionador, error) {
 	var redirecionador Redirecionador
 
-	row := db.QueryRow(
+	row := r.DB.QueryRow(
 		"SELECT ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $1",
 		codigoHash,
 	)
@@ -43,10 +47,10 @@ func RedirecionadorReadByCodigoHash(db *sql.DB, codigoHash string) (Redirecionad
 	return redirecionador, nil
 }
 
-func RedirecionadorReadAll(db *sql.DB) ([]Redirecionador, error) {
+func (r *RedirecionadorModel) ReadAll() ([]Redirecionador, error) {
 	var redirecionadores []Redirecionador
 
-	rows, err := db.Query("SELECT ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL")
+	rows, err := r.DB.Query("SELECT ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL")
 
 	if err != nil {
 		return nil, err
@@ -80,8 +84,8 @@ func RedirecionadorReadAll(db *sql.DB) ([]Redirecionador, error) {
 	return redirecionadores, nil
 }
 
-func RedirecionadorCheckIfCodigoHashExists(db *sql.DB, codigoHash string) (bool, error) {
-	row := db.QueryRow(
+func (r *RedirecionadorModel) CheckIfCodigoHashExists(codigoHash string) (bool, error) {
+	row := r.DB.QueryRow(
 		"SELECT '' FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $1",
 		codigoHash,
 	)
@@ -101,8 +105,8 @@ func RedirecionadorCheckIfCodigoHashExists(db *sql.DB, codigoHash string) (bool,
 	return true, nil
 }
 
-func RedirecionadorCreate(db *sql.DB, nome, codigoHash, ordemDeRedirecionamento string, usuario int64) (int64, error) {
-	result, err := db.Exec(
+func (r *RedirecionadorModel) Create(nome, codigoHash, ordemDeRedirecionamento string, usuario int64) (int64, error) {
+	result, err := r.DB.Exec(
 		"INSERT INTO REDIRECIONADOR (NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO) VALUES ($1, $2, $3, $4) RETURNING ID",
 		nome,
 		codigoHash,
@@ -123,8 +127,8 @@ func RedirecionadorCreate(db *sql.DB, nome, codigoHash, ordemDeRedirecionamento 
 	return id, nil
 }
 
-func RedirecionadorRehash(db *sql.DB, codigoHashAntigo, codigoHashNovo string) error {
-	_, err := db.Exec(
+func (r *RedirecionadorModel) Rehash(codigoHashAntigo, codigoHashNovo string) error {
+	_, err := r.DB.Exec(
 		"UPDATE REDIRECIONADOR SET ATUALIZADO_EM = CURRENT_TIMESTAMP, CODIGO_HASH = $1 WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $2",
 		codigoHashNovo,
 		codigoHashAntigo,
@@ -137,7 +141,7 @@ func RedirecionadorRehash(db *sql.DB, codigoHashAntigo, codigoHashNovo string) e
 	return nil
 }
 
-func RedirecionadorUpdate(db *sql.DB, nome, codigoHash, ordemDeRedirecionamento string) error {
+func (r *RedirecionadorModel) Update(nome, codigoHash, ordemDeRedirecionamento string) error {
 	sqlQuery := "UPDATE REDIRECIONADOR SET ATUALIZADO_EM = CURRENT_TIMESTAMP"
 
 	if nome != "" {
@@ -150,7 +154,7 @@ func RedirecionadorUpdate(db *sql.DB, nome, codigoHash, ordemDeRedirecionamento 
 
 	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $1"
 
-	_, err := db.Exec(
+	_, err := r.DB.Exec(
 		sqlQuery,
 		codigoHash,
 	)
@@ -162,8 +166,8 @@ func RedirecionadorUpdate(db *sql.DB, nome, codigoHash, ordemDeRedirecionamento 
 	return nil
 }
 
-func RedirecionadorRemove(db *sql.DB, codigoHash string) error {
-	_, err := db.Exec(
+func (r *RedirecionadorModel) Remove(codigoHash string) error {
+	_, err := r.DB.Exec(
 		"UPDATE REDIRECIONADOR SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE CODIGO_HASH = $1",
 		codigoHash,
 	)
