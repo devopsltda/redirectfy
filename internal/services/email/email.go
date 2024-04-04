@@ -10,16 +10,27 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
-var (
-	username = os.Getenv("EMAIL_USERNAME")
-	password = os.Getenv("EMAIL_PASSWORD")
-	port     = os.Getenv("EMAIL_PORT")
-	host     = os.Getenv("EMAIL_HOST")
-	from     = os.Getenv("EMAIL_FROM")
-	auth     = smtp.CRAMMD5Auth(username, password)
-)
+type Email struct {
+	addr string
+	from string
+	auth smtp.Auth
+}
 
-func SendEmailValidacao(id int64, nome, valor, email string) error {
+func New() *Email {
+	username := os.Getenv("EMAIL_USERNAME")
+	password := os.Getenv("EMAIL_PASSWORD")
+	port := os.Getenv("EMAIL_PORT")
+	host := os.Getenv("EMAIL_HOST")
+	from := os.Getenv("EMAIL_FROM")
+
+	return &Email{
+		addr: host + ":" + port,
+		from: from,
+		auth: smtp.CRAMMD5Auth(username, password),
+	}
+}
+
+func (e *Email) SendValidacao(id int64, nome, valor, email string) error {
 	var messageTemplate strings.Builder
 	defer messageTemplate.Reset()
 
@@ -58,17 +69,17 @@ Content-Disposition: inline
 		"Nome":  nome,
 		"Valor": valor,
 		"Email": email,
-		"From":  from,
+		"From":  e.from,
 	})
 
 	if err != nil {
 		return err
 	}
 
-	return smtp.SendMail(host+":"+port, auth, from, []string{email}, []byte(messageTemplate.String()))
+	return smtp.SendMail(e.addr, e.auth, e.from, []string{email}, []byte(messageTemplate.String()))
 }
 
-func SendEmailTrocaDeSenha(id int64, nome, valor, email string) error {
+func (e *Email) SendTrocaDeSenha(id int64, nome, valor, email string) error {
 	var messageTemplate strings.Builder
 	defer messageTemplate.Reset()
 
@@ -107,12 +118,12 @@ Content-Disposition: inline
 		"Nome":  nome,
 		"Valor": valor,
 		"Email": email,
-		"From":  from,
+		"From":  e.from,
 	})
 
 	if err != nil {
 		return err
 	}
 
-	return smtp.SendMail(host+":"+port, auth, from, []string{email}, []byte(messageTemplate.String()))
+	return smtp.SendMail(e.addr, e.auth, e.from, []string{email}, []byte(messageTemplate.String()))
 }

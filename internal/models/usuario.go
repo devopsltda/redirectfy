@@ -28,7 +28,7 @@ func (u *UsuarioModel) ReadByNomeDeUsuario(nomeDeUsuario string) (Usuario, error
 	var usuario Usuario
 
 	row := u.DB.QueryRow(
-		"SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, AUTENTICADO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = $1",
+		"SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, AUTENTICADO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL AND SENHA IS NULL AND DATA_DE_NASCIMENTO IS NULL AND NOME_DE_USUARIO = $1",
 		nomeDeUsuario,
 	)
 
@@ -59,7 +59,7 @@ func (u *UsuarioModel) ReadByNomeDeUsuario(nomeDeUsuario string) (Usuario, error
 func (u *UsuarioModel) ReadAll() ([]Usuario, error) {
 	var usuarios []Usuario
 
-	rows, err := u.DB.Query("SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, AUTENTICADO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL")
+	rows, err := u.DB.Query("SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, AUTENTICADO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL AND SENHA IS NULL AND DATA_DE_NASCIMENTO IS NULL")
 
 	if err != nil {
 		return nil, err
@@ -97,7 +97,7 @@ func (u *UsuarioModel) ReadAll() ([]Usuario, error) {
 	return usuarios, nil
 }
 
-func (u *UsuarioModel) Create(cpf, nome, nomeDeUsuario, email, senha, dataDeNascimento string, planoDeAssinatura int64) (int64, error) {
+func (u *UsuarioModel) Create(cpf, nome, nomeDeUsuario, email, senha, dataDeNascimento, planoDeAssinatura string) (int64, error) {
 	result, err := u.DB.Exec(
 		"INSERT INTO USUARIO (CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING ID",
 		cpf,
@@ -106,7 +106,29 @@ func (u *UsuarioModel) Create(cpf, nome, nomeDeUsuario, email, senha, dataDeNasc
 		email,
 		senha,
 		dataDeNascimento,
-		false,
+		planoDeAssinatura,
+	)
+
+	if err != nil {
+		return 0, err
+	}
+
+	id, err := result.LastInsertId()
+
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
+}
+
+func (u *UsuarioModel) CreateKirvano(cpf, nome, nomeDeUsuario, email, planoDeAssinatura string) (int64, error) {
+	result, err := u.DB.Exec(
+		"INSERT INTO USUARIO (CPF, NOME, NOME_DE_USUARIO, EMAIL, PLANO_DE_ASSINATURA) VALUES ($1, $2, $3, $4, $5) RETURNING ID",
+		cpf,
+		nome,
+		nomeDeUsuario,
+		email,
 		planoDeAssinatura,
 	)
 
@@ -231,7 +253,7 @@ func (u *UsuarioModel) Login(email, nomeDeUsuario string) (int64, string, string
 	}
 
 	row := u.DB.QueryRow(
-		"SELECT ID, NOME, NOME_DE_USUARIO, AUTENTICADO, SENHA FROM USUARIO WHERE REMOVIDO_EM IS NULL AND "+login,
+		"SELECT ID, NOME, NOME_DE_USUARIO, AUTENTICADO, SENHA FROM USUARIO WHERE REMOVIDO_EM IS NULL AND SENHA IS NULL AND DATA_DE_NASCIMENTO IS NULL AND "+login,
 		loginValue,
 	)
 

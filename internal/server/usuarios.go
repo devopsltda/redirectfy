@@ -3,14 +3,26 @@ package server
 import (
 	"log/slog"
 	"net/http"
+	"strings"
+	"unicode"
 
 	"redirectify/internal/auth"
-	"redirectify/internal/services/email"
 	"redirectify/internal/utils"
 
 	"github.com/alexedwards/argon2id"
 	"github.com/labstack/echo/v4"
 )
+
+func criaNomeDeUsuario(s string) string {
+	var sb strings.Builder
+	for _, c := range s {
+		if unicode.IsLetter(c) || unicode.IsNumber(c) || c == '_' || c == '-' {
+			sb.WriteRune(c)
+		}
+	}
+
+	return sb.String()
+}
 
 // UsuarioReadByNomeDeUsuario godoc
 //
@@ -73,14 +85,12 @@ func (s *Server) UsuarioReadAll(c echo.Context) error {
 // @Param   email               body     string true "Email"
 // @Param   senha               body     string true "Senha"
 // @Param   data_de_nascimento  body     string true "Data de Nascimento"
-// @Param   plano_de_assinatura body     int    true "Plano de Assinatura"
+// @Param   plano_de_assinatura body     string true "Plano de Assinatura"
 // @Success 200                 {object} map[string]string
 // @Failure 400                 {object} utils.Erro
 // @Failure 500                 {object} utils.Erro
 // @Router  /v1/api/usuarios [post]
 func (s *Server) UsuarioCreate(c echo.Context) error {
-	nomeDeUsuario := c.Param("nome_de_usuario")
-
 	parametros := struct {
 		Cpf               string `json:"cpf"`
 		Nome              string `json:"nome"`
@@ -88,12 +98,8 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 		Email             string `json:"email"`
 		Senha             string `json:"senha"`
 		DataDeNascimento  string `json:"data_de_nascimento"`
-		PlanoDeAssinatura int64  `json:"plano_de_assinatura"`
+		PlanoDeAssinatura string  `json:"plano_de_assinatura"`
 	}{}
-
-	if !utils.ValidaNomeDeUsuario(nomeDeUsuario) {
-		return utils.ErroValidacaoNomeDeUsuario
-	}
 
 	var erros []string
 
@@ -125,8 +131,8 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça uma data de nascimento válida para o parâmetro 'data_de_nascimento'.")
 	}
 
-	if err := utils.Validate.Var(parametros.PlanoDeAssinatura, "required,gte=0"); err != nil {
-		erros = append(erros, "Por favor, forneça um plano de assinatura válido para o parâmetro 'plano_de_assinatura'.")
+	if err := utils.Validate.Var(parametros.PlanoDeAssinatura, "required,min=3,max=120"); err != nil {
+		erros = append(erros, "Por favor, forneça um nome válido para o parâmetro 'plano_de_assinatura'.")
 	}
 
 	if len(erros) > 0 {
@@ -178,7 +184,105 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	err = email.SendEmailValidacao(id, parametros.Nome, valor, parametros.Email)
+	err = s.email.SendValidacao(id, parametros.Nome, valor, parametros.Email)
+
+	if err != nil {
+		slog.Error("UsuarioCreate", slog.Any("error", err))
+		return utils.ErroBancoDados
+	}
+
+	return c.JSON(http.StatusOK, utils.MensagemUsuarioCriadoComSucesso)
+}
+
+// UsuarioCreateKirvano godoc
+//
+// @Summary Cria um usuário pela Kirvano
+// @Tags    Usuários
+// @Accept  json
+// @Produce json
+// @Param   customer.document   body     string        true "CPF"
+// @Param   customer.name       body     string        true "Nome"
+// @Param   customer.email      body     string        true "Email"
+// @Param   products            body     [{object}]    true "Plano de Assinatura"
+// @Success 200                 {object} map[string]string
+// @Failure 400                 {object} utils.Erro
+// @Failure 500                 {object} utils.Erro
+// @Router  /v1/api/usuarios [post]
+func (s *Server) UsuarioCreateKirvano(c echo.Context) error {
+	type Produto struct {
+		Name string `json:"name"`
+	}
+
+	parametros := struct {
+		Cpf                string    `json:"customer.document"`
+		Nome               string    `json:"customer.name"`
+		Email              string    `json:"customer.email"`
+		PlanosDeAssinatura []Produto `json:"products"`
+	}{}
+
+	var erros []string
+
+	if err := c.Bind(&parametros); err != nil {
+		erros = append(erros, "Por favor, forneça o CPF, email, data de nascimento, nome, nome de usuário, senha e plano de assinatura do usuário nos parâmetro 'cpf', 'email', 'data_de_nascimento', 'nome', 'nome_de_usuario', 'senha' e 'plano_de_assinatura', respectivamente.")
+	}
+
+	if err := utils.Validate.Var(parametros.Cpf, "required,numeric,len=11"); err != nil {
+		erros = append(erros, "Por favor, forneça um CPF válido (texto numérico com 11 dígitos) para o parâmetro 'cpf'.")
+	}
+
+	if err := utils.Validate.Var(parametros.Nome, "required,min=3,max=240"); err != nil {
+		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 240 caracteres) para o parâmetro 'nome'.")
+	}
+
+	if err := utils.Validate.Var(parametros.Email, "required,email"); err != nil {
+		erros = append(erros, "Por favor, forneça um email válido para o parâmetro 'email'.")
+	}
+
+	if err := utils.Validate.Var(parametros.PlanosDeAssinatura[0].Name, "required,min=3,max=120"); err != nil {
+		erros = append(erros, "Por favor, forneça um nome válido para o parâmetro 'plano_de_assinatura'.")
+	}
+
+	if len(erros) > 0 {
+		return utils.ErroValidacaoParametro(erros)
+	}
+
+	nomeDeUsuario := criaNomeDeUsuario(parametros.Nome)
+
+	usuarioId, err := s.UsuarioModel.CreateKirvano(
+		parametros.Cpf,
+		parametros.Nome,
+		nomeDeUsuario,
+		parametros.Email,
+		parametros.PlanosDeAssinatura[0].Name,
+	)
+
+	if err != nil {
+		slog.Error("UsuarioCreate", slog.Any("error", err))
+		return utils.ErroBancoDados
+	}
+
+	var valor string
+	valorExiste := true
+
+	for valorExiste {
+		valor = utils.GeraHashCode(120)
+
+		valorExiste, err = s.EmailAutenticacaoModel.CheckIfValorExists(valor)
+
+		if err != nil {
+			slog.Error("UsuarioCreate", slog.Any("error", err))
+			return utils.ErroBancoDados
+		}
+	}
+
+	id, err := s.EmailAutenticacaoModel.Create(valor, "validacao", usuarioId)
+
+	if err != nil {
+		slog.Error("UsuarioCreate", slog.Any("error", err))
+		return utils.ErroBancoDados
+	}
+
+	err = s.email.SendValidacao(id, parametros.Nome, valor, parametros.Email)
 
 	if err != nil {
 		slog.Error("UsuarioCreate", slog.Any("error", err))
@@ -386,7 +490,7 @@ func (s *Server) UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	err = email.SendEmailTrocaDeSenha(id, usuario.Nome, valor, usuario.Email)
+	err = s.email.SendTrocaDeSenha(id, usuario.Nome, valor, usuario.Email)
 
 	if err != nil {
 		slog.Error("UsuarioTrocaDeSenhaExigir", slog.Any("error", err))
