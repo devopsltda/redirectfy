@@ -1,7 +1,37 @@
 <app-grid>
     <app-navbar></app-navbar>
-    <h1 class="text-center mt-14 text-2xl font-semibold">Minha Conta</h1>
-    <app-user-banner></app-user-banner>
-    <span class="w-full text-center mt-3 text-gray-300 tracking-[1px] text-[14px] font-medium">ASSINATURA E COBRANÇA</span>
+    <div class="flex flex-col justify-center items-center w-full gap-2">
+        <h1 class="text-center mt-14 text-2xl font-semibold">Minha Conta</h1>
+        <app-user-banner></app-user-banner>
+        <span class="w-full text-center mt-3 text-gray-300 tracking-[1px] text-[14px] font-medium">ASSINATURA E
+            COBRANÇA</span>
+        <input pInputText
+            class="w-[300px] text-[20px] border border-[#E0E0E0] border-l-4 p-2 rounded-md focus:outline-none focus:border-teal-500 hover:border-teal-500 shadow-md"
+            type="text" placeholder="Email: adalberto@gmail.com">
+        <input pInputText
+            class="w-[300px] text-[20px] border border-[#E0E0E0] border-l-4 p-2 rounded-md focus:outline-none focus:border-teal-500 hover:border-teal-500 shadow-md"
+            type="text" placeholder="Senha: *************">
+        <button
+            class="w-[300px] font-semibold text-[20px] border border-[#E0E0E0] border-l-4 p-2 rounded-md focus:outline-none focus:border-teal-500 hover:border-teal-500 shadow-md flex">Alterar
+            Senha da Conta
+            <app-icon-right-arrow class="ml-6"></app-icon-right-arrow>
+        </button>
+        <app-redirectfy-premium-card></app-redirectfy-premium-card>
+        <div class="flex items-start justify-start w-[300px]">
+            <div class="flex ml-2 gap-3">
+                <app-icon-visa-card></app-icon-visa-card>
+                <h1 class="font-semibold h-4 text-gray-300 mt-3 text-1xl">***** *****</h1>
+                <h1 class="font-semibold text-1xl mt-2">7624</h1>
+            </div>
+        </div>
+        <h1 class="text-left text-1xl font-medium w-[300px]">Sua próxima data de cobrança é 29 <br> de Fevereiro de
+            2024.</h1>
+        <button
+            class="w-[300px] font-semibold text-[20px] border border-[#E0E0E0] border-l-4 p-2 rounded-md focus:outline-none focus:border-teal-500 hover:border-teal-500 shadow-md flex">Detalhes
+            da Cobrança
+            <app-icon-right-arrow class="ml-8"></app-icon-right-arrow>
+        </button>
+        <app-button-primary class="w-[300px] mt-4 shadow-md" title="Mudar Plano"></app-button-primary>
+        <app-button-secundary class="w-[300px] mb-4 shadow-md" title="Cancelar Assinatura"></app-button-secundary>
+    </div>
 </app-grid>
- 
