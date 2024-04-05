@@ -13,7 +13,6 @@ type Usuario struct {
 	Email             string         `json:"email"`
 	Senha             string         `json:"senha"`
 	DataDeNascimento  string         `json:"data_de_nascimento"`
-	Autenticado       bool           `json:"autenticado"`
 	PlanoDeAssinatura int64          `json:"plano_de_assinatura"`
 	CriadoEm          string         `json:"criado_em"`
 	AtualizadoEm      string         `json:"atualizado_em"`
@@ -28,7 +27,7 @@ func (u *UsuarioModel) ReadByNomeDeUsuario(nomeDeUsuario string) (Usuario, error
 	var usuario Usuario
 
 	row := u.DB.QueryRow(
-		"SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, AUTENTICADO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL AND SENHA IS NULL AND DATA_DE_NASCIMENTO IS NULL AND NOME_DE_USUARIO = $1",
+		"SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = $1",
 		nomeDeUsuario,
 	)
 
@@ -40,7 +39,6 @@ func (u *UsuarioModel) ReadByNomeDeUsuario(nomeDeUsuario string) (Usuario, error
 		&usuario.Email,
 		&usuario.Senha,
 		&usuario.DataDeNascimento,
-		&usuario.Autenticado,
 		&usuario.PlanoDeAssinatura,
 		&usuario.CriadoEm,
 		&usuario.AtualizadoEm,
@@ -59,7 +57,7 @@ func (u *UsuarioModel) ReadByNomeDeUsuario(nomeDeUsuario string) (Usuario, error
 func (u *UsuarioModel) ReadAll() ([]Usuario, error) {
 	var usuarios []Usuario
 
-	rows, err := u.DB.Query("SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, AUTENTICADO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL AND SENHA IS NULL AND DATA_DE_NASCIMENTO IS NULL")
+	rows, err := u.DB.Query("SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL")
 
 	if err != nil {
 		return nil, err
@@ -78,7 +76,6 @@ func (u *UsuarioModel) ReadAll() ([]Usuario, error) {
 			&usuario.Email,
 			&usuario.Senha,
 			&usuario.DataDeNascimento,
-			&usuario.Autenticado,
 			&usuario.PlanoDeAssinatura,
 			&usuario.CriadoEm,
 			&usuario.AtualizadoEm,
@@ -120,44 +117,6 @@ func (u *UsuarioModel) Create(cpf, nome, nomeDeUsuario, email, senha, dataDeNasc
 	}
 
 	return id, nil
-}
-
-func (u *UsuarioModel) CreateKirvano(cpf, nome, nomeDeUsuario, email, planoDeAssinatura string) (int64, error) {
-	result, err := u.DB.Exec(
-		"INSERT INTO USUARIO (CPF, NOME, NOME_DE_USUARIO, EMAIL, PLANO_DE_ASSINATURA) VALUES ($1, $2, $3, $4, $5) RETURNING ID",
-		cpf,
-		nome,
-		nomeDeUsuario,
-		email,
-		planoDeAssinatura,
-	)
-
-	if err != nil {
-		return 0, err
-	}
-
-	id, err := result.LastInsertId()
-
-	if err != nil {
-		return 0, err
-	}
-
-	return id, nil
-}
-
-func (u *UsuarioModel) Autenticado(id int64) error {
-	sqlQuery := "UPDATE USUARIO SET ATUALIZADO_EM = CURRENT_TIMESTAMP, AUTENTICADO = 1 WHERE REMOVIDO_EM IS NULL AND ID = $1"
-
-	_, err := u.DB.Exec(
-		sqlQuery,
-		id,
-	)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func (u *UsuarioModel) TrocaSenha(id int64, senha string) error {
@@ -238,38 +197,25 @@ func (u *UsuarioModel) Remove(nomeDeUsuario string) error {
 	return nil
 }
 
-func (u *UsuarioModel) Login(email, nomeDeUsuario string) (int64, string, string, bool, string, error) {
-	var login string
-	var loginValue string
-
-	if email != "" {
-		login = "EMAIL = $1"
-		loginValue = email
-	}
-
-	if nomeDeUsuario != "" {
-		login = "NOME_DE_USUARIO = $1"
-		loginValue = nomeDeUsuario
-	}
-
+func (u *UsuarioModel) Login(email string) (int64, string, string, string, string, error) {
 	row := u.DB.QueryRow(
-		"SELECT ID, NOME, NOME_DE_USUARIO, AUTENTICADO, SENHA FROM USUARIO WHERE REMOVIDO_EM IS NULL AND SENHA IS NULL AND DATA_DE_NASCIMENTO IS NULL AND "+login,
-		loginValue,
+		"SELECT ID, NOME, NOME_DE_USUARIO, PLANO_DE_ASSINATURA, SENHA FROM USUARIO WHERE REMOVIDO_EM IS NULL AND EMAIL = $1",
+		email,
 	)
 
 	var idLogado int64
 	var nomeLogado string
 	var nomeDeUsuarioLogado string
-	var autenticadoLogado bool
+	var planoDeAssinaturaLogado string
 	var senha string
 
-	if err := row.Scan(&idLogado, &nomeLogado, &nomeDeUsuarioLogado, &autenticadoLogado, &senha); err != nil {
-		return 0, "", "", false, "", err
+	if err := row.Scan(&idLogado, &nomeLogado, &nomeDeUsuarioLogado, &planoDeAssinaturaLogado, &senha); err != nil {
+		return 0, "", "", "", "", err
 	}
 
 	if err := row.Err(); err != nil {
-		return 0, "", "", false, "", err
+		return 0, "", "", "", "", err
 	}
 
-	return idLogado, nomeLogado, nomeDeUsuarioLogado, autenticadoLogado, senha, nil
+	return idLogado, nomeLogado, nomeDeUsuarioLogado, planoDeAssinaturaLogado, senha, nil
 }

@@ -13,6 +13,11 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+type produto struct {
+	Name string `json:"name"`
+} // @name Produto
+
+
 func criaNomeDeUsuario(s string) string {
 	var sb strings.Builder
 	for _, c := range s {
@@ -194,30 +199,26 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 	return c.JSON(http.StatusOK, utils.MensagemUsuarioCriadoComSucesso)
 }
 
-// UsuarioCreateKirvano godoc
+// UsuarioTemporarioCreate godoc
 //
-// @Summary Cria um usuário pela Kirvano
-// @Tags    Usuários
+// @Summary Cria um usuário temporário
+// @Tags    UsuáriosTemporários
 // @Accept  json
 // @Produce json
 // @Param   customer.document   body     string        true "CPF"
 // @Param   customer.name       body     string        true "Nome"
 // @Param   customer.email      body     string        true "Email"
-// @Param   products            body     [{object}]    true "Plano de Assinatura"
+// @Param   products            body     []produto    true "Plano de Assinatura"
 // @Success 200                 {object} map[string]string
 // @Failure 400                 {object} utils.Erro
 // @Failure 500                 {object} utils.Erro
 // @Router  /v1/api/usuarios [post]
-func (s *Server) UsuarioCreateKirvano(c echo.Context) error {
-	type Produto struct {
-		Name string `json:"name"`
-	}
-
+func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 	parametros := struct {
 		Cpf                string    `json:"customer.document"`
 		Nome               string    `json:"customer.name"`
 		Email              string    `json:"customer.email"`
-		PlanosDeAssinatura []Produto `json:"products"`
+		PlanosDeAssinatura []produto `json:"products"`
 	}{}
 
 	var erros []string
@@ -248,7 +249,7 @@ func (s *Server) UsuarioCreateKirvano(c echo.Context) error {
 
 	nomeDeUsuario := criaNomeDeUsuario(parametros.Nome)
 
-	usuarioId, err := s.UsuarioModel.CreateKirvano(
+	usuarioId, err := s.UsuarioTemporarioModel.Create(
 		parametros.Cpf,
 		parametros.Nome,
 		nomeDeUsuario,
@@ -257,7 +258,7 @@ func (s *Server) UsuarioCreateKirvano(c echo.Context) error {
 	)
 
 	if err != nil {
-		slog.Error("UsuarioCreate", slog.Any("error", err))
+		slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -270,7 +271,7 @@ func (s *Server) UsuarioCreateKirvano(c echo.Context) error {
 		valorExiste, err = s.EmailAutenticacaoModel.CheckIfValorExists(valor)
 
 		if err != nil {
-			slog.Error("UsuarioCreate", slog.Any("error", err))
+			slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
 			return utils.ErroBancoDados
 		}
 	}
@@ -278,14 +279,14 @@ func (s *Server) UsuarioCreateKirvano(c echo.Context) error {
 	id, err := s.EmailAutenticacaoModel.Create(valor, "validacao", usuarioId)
 
 	if err != nil {
-		slog.Error("UsuarioCreate", slog.Any("error", err))
+		slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
 	err = s.email.SendValidacao(id, parametros.Nome, valor, parametros.Email)
 
 	if err != nil {
-		slog.Error("UsuarioCreate", slog.Any("error", err))
+		slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -406,26 +407,75 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 // @Tags    Usuários
 // @Accept  json
 // @Produce json
-// @Param   valor             path     string true "Valor"
-// @Success 200               {object} map[string]string
-// @Failure 400               {object} utils.Erro
-// @Failure 500               {object} utils.Erro
+// @Param   valor              path     string true "Valor"
+// @Param   senha              body     string true "Senha"
+// @Param   data_de_nascimento body     string true "Data de Nascimento"
+// @Success 200                {object} map[string]string
+// @Failure 400                {object} utils.Erro
+// @Failure 500                {object} utils.Erro
 // @Router  /v1/api/usuarios/autentica/:valor [patch]
 func (s *Server) UsuarioAutenticado(c echo.Context) error {
+	type parametrosUpdate struct {
+		Senha             string `json:"senha"`
+		DataDeNascimento  string `json:"data_de_nascimento"`
+	}
+
+	parametros := parametrosUpdate{}
+
 	valor := c.Param("valor")
 
 	if !utils.ValidaNomeDeUsuario(valor) {
 		return utils.ErroValidacaoNomeDeUsuario
 	}
 
-	usuario, err := s.EmailAutenticacaoModel.CheckIfValorExistsAndIsValid(valor, "validacao")
+	var erros []string
+
+	if err := utils.Validate.Var(parametros.Senha, "required,min=8,max=72"); parametros.Senha != "" && err != nil {
+		erros = append(erros, "Por favor, forneça uma senha válida (texto de 8 a 72 caracteres, podendo conter letras, números e símbolos) para o parâmetro 'senha'.")
+	}
+
+	if err := utils.Validate.Var(parametros.DataDeNascimento, "required,datetime=2006-01-02"); parametros.DataDeNascimento != "" && err != nil {
+		erros = append(erros, "Por favor, forneça uma data de nascimento válida para o parâmetro 'data_de_nascimento'.")
+	}
+
+	if (parametrosUpdate{}) == parametros {
+		erros = append(erros, "Por favor, forneça algum valor válido para a atualização.")
+	}
+
+	if len(erros) > 0 {
+		return utils.ErroValidacaoParametro(erros)
+	}
+
+	senha, err := argon2id.CreateHash(parametros.Senha+utils.Pepper, utils.SenhaParams)
+
+	if err != nil {
+		slog.Error("UsuarioCreate", slog.Any("error", err))
+		return utils.ErroCriacaoSenha
+	}
+
+	usuarioTemporarioId, err := s.EmailAutenticacaoModel.CheckIfValorExistsAndIsValid(valor, "validacao")
 
 	if err != nil {
 		slog.Error("UsuarioAutenticado", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
-	err = s.UsuarioModel.Autenticado(usuario)
+	usuarioTemporario, err := s.UsuarioTemporarioModel.ReadById(usuarioTemporarioId)
+
+	if err != nil {
+		slog.Error("UsuarioAutenticado", slog.Any("error", err))
+		return utils.ErroBancoDados
+	}
+
+	_, err = s.UsuarioModel.Create(
+		usuarioTemporario.Cpf,
+		usuarioTemporario.Nome,
+		usuarioTemporario.NomeDeUsuario,
+		usuarioTemporario.Email,
+		senha,
+		parametros.DataDeNascimento,
+		usuarioTemporario.PlanoDeAssinatura,
+	)
 
 	if err != nil {
 		slog.Error("UsuarioAutenticado", slog.Any("error", err))
@@ -433,6 +483,13 @@ func (s *Server) UsuarioAutenticado(c echo.Context) error {
 	}
 
 	err = s.EmailAutenticacaoModel.Expirar(valor)
+
+	if err != nil {
+		slog.Error("UsuarioAutenticado", slog.Any("error", err))
+		return utils.ErroBancoDados
+	}
+
+	err = s.UsuarioTemporarioModel.Remove(usuarioTemporarioId)
 
 	if err != nil {
 		slog.Error("UsuarioAutenticado", slog.Any("error", err))
@@ -598,8 +655,7 @@ func (s *Server) UsuarioRemove(c echo.Context) error {
 // @Tags    Usuários
 // @Accept  json
 // @Produce json
-// @Param   nome_de_usuario   body     string false "Nome de Usuário"
-// @Param   email             body     string false "Email"
+// @Param   email             body     string true "Email"
 // @Param   senha             body     string true  "Senha"
 // @Success 200               {object} map[string]string
 // @Failure 400               {object} utils.Erro
@@ -607,7 +663,6 @@ func (s *Server) UsuarioRemove(c echo.Context) error {
 // @Router  /v1/api/usuarios/login [post]
 func (s *Server) UsuarioLogin(c echo.Context) error {
 	parametros := struct {
-		NomeDeUsuario string `json:"nome_de_usuario"`
 		Email         string `json:"email"`
 		Senha         string `json:"senha"`
 	}{}
@@ -618,27 +673,19 @@ func (s *Server) UsuarioLogin(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça o nome de usuário do usuário no parâmetro 'nome_de_usuario'.")
 	}
 
-	if err := utils.Validate.Var(parametros.Email, "email"); parametros.Email != "" && err != nil {
+	if err := utils.Validate.Var(parametros.Email, "required,email"); parametros.Email != "" && err != nil {
 		erros = append(erros, "Por favor, forneça o email do usuário válido no parâmetro 'email'.")
 	}
 
-	if err := utils.Validate.Var(parametros.NomeDeUsuario, "min=3,max=120"); parametros.NomeDeUsuario != "" && err != nil || !utils.ValidaNomeDeUsuario(parametros.NomeDeUsuario) {
-		erros = append(erros, "Por favor, forneça um nome de usuário válido (texto de 3 a 120 caracteres, contendo apenas letras, número, '_' ou '-') para o parâmetro 'nome_de_usuario'.")
-	}
-
-	if err := utils.Validate.Var(parametros.Senha, "min=8,max=72"); err != nil {
+	if err := utils.Validate.Var(parametros.Senha, "required,min=8,max=72"); err != nil {
 		erros = append(erros, "Por favor, forneça uma senha válida (texto de 8 a 72 caracteres, podendo conter letras, números e símbolos) para o parâmetro 'senha'.")
-	}
-
-	if parametros.NomeDeUsuario == "" && parametros.Email == "" {
-		erros = append(erros, "Por favor, forneça o nome de usuário ou o email do usuário para realizar o login.")
 	}
 
 	if len(erros) > 0 {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	id, nome, nomeDeUsuario, autenticado, senha, err := s.UsuarioModel.Login(parametros.Email, parametros.NomeDeUsuario)
+	id, nome, nomeDeUsuario, planoDeAssinatura, senha, err := s.UsuarioModel.Login(parametros.Email)
 
 	if err != nil {
 		slog.Error("UsuarioLogin", slog.Any("error", err))
@@ -652,7 +699,7 @@ func (s *Server) UsuarioLogin(c echo.Context) error {
 		return utils.ErroLogin
 	}
 
-	err = auth.GeraTokensESetaCookies(id, nome, nomeDeUsuario, autenticado, c)
+	err = auth.GeraTokensESetaCookies(id, nome, nomeDeUsuario, planoDeAssinatura, c)
 
 	if err != nil {
 		slog.Error("UsuarioLogin", slog.Any("error", err))

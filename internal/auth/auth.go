@@ -20,15 +20,15 @@ var (
 )
 
 type Claims struct {
-	Id            int64  `json:"id"`
-	Nome          string `json:"nome"`
-	NomeDeUsuario string `json:"nome_de_usuario"`
-	Autenticado   bool   `json:"autenticado"`
+	Id                int64  `json:"id"`
+	Nome              string `json:"nome"`
+	NomeDeUsuario     string `json:"nome_de_usuario"`
+	PlanoDeAssinatura string `json:"plano_de_assinatura"`
 	jwt.RegisteredClaims
 }
 
-func GeraTokensESetaCookies(id int64, nome, nomeDeUsuario string, autenticado bool, c echo.Context) error {
-	accessToken, exp, err := GeraTokenAcesso(id, nome, nomeDeUsuario, autenticado)
+func GeraTokensESetaCookies(id int64, nome, nomeDeUsuario, planoDeAssinatura string, c echo.Context) error {
+	accessToken, exp, err := GeraTokenAcesso(id, nome, nomeDeUsuario, planoDeAssinatura)
 
 	if err != nil {
 		return err
@@ -37,7 +37,7 @@ func GeraTokensESetaCookies(id int64, nome, nomeDeUsuario string, autenticado bo
 	SetCookieToken("access-token", accessToken, exp, c)
 	SetCookieUsuario(nomeDeUsuario, exp, c)
 
-	refreshToken, exp, err := GeraTokenRefresh(id, nome, nomeDeUsuario, autenticado)
+	refreshToken, exp, err := GeraTokenRefresh(id, nome, nomeDeUsuario, planoDeAssinatura)
 
 	if err != nil {
 		return err
@@ -48,28 +48,24 @@ func GeraTokensESetaCookies(id int64, nome, nomeDeUsuario string, autenticado bo
 	return nil
 }
 
-func GeraTokenAcesso(id int64, nome, nomeDeUsuario string, autenticado bool) (string, time.Time, error) {
+func GeraTokenAcesso(id int64, nome, nomeDeUsuario, planoDeAssinatura string) (string, time.Time, error) {
 	expiraEm := time.Now().Add(1 * time.Hour)
 
-	return GeraToken(id, nome, nomeDeUsuario, autenticado, expiraEm, []byte(ChaveDeAcesso))
+	return GeraToken(id, nome, nomeDeUsuario, planoDeAssinatura, expiraEm, []byte(ChaveDeAcesso))
 }
 
-func GeraTokenRefresh(id int64, nome, nomeDeUsuario string, autenticado bool) (string, time.Time, error) {
+func GeraTokenRefresh(id int64, nome, nomeDeUsuario, planoDeAssinatura string) (string, time.Time, error) {
 	expiraEm := time.Now().Add(24 * time.Hour)
 
-	return GeraToken(id, nome, nomeDeUsuario, autenticado, expiraEm, []byte(ChaveDeRefresh))
+	return GeraToken(id, nome, nomeDeUsuario, planoDeAssinatura, expiraEm, []byte(ChaveDeRefresh))
 }
 
-func GeraToken(id int64, nome, nomeDeUsuario string, autenticado bool, expiraEm time.Time, chave []byte) (string, time.Time, error) {
-	if !autenticado {
-		return "", time.Now(), fmt.Errorf(utils.MensagemUsuarioNaoAutenticado)
-	}
-
+func GeraToken(id int64, nome, nomeDeUsuario, planoDeAssinatura string, expiraEm time.Time, chave []byte) (string, time.Time, error) {
 	claims := &Claims{
 		Id:            id,
 		Nome:          nome,
 		NomeDeUsuario: nomeDeUsuario,
-		Autenticado:   autenticado,
+		PlanoDeAssinatura: planoDeAssinatura,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: &jwt.NumericDate{Time: expiraEm},
 		},
@@ -141,10 +137,6 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		claims := nomeDeUsuario.Claims.(*Claims)
 
-		if !claims.Autenticado {
-			return utils.ErroUsuarioNaoAutenticado
-		}
-
 		if time.Until(claims.RegisteredClaims.ExpiresAt.Time) < 15*time.Minute {
 			refreshCookie, err := c.Cookie("refresh-token")
 
@@ -160,7 +152,7 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 				}
 
 				if token != nil && token.Valid {
-					err = GeraTokensESetaCookies(claims.Id, claims.Nome, claims.NomeDeUsuario, claims.Autenticado, c)
+					err = GeraTokensESetaCookies(claims.Id, claims.Nome, claims.NomeDeUsuario, claims.PlanoDeAssinatura, c)
 
 					if err != nil {
 						return utils.ErroAssinaturaJWT

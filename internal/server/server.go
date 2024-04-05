@@ -27,6 +27,7 @@ type Server struct {
 	PlanoDeAssinaturaModel *models.PlanoDeAssinaturaModel
 	RedirecionadorModel    *models.RedirecionadorModel
 	UsuarioModel           *models.UsuarioModel
+	UsuarioTemporarioModel *models.UsuarioTemporarioModel
 }
 
 func NewServer() *http.Server {
@@ -51,6 +52,7 @@ func NewServer() *http.Server {
 		PlanoDeAssinaturaModel: &models.PlanoDeAssinaturaModel{DB: db},
 		RedirecionadorModel:    &models.RedirecionadorModel{DB: db},
 		UsuarioModel:           &models.UsuarioModel{DB: db},
+		UsuarioTemporarioModel: &models.UsuarioTemporarioModel{DB: db},
 	}
 
 	// Declare Server config
