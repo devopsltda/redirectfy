@@ -6,6 +6,8 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"redirectify/internal/utils"
+
+	_ "redirectify/internal/models"
 )
 
 // PlanoDeAssinaturaReadByNome godoc
@@ -63,18 +65,23 @@ func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
 // @Tags    Planos de Assinatura
 // @Accept  json
 // @Produce json
-// @Param   nome         body     string true "Nome"
-// @Param   valor_mensal body     int    true "Valor Mensal"
-// @Success 200          {object} map[string]string
-// @Failure 400          {object} utils.Erro
-// @Failure 500          {object} utils.Erro
+// @Param   nome                            body     string true "Nome"
+// @Param   valor_mensal                    body     int    true "Valor Mensal"
+// @Param   limite_links_mensal             body     int    true "Limite de Links Mensal"
+// @Param   limite_redirecionamentos_mensal body     int    true "Limite de Redirecionamentos Mensal"
+// @Param   ordenacao_aleatoria_links       body     bool   true "Ordenação Aleatória de Links"
+// @Success 200                             {object} map[string]string
+// @Failure 400                             {object} utils.Erro
+// @Failure 500                             {object} utils.Erro
 // @Router  /v1/api/planos_de_assinatura [post]
 func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 	parametros := struct {
-		Nome          string `json:"nome"`
-		ValorMensal   int64  `json:"valor_mensal"`
-		Limite        int64  `json:"limite"`
-		PeriodoLimite string `json:"periodo_limite"`
+		Nome                          string `json:"nome"`
+		ValorMensal                   int64  `json:"valor_mensal"`
+		LimiteLinksMensal             int64  `json:"limite_links_mensal"`
+		LimiteRedirecionamentosMensal int64  `json:"limite_redirecionamentos_mensal"`
+		OrdenacaoAleatoriaLinks       bool   `json:"ordenacao_aleatoria_links"`
+		PeriodoLimite                 string `json:"periodo_limite"`
 	}{}
 
 	var erros []string
@@ -91,19 +98,19 @@ func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça um valor mensal válido no parâmetro 'valor_mensal'.")
 	}
 
-	if err := utils.Validate.Var(parametros.Limite, "required,gte=0"); err != nil {
-		erros = append(erros, "Por favor, forneça um limite válido no parâmetro 'limite'.")
+	if err := utils.Validate.Var(parametros.LimiteLinksMensal, "required,gte=0"); err != nil {
+		erros = append(erros, "Por favor, forneça um limite válido no parâmetro 'limite_links_mensal'.")
 	}
 
-	if err := utils.Validate.Var(parametros.PeriodoLimite, "required,oneof=s m h d M"); err != nil {
-		erros = append(erros, "Por favor, forneça um período válido para o limite no parâmetro 'periodo_limite'.")
+	if err := utils.Validate.Var(parametros.LimiteRedirecionamentosMensal, "required,gte=0"); err != nil {
+		erros = append(erros, "Por favor, forneça um limite válido no parâmetro 'limite_redirecionamentos_mensal'.")
 	}
 
 	if len(erros) > 0 {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	err := s.PlanoDeAssinaturaModel.Create(parametros.Nome, parametros.ValorMensal, parametros.Limite, parametros.PeriodoLimite)
+	err := s.PlanoDeAssinaturaModel.Create(parametros.Nome, parametros.ValorMensal, parametros.LimiteLinksMensal, parametros.LimiteRedirecionamentosMensal, parametros.OrdenacaoAleatoriaLinks)
 
 	if err != nil {
 		slog.Error("PlanoDeAssinaturaCreate", slog.Any("error", err))
@@ -119,19 +126,24 @@ func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 // @Tags    Planos de Assinatura
 // @Accept  json
 // @Produce json
-// @Param   nome         path     string true  "Nome"
-// @Param   nome         body     string false "Nome"
-// @Param   valor_mensal body     int    false "Valor Mensal"
-// @Success 200          {object} map[string]string
-// @Failure 400          {object} utils.Erro
-// @Failure 500          {object} utils.Erro
+// @Param   nome                            path     string true  "Nome"
+// @Param   nome                            body     string false "Nome"
+// @Param   valor_mensal                    body     int    false "Valor Mensal"
+// @Param   limite_links_mensal             body     int    false "Limite de Links Mensal"
+// @Param   limite_redirecionamentos_mensal body     int    false "Limite de Redirecionamentos Mensal"
+// @Param   ordenacao_aleatoria_links       body     bool   true  "Ordenação Aleatória de Links"
+// @Success 200                             {object} map[string]string
+// @Failure 400                             {object} utils.Erro
+// @Failure 500                             {object} utils.Erro
 // @Router  /v1/api/planos_de_assinatura/:nome [patch]
 func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 	type parametrosUpdate struct {
-		Nome          string `json:"nome"`
-		ValorMensal   int64  `json:"valor_mensal"`
-		Limite        int64  `json:"limite"`
-		PeriodoLimite string `json:"periodo_limite"`
+		Nome                          string `json:"nome"`
+		ValorMensal                   int64  `json:"valor_mensal"`
+		LimiteLinksMensal             int64  `json:"limite_links_mensal"`
+		LimiteRedirecionamentosMensal int64  `json:"limite_redirecionamentos_mensal"`
+		OrdenacaoAleatoriaLinks       bool   `json:"ordenacao_aleatoria_links"`
+		PeriodoLimite                 string `json:"periodo_limite"`
 	}
 
 	parametros := parametrosUpdate{}
@@ -156,12 +168,12 @@ func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça um valor mensal válido no parâmetro 'valor_mensal'.")
 	}
 
-	if err := utils.Validate.Var(parametros.Limite, "gte=0"); parametros.Limite != 0 && err != nil {
-		erros = append(erros, "Por favor, forneça um limite válido no parâmetro 'limite'.")
+	if err := utils.Validate.Var(parametros.LimiteLinksMensal, "gte=0"); err != nil {
+		erros = append(erros, "Por favor, forneça um limite válido no parâmetro 'limite_links_mensal'.")
 	}
 
-	if err := utils.Validate.Var(parametros.PeriodoLimite, "oneof=s m h d M"); parametros.PeriodoLimite != "" && err != nil {
-		erros = append(erros, "Por favor, forneça um período válido para o limite no parâmetro 'periodo_limite'.")
+	if err := utils.Validate.Var(parametros.LimiteRedirecionamentosMensal, "gte=0"); err != nil {
+		erros = append(erros, "Por favor, forneça um limite válido no parâmetro 'limite_redirecionamentos_mensal'.")
 	}
 
 	if (parametrosUpdate{}) == parametros {
@@ -172,7 +184,7 @@ func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	err := s.PlanoDeAssinaturaModel.Update(nome, parametros.Nome, parametros.ValorMensal, parametros.Limite, parametros.PeriodoLimite)
+	err := s.PlanoDeAssinaturaModel.Update(nome, parametros.Nome, parametros.ValorMensal, parametros.LimiteLinksMensal, parametros.LimiteRedirecionamentosMensal, parametros.OrdenacaoAleatoriaLinks)
 
 	if err != nil {
 		slog.Error("PlanoDeAssinaturaUpdate", slog.Any("error", err))

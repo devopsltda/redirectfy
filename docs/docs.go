@@ -120,6 +120,33 @@ const docTemplate = `{
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "description": "Limite de Links Mensal",
+                        "name": "limite_links_mensal",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Limite de Redirecionamentos Mensal",
+                        "name": "limite_redirecionamentos_mensal",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Ordenação Aleatória de Links",
+                        "name": "ordenacao_aleatoria_links",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
                     }
                 ],
                 "responses": {
@@ -266,6 +293,31 @@ const docTemplate = `{
                         "in": "body",
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Limite de Links Mensal",
+                        "name": "limite_links_mensal",
+                        "in": "body",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Limite de Redirecionamentos Mensal",
+                        "name": "limite_redirecionamentos_mensal",
+                        "in": "body",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Ordenação Aleatória de Links",
+                        "name": "ordenacao_aleatoria_links",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
                         }
                     }
                 ],
@@ -1064,7 +1116,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -1345,6 +1397,24 @@ const docTemplate = `{
                         "name": "valor",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "Senha",
+                        "name": "senha",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Data de Nascimento",
+                        "name": "data_de_nascimento",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -1423,17 +1493,10 @@ const docTemplate = `{
                 "summary": "Autentica o usuário",
                 "parameters": [
                     {
-                        "description": "Nome de Usuário",
-                        "name": "nome_de_usuario",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
                         "description": "Email",
                         "name": "email",
                         "in": "body",
+                        "required": true,
                         "schema": {
                             "type": "string"
                         }
@@ -1527,6 +1590,121 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/v1/api/usuarios_temporarios": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "UsuáriosTemporários"
+                ],
+                "summary": "Cria um usuário temporário",
+                "parameters": [
+                    {
+                        "description": "CPF",
+                        "name": "customer.document",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Nome",
+                        "name": "customer.name",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Email",
+                        "name": "customer.email",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Plano de Assinatura",
+                        "name": "products",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Produto"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/api/usuarios_temporarios/historico": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Histórico"
+                ],
+                "summary": "Retorna o histórico de ações relativas a usuários temporários no sistema",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/HistoricoUsuarioTemporario"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1592,14 +1770,17 @@ const docTemplate = `{
                 "id": {
                     "$ref": "#/definitions/sql.NullInt64"
                 },
-                "limite": {
+                "limite_links_mensal": {
+                    "$ref": "#/definitions/sql.NullInt64"
+                },
+                "limite_redirecionadores_mensal": {
                     "$ref": "#/definitions/sql.NullInt64"
                 },
                 "nome": {
                     "$ref": "#/definitions/sql.NullString"
                 },
-                "periodo_limite": {
-                    "$ref": "#/definitions/sql.NullString"
+                "ordenacao_aleatoria_links": {
+                    "$ref": "#/definitions/sql.NullBool"
                 },
                 "removido_em": {
                     "type": "integer"
@@ -1662,9 +1843,6 @@ const docTemplate = `{
                 "atualizado_em": {
                     "$ref": "#/definitions/sql.NullString"
                 },
-                "autenticado": {
-                    "$ref": "#/definitions/sql.NullBool"
-                },
                 "bitmask": {
                     "type": "integer"
                 },
@@ -1703,6 +1881,47 @@ const docTemplate = `{
                 },
                 "senha": {
                     "$ref": "#/definitions/sql.NullString"
+                },
+                "versao": {
+                    "type": "integer"
+                }
+            }
+        },
+        "HistoricoUsuarioTemporario": {
+            "type": "object",
+            "properties": {
+                "bitmask": {
+                    "type": "integer"
+                },
+                "cpf": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "criado_em": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "criado_em_": {
+                    "type": "string"
+                },
+                "email": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "id": {
+                    "$ref": "#/definitions/sql.NullInt64"
+                },
+                "nome": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "nome_de_usuario": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "plano_de_assinatura": {
+                    "$ref": "#/definitions/sql.NullInt64"
+                },
+                "removido_em": {
+                    "type": "string"
+                },
+                "rowid": {
+                    "type": "integer"
                 },
                 "versao": {
                     "type": "integer"
@@ -1750,20 +1969,31 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "limite": {
+                "limite_links_mensal": {
+                    "type": "integer"
+                },
+                "limite_redirecionamentos_mensal": {
                     "type": "integer"
                 },
                 "nome": {
                     "type": "string"
                 },
-                "periodo_limite": {
-                    "type": "string"
+                "ordenacao_aleatoria_links": {
+                    "type": "boolean"
                 },
                 "removido_em": {
                     "type": "integer"
                 },
                 "valor_mensal": {
                     "type": "integer"
+                }
+            }
+        },
+        "Produto": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
                 }
             }
         },
@@ -1801,9 +2031,6 @@ const docTemplate = `{
             "properties": {
                 "atualizado_em": {
                     "type": "string"
-                },
-                "autenticado": {
-                    "type": "boolean"
                 },
                 "cpf": {
                     "type": "string"

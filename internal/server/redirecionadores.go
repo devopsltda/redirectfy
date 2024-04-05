@@ -6,6 +6,8 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"redirectify/internal/utils"
+
+	_ "redirectify/internal/models"
 )
 
 // RedirecionadorReadByCodigoHash godoc

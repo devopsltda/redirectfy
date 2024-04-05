@@ -6,14 +6,15 @@ import (
 )
 
 type PlanoDeAssinatura struct {
-	Id            int64          `json:"id"`
-	Nome          string         `json:"nome"`
-	ValorMensal   int64          `json:"valor_mensal"`
-	Limite        int64          `json:"limite"`
-	PeriodoLimite string         `json:"periodo_limite"`
-	CriadoEm      string         `json:"criado_em"`
-	AtualizadoEm  string         `json:"atualizado_em"`
-	RemovidoEm    sql.NullString `json:"removido_em" swaggertype:"integer"`
+	Id                            int64          `json:"id"`
+	Nome                          string         `json:"nome"`
+	ValorMensal                   int64          `json:"valor_mensal"`
+	LimiteLinksMensal             int64          `json:"limite_links_mensal"`
+	LimiteRedirecionamentosMensal int64          `json:"limite_redirecionamentos_mensal"`
+	OrdenacaoAleatoriaLinks       bool           `json:"ordenacao_aleatoria_links"`
+	CriadoEm                      string         `json:"criado_em"`
+	AtualizadoEm                  string         `json:"atualizado_em"`
+	RemovidoEm                    sql.NullString `json:"removido_em" swaggertype:"integer"`
 } // @name PlanoDeAssinatura
 
 type PlanoDeAssinaturaModel struct {
@@ -24,7 +25,7 @@ func (pa *PlanoDeAssinaturaModel) ReadByNome(nome string) (PlanoDeAssinatura, er
 	var planoDeAssinatura PlanoDeAssinatura
 
 	row := pa.DB.QueryRow(
-		"SELECT ID, NOME, VALOR_MENSAL, LIMITE, PERIODO_LIMITE, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL AND NOME = $1",
+		"SELECT ID, NOME, VALOR_MENSAL, LIMITE_LINKS_MENSAL, LIMITE_REDIRECIONAMENTOS_MENSAL, ORDENACAO_ALEATORIA_LINKS, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL AND NOME = $1",
 		nome,
 	)
 
@@ -32,8 +33,9 @@ func (pa *PlanoDeAssinaturaModel) ReadByNome(nome string) (PlanoDeAssinatura, er
 		&planoDeAssinatura.Id,
 		&planoDeAssinatura.Nome,
 		&planoDeAssinatura.ValorMensal,
-		&planoDeAssinatura.Limite,
-		&planoDeAssinatura.PeriodoLimite,
+		&planoDeAssinatura.LimiteLinksMensal,
+		&planoDeAssinatura.LimiteRedirecionamentosMensal,
+		&planoDeAssinatura.OrdenacaoAleatoriaLinks,
 		&planoDeAssinatura.CriadoEm,
 		&planoDeAssinatura.AtualizadoEm,
 		&planoDeAssinatura.RemovidoEm,
@@ -51,7 +53,7 @@ func (pa *PlanoDeAssinaturaModel) ReadByNome(nome string) (PlanoDeAssinatura, er
 func (pa *PlanoDeAssinaturaModel) ReadAll() ([]PlanoDeAssinatura, error) {
 	var planosDeAssinatura []PlanoDeAssinatura
 
-	rows, err := pa.DB.Query("SELECT ID, NOME, VALOR_MENSAL, LIMITE, PERIODO_LIMITE, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL")
+	rows, err := pa.DB.Query("SELECT ID, NOME, VALOR_MENSAL, LIMITE_LINKS_MENSAL, LIMITE_REDIRECIONAMENTOS_MENSAL, ORDENACAO_ALEATORIA_LINKS, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL")
 
 	if err != nil {
 		return nil, err
@@ -66,8 +68,9 @@ func (pa *PlanoDeAssinaturaModel) ReadAll() ([]PlanoDeAssinatura, error) {
 			&planoDeAssinatura.Id,
 			&planoDeAssinatura.Nome,
 			&planoDeAssinatura.ValorMensal,
-			&planoDeAssinatura.Limite,
-			&planoDeAssinatura.PeriodoLimite,
+			&planoDeAssinatura.LimiteLinksMensal,
+			&planoDeAssinatura.LimiteRedirecionamentosMensal,
+			&planoDeAssinatura.OrdenacaoAleatoriaLinks,
 			&planoDeAssinatura.CriadoEm,
 			&planoDeAssinatura.AtualizadoEm,
 			&planoDeAssinatura.RemovidoEm,
@@ -85,13 +88,14 @@ func (pa *PlanoDeAssinaturaModel) ReadAll() ([]PlanoDeAssinatura, error) {
 	return planosDeAssinatura, nil
 }
 
-func (pa *PlanoDeAssinaturaModel) Create(nome string, valorMensal, limite int64, periodoLimite string) error {
+func (pa *PlanoDeAssinaturaModel) Create(nome string, valorMensal, limiteLinksMensal, limiteRedirecionamentosMensal int64, ordenacaoAleatoriaLinks bool) error {
 	_, err := pa.DB.Exec(
-		"INSERT INTO PLANO_DE_ASSINATURA (NOME, VALOR_MENSAL, LIMITE, PERIODO_LIMITE) VALUES ($1, $2, $3, $4)",
+		"INSERT INTO PLANO_DE_ASSINATURA (NOME, VALOR_MENSAL, LIMITE_LINKS_MENSAL, LIMITE_REDIRECIONAMENTOS_MENSAL, ORDENACAO_ALEATORIA_LINKS) VALUES ($1, $2, $3, $4, $5)",
 		nome,
 		valorMensal,
-		limite,
-		periodoLimite,
+		limiteLinksMensal,
+		limiteRedirecionamentosMensal,
+		ordenacaoAleatoriaLinks,
 	)
 
 	if err != nil {
@@ -101,7 +105,7 @@ func (pa *PlanoDeAssinaturaModel) Create(nome string, valorMensal, limite int64,
 	return nil
 }
 
-func (pa *PlanoDeAssinaturaModel) Update(nomeParam, nome string, valorMensal, limite int64, periodoLimite string) error {
+func (pa *PlanoDeAssinaturaModel) Update(nomeParam, nome string, valorMensal, limiteLinksMensal, limiteRedirecionamentosMensal int64, ordenacaoAleatoriaLinks bool) error {
 	sqlQuery := "UPDATE PLANO_DE_ASSINATURA SET ATUALIZADO_EM = CURRENT_TIMESTAMP"
 
 	if nome != "" {
@@ -112,13 +116,21 @@ func (pa *PlanoDeAssinaturaModel) Update(nomeParam, nome string, valorMensal, li
 		sqlQuery += ", VALOR_MENSAL = " + fmt.Sprint(valorMensal)
 	}
 
-	if limite != 0 {
-		sqlQuery += ", LIMITE = " + fmt.Sprint(limite)
+	if limiteLinksMensal != 0 {
+		sqlQuery += ", LIMITE_LINKS_MENSAL = " + fmt.Sprint(limiteLinksMensal)
 	}
 
-	if periodoLimite != "" {
-		sqlQuery += ", PERIODO_LIMITE = '" + periodoLimite + "'"
+	if limiteRedirecionamentosMensal != 0 {
+		sqlQuery += ", LIMITE_REDIRECIONAMENTOS_MENSAL = " + fmt.Sprint(limiteRedirecionamentosMensal)
 	}
+
+	var ordenacao int
+
+	if ordenacaoAleatoriaLinks {
+		ordenacao = 1
+	}
+
+	sqlQuery += ", ORDENACAO_ALEATORIA_LINKS = " + fmt.Sprint(ordenacao)
 
 	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND NOME = $1"
 

@@ -11,6 +11,8 @@ import (
 
 	"github.com/alexedwards/argon2id"
 	"github.com/labstack/echo/v4"
+
+	_ "redirectify/internal/models"
 )
 
 type produto struct {
@@ -212,7 +214,7 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 // @Success 200                 {object} map[string]string
 // @Failure 400                 {object} utils.Erro
 // @Failure 500                 {object} utils.Erro
-// @Router  /v1/api/usuarios [post]
+// @Router  /v1/api/usuarios_temporarios [post]
 func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 	parametros := struct {
 		Cpf                string    `json:"customer.document"`

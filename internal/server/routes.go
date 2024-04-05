@@ -21,6 +21,9 @@ import (
 // @contact.email comercialdevops@gmail.com
 func (s *Server) RegisterRoutes() http.Handler {
 	e := echo.New()
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:4200"},
+	}))
 	e.Use(middleware.Logger())
 	e.Use(middleware.Secure())
 	e.Use(middleware.Recover())
@@ -52,6 +55,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	a.GET("/usuarios/historico", s.HistoricoUsuarioReadAll)
 	a.GET("/usuarios/:nome_de_usuario", s.UsuarioReadByNomeDeUsuario)
 	a.POST("/usuarios", s.UsuarioCreate)
+	a.POST("/usuarios_temporarios", s.UsuarioTemporarioCreate)
+	a.POST("/usuarios_temporarios/historico", s.HistoricoUsuarioTemporarioReadAll)
 	a.PATCH("/usuarios/:nome_de_usuario", s.UsuarioUpdate)
 	a.DELETE("/usuarios/:nome_de_usuario", s.UsuarioRemove)
 

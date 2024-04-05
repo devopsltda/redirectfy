@@ -10,7 +10,7 @@ type UsuarioTemporario struct {
 	Nome              string         `json:"nome"`
 	NomeDeUsuario     string         `json:"nome_de_usuario"`
 	Email             string         `json:"email"`
-	PlanoDeAssinatura string          `json:"plano_de_assinatura"`
+	PlanoDeAssinatura string         `json:"plano_de_assinatura"`
 	CriadoEm          string         `json:"criado_em"`
 	RemovidoEm        sql.NullString `json:"removido_em" swaggertype:"string"`
 } // @name UsuarioTemporario

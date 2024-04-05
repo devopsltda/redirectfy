@@ -8,6 +8,8 @@ import (
 	"redirectify/internal/utils"
 
 	"github.com/labstack/echo/v4"
+
+	_ "redirectify/internal/models"
 )
 
 // LinkReadById godoc

@@ -6,6 +6,8 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"redirectify/internal/utils"
+
+	_ "redirectify/internal/models"
 )
 
 // HistoricoPlanoDeAssinaturaReadAll godoc
@@ -23,6 +25,27 @@ func (s *Server) HistoricoPlanoDeAssinaturaReadAll(c echo.Context) error {
 
 	if err != nil {
 		slog.Error("HistoricoPlanoDeAssinaturaReadAll", slog.Any("error", err))
+		return utils.ErroBancoDados
+	}
+
+	return c.JSON(http.StatusOK, historico)
+}
+
+// HistoricoUsuarioTemporarioReadAll godoc
+//
+// @Summary Retorna o histórico de ações relativas a usuários temporários no sistema
+// @Tags    Histórico
+// @Accept  json
+// @Produce json
+// @Success 200 {object} []models.HistoricoUsuarioTemporario
+// @Failure 400 {object} Erro
+// @Failure 500 {object} Erro
+// @Router  /v1/api/usuarios_temporarios/historico [get]
+func (s *Server) HistoricoUsuarioTemporarioReadAll(c echo.Context) error {
+	historico, err := s.HistoricoModel.UsuarioTemporarioReadAll()
+
+	if err != nil {
+		slog.Error("HistoricoUsuarioTemporarioReadAll", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
