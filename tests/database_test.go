@@ -111,7 +111,7 @@ func TestDatabaseLinksRedirect(t *testing.T) {
 	defer db.Close()
 	l := models.LinkModel{DB: db}
 	t.Run("Criando redirecionador", func(t *testing.T) {
-		
+
 	})
 	t.Run("Criando Link no banco de dados", func(t *testing.T) {
 		err := l.Create(
@@ -122,7 +122,7 @@ func TestDatabaseLinksRedirect(t *testing.T) {
 		)
 		assert.NoError(t, err)
 	})
-	
+
 	t.Run("Pegar todas os links", func(t *testing.T) {
 		_, err := l.ReadAll(
 			"osdsaoid10i912id0asd",

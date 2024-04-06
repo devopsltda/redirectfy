@@ -14,7 +14,7 @@ import (
 
 type RedirecionadorReadByCodigoHashResponse struct {
 	R models.Redirecionador `json:"redirecionador"`
-	L []models.Link `json:"links"`
+	L []models.Link         `json:"links"`
 }
 
 // RedirecionadorReadByCodigoHash godoc
@@ -51,7 +51,7 @@ func (s *Server) RedirecionadorReadByCodigoHash(c echo.Context) error {
 
 	picked_links := models.LinkPicker(links)
 
-	return c.JSON(http.StatusOK, RedirecionadorReadByCodigoHashResponse{ R: redirecionador, L: picked_links })
+	return c.JSON(http.StatusOK, RedirecionadorReadByCodigoHashResponse{R: redirecionador, L: picked_links})
 }
 
 // RedirecionadorReadAll godoc

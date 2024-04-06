@@ -97,7 +97,7 @@ func (l *LinkModel) ReadByCodigoHash(codigoHash string) ([]Link, error) {
 }
 
 func (l *LinkModel) Create(redirecionador string, links []LinkToBatchInsert) error {
-	var values string 
+	var values string
 
 	for _, link := range links[:len(links)-1] {
 		values += fmt.Sprintf("('%s', '%s', '%s', '%s'),", link.Nome, link.Link, link.Plataforma, redirecionador)

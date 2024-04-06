@@ -9,11 +9,11 @@ import (
 )
 
 type EmailAutenticacao struct {
-	Id       int64  `json:"id"`
-	Valor    string `json:"valor"`
-	Tipo     string `json:"tipo"`
-	ExpiraEm string `json:"expira_em"`
-	UsuarioTemporario  int64  `json:"usuario_temporario"`
+	Id                int64  `json:"id"`
+	Valor             string `json:"valor"`
+	Tipo              string `json:"tipo"`
+	ExpiraEm          string `json:"expira_em"`
+	UsuarioTemporario int64  `json:"usuario_temporario"`
 } // @name EmailAutenticacao
 
 type EmailAutenticacaoModel struct {

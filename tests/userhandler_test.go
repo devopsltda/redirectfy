@@ -1,4 +1,4 @@
-// package tests
+package tests
 
 // import (
 // 	"net/http"
@@ -8,7 +8,6 @@
 
 // 	"github.com/labstack/echo/v4"
 // 	"github.com/stretchr/testify/assert"
-
 
 // 	"redirectify/internal/handlers/v1/api"
 // 	"redirectify/internal/services/database"

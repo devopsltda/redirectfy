@@ -96,7 +96,7 @@ func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
 // @Router  /v1/api/redirecionadores/:codigo_hash/links [post]
 func (s *Server) LinkCreate(c echo.Context) error {
 	parametros := struct {
-		CodigoHash string `path:"codigo_hash"`
+		CodigoHash string                     `path:"codigo_hash"`
 		Links      []models.LinkToBatchInsert `json:"links"`
 	}{}
 
@@ -105,7 +105,6 @@ func (s *Server) LinkCreate(c echo.Context) error {
 	if err := utils.Validate.Var(parametros.CodigoHash, "required,len=10"); err != nil {
 		erros = append(erros, "Por favor, forneça um código hash válido para o parâmetro 'codigo_hash'.")
 	}
-
 
 	for _, link := range parametros.Links {
 		if err := c.Bind(&parametros); err != nil {

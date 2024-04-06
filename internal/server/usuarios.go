@@ -19,7 +19,6 @@ type produto struct {
 	Name string `json:"name"`
 } // @name Produto
 
-
 func criaNomeDeUsuario(s string) string {
 	var sb strings.Builder
 	for _, c := range s {
@@ -105,7 +104,7 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 		Email             string `json:"email"`
 		Senha             string `json:"senha"`
 		DataDeNascimento  string `json:"data_de_nascimento"`
-		PlanoDeAssinatura string  `json:"plano_de_assinatura"`
+		PlanoDeAssinatura string `json:"plano_de_assinatura"`
 	}{}
 
 	var erros []string
@@ -418,8 +417,8 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 // @Router  /v1/api/usuarios/autentica/:valor [patch]
 func (s *Server) UsuarioAutenticado(c echo.Context) error {
 	type parametrosUpdate struct {
-		Senha             string `json:"senha"`
-		DataDeNascimento  string `json:"data_de_nascimento"`
+		Senha            string `json:"senha"`
+		DataDeNascimento string `json:"data_de_nascimento"`
 	}
 
 	parametros := parametrosUpdate{}
@@ -665,8 +664,8 @@ func (s *Server) UsuarioRemove(c echo.Context) error {
 // @Router  /v1/api/usuarios/login [post]
 func (s *Server) UsuarioLogin(c echo.Context) error {
 	parametros := struct {
-		Email         string `json:"email"`
-		Senha         string `json:"senha"`
+		Email string `json:"email"`
+		Senha string `json:"senha"`
 	}{}
 
 	var erros []string

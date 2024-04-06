@@ -62,9 +62,9 @@ func GeraTokenRefresh(id int64, nome, nomeDeUsuario, planoDeAssinatura string) (
 
 func GeraToken(id int64, nome, nomeDeUsuario, planoDeAssinatura string, expiraEm time.Time, chave []byte) (string, time.Time, error) {
 	claims := &Claims{
-		Id:            id,
-		Nome:          nome,
-		NomeDeUsuario: nomeDeUsuario,
+		Id:                id,
+		Nome:              nome,
+		NomeDeUsuario:     nomeDeUsuario,
 		PlanoDeAssinatura: planoDeAssinatura,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: &jwt.NumericDate{Time: expiraEm},
@@ -136,8 +136,6 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		nomeDeUsuario := c.Get("usuario").(*jwt.Token)
 
 		claims := nomeDeUsuario.Claims.(*Claims)
-
-		if c.Path() == "/v1/api/redirecionadores/:codigo_hash/rehash" && claims.PlanoDeAssinatura != ""
 
 		if time.Until(claims.RegisteredClaims.ExpiresAt.Time) < 15*time.Minute {
 			refreshCookie, err := c.Cookie("refresh-token")
