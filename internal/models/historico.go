@@ -8,7 +8,6 @@ type HistoricoPlanoDeAssinatura struct {
 	Nome                         sql.NullString `json:"nome"`
 	ValorMensal                  sql.NullInt64  `json:"valor_mensal"`
 	LimiteLinksMensal            sql.NullInt64  `json:"limite_links_mensal"`
-	LimiteRedirecionadoresMensal sql.NullInt64  `json:"limite_redirecionadores_mensal"`
 	OrdenacaoAleatoriaLinks      sql.NullBool   `json:"ordenacao_aleatoria_links"`
 	CriadoEm                     sql.NullString `json:"criado_em"`
 	AtualizadoEm                 sql.NullString `json:"atualizado_em"`
@@ -99,7 +98,7 @@ type HistoricoModel struct {
 func (h *HistoricoModel) PlanoDeAssinaturaReadAll() ([]HistoricoPlanoDeAssinatura, error) {
 	var historico []HistoricoPlanoDeAssinatura
 
-	rows, err := h.DB.Query("SELECT _ROWID, ID, NOME, VALOR_MENSAL, LIMITE_LINKS_MENSAL, LINKS_REDIRECIONAMENTOS_MENSAL, ORDENACAO_ALEATORIA_LINKS, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM, VERSAO, BITMASK, _CRIADO_EM FROM HISTORICO_PLANO_DE_ASSINATURA")
+	rows, err := h.DB.Query("SELECT _ROWID, ID, NOME, VALOR_MENSAL, LIMITE_LINKS_MENSAL, ORDENACAO_ALEATORIA_LINKS, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM, VERSAO, BITMASK, _CRIADO_EM FROM HISTORICO_PLANO_DE_ASSINATURA")
 
 	if err != nil {
 		return nil, err
@@ -116,7 +115,6 @@ func (h *HistoricoModel) PlanoDeAssinaturaReadAll() ([]HistoricoPlanoDeAssinatur
 			&registro.Nome,
 			&registro.ValorMensal,
 			&registro.LimiteLinksMensal,
-			&registro.LimiteRedirecionadoresMensal,
 			&registro.OrdenacaoAleatoriaLinks,
 			&registro.CriadoEm,
 			&registro.AtualizadoEm,
