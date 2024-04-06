@@ -131,15 +131,6 @@ const docTemplate = `{
                         }
                     },
                     {
-                        "description": "Limite de Redirecionamentos Mensal",
-                        "name": "limite_redirecionamentos_mensal",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
                         "description": "Ordenação Aleatória de Links",
                         "name": "ordenacao_aleatoria_links",
                         "in": "body",
@@ -298,14 +289,6 @@ const docTemplate = `{
                     {
                         "description": "Limite de Links Mensal",
                         "name": "limite_links_mensal",
-                        "in": "body",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "description": "Limite de Redirecionamentos Mensal",
-                        "name": "limite_redirecionamentos_mensal",
                         "in": "body",
                         "schema": {
                             "type": "integer"
@@ -813,7 +796,7 @@ const docTemplate = `{
                 "tags": [
                     "Links"
                 ],
-                "summary": "Cria um link no redirecionador com o código hash fornecido",
+                "summary": "Cria links no redirecionador com o código hash fornecido",
                 "parameters": [
                     {
                         "type": "string",
@@ -823,30 +806,15 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Nome",
-                        "name": "nome",
+                        "description": "Links",
+                        "name": "links",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Link",
-                        "name": "link",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Plataforma",
-                        "name": "plataforma",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.LinkToBatchInsert"
+                            }
                         }
                     }
                 ],
@@ -1303,7 +1271,7 @@ const docTemplate = `{
                         "name": "plano_de_assinatura",
                         "in": "body",
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -1972,9 +1940,6 @@ const docTemplate = `{
                 "limite_links_mensal": {
                     "type": "integer"
                 },
-                "limite_redirecionamentos_mensal": {
-                    "type": "integer"
-                },
                 "nome": {
                     "type": "string"
                 },
@@ -2060,6 +2025,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "senha": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.LinkToBatchInsert": {
+            "type": "object",
+            "properties": {
+                "link": {
+                    "type": "string"
+                },
+                "nome": {
+                    "type": "string"
+                },
+                "plataforma": {
                     "type": "string"
                 }
             }

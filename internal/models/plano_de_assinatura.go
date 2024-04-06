@@ -87,7 +87,7 @@ func (pa *PlanoDeAssinaturaModel) ReadAll() ([]PlanoDeAssinatura, error) {
 
 func (pa *PlanoDeAssinaturaModel) Create(nome string, valorMensal, limiteLinksMensal int64, ordenacaoAleatoriaLinks bool) error {
 	_, err := pa.DB.Exec(
-		"INSERT INTO PLANO_DE_ASSINATURA (NOME, VALOR_MENSAL, LIMITE_LINKS_MENSAL, ORDENACAO_ALEATORIA_LINKS) VALUES ($1, $2, $3, $4, $5)",
+		"INSERT INTO PLANO_DE_ASSINATURA (NOME, VALOR_MENSAL, LIMITE_LINKS_MENSAL, ORDENACAO_ALEATORIA_LINKS) VALUES ($1, $2, $3, $4)",
 		nome,
 		valorMensal,
 		limiteLinksMensal,

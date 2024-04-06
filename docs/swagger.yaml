@@ -173,8 +173,6 @@ definitions:
         type: integer
       limite_links_mensal:
         type: integer
-      limite_redirecionamentos_mensal:
-        type: integer
       nome:
         type: string
       ordenacao_aleatoria_links:
@@ -231,6 +229,15 @@ definitions:
       removido_em:
         type: string
       senha:
+        type: string
+    type: object
+  models.LinkToBatchInsert:
+    properties:
+      link:
+        type: string
+      nome:
+        type: string
+      plataforma:
         type: string
     type: object
   sql.NullBool:
@@ -332,12 +339,6 @@ paths:
       - description: Limite de Links Mensal
         in: body
         name: limite_links_mensal
-        required: true
-        schema:
-          type: integer
-      - description: Limite de Redirecionamentos Mensal
-        in: body
-        name: limite_redirecionamentos_mensal
         required: true
         schema:
           type: integer
@@ -446,11 +447,6 @@ paths:
       - description: Limite de Links Mensal
         in: body
         name: limite_links_mensal
-        schema:
-          type: integer
-      - description: Limite de Redirecionamentos Mensal
-        in: body
-        name: limite_redirecionamentos_mensal
         schema:
           type: integer
       - description: Ordenação Aleatória de Links
@@ -787,24 +783,14 @@ paths:
         name: codigo_hash
         required: true
         type: string
-      - description: Nome
+      - description: Links
         in: body
-        name: nome
+        name: links
         required: true
         schema:
-          type: string
-      - description: Link
-        in: body
-        name: link
-        required: true
-        schema:
-          type: string
-      - description: Plataforma
-        in: body
-        name: plataforma
-        required: true
-        schema:
-          type: string
+          items:
+            $ref: '#/definitions/models.LinkToBatchInsert'
+          type: array
       produces:
       - application/json
       responses:
@@ -822,7 +808,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/Erro'
-      summary: Cria um link no redirecionador com o código hash fornecido
+      summary: Cria links no redirecionador com o código hash fornecido
       tags:
       - Links
   /v1/api/redirecionadores/:codigo_hash/links/:id:
@@ -1103,7 +1089,7 @@ paths:
         in: body
         name: plano_de_assinatura
         schema:
-          type: integer
+          type: string
       produces:
       - application/json
       responses:
