@@ -10,7 +10,6 @@ type PlanoDeAssinatura struct {
 	Nome                          string         `json:"nome"`
 	ValorMensal                   int64          `json:"valor_mensal"`
 	LimiteLinksMensal             int64          `json:"limite_links_mensal"`
-	LimiteRedirecionamentosMensal int64          `json:"limite_redirecionamentos_mensal"`
 	OrdenacaoAleatoriaLinks       bool           `json:"ordenacao_aleatoria_links"`
 	CriadoEm                      string         `json:"criado_em"`
 	AtualizadoEm                  string         `json:"atualizado_em"`
@@ -25,7 +24,7 @@ func (pa *PlanoDeAssinaturaModel) ReadByNome(nome string) (PlanoDeAssinatura, er
 	var planoDeAssinatura PlanoDeAssinatura
 
 	row := pa.DB.QueryRow(
-		"SELECT ID, NOME, VALOR_MENSAL, LIMITE_LINKS_MENSAL, LIMITE_REDIRECIONAMENTOS_MENSAL, ORDENACAO_ALEATORIA_LINKS, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL AND NOME = $1",
+		"SELECT ID, NOME, VALOR_MENSAL, LIMITE_LINKS_MENSAL, ORDENACAO_ALEATORIA_LINKS, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL AND NOME = $1",
 		nome,
 	)
 
@@ -34,7 +33,6 @@ func (pa *PlanoDeAssinaturaModel) ReadByNome(nome string) (PlanoDeAssinatura, er
 		&planoDeAssinatura.Nome,
 		&planoDeAssinatura.ValorMensal,
 		&planoDeAssinatura.LimiteLinksMensal,
-		&planoDeAssinatura.LimiteRedirecionamentosMensal,
 		&planoDeAssinatura.OrdenacaoAleatoriaLinks,
 		&planoDeAssinatura.CriadoEm,
 		&planoDeAssinatura.AtualizadoEm,
@@ -53,7 +51,7 @@ func (pa *PlanoDeAssinaturaModel) ReadByNome(nome string) (PlanoDeAssinatura, er
 func (pa *PlanoDeAssinaturaModel) ReadAll() ([]PlanoDeAssinatura, error) {
 	var planosDeAssinatura []PlanoDeAssinatura
 
-	rows, err := pa.DB.Query("SELECT ID, NOME, VALOR_MENSAL, LIMITE_LINKS_MENSAL, LIMITE_REDIRECIONAMENTOS_MENSAL, ORDENACAO_ALEATORIA_LINKS, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL")
+	rows, err := pa.DB.Query("SELECT ID, NOME, VALOR_MENSAL, LIMITE_LINKS_MENSAL, ORDENACAO_ALEATORIA_LINKS, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL")
 
 	if err != nil {
 		return nil, err
@@ -69,7 +67,6 @@ func (pa *PlanoDeAssinaturaModel) ReadAll() ([]PlanoDeAssinatura, error) {
 			&planoDeAssinatura.Nome,
 			&planoDeAssinatura.ValorMensal,
 			&planoDeAssinatura.LimiteLinksMensal,
-			&planoDeAssinatura.LimiteRedirecionamentosMensal,
 			&planoDeAssinatura.OrdenacaoAleatoriaLinks,
 			&planoDeAssinatura.CriadoEm,
 			&planoDeAssinatura.AtualizadoEm,
@@ -88,13 +85,12 @@ func (pa *PlanoDeAssinaturaModel) ReadAll() ([]PlanoDeAssinatura, error) {
 	return planosDeAssinatura, nil
 }
 
-func (pa *PlanoDeAssinaturaModel) Create(nome string, valorMensal, limiteLinksMensal, limiteRedirecionamentosMensal int64, ordenacaoAleatoriaLinks bool) error {
+func (pa *PlanoDeAssinaturaModel) Create(nome string, valorMensal, limiteLinksMensal int64, ordenacaoAleatoriaLinks bool) error {
 	_, err := pa.DB.Exec(
-		"INSERT INTO PLANO_DE_ASSINATURA (NOME, VALOR_MENSAL, LIMITE_LINKS_MENSAL, LIMITE_REDIRECIONAMENTOS_MENSAL, ORDENACAO_ALEATORIA_LINKS) VALUES ($1, $2, $3, $4, $5)",
+		"INSERT INTO PLANO_DE_ASSINATURA (NOME, VALOR_MENSAL, LIMITE_LINKS_MENSAL, ORDENACAO_ALEATORIA_LINKS) VALUES ($1, $2, $3, $4, $5)",
 		nome,
 		valorMensal,
 		limiteLinksMensal,
-		limiteRedirecionamentosMensal,
 		ordenacaoAleatoriaLinks,
 	)
 
@@ -105,7 +101,7 @@ func (pa *PlanoDeAssinaturaModel) Create(nome string, valorMensal, limiteLinksMe
 	return nil
 }
 
-func (pa *PlanoDeAssinaturaModel) Update(nomeParam, nome string, valorMensal, limiteLinksMensal, limiteRedirecionamentosMensal int64, ordenacaoAleatoriaLinks bool) error {
+func (pa *PlanoDeAssinaturaModel) Update(nomeParam, nome string, valorMensal, limiteLinksMensal int64, ordenacaoAleatoriaLinks bool) error {
 	sqlQuery := "UPDATE PLANO_DE_ASSINATURA SET ATUALIZADO_EM = CURRENT_TIMESTAMP"
 
 	if nome != "" {
@@ -118,10 +114,6 @@ func (pa *PlanoDeAssinaturaModel) Update(nomeParam, nome string, valorMensal, li
 
 	if limiteLinksMensal != 0 {
 		sqlQuery += ", LIMITE_LINKS_MENSAL = " + fmt.Sprint(limiteLinksMensal)
-	}
-
-	if limiteRedirecionamentosMensal != 0 {
-		sqlQuery += ", LIMITE_REDIRECIONAMENTOS_MENSAL = " + fmt.Sprint(limiteRedirecionamentosMensal)
 	}
 
 	var ordenacao int

@@ -68,7 +68,6 @@ func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
 // @Param   nome                            body     string true "Nome"
 // @Param   valor_mensal                    body     int    true "Valor Mensal"
 // @Param   limite_links_mensal             body     int    true "Limite de Links Mensal"
-// @Param   limite_redirecionamentos_mensal body     int    true "Limite de Redirecionamentos Mensal"
 // @Param   ordenacao_aleatoria_links       body     bool   true "Ordenação Aleatória de Links"
 // @Success 200                             {object} map[string]string
 // @Failure 400                             {object} utils.Erro
@@ -79,7 +78,6 @@ func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 		Nome                          string `json:"nome"`
 		ValorMensal                   int64  `json:"valor_mensal"`
 		LimiteLinksMensal             int64  `json:"limite_links_mensal"`
-		LimiteRedirecionamentosMensal int64  `json:"limite_redirecionamentos_mensal"`
 		OrdenacaoAleatoriaLinks       bool   `json:"ordenacao_aleatoria_links"`
 		PeriodoLimite                 string `json:"periodo_limite"`
 	}{}
@@ -102,15 +100,11 @@ func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça um limite válido no parâmetro 'limite_links_mensal'.")
 	}
 
-	if err := utils.Validate.Var(parametros.LimiteRedirecionamentosMensal, "required,gte=0"); err != nil {
-		erros = append(erros, "Por favor, forneça um limite válido no parâmetro 'limite_redirecionamentos_mensal'.")
-	}
-
 	if len(erros) > 0 {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	err := s.PlanoDeAssinaturaModel.Create(parametros.Nome, parametros.ValorMensal, parametros.LimiteLinksMensal, parametros.LimiteRedirecionamentosMensal, parametros.OrdenacaoAleatoriaLinks)
+	err := s.PlanoDeAssinaturaModel.Create(parametros.Nome, parametros.ValorMensal, parametros.LimiteLinksMensal, parametros.OrdenacaoAleatoriaLinks)
 
 	if err != nil {
 		slog.Error("PlanoDeAssinaturaCreate", slog.Any("error", err))
@@ -130,7 +124,6 @@ func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 // @Param   nome                            body     string false "Nome"
 // @Param   valor_mensal                    body     int    false "Valor Mensal"
 // @Param   limite_links_mensal             body     int    false "Limite de Links Mensal"
-// @Param   limite_redirecionamentos_mensal body     int    false "Limite de Redirecionamentos Mensal"
 // @Param   ordenacao_aleatoria_links       body     bool   true  "Ordenação Aleatória de Links"
 // @Success 200                             {object} map[string]string
 // @Failure 400                             {object} utils.Erro
@@ -141,7 +134,6 @@ func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 		Nome                          string `json:"nome"`
 		ValorMensal                   int64  `json:"valor_mensal"`
 		LimiteLinksMensal             int64  `json:"limite_links_mensal"`
-		LimiteRedirecionamentosMensal int64  `json:"limite_redirecionamentos_mensal"`
 		OrdenacaoAleatoriaLinks       bool   `json:"ordenacao_aleatoria_links"`
 		PeriodoLimite                 string `json:"periodo_limite"`
 	}
@@ -172,10 +164,6 @@ func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça um limite válido no parâmetro 'limite_links_mensal'.")
 	}
 
-	if err := utils.Validate.Var(parametros.LimiteRedirecionamentosMensal, "gte=0"); err != nil {
-		erros = append(erros, "Por favor, forneça um limite válido no parâmetro 'limite_redirecionamentos_mensal'.")
-	}
-
 	if (parametrosUpdate{}) == parametros {
 		erros = append(erros, "Por favor, forneça algum valor válido para a atualização.")
 	}
@@ -184,7 +172,7 @@ func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	err := s.PlanoDeAssinaturaModel.Update(nome, parametros.Nome, parametros.ValorMensal, parametros.LimiteLinksMensal, parametros.LimiteRedirecionamentosMensal, parametros.OrdenacaoAleatoriaLinks)
+	err := s.PlanoDeAssinaturaModel.Update(nome, parametros.Nome, parametros.ValorMensal, parametros.LimiteLinksMensal, parametros.OrdenacaoAleatoriaLinks)
 
 	if err != nil {
 		slog.Error("PlanoDeAssinaturaUpdate", slog.Any("error", err))
