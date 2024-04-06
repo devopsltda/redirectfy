@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
 )
 
 type Usuario struct {
@@ -139,7 +138,7 @@ func (u *UsuarioModel) TrocaSenha(id int64, senha string) error {
 	return nil
 }
 
-func (u *UsuarioModel) Update(cpf, nome, nomeDeUsuario, email, senha, dataDeNascimento string, planoDeAssinatura int64) error {
+func (u *UsuarioModel) Update(cpf, nome, nomeDeUsuario, email, senha, dataDeNascimento, planoDeAssinatura string) error {
 	sqlQuery := "UPDATE USUARIO SET ATUALIZADO_EM = CURRENT_TIMESTAMP"
 
 	if cpf != "" {
@@ -166,8 +165,8 @@ func (u *UsuarioModel) Update(cpf, nome, nomeDeUsuario, email, senha, dataDeNasc
 		sqlQuery += ", DATA_DE_NASCIMENTO = '" + dataDeNascimento + "'"
 	}
 
-	if planoDeAssinatura != 0 {
-		sqlQuery += ", PLANO_DE_ASSINATURA = " + fmt.Sprint(planoDeAssinatura)
+	if planoDeAssinatura != "" {
+		sqlQuery += ", PLANO_DE_ASSINATURA = '" + planoDeAssinatura + "'"
 	}
 
 	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = $1"

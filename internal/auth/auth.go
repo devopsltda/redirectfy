@@ -124,7 +124,9 @@ func PathWithNoAuthRequired(c echo.Context) bool {
 		(c.Path() == "/v1/api/usuarios/troca_de_senha/:valor" && c.Request().Method == "PATCH") ||
 		(c.Path() == "/v1/api/usuarios/:nome_de_usuario/troca_de_senha" && c.Request().Method == "POST") ||
 		(c.Path() == "/v1/api/docs/*" && c.Request().Method == "GET") ||
-		(c.Path() == "/v1/api/autenticacao/:valor" && c.Request().Method == "PATCH")
+		(c.Path() == "/v1/api/autenticacao/:valor" && c.Request().Method == "PATCH") ||
+		(c.Path() == "/v1/api/planos_de_assinatura" && c.Request().Method == "GET") ||
+		(c.Path() == "/v1/api/planos_de_assinatura/:nome" && c.Request().Method == "GET")
 }
 
 func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {

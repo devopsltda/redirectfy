@@ -307,7 +307,7 @@ func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 // @Param   email               body     string false "Email"
 // @Param   senha               body     string false "Senha"
 // @Param   data_de_nascimento  body     string false "Data de Nascimento"
-// @Param   plano_de_assinatura body     int    false "Plano de Assinatura"
+// @Param   plano_de_assinatura body     string false "Plano de Assinatura"
 // @Success 200                 {object} map[string]string
 // @Failure 400                 {object} utils.Erro
 // @Failure 500                 {object} utils.Erro
@@ -322,7 +322,7 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 		Email             string `json:"email"`
 		Senha             string `json:"senha"`
 		DataDeNascimento  string `json:"data_de_nascimento"`
-		PlanoDeAssinatura int64  `json:"plano_de_assinatura"`
+		PlanoDeAssinatura string  `json:"plano_de_assinatura"`
 	}
 
 	parametros := parametrosUpdate{}
@@ -361,8 +361,8 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça uma data de nascimento válida para o parâmetro 'data_de_nascimento'.")
 	}
 
-	if err := utils.Validate.Var(parametros.PlanoDeAssinatura, "gte=0"); parametros.PlanoDeAssinatura != 0 && err != nil {
-		erros = append(erros, "Por favor, forneça um plano de assinatura válido para o parâmetro 'plano_de_assinatura'.")
+	if err := utils.Validate.Var(parametros.PlanoDeAssinatura, "required,min=3,max=120"); err != nil {
+		erros = append(erros, "Por favor, forneça um nome válido para o parâmetro 'plano_de_assinatura'.")
 	}
 
 	if (parametrosUpdate{}) == parametros {
