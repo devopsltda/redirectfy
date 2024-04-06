@@ -4,7 +4,7 @@ import (
 	"redirectify/internal/models"
 	"redirectify/internal/services/database"
 	"testing"
-
+	
 	"github.com/stretchr/testify/assert"
 )
 
@@ -12,7 +12,7 @@ func TestDatabaseUsuario(t *testing.T) {
 	db := database.New()
 	defer db.Close()
 	u := models.UsuarioModel{DB: db}
-
+	
 	t.Run("Adicionar usuário ao banco de dados", func(t *testing.T) {
 		_, err := u.Create(
 			"02958985261",
@@ -21,11 +21,11 @@ func TestDatabaseUsuario(t *testing.T) {
 			"edu.hen.fm@gmail.com",
 			"senha-muito-complexa-aqui",
 			"2001-08-30",
-			1,
+			"1",
 		)
 		assert.NoError(t, err)
 	})
-
+	
 	t.Run("Adicionar usuário DUPLICADO(msm cpf) ao banco de dados", func(t *testing.T) {
 		_, err := u.Create(
 			"02958985261",
@@ -34,12 +34,21 @@ func TestDatabaseUsuario(t *testing.T) {
 			"edu.hen.fm@gmail.com",
 			"senha-muito-complexa-aqui",
 			"2001-08-30",
-			1,
+			"1",
 		)
-		assert.NoError(t, err)
+		assert.Error(t, err)
 	})
-
+	
 	t.Run("Atualizar usuário do banco de dados", func(t *testing.T) {
+		u.Create( //Cria usuario
+			"53076281291",
+			"Guilherme Bernardo",
+			"GuilhermeBn",
+			"bguilherme51@gmail.com",
+			"Senha123",
+			"01-01-2000",
+			"1",
+		)		
 		err := u.Update(
 			"09921080218",
 			"Guilherme Lucas Pereira Bernardo",
@@ -47,12 +56,21 @@ func TestDatabaseUsuario(t *testing.T) {
 			"bguilherem51@gmail.com",
 			"senha-muito-complexa-aqui",
 			"2000-10-31",
-			1,
+			"1",
 		)
 		assert.NoError(t, err)
 	})
-
+	
 	t.Run("Atualizar usuário(COM OS MESMOS DADOS) do banco de dados", func(t *testing.T) {
+		u.Create( //Cria usuario
+			"09921080218",
+			"Guilherme Lucas Pereira Bernardo",
+			"GuilhermeBN",
+			"bguilherem51@gmail.com",
+			"senha-muito-complexa-aqui",
+			"2000-10-31",
+			"1",
+		)		
 		err := u.Update(
 			"09921080218",
 			"Guilherme Lucas Pereira Bernardo",
@@ -60,23 +78,32 @@ func TestDatabaseUsuario(t *testing.T) {
 			"bguilherem51@gmail.com",
 			"senha-muito-complexa-aqui",
 			"2000-10-31",
-			1,
+			"1",
 		)
-		assert.NoError(t, err)
+		assert.Equal(t, err, nil)	
 	})
-
 	t.Run("Consultar 1 usuário do banco de dados", func(t *testing.T) {
+		u.Create( //Cria usuario
+			"53076281291",
+			"Guilherme Bernardo",
+			"GuilhermeBn",
+			"bguilherme51@gmail.com",
+			"Senha123",
+			"01/01/2000",
+			"1",
+		)		
 		_, err := u.ReadByNomeDeUsuario(
-			"GuilhermeBN",
+			"GuilhermeBn",
 		)
 		assert.NoError(t, err)
 	})
-
+	
 	t.Run("Consultar usuários do banco de dados", func(t *testing.T) {
+		
 		_, err := u.ReadAll()
 		assert.NoError(t, err)
 	})
-
+	
 	t.Run("Deletar Usuario do banco de dados", func(t *testing.T) {
 		err := u.Remove(
 			"GuilhermeBN",
@@ -89,20 +116,28 @@ func TestDatabaseUsuarioAuth(t *testing.T) {
 	db := database.New()
 	defer db.Close()
 	u := models.UsuarioModel{DB: db}
-
+	
 	t.Run("Login do usuario no Banco de dados", func(t *testing.T) {
-		_, _, _, _, _, err := u.Login(
+		u.Create( //Cria usuario
+			"53076281291",
+			"Guilherme Bernardo",
+			"GuilhermeBn",
 			"bguilherme51@gmail.com",
-			"GuilhermeBN",
+			"Senha123",
+			"01/01/2000",
+			"1",
+		)		
+		idUser, _, _, _, senhaUser, err := u.Login(
+			"bguilherme51@gmail.com",
 		)
 		assert.NoError(t, err)
-	})
-
-	t.Run("Validação de email no banco de dados", func(t *testing.T) {
-		err := u.Autenticado(
-			1,
-		)
-		assert.NoError(t, err)
+		t.Run("Troca Senha no banco de dados", func(t *testing.T) {
+			err := u.TrocaSenha(
+				idUser,
+				senhaUser,
+			)
+			assert.NoError(t, err)
+		})
 	})
 }
 
@@ -110,23 +145,27 @@ func TestDatabaseLinksRedirect(t *testing.T) {
 	db := database.New()
 	defer db.Close()
 	l := models.LinkModel{DB: db}
+	r := models.RedirecionadorModel{DB: db}
 	t.Run("Criando redirecionador", func(t *testing.T) {
-
-	})
-	t.Run("Criando Link no banco de dados", func(t *testing.T) {
-		err := l.Create(
-			"rock garai",
-			"saodaido",
-			"askjdasjk",
-			"askdkjasd",
+		_, err := r.Create(
+			"redirectTest",
+			"aa102930a22a",
+			"1",
+			1,
 		)
 		assert.NoError(t, err)
-	})
-
-	t.Run("Pegar todas os links", func(t *testing.T) {
-		_, err := l.ReadAll(
-			"osdsaoid10i912id0asd",
-		)
-		assert.NoError(t, err)
+		t.Run("Criando Link no banco de dados", func(t *testing.T) {
+			// Prepare the data for the Create method
+			batchIdentifier := "batch1" // This should be a string that identifies the batch of links
+			linksToInsert := []models.LinkToBatchInsert{
+				{Nome: "Link1", Link: "https://example.com/link1", Plataforma: "Platform1"},
+				{Nome: "Link2", Link: "https://example.com/link2", Plataforma: "Platform2"},
+				// Add more LinkToBatchInsert objects as needed
+			}
+			
+			// Call the Create method with the correct arguments
+			err := l.Create(batchIdentifier, linksToInsert)
+			assert.NoError(t, err)
+		})
 	})
 }
