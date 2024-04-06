@@ -1,4 +1,12 @@
 -- TRIGGERS
+
+CREATE TRIGGER IF NOT EXISTS REMOVE_REDIRECIONADOR_SEM_LINKS
+AFTER UPDATE OF 'REMOVIDO_EM' ON LINK
+WHEN (SELECT COUNT(*) AS QUANTIDADE_LINKS_ATIVOS FROM LINK WHERE LINK.REDIRECIONADOR = OLD.REDIRECIONADOR AND LINK.REMOVIDO_EM IS NOT NULL) = 0
+BEGIN
+    UPDATE REDIRECIONADOR SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE CODIGO_HASH = OLD.REDIRECIONADOR;
+END;
+
 -- Importante notar que esses triggers são relacionados ao histórico, e as mudanças são monitoradas via um BITMASK, onde a soma única dos valores múltiplos de 2 atribuídos
 -- a cada coluna determina o que foi alterado e qual o tipo de alteração. Por padrão, quando um registro é removido, seu BITMASK é igual a -1.
 

@@ -84,7 +84,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	a.DELETE("/redirecionadores/:codigo_hash", s.RedirecionadorRemove)
 
 	// API - Link
-	a.GET("/redirecionadores/:codigo_hash/links", s.LinkReadAll)
+	a.GET("/redirecionadores/:codigo_hash/links", s.LinkReadByCodigoHash)
 	a.GET("/redirecionadores/:codigo_hash/links/historico", s.HistoricoLinkReadAll)
 	a.GET("/redirecionadores/:codigo_hash/links/:id", s.LinkReadById)
 	a.POST("/redirecionadores/:codigo_hash/links", s.LinkCreate)

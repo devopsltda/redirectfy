@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"redirectify/internal/models"
 	"redirectify/internal/utils"
 
 	"github.com/labstack/echo/v4"
@@ -53,7 +54,7 @@ func (s *Server) LinkReadById(c echo.Context) error {
 	return c.JSON(http.StatusOK, link)
 }
 
-// LinkReadAll godoc
+// LinkReadByCodigoHash godoc
 //
 // @Summary Retorna os links do redirecionador com o código hash fornecido
 // @Tags    Links
@@ -64,17 +65,17 @@ func (s *Server) LinkReadById(c echo.Context) error {
 // @Failure 400         {object} utils.Erro
 // @Failure 500         {object} utils.Erro
 // @Router  /v1/api/redirecionadores/:codigo_hash/links [get]
-func (s *Server) LinkReadAll(c echo.Context) error {
+func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
 	codigoHash := c.Param("codigo_hash")
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
 		return utils.ErroValidacaoCodigoHash
 	}
 
-	links, err := s.LinkModel.ReadAll(codigoHash)
+	links, err := s.LinkModel.ReadByCodigoHash(codigoHash)
 
 	if err != nil {
-		slog.Error("LinkReadAll", slog.Any("error", err))
+		slog.Error("LinkReadByCodigoHash", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -83,14 +84,12 @@ func (s *Server) LinkReadAll(c echo.Context) error {
 
 // LinkCreate godoc
 //
-// @Summary Cria um link no redirecionador com o código hash fornecido
+// @Summary Cria links no redirecionador com o código hash fornecido
 // @Tags    Links
 // @Accept  json
 // @Produce json
 // @Param   codigo_hash         path     string true "Código Hash"
-// @Param   nome                body     string true "Nome"
-// @Param   link                body     string true "Link"
-// @Param   plataforma          body     string true "Plataforma"
+// @Param   links               body     []models.LinkToBatchInsert true "Links"
 // @Success 200                 {object} map[string]string
 // @Failure 400                 {object} utils.Erro
 // @Failure 500                 {object} utils.Erro
@@ -98,43 +97,40 @@ func (s *Server) LinkReadAll(c echo.Context) error {
 func (s *Server) LinkCreate(c echo.Context) error {
 	parametros := struct {
 		CodigoHash string `path:"codigo_hash"`
-		Nome       string `json:"nome"`
-		Link       string `json:"link"`
-		Plataforma string `json:"plataforma"`
+		Links      []models.LinkToBatchInsert `json:"links"`
 	}{}
 
 	var erros []string
-
-	if err := c.Bind(&parametros); err != nil {
-		erros = append(erros, "Por favor, forneça o código hash, link e plataforma nos parâmetro 'codigo_hash', 'link' e 'plataforma', respectivamente.")
-	}
 
 	if err := utils.Validate.Var(parametros.CodigoHash, "required,len=10"); err != nil {
 		erros = append(erros, "Por favor, forneça um código hash válido para o parâmetro 'codigo_hash'.")
 	}
 
-	if err := utils.Validate.Var(parametros.Nome, "required,min=3,max=120"); err != nil {
-		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 120 caracteres) para o parâmetro 'nome'.")
-	}
 
-	if err := utils.Validate.Var(parametros.Link, "required"); err != nil {
-		erros = append(erros, "Por favor, forneça um link válido para o parâmetro 'link'.")
-	}
+	for _, link := range parametros.Links {
+		if err := c.Bind(&parametros); err != nil {
+			erros = append(erros, "Por favor, forneça o código hash, link e plataforma nos parâmetro 'codigo_hash', 'link' e 'plataforma', respectivamente.")
+		}
 
-	if err := utils.Validate.Var(parametros.Plataforma, "required,oneof=whatsapp telegram"); err != nil {
-		erros = append(erros, "Por favor, forneça uma plataforma válida para o parâmetro 'plataforma'.")
+		if err := utils.Validate.Var(link.Nome, "required,min=3,max=120"); err != nil {
+			erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 120 caracteres) para o parâmetro 'nome'.")
+		}
+
+		if err := utils.Validate.Var(link.Link, "required"); err != nil {
+			erros = append(erros, "Por favor, forneça um link válido para o parâmetro 'link'.")
+		}
+
+		if err := utils.Validate.Var(link.Plataforma, "required,oneof=whatsapp telegram"); err != nil {
+			erros = append(erros, "Por favor, forneça uma plataforma válida para o parâmetro 'plataforma'.")
+		}
+
 	}
 
 	if len(erros) > 0 {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	err := s.LinkModel.Create(
-		parametros.Nome,
-		parametros.Link,
-		parametros.Plataforma,
-		parametros.CodigoHash,
-	)
+	err := s.LinkModel.Create(parametros.CodigoHash, parametros.Links)
 
 	if err != nil {
 		slog.Error("LinkCreate", slog.Any("error", err))

@@ -137,6 +137,8 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		claims := nomeDeUsuario.Claims.(*Claims)
 
+		if c.Path() == "/v1/api/redirecionadores/:codigo_hash/rehash" && claims.PlanoDeAssinatura != ""
+
 		if time.Until(claims.RegisteredClaims.ExpiresAt.Time) < 15*time.Minute {
 			refreshCookie, err := c.Cookie("refresh-token")
 

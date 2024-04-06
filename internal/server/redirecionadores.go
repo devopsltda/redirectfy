@@ -4,11 +4,18 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"redirectify/internal/models"
 	"redirectify/internal/utils"
+
+	"github.com/labstack/echo/v4"
 
 	_ "redirectify/internal/models"
 )
+
+type RedirecionadorReadByCodigoHashResponse struct {
+	R models.Redirecionador `json:"redirecionador"`
+	L []models.Link `json:"links"`
+}
 
 // RedirecionadorReadByCodigoHash godoc
 //
@@ -35,7 +42,16 @@ func (s *Server) RedirecionadorReadByCodigoHash(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	return c.JSON(http.StatusOK, redirecionador)
+	links, err := s.LinkModel.ReadByCodigoHash(codigoHash)
+
+	if err != nil {
+		slog.Error("LinkReadByCodigoHash", slog.Any("error", err))
+		return utils.ErroBancoDados
+	}
+
+	picked_links := models.LinkPicker(links)
+
+	return c.JSON(http.StatusOK, RedirecionadorReadByCodigoHashResponse{ R: redirecionador, L: picked_links })
 }
 
 // RedirecionadorReadAll godoc

@@ -2,9 +2,15 @@ package models
 
 import (
 	"database/sql"
-	"errors"
+	"fmt"
 	"math/rand/v2"
 )
+
+type LinkToBatchInsert struct {
+	Nome       string `json:"nome"`
+	Link       string `json:"link"`
+	Plataforma string `json:"plataforma"`
+}
 
 type Link struct {
 	Id             int64          `json:"id"`
@@ -50,7 +56,7 @@ func (l *LinkModel) ReadById(id int64, codigoHash string) (Link, error) {
 	return link, nil
 }
 
-func (l *LinkModel) ReadAll(codigoHash string) ([]Link, error) {
+func (l *LinkModel) ReadByCodigoHash(codigoHash string) ([]Link, error) {
 	var links []Link
 
 	rows, err := l.DB.Query(
@@ -90,14 +96,17 @@ func (l *LinkModel) ReadAll(codigoHash string) ([]Link, error) {
 	return links, nil
 }
 
-func (l *LinkModel)  Create(nome, link, plataforma, redirecionador string) error {
-	_, err := l.DB.Exec(
-		"INSERT INTO LINK (NOME, LINK, PLATAFORMA, REDIRECIONADOR) VALUES ($1, $2, $3, $4)",
-		nome,
-		link,
-		plataforma,
-		redirecionador,
-	)
+func (l *LinkModel) Create(redirecionador string, links []LinkToBatchInsert) error {
+	var values string 
+
+	for _, link := range links[:len(links)-1] {
+		values += fmt.Sprintf("('%s', '%s', '%s', '%s'),", link.Nome, link.Link, link.Plataforma, redirecionador)
+	}
+
+	lastLink := links[len(links)-1]
+	values += fmt.Sprintf("('%s', '%s', '%s', '%s')", lastLink.Nome, lastLink.Link, lastLink.Plataforma, redirecionador)
+
+	_, err := l.DB.Exec(fmt.Sprintf("INSERT INTO LINK (NOME, LINK, PLATAFORMA, REDIRECIONADOR) VALUES %s", values))
 
 	if err != nil {
 		return err
@@ -150,10 +159,10 @@ func (l *LinkModel) Remove(id int64, codigoHash string) error {
 	return nil
 }
 
-func LinkPicker(links []Link) (*Link, *Link, error) {
+func LinkPicker(links []Link) (picked_links []Link) {
 	var (
-		linkWhatsapp  *Link
-		linkTelegram  *Link
+		linkWhatsapp  Link
+		linkTelegram  Link
 		linksWhatsapp []Link
 		linksTelegram []Link
 	)
@@ -164,24 +173,22 @@ func LinkPicker(links []Link) (*Link, *Link, error) {
 			linksWhatsapp = append(linksWhatsapp, link)
 		case "telegram":
 			linksTelegram = append(linksTelegram, link)
-		default:
-			return nil, nil, errors.New("Plataforma não identificada nos links")
 		}
 	}
 
 	switch {
 	case len(linksWhatsapp) == 1:
-		linkWhatsapp = &linksWhatsapp[0]
+		linkWhatsapp = linksWhatsapp[0]
 	case len(linksWhatsapp) > 0:
-		linkWhatsapp = &linksWhatsapp[rand.IntN(len(linksWhatsapp))]
+		linkWhatsapp = linksWhatsapp[rand.IntN(len(linksWhatsapp))]
 	}
 
 	switch {
 	case len(linksTelegram) == 1:
-		linkTelegram = &linksTelegram[0]
+		linkTelegram = linksTelegram[0]
 	case len(linksTelegram) > 0:
-		linkTelegram = &linksTelegram[rand.IntN(len(linksTelegram))]
+		linkTelegram = linksTelegram[rand.IntN(len(linksTelegram))]
 	}
 
-	return linkWhatsapp, linkTelegram, nil
+	return []Link{linkWhatsapp, linkTelegram}
 }
