@@ -23,7 +23,7 @@ func (r *RedirecionadorModel) ReadByCodigoHash(codigoHash string) (Redirecionado
 	var redirecionador Redirecionador
 
 	row := r.DB.QueryRow(
-		"SELECT ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $1",
+		"SELECT ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = ?",
 		codigoHash,
 	)
 
@@ -51,7 +51,7 @@ func (r *RedirecionadorModel) ReadAll(nomeDeUsuario string) ([]Redirecionador, e
 	var redirecionadores []Redirecionador
 
 	rows, err := r.DB.Query(
-		"SELECT ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND USUARIO = $1",
+		"SELECT ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND USUARIO = ?",
 		nomeDeUsuario,
 	)
 
@@ -89,7 +89,7 @@ func (r *RedirecionadorModel) ReadAll(nomeDeUsuario string) ([]Redirecionador, e
 
 func (r *RedirecionadorModel) CheckIfCodigoHashExists(codigoHash string) (bool, error) {
 	row := r.DB.QueryRow(
-		"SELECT '' FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $1",
+		"SELECT '' FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = ?",
 		codigoHash,
 	)
 
@@ -110,7 +110,7 @@ func (r *RedirecionadorModel) CheckIfCodigoHashExists(codigoHash string) (bool, 
 
 func (r *RedirecionadorModel) Create(nome, codigoHash, ordemDeRedirecionamento, usuario string) (int64, error) {
 	result, err := r.DB.Exec(
-		"INSERT INTO REDIRECIONADOR (NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO) VALUES ($1, $2, $3, $4) RETURNING ID",
+		"INSERT INTO REDIRECIONADOR (NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO) VALUES (?, ?, ?, ?) RETURNING ID",
 		nome,
 		codigoHash,
 		ordemDeRedirecionamento,
@@ -132,7 +132,7 @@ func (r *RedirecionadorModel) Create(nome, codigoHash, ordemDeRedirecionamento, 
 
 func (r *RedirecionadorModel) Rehash(codigoHashAntigo, codigoHashNovo string) error {
 	_, err := r.DB.Exec(
-		"UPDATE REDIRECIONADOR SET ATUALIZADO_EM = CURRENT_TIMESTAMP, CODIGO_HASH = $1 WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $2",
+		"UPDATE REDIRECIONADOR SET ATUALIZADO_EM = CURRENT_TIMESTAMP, CODIGO_HASH = ? WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = ?",
 		codigoHashNovo,
 		codigoHashAntigo,
 	)
@@ -155,7 +155,7 @@ func (r *RedirecionadorModel) Update(nome, codigoHash, ordemDeRedirecionamento s
 		sqlQuery += ", ORDEM_DE_REDIRECIONAMENTO = '" + ordemDeRedirecionamento + "'"
 	}
 
-	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = $1"
+	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = ?"
 
 	_, err := r.DB.Exec(
 		sqlQuery,
@@ -171,7 +171,7 @@ func (r *RedirecionadorModel) Update(nome, codigoHash, ordemDeRedirecionamento s
 
 func (r *RedirecionadorModel) Remove(codigoHash string) error {
 	_, err := r.DB.Exec(
-		"UPDATE REDIRECIONADOR SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE CODIGO_HASH = $1",
+		"UPDATE REDIRECIONADOR SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE CODIGO_HASH = ?",
 		codigoHash,
 	)
 

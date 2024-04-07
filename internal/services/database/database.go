@@ -15,9 +15,9 @@ import (
 )
 
 var (
-	dbUrl   = os.Getenv("DB_URL")
-	dbName  = os.Getenv("DB_NAME")
-	dbToken = os.Getenv("DB_TOKEN")
+	dbUrl        = os.Getenv("DB_URL")
+	dbName       = os.Getenv("DB_NAME")
+	dbToken      = os.Getenv("DB_TOKEN")
 	dbSourcePath = os.Getenv("DB_SOURCE_PATH")
 
 	TempDir     string

@@ -23,7 +23,7 @@ func (u *UsuarioTemporarioModel) ReadById(id int64) (UsuarioTemporario, error) {
 	var usuario UsuarioTemporario
 
 	row := u.DB.QueryRow(
-		"SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, PLANO_DE_ASSINATURA, CRIADO_EM, REMOVIDO_EM FROM USUARIO_TEMPORARIO WHERE REMOVIDO_EM IS NULL AND ID = $1",
+		"SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, PLANO_DE_ASSINATURA, CRIADO_EM, REMOVIDO_EM FROM USUARIO_TEMPORARIO WHERE REMOVIDO_EM IS NULL AND ID = ?",
 		id,
 	)
 
@@ -49,7 +49,7 @@ func (u *UsuarioTemporarioModel) ReadById(id int64) (UsuarioTemporario, error) {
 
 func (u *UsuarioTemporarioModel) Create(cpf, nome, nomeDeUsuario, email, planoDeAssinatura string) (int64, error) {
 	result, err := u.DB.Exec(
-		"INSERT INTO USUARIO_TEMPORARIO (CPF, NOME, NOME_DE_USUARIO, EMAIL, PLANO_DE_ASSINATURA) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING ID",
+		"INSERT INTO USUARIO_TEMPORARIO (CPF, NOME, NOME_DE_USUARIO, EMAIL, PLANO_DE_ASSINATURA) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING ID",
 		cpf,
 		nome,
 		nomeDeUsuario,
@@ -72,7 +72,7 @@ func (u *UsuarioTemporarioModel) Create(cpf, nome, nomeDeUsuario, email, planoDe
 
 func (u *UsuarioTemporarioModel) Remove(id int64) error {
 	_, err := u.DB.Exec(
-		"UPDATE USUARIO_TEMPORARIO SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE ID = $1",
+		"UPDATE USUARIO_TEMPORARIO SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE ID = ?",
 		id,
 	)
 

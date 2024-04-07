@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"os"
 	"os/signal"
 	"redirectify/internal/server"
@@ -14,6 +15,8 @@ import (
 func main() {
 
 	server := server.NewServer()
+
+	slog.Error("Servidor iniciado", slog.String("addr", "http://localhost"+server.Addr))
 
 	go func() {
 		if err := server.ListenAndServe(); err != nil {

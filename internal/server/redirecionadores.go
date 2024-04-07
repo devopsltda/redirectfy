@@ -102,7 +102,6 @@ func (s *Server) RedirecionadorReadAll(c echo.Context) error {
 //
 // @Summary Cria um redirecionador
 //
-//
 // @Tags    Redirecionadores
 //
 // @Accept  json
@@ -126,7 +125,7 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 	parametros := struct {
 		Nome                    string `json:"nome"`
 		OrdemDeRedirecionamento string `json:"ordem_de_redirecionamento"`
-		Usuario                 string  `json:"nome_de_usuario"`
+		Usuario                 string `json:"nome_de_usuario"`
 	}{}
 
 	var erros []string

@@ -24,7 +24,7 @@ func (ea *EmailAutenticacaoModel) ReadByValor(valor string) (EmailAutenticacao, 
 	var emailAutenticacao EmailAutenticacao
 
 	row := ea.DB.QueryRow(
-		"SELECT ID, VALOR, TIPO, EXPIRA_EM, USUARIO_TEMPORARIO FROM EMAIL_AUTENTICACAO WHERE VALOR = $1",
+		"SELECT ID, VALOR, TIPO, EXPIRA_EM, USUARIO_TEMPORARIO FROM EMAIL_AUTENTICACAO WHERE VALOR = ?",
 		valor,
 	)
 
@@ -47,7 +47,7 @@ func (ea *EmailAutenticacaoModel) ReadByValor(valor string) (EmailAutenticacao, 
 
 func (ea *EmailAutenticacaoModel) Create(valor, tipo string, usuarioTemporario int64) (int64, error) {
 	result, err := ea.DB.Exec(
-		"INSERT INTO EMAIL_AUTENTICACAO (VALOR, TIPO, EXPIRA_EM, USUARIO_TEMPORARIO) VALUES ($1, $2, $3, $4) RETURNING ID",
+		"INSERT INTO EMAIL_AUTENTICACAO (VALOR, TIPO, EXPIRA_EM, USUARIO_TEMPORARIO) VALUES (?, ?, ?, ?) RETURNING ID",
 		valor,
 		tipo,
 		time.Now().In(time.FixedZone("GMT", 0)).Add(time.Minute*time.Duration(utils.TempoExpiracao)).Format("2006-01-02 03:04:05"),
@@ -69,7 +69,7 @@ func (ea *EmailAutenticacaoModel) Create(valor, tipo string, usuarioTemporario i
 
 func (ea *EmailAutenticacaoModel) CheckIfValorExists(valor string) (bool, error) {
 	row := ea.DB.QueryRow(
-		"SELECT '' FROM EMAIL_AUTENTICACAO WHERE VALOR = $1",
+		"SELECT '' FROM EMAIL_AUTENTICACAO WHERE VALOR = ?",
 		valor,
 	)
 
@@ -93,7 +93,7 @@ func (ea *EmailAutenticacaoModel) CheckIfValorExistsAndIsValid(valor, tipo strin
 	var usuarioTemporario int64
 
 	row := ea.DB.QueryRow(
-		"SELECT TIPO, USUARIO_TEMPORARIO FROM EMAIL_AUTENTICACAO WHERE VALOR = $1 AND EXPIRA_EM > CURRENT_TIMESTAMP",
+		"SELECT TIPO, USUARIO_TEMPORARIO FROM EMAIL_AUTENTICACAO WHERE VALOR = ? AND EXPIRA_EM > CURRENT_TIMESTAMP",
 		valor,
 	)
 
@@ -118,7 +118,7 @@ func (ea *EmailAutenticacaoModel) CheckIfValorExistsAndIsValid(valor, tipo strin
 
 func (ea *EmailAutenticacaoModel) Expirar(valor string) error {
 	_, err := ea.DB.Exec(
-		"UPDATE EMAIL_AUTENTICACAO SET EXPIRA_EM = CURRENT_TIMESTAMP WHERE VALOR = $1",
+		"UPDATE EMAIL_AUTENTICACAO SET EXPIRA_EM = CURRENT_TIMESTAMP WHERE VALOR = ?",
 		valor,
 	)
 

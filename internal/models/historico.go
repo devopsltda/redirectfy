@@ -3,18 +3,18 @@ package models
 import "database/sql"
 
 type HistoricoPlanoDeAssinatura struct {
-	RowId                        int64          `json:"rowid"`
-	Id                           sql.NullInt64  `json:"id"`
-	Nome                         sql.NullString `json:"nome"`
-	ValorMensal                  sql.NullInt64  `json:"valor_mensal"`
-	LimiteLinksMensal            sql.NullInt64  `json:"limite_links_mensal"`
-	OrdenacaoAleatoriaLinks      sql.NullBool   `json:"ordenacao_aleatoria_links"`
-	CriadoEm                     sql.NullString `json:"criado_em"`
-	AtualizadoEm                 sql.NullString `json:"atualizado_em"`
-	RemovidoEm                   sql.NullString `json:"removido_em" swaggertype:"integer"`
-	Versao                       int64          `json:"versao"`
-	Bitmask                      int64          `json:"bitmask"`
-	CriadoEm_                    string         `json:"criado_em_"`
+	RowId                   int64          `json:"rowid"`
+	Id                      sql.NullInt64  `json:"id"`
+	Nome                    sql.NullString `json:"nome"`
+	ValorMensal             sql.NullInt64  `json:"valor_mensal"`
+	LimiteLinksMensal       sql.NullInt64  `json:"limite_links_mensal"`
+	OrdenacaoAleatoriaLinks sql.NullBool   `json:"ordenacao_aleatoria_links"`
+	CriadoEm                sql.NullString `json:"criado_em"`
+	AtualizadoEm            sql.NullString `json:"atualizado_em"`
+	RemovidoEm              sql.NullString `json:"removido_em" swaggertype:"integer"`
+	Versao                  int64          `json:"versao"`
+	Bitmask                 int64          `json:"bitmask"`
+	CriadoEm_               string         `json:"criado_em_"`
 } // @name HistoricoPlanoDeAssinatura
 
 type HistoricoUsuarioTemporario struct {

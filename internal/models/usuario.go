@@ -26,7 +26,7 @@ func (u *UsuarioModel) ReadByNomeDeUsuario(nomeDeUsuario string) (Usuario, error
 	var usuario Usuario
 
 	row := u.DB.QueryRow(
-		"SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = $1",
+		"SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = ?",
 		nomeDeUsuario,
 	)
 
@@ -95,7 +95,7 @@ func (u *UsuarioModel) ReadAll() ([]Usuario, error) {
 
 func (u *UsuarioModel) Create(cpf, nome, nomeDeUsuario, email, senha, dataDeNascimento, planoDeAssinatura string) (int64, error) {
 	result, err := u.DB.Exec(
-		"INSERT INTO USUARIO (CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING ID",
+		"INSERT INTO USUARIO (CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING ID",
 		cpf,
 		nome,
 		nomeDeUsuario,
@@ -124,7 +124,7 @@ func (u *UsuarioModel) TrocaSenha(id int64, senha string) error {
 	if senha != "" {
 		sqlQuery += ", SENHA = '" + senha + "'"
 	}
-	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND ID = $1"
+	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND ID = ?"
 
 	_, err := u.DB.Exec(
 		sqlQuery,
@@ -169,7 +169,7 @@ func (u *UsuarioModel) Update(cpf, nome, nomeDeUsuario, email, senha, dataDeNasc
 		sqlQuery += ", PLANO_DE_ASSINATURA = '" + planoDeAssinatura + "'"
 	}
 
-	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = $1"
+	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = ?"
 
 	_, err := u.DB.Exec(
 		sqlQuery,
@@ -185,7 +185,7 @@ func (u *UsuarioModel) Update(cpf, nome, nomeDeUsuario, email, senha, dataDeNasc
 
 func (u *UsuarioModel) Remove(nomeDeUsuario string) error {
 	_, err := u.DB.Exec(
-		"UPDATE USUARIO SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE NOME_DE_USUARIO = $1",
+		"UPDATE USUARIO SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE NOME_DE_USUARIO = ?",
 		nomeDeUsuario,
 	)
 
@@ -198,7 +198,7 @@ func (u *UsuarioModel) Remove(nomeDeUsuario string) error {
 
 func (u *UsuarioModel) Login(email string) (int64, string, string, string, string, error) {
 	row := u.DB.QueryRow(
-		"SELECT ID, NOME, NOME_DE_USUARIO, PLANO_DE_ASSINATURA, SENHA FROM USUARIO WHERE REMOVIDO_EM IS NULL AND EMAIL = $1",
+		"SELECT ID, NOME, NOME_DE_USUARIO, PLANO_DE_ASSINATURA, SENHA FROM USUARIO WHERE REMOVIDO_EM IS NULL AND EMAIL = ?",
 		email,
 	)
 

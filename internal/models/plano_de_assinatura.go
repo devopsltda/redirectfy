@@ -6,14 +6,14 @@ import (
 )
 
 type PlanoDeAssinatura struct {
-	Id                            int64          `json:"id"`
-	Nome                          string         `json:"nome"`
-	ValorMensal                   int64          `json:"valor_mensal"`
-	LimiteLinksMensal             int64          `json:"limite_links_mensal"`
-	OrdenacaoAleatoriaLinks       bool           `json:"ordenacao_aleatoria_links"`
-	CriadoEm                      string         `json:"criado_em"`
-	AtualizadoEm                  string         `json:"atualizado_em"`
-	RemovidoEm                    sql.NullString `json:"removido_em" swaggertype:"integer"`
+	Id                      int64          `json:"id"`
+	Nome                    string         `json:"nome"`
+	ValorMensal             int64          `json:"valor_mensal"`
+	LimiteLinksMensal       int64          `json:"limite_links_mensal"`
+	OrdenacaoAleatoriaLinks bool           `json:"ordenacao_aleatoria_links"`
+	CriadoEm                string         `json:"criado_em"`
+	AtualizadoEm            string         `json:"atualizado_em"`
+	RemovidoEm              sql.NullString `json:"removido_em" swaggertype:"integer"`
 } // @name PlanoDeAssinatura
 
 type PlanoDeAssinaturaModel struct {
@@ -24,7 +24,7 @@ func (pa *PlanoDeAssinaturaModel) ReadByNome(nome string) (PlanoDeAssinatura, er
 	var planoDeAssinatura PlanoDeAssinatura
 
 	row := pa.DB.QueryRow(
-		"SELECT ID, NOME, VALOR_MENSAL, LIMITE_LINKS_MENSAL, ORDENACAO_ALEATORIA_LINKS, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL AND NOME = $1",
+		"SELECT ID, NOME, VALOR_MENSAL, LIMITE_LINKS_MENSAL, ORDENACAO_ALEATORIA_LINKS, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL AND NOME = ?",
 		nome,
 	)
 
@@ -87,7 +87,7 @@ func (pa *PlanoDeAssinaturaModel) ReadAll() ([]PlanoDeAssinatura, error) {
 
 func (pa *PlanoDeAssinaturaModel) Create(nome string, valorMensal, limiteLinksMensal int64, ordenacaoAleatoriaLinks bool) error {
 	_, err := pa.DB.Exec(
-		"INSERT INTO PLANO_DE_ASSINATURA (NOME, VALOR_MENSAL, LIMITE_LINKS_MENSAL, ORDENACAO_ALEATORIA_LINKS) VALUES ($1, $2, $3, $4)",
+		"INSERT INTO PLANO_DE_ASSINATURA (NOME, VALOR_MENSAL, LIMITE_LINKS_MENSAL, ORDENACAO_ALEATORIA_LINKS) VALUES (?, ?, ?, ?)",
 		nome,
 		valorMensal,
 		limiteLinksMensal,
@@ -124,7 +124,7 @@ func (pa *PlanoDeAssinaturaModel) Update(nomeParam, nome string, valorMensal, li
 
 	sqlQuery += ", ORDENACAO_ALEATORIA_LINKS = " + fmt.Sprint(ordenacao)
 
-	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND NOME = $1"
+	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND NOME = ?"
 
 	_, err := pa.DB.Exec(
 		sqlQuery,
@@ -140,7 +140,7 @@ func (pa *PlanoDeAssinaturaModel) Update(nomeParam, nome string, valorMensal, li
 
 func (pa *PlanoDeAssinaturaModel) Remove(nome string) error {
 	_, err := pa.DB.Exec(
-		"UPDATE PLANO_DE_ASSINATURA SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE NOME = $1",
+		"UPDATE PLANO_DE_ASSINATURA SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE NOME = ?",
 		nome,
 	)
 

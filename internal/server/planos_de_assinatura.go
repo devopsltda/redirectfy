@@ -4,8 +4,9 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/labstack/echo/v4"
 	"redirectify/internal/utils"
+
+	"github.com/labstack/echo/v4"
 
 	_ "redirectify/internal/models"
 )
@@ -101,17 +102,16 @@ func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
 // @Router  /v1/api/planos_de_assinatura [post]
 func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 	parametros := struct {
-		Nome                          string `json:"nome"`
-		ValorMensal                   int64  `json:"valor_mensal"`
-		LimiteLinksMensal             int64  `json:"limite_links_mensal"`
-		OrdenacaoAleatoriaLinks       bool   `json:"ordenacao_aleatoria_links"`
-		PeriodoLimite                 string `json:"periodo_limite"`
+		Nome                    string `json:"nome"`
+		ValorMensal             int64  `json:"valor_mensal"`
+		LimiteLinksMensal       int64  `json:"limite_links_mensal"`
+		OrdenacaoAleatoriaLinks bool   `json:"ordenacao_aleatoria_links"`
 	}{}
 
 	var erros []string
 
 	if err := c.Bind(&parametros); err != nil {
-		erros = append(erros, "Por favor, forneça o nome e o valor mensal do plano de assinatura nos parâmetros 'nome' e 'valor_mensal', respectivamente.")
+		erros = append(erros, "Por favor, forneça o nome, valor mensal, limite de links mensal e ordenação aleatória dos links do plano de assinatura nos parâmetros 'nome', 'valor_mensal', 'limite_links_mensal' e 'ordenacao_aleatoria_links', respectivamente.")
 	}
 
 	if err := utils.Validate.Var(parametros.Nome, "required,min=3,max=120"); err != nil {
@@ -124,6 +124,10 @@ func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 
 	if err := utils.Validate.Var(parametros.LimiteLinksMensal, "required,gte=0"); err != nil {
 		erros = append(erros, "Por favor, forneça um limite válido no parâmetro 'limite_links_mensal'.")
+	}
+
+	if err := utils.Validate.Var(parametros.OrdenacaoAleatoriaLinks, "required"); err != nil {
+		erros = append(erros, "Por favor, forneça um valor válido no parâmetro 'ordenacao_aleatoria_links'.")
 	}
 
 	if len(erros) > 0 {
@@ -169,11 +173,10 @@ func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 // @Router  /v1/api/planos_de_assinatura/:nome [patch]
 func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 	type parametrosUpdate struct {
-		Nome                          string `json:"nome"`
-		ValorMensal                   int64  `json:"valor_mensal"`
-		LimiteLinksMensal             int64  `json:"limite_links_mensal"`
-		OrdenacaoAleatoriaLinks       bool   `json:"ordenacao_aleatoria_links"`
-		PeriodoLimite                 string `json:"periodo_limite"`
+		Nome                    string `json:"nome"`
+		ValorMensal             int64  `json:"valor_mensal"`
+		LimiteLinksMensal       int64  `json:"limite_links_mensal"`
+		OrdenacaoAleatoriaLinks bool   `json:"ordenacao_aleatoria_links"`
 	}
 
 	parametros := parametrosUpdate{}

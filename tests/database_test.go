@@ -12,7 +12,7 @@ func TestDatabasePlanoAssinatura(t *testing.T) {
 	db := database.New()
 	defer db.Close()
 	p := models.PlanoDeAssinaturaModel{DB: db}
-	
+
 	t.Run("Adicionar plano de assinatura", func(t *testing.T) {
 		err := p.Create(
 			"plano teste",
@@ -68,14 +68,12 @@ func TestDatabasePlanoAssinatura(t *testing.T) {
 			100,
 			true,
 		)
-		_, err := p.ReadAll(
-		)
+		_, err := p.ReadAll()
 		assert.NoError(t, err)
 	})
 
 	t.Run("Consultar planos de assinatura(sql vazio)", func(t *testing.T) {
-		_, err := p.ReadAll(
-		)
+		_, err := p.ReadAll()
 		assert.NoError(t, err)
 	})
 
@@ -93,7 +91,7 @@ func TestDatabasePlanoAssinatura(t *testing.T) {
 			203,
 			true,
 		)
-		assert.NoError(t, err)	
+		assert.NoError(t, err)
 	})
 	t.Run("Atualizar plano de assinatura(COM OS MESMOS DADOS) do banco de dados", func(t *testing.T) {
 		p.Create(
@@ -109,7 +107,7 @@ func TestDatabasePlanoAssinatura(t *testing.T) {
 			100,
 			true,
 		)
-		assert.Equal(t, err, nil)	
+		assert.Equal(t, err, nil)
 	})
 
 	t.Run("Deletar um plano de assinatura", func(t *testing.T) {
@@ -122,7 +120,7 @@ func TestDatabasePlanoAssinatura(t *testing.T) {
 		err := p.Remove(
 			"plano teste novo",
 		)
-		assert.NoError(t, err)	
+		assert.NoError(t, err)
 	})
 }
 
@@ -130,7 +128,7 @@ func TestDatabaseUsuario(t *testing.T) {
 	db := database.New()
 	defer db.Close()
 	u := models.UsuarioModel{DB: db}
-	
+
 	t.Run("Adicionar usuário ao banco de dados", func(t *testing.T) {
 		_, err := u.Create(
 			"02958985261",
@@ -143,7 +141,7 @@ func TestDatabaseUsuario(t *testing.T) {
 		)
 		assert.NoError(t, err)
 	})
-	
+
 	t.Run("Adicionar usuário DUPLICADO(msm cpf) ao banco de dados", func(t *testing.T) {
 		u.Create(
 			"02958985261",
@@ -165,7 +163,7 @@ func TestDatabaseUsuario(t *testing.T) {
 		)
 		assert.Error(t, err)
 	})
-	
+
 	t.Run("Atualizar usuário do banco de dados", func(t *testing.T) {
 		u.Create( //Cria usuario
 			"53076281291",
@@ -175,7 +173,7 @@ func TestDatabaseUsuario(t *testing.T) {
 			"Senha123",
 			"01-01-2000",
 			"1",
-		)		
+		)
 		err := u.Update(
 			"09921080218",
 			"Guilherme Lucas Pereira Bernardo",
@@ -187,7 +185,7 @@ func TestDatabaseUsuario(t *testing.T) {
 		)
 		assert.NoError(t, err)
 	})
-	
+
 	t.Run("Atualizar usuário(COM OS MESMOS DADOS) do banco de dados", func(t *testing.T) {
 		u.Create( //Cria usuario
 			"09921080218",
@@ -197,7 +195,7 @@ func TestDatabaseUsuario(t *testing.T) {
 			"senha-muito-complexa-aqui",
 			"2000-10-31",
 			"1",
-		)		
+		)
 		err := u.Update(
 			"09921080218",
 			"Guilherme Lucas Pereira Bernardo",
@@ -207,7 +205,7 @@ func TestDatabaseUsuario(t *testing.T) {
 			"2000-10-31",
 			"1",
 		)
-		assert.Equal(t, err, nil)	
+		assert.Equal(t, err, nil)
 	})
 	t.Run("Consultar 1 usuário do banco de dados", func(t *testing.T) {
 		u.Create( //Cria usuario
@@ -218,20 +216,20 @@ func TestDatabaseUsuario(t *testing.T) {
 			"Senha123",
 			"01-01-2000",
 			"1",
-		)		
+		)
 		_, err := u.ReadByNomeDeUsuario(
 			"GuilhermeBn",
 		)
 		assert.NoError(t, err)
 	})
 
-	t.Run("Consultar 1 usuário do banco de dados(sql vazio)", func(t *testing.T) {	
+	t.Run("Consultar 1 usuário do banco de dados(sql vazio)", func(t *testing.T) {
 		_, err := u.ReadByNomeDeUsuario(
 			"GuilhermeBn",
 		)
 		assert.NoError(t, err)
 	})
-	
+
 	t.Run("Consultar usuários do banco de dados", func(t *testing.T) {
 		u.Create( //Cria usuario
 			"53076281291",
@@ -241,16 +239,16 @@ func TestDatabaseUsuario(t *testing.T) {
 			"Senha123",
 			"01-01-2000",
 			"1",
-		)	
+		)
 		_, err := u.ReadAll()
 		assert.NoError(t, err)
 	})
-	
-	t.Run("Consultar usuários do banco de dados(sql vazio)", func(t *testing.T) {	
+
+	t.Run("Consultar usuários do banco de dados(sql vazio)", func(t *testing.T) {
 		_, err := u.ReadAll()
 		assert.NoError(t, err)
 	})
-	
+
 	t.Run("Deletar Usuario do banco de dados", func(t *testing.T) {
 		u.Create( //Cria usuario
 			"53076281291",
@@ -260,7 +258,7 @@ func TestDatabaseUsuario(t *testing.T) {
 			"Senha123",
 			"01-01-2000",
 			"1",
-		)	
+		)
 		err := u.Remove(
 			"GuilhermeBN",
 		)
@@ -279,7 +277,7 @@ func TestDatabaseUsuarioAuth(t *testing.T) {
 	db := database.New()
 	defer db.Close()
 	u := models.UsuarioModel{DB: db}
-	
+
 	t.Run("Login do usuario no Banco de dados", func(t *testing.T) {
 		u.Create( //Cria usuario
 			"53076281291",
@@ -289,7 +287,7 @@ func TestDatabaseUsuarioAuth(t *testing.T) {
 			"Senha123",
 			"01-01-2000",
 			"1",
-		)		
+		)
 		idUser, _, _, _, senhaUser, err := u.Login(
 			"bguilherme51@gmail.com",
 		)
@@ -319,7 +317,7 @@ func TestDatabaseLinksRedirect(t *testing.T) {
 		"Senha123",
 		"01-01-2000",
 		"1",
-	)		
+	)
 	t.Run("Criando redirecionador", func(t *testing.T) {
 		_, err := r.Create(
 			"ta na hora do rock",
@@ -336,7 +334,7 @@ func TestDatabaseLinksRedirect(t *testing.T) {
 				{Nome: "Link2", Link: "https://example.com/link2", Plataforma: "whatsapp"},
 				// Add more LinkToBatchInsert objects as needed
 			}
-			
+
 			// Call the Create method with the correct arguments
 			err := l.Create(batchIdentifier, linksToInsert)
 			assert.NoError(t, err)

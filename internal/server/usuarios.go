@@ -377,7 +377,7 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 		Email             string `json:"email"`
 		Senha             string `json:"senha"`
 		DataDeNascimento  string `json:"data_de_nascimento"`
-		PlanoDeAssinatura string  `json:"plano_de_assinatura"`
+		PlanoDeAssinatura string `json:"plano_de_assinatura"`
 	}
 
 	parametros := parametrosUpdate{}
