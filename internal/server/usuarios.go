@@ -212,7 +212,7 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 		}
 	}
 
-	id, err := s.EmailAutenticacaoModel.Create(valor, "validacao", usuarioId)
+	id, err := s.EmailAutenticacaoModel.Create(valor, "senha", usuarioId)
 
 	if err != nil {
 		slog.Error("UsuarioCreate", slog.Any("error", err))
@@ -317,7 +317,7 @@ func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 		}
 	}
 
-	id, err := s.EmailAutenticacaoModel.Create(valor, "validacao", usuarioId)
+	id, err := s.EmailAutenticacaoModel.Create(valor, "senha", usuarioId)
 
 	if err != nil {
 		slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
@@ -519,7 +519,7 @@ func (s *Server) UsuarioAutenticado(c echo.Context) error {
 		return utils.ErroCriacaoSenha
 	}
 
-	usuarioTemporarioId, err := s.EmailAutenticacaoModel.CheckIfValorExistsAndIsValid(valor, "validacao")
+	usuarioTemporarioId, err := s.EmailAutenticacaoModel.CheckIfValorExistsAndIsValid(valor, "senha")
 
 	if err != nil {
 		slog.Error("UsuarioAutenticado", slog.Any("error", err))
