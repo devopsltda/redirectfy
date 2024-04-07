@@ -367,41 +367,6 @@ const docTemplate = `{
             }
         },
         "/v1/api/redirecionadores": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Redirecionadores"
-                ],
-                "summary": "Retorna os redirecionadores",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Redirecionador"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/Erro"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/Erro"
-                        }
-                    }
-                }
-            },
             "post": {
                 "consumes": [
                     "application/json"
@@ -433,9 +398,10 @@ const docTemplate = `{
                         }
                     },
                     {
-                        "description": "Usuário",
-                        "name": "usuario",
+                        "description": "Nome de Usuário",
+                        "name": "nome_de_usuario",
                         "in": "body",
+                        "required": true,
                         "schema": {
                             "type": "string"
                         }
@@ -876,6 +842,52 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/Link"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/api/redirecionadores/:nome_de_usuario": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Redirecionadores"
+                ],
+                "summary": "Retorna os redirecionadores",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Nome de Usuário",
+                        "name": "nome_de_usuario",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Redirecionador"
+                            }
                         }
                     },
                     "400": {
@@ -1741,9 +1753,6 @@ const docTemplate = `{
                 "limite_links_mensal": {
                     "$ref": "#/definitions/sql.NullInt64"
                 },
-                "limite_redirecionadores_mensal": {
-                    "$ref": "#/definitions/sql.NullInt64"
-                },
                 "nome": {
                     "$ref": "#/definitions/sql.NullString"
                 },
@@ -1987,7 +1996,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "usuario": {
-                    "type": "integer"
+                    "type": "string"
                 }
             }
         },
