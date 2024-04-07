@@ -16,7 +16,7 @@ func main() {
 
 	server := server.NewServer()
 
-	slog.Error("Servidor iniciado", slog.String("addr", "http://localhost"+server.Addr))
+	slog.Info("Servidor iniciado", slog.String("addr", "http://localhost"+server.Addr))
 
 	go func() {
 		if err := server.ListenAndServe(); err != nil {
