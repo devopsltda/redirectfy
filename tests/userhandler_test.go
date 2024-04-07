@@ -33,37 +33,234 @@ func TestCreateHandler(t *testing.T) {
 		e := echo.New()
 		
 		// Define the request body with the correct structure
-		JSON := `{
-			"cpf": 53076281291,
-			"nome": "Guilherme Bernardo",
-			"email": "bguilherme51@gmail.com",
-			"products": [
-			{
-				"Name": "Gratuito"
-			}
-			]
-			}`
-			
-			// Create a new request
-			req := httptest.NewRequest(http.MethodPost, "/api/usuarios_temporarios", strings.NewReader(JSON))
-			req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-			
-			// Create a ResponseRecorder to record the response
-			rec := httptest.NewRecorder()
-			
-			// Create a new Context
-			c := e.NewContext(req, rec)
-			
-			if assert.NoError(t, s.UsuarioTemporarioCreate(c)) {
-				// Call your handler function
-				assert.Equal(t, http.StatusCreated, rec.Code)
-				// Add more assertions here to check the response body, headers, etc.
-			}
-		})
-	}
-	
-	
-	// func TestReadsUsuarioHandler(t *testing.T)  {
+		JSON := `{ "cpf": 53076281291, "nome": "Guilherme Bernardo", "email": "bguilherme51@gmail.com", "products": [{"Name": "Gratuito"}]}`
 		
-		// }
+		// Create a new request
+		req := httptest.NewRequest(http.MethodPost, "/api/usuarios_temporarios", strings.NewReader(JSON))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 		
+		// Create a ResponseRecorder to record the response
+		rec := httptest.NewRecorder()
+		
+		// Create a new Context
+		c := e.NewContext(req, rec)
+		
+		if assert.NoError(t, s.UsuarioTemporarioCreate(c)) {
+			// Call your handler function
+			assert.Equal(t, http.StatusCreated, rec.Code)
+			// Add more assertions here to check the response body, headers, etc.
+		}
+	})
+	t.Run("Criar usuário handler FAIL by missing cpf", func(t *testing.T) {
+		// Create a new Echo instance
+		e := echo.New()
+		
+		// Define the request body with the correct structure
+		JSON := `{"cpf": , "nome": "Guilherme Bernardo", "email": "bguilherme51@gmail.com", "products": [{"Name": "Gratuito"}]}`
+		
+		// Create a new request
+		req := httptest.NewRequest(http.MethodPost, "/api/usuarios_temporarios", strings.NewReader(JSON))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		
+		// Create a ResponseRecorder to record the response
+		rec := httptest.NewRecorder()
+		
+		// Create a new Context
+		c := e.NewContext(req, rec)
+		
+		if assert.Error(t, s.UsuarioTemporarioCreate(c)) {
+			// Call your handler function
+			assert.Equal(t, http.StatusOK, rec.Code)
+			// Add more assertions here to check the response body, headers, etc.
+		}
+	})
+	t.Run("Criar usuário handler FAIL by cpf wrong", func(t *testing.T) {
+		// Create a new Echo instance
+		e := echo.New()
+		
+		// Define the request body with the correct structure
+		JSON := `{"cpf": 5307628129, "nome": "Guilherme Bernardo", "email": "bguilherme51@gmail.com", "products": [{"Name": "Gratuito"}]}`
+		
+		// Create a new request
+		req := httptest.NewRequest(http.MethodPost, "/api/usuarios_temporarios", strings.NewReader(JSON))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		
+		// Create a ResponseRecorder to record the response
+		rec := httptest.NewRecorder()
+		
+		// Create a new Context
+		c := e.NewContext(req, rec)
+		
+		if assert.Error(t, s.UsuarioTemporarioCreate(c)) {
+			// Call your handler function
+			assert.Equal(t, 400, rec.Code)
+			// Add more assertions here to check the response body, headers, etc.
+		}
+	})
+
+	t.Run("Criar usuário handler FAIL by cpf wrong2", func(t *testing.T) {
+		// Create a new Echo instance
+		e := echo.New()
+		
+		// Define the request body with the correct structure
+		JSON := `{"cpf": "53076281291", "nome": "Guilherme Bernardo", "email": "bguilherme51@gmail.com", "products": [{"Name": "Gratuito"}]}`
+		
+		// Create a new request
+		req := httptest.NewRequest(http.MethodPost, "/api/usuarios_temporarios", strings.NewReader(JSON))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		
+		// Create a ResponseRecorder to record the response
+		rec := httptest.NewRecorder()
+		
+		// Create a new Context
+		c := e.NewContext(req, rec)
+		
+		if assert.Error(t, s.UsuarioTemporarioCreate(c)) {
+			// Call your handler function
+			assert.Equal(t, 400, rec.Code)
+			// Add more assertions here to check the response body, headers, etc.
+		}
+	})
+	t.Run("Criar usuário handler FAIL by missing nome ", func(t *testing.T) {
+		// Create a new Echo instance
+		e := echo.New()
+		
+		// Define the request body with the correct structure
+		JSON := `{"cpf": "53076281291", "nome": , "email": "bguilherme51@gmail.com", "products": [{"Name": "Gratuito"}]}`
+		
+		// Create a new request
+		req := httptest.NewRequest(http.MethodPost, "/api/usuarios_temporarios", strings.NewReader(JSON))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		
+		// Create a ResponseRecorder to record the response
+		rec := httptest.NewRecorder()
+		
+		// Create a new Context
+		c := e.NewContext(req, rec)
+		
+		if assert.Error(t, s.UsuarioTemporarioCreate(c)) {
+			// Call your handler function
+			assert.Equal(t, 400, rec.Code)
+			// Add more assertions here to check the response body, headers, etc.
+		}
+	})
+	t.Run("Criar usuário handler FAIL by nome wrong", func(t *testing.T) {
+		// Create a new Echo instance
+		e := echo.New()
+		
+		// Define the request body with the correct structure
+		JSON := `{"cpf": "53076281291", "nome": Guilherme Bernardo, "email": "bguilherme51@gmail.com", "products": [{"Name": "Gratuito"}]}`
+		
+		// Create a new request
+		req := httptest.NewRequest(http.MethodPost, "/api/usuarios_temporarios", strings.NewReader(JSON))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		
+		// Create a ResponseRecorder to record the response
+		rec := httptest.NewRecorder()
+		
+		// Create a new Context
+		c := e.NewContext(req, rec)
+		
+		if assert.Error(t, s.UsuarioTemporarioCreate(c)) {
+			// Call your handler function
+			assert.Equal(t, 400, rec.Code)
+			// Add more assertions here to check the response body, headers, etc.
+		}
+	})
+
+	t.Run("Criar usuário handler FAIL by missing email", func(t *testing.T) {
+		// Create a new Echo instance
+		e := echo.New()
+		
+		// Define the request body with the correct structure
+		JSON := `{"cpf": "53076281291", "nome": "Guilherme Bernardo", "email": , "products": [{"Name": "Gratuito"}]}`
+		
+		// Create a new request
+		req := httptest.NewRequest(http.MethodPost, "/api/usuarios_temporarios", strings.NewReader(JSON))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		
+		// Create a ResponseRecorder to record the response
+		rec := httptest.NewRecorder()
+		
+		// Create a new Context
+		c := e.NewContext(req, rec)
+		
+		if assert.Error(t, s.UsuarioTemporarioCreate(c)) {
+			// Call your handler function
+			assert.Equal(t, 400, rec.Code)
+			// Add more assertions here to check the response body, headers, etc.
+		}
+	})
+	t.Run("Criar usuário handler FAIL by email wrong", func(t *testing.T) {
+		// Create a new Echo instance
+		e := echo.New()
+		
+		// Define the request body with the correct structure
+		JSON := `{"cpf": "53076281291", "nome": "Guilherme Bernardo", "email": "bguilherme51@gmail.com", "products": [{"Name": "Gratuito"}]}`
+		
+		// Create a new request
+		req := httptest.NewRequest(http.MethodPost, "/api/usuarios_temporarios", strings.NewReader(JSON))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		
+		// Create a ResponseRecorder to record the response
+		rec := httptest.NewRecorder()
+		
+		// Create a new Context
+		c := e.NewContext(req, rec)
+		
+		if assert.Error(t, s.UsuarioTemporarioCreate(c)) {
+			// Call your handler function
+			assert.Equal(t, 400, rec.Code)
+			// Add more assertions here to check the response body, headers, etc.
+		}
+	})
+
+	t.Run("Criar usuário handler FAIL by missing products", func(t *testing.T) {
+		// Create a new Echo instance
+		e := echo.New()
+		
+		// Define the request body with the correct structure
+		JSON := `{"cpf": "53076281291", "nome": "Guilherme Bernardo", "email": "bguilherme51@gmail.com", "products": [{"Name": Gratuito}]}`
+		
+		// Create a new request
+		req := httptest.NewRequest(http.MethodPost, "/api/usuarios_temporarios", strings.NewReader(JSON))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		
+		// Create a ResponseRecorder to record the response
+		rec := httptest.NewRecorder()
+		
+		// Create a new Context
+		c := e.NewContext(req, rec)
+		
+		if assert.Error(t, s.UsuarioTemporarioCreate(c)) {
+			// Call your handler function
+			assert.Equal(t, 400, rec.Code)
+			// Add more assertions here to check the response body, headers, etc.
+		}
+	})
+
+	t.Run("Criar usuário handler FAIL by products wrong", func(t *testing.T) {
+		// Create a new Echo instance
+		e := echo.New()
+		
+		// Define the request body with the correct structure
+		JSON := `{"cpf": "53076281291", "nome": "Guilherme Bernardo", "email": "bguilherme51@gmail.com", "products": [{"Name": Gratuito}]}`
+		
+		// Create a new request
+		req := httptest.NewRequest(http.MethodPost, "/api/usuarios_temporarios", strings.NewReader(JSON))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		
+		// Create a ResponseRecorder to record the response
+		rec := httptest.NewRecorder()
+		
+		// Create a new Context
+		c := e.NewContext(req, rec)
+		
+		if assert.Error(t, s.UsuarioTemporarioCreate(c)) {
+			// Call your handler function
+			assert.Equal(t, 400, rec.Code)
+			// Add more assertions here to check the response body, headers, etc.
+		}
+	})
+	
+}
