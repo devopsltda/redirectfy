@@ -53,6 +53,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.GET("/usuarios", s.UsuarioReadAll)
 	e.GET("/usuarios/historico", s.HistoricoUsuarioReadAll)
 	e.GET("/usuarios/:nome_de_usuario", s.UsuarioReadByNomeDeUsuario)
+	e.POST("/usuarios/criar_permanente/:valor", s.UsuarioTemporarioParaPermanente)
 	e.POST("/usuarios_temporarios", s.UsuarioTemporarioCreate)
 	e.POST("/usuarios_temporarios/historico", s.HistoricoUsuarioTemporarioReadAll)
 	e.PATCH("/usuarios/:nome_de_usuario", s.UsuarioUpdate)

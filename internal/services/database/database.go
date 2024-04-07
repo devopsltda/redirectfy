@@ -31,14 +31,14 @@ func New() *sql.DB {
 		db, err := sql.Open("sqlite", "file::memory:?cache=shared")
 
 		if err != nil {
-			slog.Error("BancoDeDados", slog.Any("error", err))
+			slog.Error("BancoDeDadosTeste", slog.Any("error", err))
 			os.Exit(1)
 		}
 
 		err = seed(db, dbSourcePath)
 
 		if err != nil {
-			slog.Error("BancoDeDados", slog.Any("error", err))
+			slog.Error("BancoDeDadosTeste", slog.Any("error", err))
 			os.Exit(1)
 		}
 

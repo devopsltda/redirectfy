@@ -323,7 +323,7 @@ func TestDatabaseLinksRedirect(t *testing.T) {
 			"ta na hora do rock",
 			"aa102930a22a",
 			"1",
-			1,
+			"Gratuito",
 		)
 		assert.NoError(t, err)
 		t.Run("Criando Link no banco de dados", func(t *testing.T) {

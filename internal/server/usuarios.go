@@ -145,7 +145,9 @@ func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça um email válido para o parâmetro 'email'.")
 	}
 
-	if err := utils.Validate.Var(parametros.PlanosDeAssinatura[0].Name, "required,min=3,max=120"); err != nil {
+	if len(parametros.PlanosDeAssinatura) != 1 {
+		erros = append(erros, "Por favor, forneça um nome válido para o parâmetro 'plano_de_assinatura'.")
+	} else if err := utils.Validate.Var(parametros.PlanosDeAssinatura[0].Name, "required,min=3,max=120"); err != nil {
 		erros = append(erros, "Por favor, forneça um nome válido para o parâmetro 'plano_de_assinatura'.")
 	}
 
@@ -428,6 +430,109 @@ func (s *Server) UsuarioAutenticado(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, utils.MensagemUsuarioAutenticadoComSucesso)
+}
+
+// UsuarioTemporarioParaPermanente godoc
+//
+// @Summary Cria um usuário permanente a partir de um temporário
+//
+// @Tags    Usuários
+//
+// @Accept  json
+//
+// @Produce json
+//
+// @Param   valor              path     string true "Valor"
+//
+// @Param   senha_nova         body     string true "Senha Nova"
+//
+// @Param   data_de_nascimento body     string true "Data de Nascimento"
+//
+// @Success 200                {object} map[string]string
+//
+// @Failure 400                {object} utils.Erro
+//
+// @Failure 500                {object} utils.Erro
+//
+// @Router  /usuarios/criar_permanente/:valor [post]
+func (s *Server) UsuarioTemporarioParaPermanente(c echo.Context) error {
+	valor := c.Param("valor")
+
+	if !utils.ValidaNomeDeUsuario(valor) {
+		return utils.ErroValidacaoNomeDeUsuario
+	}
+
+	parametros := struct {
+		SenhaNova string `json:"senha_nova"`
+		DataDeNascimento string `json:"data_de_nascimento"`
+	}{}
+
+	if err := c.Bind(&parametros); err != nil {
+		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))
+		return utils.ErroCriacaoSenha
+	}
+
+	if err := utils.Validate.Var(parametros.SenhaNova, "required,min=8,max=72"); err != nil {
+		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))
+		return utils.ErroCriacaoSenha
+	}
+
+	if err := utils.Validate.Var(parametros.DataDeNascimento, "required,datetime=2006-01-02"); err != nil {
+		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))
+		return utils.ErroCriacaoSenha
+	}
+
+	usuario, err := s.EmailAutenticacaoModel.CheckIfValorExistsAndIsValid(valor, "nova_senha")
+
+	if err != nil {
+		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))
+		return utils.ErroBancoDados
+	}
+
+	senhaComHash, err := argon2id.CreateHash(parametros.SenhaNova+utils.Pepper, utils.SenhaParams)
+
+	if err != nil {
+		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))
+		return utils.ErroCriacaoSenha
+	}
+
+	usuarioTemporario, err := s.UsuarioTemporarioModel.ReadById(usuario)
+
+	if err != nil {
+		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))
+		return utils.ErroBancoDados
+	}
+
+	_, err = s.UsuarioModel.Create(
+		usuarioTemporario.Cpf,
+		usuarioTemporario.Nome,
+		usuarioTemporario.NomeDeUsuario,
+		usuarioTemporario.Email,
+		senhaComHash,
+		parametros.DataDeNascimento,
+		usuarioTemporario.PlanoDeAssinatura,
+	)
+
+	if err != nil {
+		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))
+		return utils.ErroBancoDados
+	}
+
+	err = s.UsuarioTemporarioModel.Remove(usuario)
+
+	if err != nil {
+		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))
+		return utils.ErroBancoDados
+	}
+
+	err = s.EmailAutenticacaoModel.Expirar(valor)
+
+	if err != nil {
+		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))
+		return utils.ErroBancoDados
+	}
+
+	return c.JSON(http.StatusOK, utils.MensagemUsuarioSenhaTrocadaComSucesso)
 }
 
 // UsuarioTrocaDeSenhaExigir godoc
