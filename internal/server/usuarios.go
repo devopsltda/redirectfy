@@ -15,15 +15,32 @@ import (
 	_ "redirectfy/internal/models"
 )
 
-type produto struct {
+type productData struct {
 	Name string `json:"name"`
-} // @name Produto
+}
+
+type customerData struct {
+	Name string `json:"name"`
+	Document string `json:"document"`
+	Email string `json:"email"`
+}
+
+type parametrosKirvano struct {
+	Customer customerData `json:"customer"`
+	Products []productData `json:"products"`
+} // @name ParametrosKirvano
 
 func criaNomeDeUsuario(s string) string {
 	var sb strings.Builder
 	for _, c := range s {
+		if c == '@' {
+			break
+		}
+
 		if unicode.IsLetter(c) || unicode.IsNumber(c) || c == '_' || c == '-' {
 			sb.WriteRune(c)
+		} else {
+			sb.WriteRune('_')
 		}
 	}
 
@@ -104,13 +121,7 @@ func (s *Server) UsuarioReadAll(c echo.Context) error {
 //
 // @Produce json
 //
-// @Param   customer.document   body     string        true "CPF"
-//
-// @Param   customer.name       body     string        true "Nome"
-//
-// @Param   customer.email      body     string        true "Email"
-//
-// @Param   products            body     []produto    true "Plano de Assinatura"
+// @Param   request             body     parametrosKirvano true "Request"
 //
 // @Success 200                 {object} map[string]string
 //
@@ -120,12 +131,7 @@ func (s *Server) UsuarioReadAll(c echo.Context) error {
 //
 // @Router  /usuarios_temporarios [post]
 func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
-	parametros := struct {
-		Cpf                string    `json:"customer.document"`
-		Nome               string    `json:"customer.name"`
-		Email              string    `json:"customer.email"`
-		PlanosDeAssinatura []produto `json:"products"`
-	}{}
+	var parametros parametrosKirvano
 
 	var erros []string
 
@@ -133,21 +139,21 @@ func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça o CPF, email, data de nascimento, nome, nome de usuário, senha e plano de assinatura do usuário nos parâmetro 'cpf', 'email', 'data_de_nascimento', 'nome', 'nome_de_usuario', 'senha' e 'plano_de_assinatura', respectivamente.")
 	}
 
-	if err := utils.Validate.Var(parametros.Cpf, "required,numeric,len=11"); err != nil {
+	if err := utils.Validate.Var(parametros.Customer.Document, "required,numeric,len=11"); err != nil {
 		erros = append(erros, "Por favor, forneça um CPF válido (texto numérico com 11 dígitos) para o parâmetro 'cpf'.")
 	}
 
-	if err := utils.Validate.Var(parametros.Nome, "required,min=3,max=240"); err != nil {
+	if err := utils.Validate.Var(parametros.Customer.Name, "required,min=3,max=240"); err != nil {
 		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 240 caracteres) para o parâmetro 'nome'.")
 	}
 
-	if err := utils.Validate.Var(parametros.Email, "required,email"); err != nil {
+	if err := utils.Validate.Var(parametros.Customer.Email, "required,email"); err != nil {
 		erros = append(erros, "Por favor, forneça um email válido para o parâmetro 'email'.")
 	}
 
-	if len(parametros.PlanosDeAssinatura) != 1 {
+	if len(parametros.Products) != 1 {
 		erros = append(erros, "Por favor, forneça um nome válido para o parâmetro 'plano_de_assinatura'.")
-	} else if err := utils.Validate.Var(parametros.PlanosDeAssinatura[0].Name, "required,min=3,max=120"); err != nil {
+	} else if err := utils.Validate.Var(parametros.Products[0].Name, "required,min=3,max=120"); err != nil {
 		erros = append(erros, "Por favor, forneça um nome válido para o parâmetro 'plano_de_assinatura'.")
 	}
 
@@ -155,14 +161,14 @@ func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	nomeDeUsuario := criaNomeDeUsuario(parametros.Nome)
+	nomeDeUsuario := criaNomeDeUsuario(parametros.Customer.Email)
 
 	usuarioId, err := s.UsuarioTemporarioModel.Create(
-		parametros.Cpf,
-		parametros.Nome,
+		parametros.Customer.Document,
+		parametros.Customer.Name,
 		nomeDeUsuario,
-		parametros.Email,
-		parametros.PlanosDeAssinatura[0].Name,
+		parametros.Customer.Email,
+		parametros.Products[0].Name,
 	)
 
 	if err != nil {

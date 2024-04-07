@@ -1322,6 +1322,70 @@ const docTemplate = `{
                 }
             }
         },
+        "/usuarios/criar_permanente/:valor": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usuários"
+                ],
+                "summary": "Cria um usuário permanente a partir de um temporário",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Valor",
+                        "name": "valor",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Senha Nova",
+                        "name": "senha_nova",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Data de Nascimento",
+                        "name": "data_de_nascimento",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Erro"
+                        }
+                    }
+                }
+            }
+        },
         "/usuarios/historico": {
             "get": {
                 "consumes": [
@@ -1485,42 +1549,12 @@ const docTemplate = `{
                 "summary": "Cria um usuário temporário",
                 "parameters": [
                     {
-                        "description": "CPF",
-                        "name": "customer.document",
+                        "description": "Request",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Nome",
-                        "name": "customer.name",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Email",
-                        "name": "customer.email",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Plano de Assinatura",
-                        "name": "products",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Produto"
-                            }
+                            "$ref": "#/definitions/ParametrosKirvano"
                         }
                     }
                 ],
@@ -1834,6 +1868,20 @@ const docTemplate = `{
                 }
             }
         },
+        "ParametrosKirvano": {
+            "type": "object",
+            "properties": {
+                "customer": {
+                    "$ref": "#/definitions/server.customerData"
+                },
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/server.productData"
+                    }
+                }
+            }
+        },
         "PlanoDeAssinatura": {
             "type": "object",
             "properties": {
@@ -1860,14 +1908,6 @@ const docTemplate = `{
                 },
                 "valor_mensal": {
                     "type": "integer"
-                }
-            }
-        },
-        "Produto": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
                 }
             }
         },
@@ -1948,6 +1988,28 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "plataforma": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.customerData": {
+            "type": "object",
+            "properties": {
+                "document": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "server.productData": {
+            "type": "object",
+            "properties": {
+                "name": {
                     "type": "string"
                 }
             }

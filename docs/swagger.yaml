@@ -161,6 +161,15 @@ definitions:
       removido_em:
         type: string
     type: object
+  ParametrosKirvano:
+    properties:
+      customer:
+        $ref: '#/definitions/server.customerData'
+      products:
+        items:
+          $ref: '#/definitions/server.productData'
+        type: array
+    type: object
   PlanoDeAssinatura:
     properties:
       atualizado_em:
@@ -179,11 +188,6 @@ definitions:
         type: integer
       valor_mensal:
         type: integer
-    type: object
-  Produto:
-    properties:
-      name:
-        type: string
     type: object
   Redirecionador:
     properties:
@@ -236,6 +240,20 @@ definitions:
       nome:
         type: string
       plataforma:
+        type: string
+    type: object
+  server.customerData:
+    properties:
+      document:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+    type: object
+  server.productData:
+    properties:
+      name:
         type: string
     type: object
   sql.NullBool:
@@ -1122,6 +1140,48 @@ paths:
       summary: Autentica um usuário
       tags:
       - Usuários
+  /usuarios/criar_permanente/:valor:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Valor
+        in: path
+        name: valor
+        required: true
+        type: string
+      - description: Senha Nova
+        in: body
+        name: senha_nova
+        required: true
+        schema:
+          type: string
+      - description: Data de Nascimento
+        in: body
+        name: data_de_nascimento
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Erro'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Erro'
+      summary: Cria um usuário permanente a partir de um temporário
+      tags:
+      - Usuários
   /usuarios/historico:
     get:
       consumes:
@@ -1224,32 +1284,12 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: CPF
+      - description: Request
         in: body
-        name: customer.document
+        name: request
         required: true
         schema:
-          type: string
-      - description: Nome
-        in: body
-        name: customer.name
-        required: true
-        schema:
-          type: string
-      - description: Email
-        in: body
-        name: customer.email
-        required: true
-        schema:
-          type: string
-      - description: Plano de Assinatura
-        in: body
-        name: products
-        required: true
-        schema:
-          items:
-            $ref: '#/definitions/Produto'
-          type: array
+          $ref: '#/definitions/ParametrosKirvano'
       produces:
       - application/json
       responses:
