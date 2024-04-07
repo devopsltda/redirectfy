@@ -197,7 +197,7 @@ func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	err = s.email.SendValidacao(id, parametros.Nome, valor, parametros.Email)
+	err = s.email.SendValidacao(id, parametros.Customer.Name, valor, parametros.Customer.Email)
 
 	if err != nil {
 		slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
