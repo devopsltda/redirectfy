@@ -270,7 +270,7 @@ info:
   title: API do Redirectify
   version: 1.0.0
 paths:
-  /v1/api/links/historico:
+  /links/historico:
     get:
       consumes:
       - application/json
@@ -294,7 +294,7 @@ paths:
       summary: Retorna o histórico de ações relativas a links no sistema
       tags:
       - Histórico
-  /v1/api/planos_de_assinatura:
+  /planos_de_assinatura:
     get:
       consumes:
       - application/json
@@ -366,7 +366,7 @@ paths:
       summary: Cria um plano de assinatura
       tags:
       - Planos de Assinatura
-  /v1/api/planos_de_assinatura/:nome:
+  /planos_de_assinatura/:nome:
     delete:
       consumes:
       - application/json
@@ -473,7 +473,7 @@ paths:
       summary: Atualiza um plano de assinatura
       tags:
       - Planos de Assinatura
-  /v1/api/planos_de_assinatura/historico:
+  /planos_de_assinatura/historico:
     get:
       consumes:
       - application/json
@@ -497,7 +497,7 @@ paths:
       summary: Retorna o histórico de ações relativas a planos de assinatura no sistema
       tags:
       - Histórico
-  /v1/api/redirecionadores:
+  /redirecionadores:
     post:
       consumes:
       - application/json
@@ -540,7 +540,7 @@ paths:
       summary: Cria um redirecionador
       tags:
       - Redirecionadores
-  /v1/api/redirecionadores/:codigo_hash:
+  /redirecionadores/:codigo_hash:
     delete:
       consumes:
       - application/json
@@ -636,7 +636,7 @@ paths:
       summary: Atualiza um redirecionador
       tags:
       - Redirecionadores
-  /v1/api/redirecionadores/:codigo_hash/link/:id:
+  /redirecionadores/:codigo_hash/link/:id:
     delete:
       consumes:
       - application/json
@@ -720,7 +720,7 @@ paths:
       summary: Atualiza um link específico de um redirecionador específico
       tags:
       - Links
-  /v1/api/redirecionadores/:codigo_hash/links:
+  /redirecionadores/:codigo_hash/links:
     get:
       consumes:
       - application/json
@@ -787,7 +787,7 @@ paths:
       summary: Cria links no redirecionador com o código hash fornecido
       tags:
       - Links
-  /v1/api/redirecionadores/:codigo_hash/links/:id:
+  /redirecionadores/:codigo_hash/links/:id:
     get:
       consumes:
       - application/json
@@ -821,7 +821,7 @@ paths:
         fornecido
       tags:
       - Links
-  /v1/api/redirecionadores/:nome_de_usuario:
+  /redirecionadores/:nome_de_usuario:
     get:
       consumes:
       - application/json
@@ -851,7 +851,7 @@ paths:
       summary: Retorna os redirecionadores
       tags:
       - Redirecionadores
-  /v1/api/redirecionadores/historico:
+  /redirecionadores/historico:
     get:
       consumes:
       - application/json
@@ -875,7 +875,7 @@ paths:
       summary: Retorna o histórico de ações relativas a redirecionadores no sistema
       tags:
       - Histórico
-  /v1/api/redirecionadores/rehash/:codigo_hash:
+  /redirecionadores/rehash/:codigo_hash:
     patch:
       consumes:
       - application/json
@@ -905,7 +905,7 @@ paths:
       summary: Recria o hash de um redirecionador
       tags:
       - Redirecionadores
-  /v1/api/usuarios:
+  /usuarios:
     get:
       consumes:
       - application/json
@@ -929,73 +929,7 @@ paths:
       summary: Retorna todos os usuários
       tags:
       - Usuários
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: CPF
-        in: body
-        name: cpf
-        required: true
-        schema:
-          type: string
-      - description: Nome
-        in: body
-        name: nome
-        required: true
-        schema:
-          type: string
-      - description: Nome de Usuário
-        in: body
-        name: nome_de_usuario
-        required: true
-        schema:
-          type: string
-      - description: Email
-        in: body
-        name: email
-        required: true
-        schema:
-          type: string
-      - description: Senha
-        in: body
-        name: senha
-        required: true
-        schema:
-          type: string
-      - description: Data de Nascimento
-        in: body
-        name: data_de_nascimento
-        required: true
-        schema:
-          type: string
-      - description: Plano de Assinatura
-        in: body
-        name: plano_de_assinatura
-        required: true
-        schema:
-          type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/Erro'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/Erro'
-      summary: Cria um usuário
-      tags:
-      - Usuários
-  /v1/api/usuarios/:nome_de_usuario:
+  /usuarios/:nome_de_usuario:
     delete:
       consumes:
       - application/json
@@ -1116,7 +1050,7 @@ paths:
       summary: Atualiza um usuário
       tags:
       - Usuários
-  /v1/api/usuarios/:nome_de_usuario/troca_de_senha:
+  /usuarios/:nome_de_usuario/troca_de_senha:
     patch:
       consumes:
       - application/json
@@ -1146,7 +1080,7 @@ paths:
       summary: Exige a troca de senha de um usuário
       tags:
       - Usuários
-  /v1/api/usuarios/autentica/:valor:
+  /usuarios/autentica/:valor:
     patch:
       consumes:
       - application/json
@@ -1188,7 +1122,7 @@ paths:
       summary: Autentica um usuário
       tags:
       - Usuários
-  /v1/api/usuarios/historico:
+  /usuarios/historico:
     get:
       consumes:
       - application/json
@@ -1212,7 +1146,7 @@ paths:
       summary: Retorna o histórico de ações relativas a usuários no sistema
       tags:
       - Histórico
-  /v1/api/usuarios/login:
+  /usuarios/login:
     post:
       consumes:
       - application/json
@@ -1249,7 +1183,7 @@ paths:
       summary: Autentica o usuário
       tags:
       - Usuários
-  /v1/api/usuarios/troca_de_senha/:valor:
+  /usuarios/troca_de_senha/:valor:
     patch:
       consumes:
       - application/json
@@ -1285,7 +1219,7 @@ paths:
       summary: Troca a senha de um usuário
       tags:
       - Usuários
-  /v1/api/usuarios_temporarios:
+  /usuarios_temporarios:
     post:
       consumes:
       - application/json
@@ -1336,7 +1270,7 @@ paths:
       summary: Cria um usuário temporário
       tags:
       - UsuáriosTemporários
-  /v1/api/usuarios_temporarios/historico:
+  /usuarios_temporarios/historico:
     get:
       consumes:
       - application/json

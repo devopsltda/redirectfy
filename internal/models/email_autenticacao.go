@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"redirectify/internal/utils"
+	"redirectfy/internal/utils"
 )
 
 type EmailAutenticacao struct {

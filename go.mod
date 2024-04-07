@@ -1,4 +1,4 @@
-module redirectify
+module redirectfy
 
 go 1.22.1
 

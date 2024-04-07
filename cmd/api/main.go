@@ -6,8 +6,8 @@ import (
 	"log/slog"
 	"os"
 	"os/signal"
-	"redirectify/internal/server"
-	"redirectify/internal/services/database"
+	"redirectfy/internal/server"
+	"redirectfy/internal/services/database"
 	"syscall"
 	"time"
 )

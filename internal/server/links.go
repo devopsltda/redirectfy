@@ -5,12 +5,12 @@ import (
 	"net/http"
 	"strconv"
 
-	"redirectify/internal/models"
-	"redirectify/internal/utils"
+	"redirectfy/internal/models"
+	"redirectfy/internal/utils"
 
 	"github.com/labstack/echo/v4"
 
-	_ "redirectify/internal/models"
+	_ "redirectfy/internal/models"
 )
 
 // LinkReadById godoc
@@ -33,7 +33,7 @@ import (
 //
 // @Failure 500         {object} utils.Erro
 //
-// @Router  /v1/api/redirecionadores/:codigo_hash/links/:id [get]
+// @Router  /redirecionadores/:codigo_hash/links/:id [get]
 func (s *Server) LinkReadById(c echo.Context) error {
 	id := c.Param("id")
 	codigoHash := c.Param("codigo_hash")
@@ -81,7 +81,7 @@ func (s *Server) LinkReadById(c echo.Context) error {
 //
 // @Failure 500         {object} utils.Erro
 //
-// @Router  /v1/api/redirecionadores/:codigo_hash/links [get]
+// @Router  /redirecionadores/:codigo_hash/links [get]
 func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
 	codigoHash := c.Param("codigo_hash")
 
@@ -119,7 +119,7 @@ func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
 //
 // @Failure 500                 {object} utils.Erro
 //
-// @Router  /v1/api/redirecionadores/:codigo_hash/links [post]
+// @Router  /redirecionadores/:codigo_hash/links [post]
 func (s *Server) LinkCreate(c echo.Context) error {
 	parametros := struct {
 		CodigoHash string                     `path:"codigo_hash"`
@@ -191,7 +191,7 @@ func (s *Server) LinkCreate(c echo.Context) error {
 //
 // @Failure 500         {object} utils.Erro
 //
-// @Router  /v1/api/redirecionadores/:codigo_hash/link/:id [patch]
+// @Router  /redirecionadores/:codigo_hash/link/:id [patch]
 func (s *Server) LinkUpdate(c echo.Context) error {
 	parametros := struct {
 		CodigoHash string `path:"codigo_hash"`
@@ -257,7 +257,7 @@ func (s *Server) LinkUpdate(c echo.Context) error {
 //
 // @Failure 500         {object} utils.Erro
 //
-// @Router  /v1/api/redirecionadores/:codigo_hash/link/:id [delete]
+// @Router  /redirecionadores/:codigo_hash/link/:id [delete]
 func (s *Server) LinkRemove(c echo.Context) error {
 	id := c.Param("id")
 	codigoHash := c.Param("codigo_hash")

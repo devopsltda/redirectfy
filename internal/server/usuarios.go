@@ -6,13 +6,13 @@ import (
 	"strings"
 	"unicode"
 
-	"redirectify/internal/auth"
-	"redirectify/internal/utils"
+	"redirectfy/internal/auth"
+	"redirectfy/internal/utils"
 
 	"github.com/alexedwards/argon2id"
 	"github.com/labstack/echo/v4"
 
-	_ "redirectify/internal/models"
+	_ "redirectfy/internal/models"
 )
 
 type produto struct {
@@ -48,7 +48,7 @@ func criaNomeDeUsuario(s string) string {
 //
 // @Failure 500             {object} utils.Erro
 //
-// @Router  /v1/api/usuarios/:nome_de_usuario [get]
+// @Router  /usuarios/:nome_de_usuario [get]
 func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
 
@@ -82,7 +82,7 @@ func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 //
 // @Failure 500             {object} utils.Erro
 //
-// @Router  /v1/api/usuarios [get]
+// @Router  /usuarios [get]
 func (s *Server) UsuarioReadAll(c echo.Context) error {
 	usuarios, err := s.UsuarioModel.ReadAll()
 
@@ -118,7 +118,7 @@ func (s *Server) UsuarioReadAll(c echo.Context) error {
 //
 // @Failure 500                 {object} utils.Erro
 //
-// @Router  /v1/api/usuarios_temporarios [post]
+// @Router  /usuarios_temporarios [post]
 func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 	parametros := struct {
 		Cpf                string    `json:"customer.document"`
@@ -231,7 +231,7 @@ func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 //
 // @Failure 500                 {object} utils.Erro
 //
-// @Router  /v1/api/usuarios/:nome_de_usuario [patch]
+// @Router  /usuarios/:nome_de_usuario [patch]
 func (s *Server) UsuarioUpdate(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
 
@@ -344,7 +344,7 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 //
 // @Failure 500                {object} utils.Erro
 //
-// @Router  /v1/api/usuarios/autentica/:valor [patch]
+// @Router  /usuarios/autentica/:valor [patch]
 func (s *Server) UsuarioAutenticado(c echo.Context) error {
 	type parametrosUpdate struct {
 		Senha            string `json:"senha"`
@@ -448,7 +448,7 @@ func (s *Server) UsuarioAutenticado(c echo.Context) error {
 //
 // @Failure 500               {object} utils.Erro
 //
-// @Router  /v1/api/usuarios/:nome_de_usuario/troca_de_senha [patch]
+// @Router  /usuarios/:nome_de_usuario/troca_de_senha [patch]
 func (s *Server) UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
 
@@ -516,7 +516,7 @@ func (s *Server) UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 //
 // @Failure 500               {object} utils.Erro
 //
-// @Router  /v1/api/usuarios/troca_de_senha/:valor [patch]
+// @Router  /usuarios/troca_de_senha/:valor [patch]
 func (s *Server) UsuarioTrocaDeSenha(c echo.Context) error {
 	valor := c.Param("valor")
 
@@ -587,7 +587,7 @@ func (s *Server) UsuarioTrocaDeSenha(c echo.Context) error {
 //
 // @Failure 500               {object} utils.Erro
 //
-// @Router  /v1/api/usuarios/:nome_de_usuario [delete]
+// @Router  /usuarios/:nome_de_usuario [delete]
 func (s *Server) UsuarioRemove(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
 
@@ -625,7 +625,7 @@ func (s *Server) UsuarioRemove(c echo.Context) error {
 //
 // @Failure 500               {object} utils.Erro
 //
-// @Router  /v1/api/usuarios/login [post]
+// @Router  /usuarios/login [post]
 func (s *Server) UsuarioLogin(c echo.Context) error {
 	parametros := struct {
 		Email string `json:"email"`

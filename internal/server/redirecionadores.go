@@ -4,12 +4,12 @@ import (
 	"log/slog"
 	"net/http"
 
-	"redirectify/internal/models"
-	"redirectify/internal/utils"
+	"redirectfy/internal/models"
+	"redirectfy/internal/utils"
 
 	"github.com/labstack/echo/v4"
 
-	_ "redirectify/internal/models"
+	_ "redirectfy/internal/models"
 )
 
 type RedirecionadorReadByCodigoHashResponse struct {
@@ -35,7 +35,7 @@ type RedirecionadorReadByCodigoHashResponse struct {
 //
 // @Failure 500         {object} utils.Erro
 //
-// @Router  /v1/api/redirecionadores/:codigo_hash [get]
+// @Router  /redirecionadores/:codigo_hash [get]
 func (s *Server) RedirecionadorReadByCodigoHash(c echo.Context) error {
 	codigoHash := c.Param("codigo_hash")
 
@@ -80,7 +80,7 @@ func (s *Server) RedirecionadorReadByCodigoHash(c echo.Context) error {
 //
 // @Failure 500             {object} utils.Erro
 //
-// @Router  /v1/api/redirecionadores/:nome_de_usuario [get]
+// @Router  /redirecionadores/:nome_de_usuario [get]
 func (s *Server) RedirecionadorReadAll(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
 
@@ -120,7 +120,7 @@ func (s *Server) RedirecionadorReadAll(c echo.Context) error {
 //
 // @Failure 500                       {object} utils.Erro
 //
-// @Router  /v1/api/redirecionadores [post]
+// @Router  /redirecionadores [post]
 func (s *Server) RedirecionadorCreate(c echo.Context) error {
 	parametros := struct {
 		Nome                    string `json:"nome"`
@@ -198,7 +198,7 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 //
 // @Failure 500         {object} utils.Erro
 //
-// @Router  /v1/api/redirecionadores/rehash/:codigo_hash [patch]
+// @Router  /redirecionadores/rehash/:codigo_hash [patch]
 func (s *Server) RedirecionadorRehash(c echo.Context) error {
 	codigoHash := c.Param("codigo_hash")
 
@@ -253,7 +253,7 @@ func (s *Server) RedirecionadorRehash(c echo.Context) error {
 //
 // @Failure 500                       {object} utils.Erro
 //
-// @Router  /v1/api/redirecionadores/:codigo_hash [patch]
+// @Router  /redirecionadores/:codigo_hash [patch]
 func (s *Server) RedirecionadorUpdate(c echo.Context) error {
 	parametros := struct {
 		Nome                    string `json:"nome"`
@@ -313,7 +313,7 @@ func (s *Server) RedirecionadorUpdate(c echo.Context) error {
 //
 // @Failure 500         {object} utils.Erro
 //
-// @Router  /v1/api/redirecionadores/:codigo_hash [delete]
+// @Router  /redirecionadores/:codigo_hash [delete]
 func (s *Server) RedirecionadorRemove(c echo.Context) error {
 	codigoHash := c.Param("codigo_hash")
 

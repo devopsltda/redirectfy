@@ -18,7 +18,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/v1/api/links/historico": {
+        "/links/historico": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -55,7 +55,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/planos_de_assinatura": {
+        "/planos_de_assinatura": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -165,7 +165,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/planos_de_assinatura/:nome": {
+        "/planos_de_assinatura/:nome": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -329,7 +329,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/planos_de_assinatura/historico": {
+        "/planos_de_assinatura/historico": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -366,7 +366,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/redirecionadores": {
+        "/redirecionadores": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -432,7 +432,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/redirecionadores/:codigo_hash": {
+        "/redirecionadores/:codigo_hash": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -579,7 +579,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/redirecionadores/:codigo_hash/link/:id": {
+        "/redirecionadores/:codigo_hash/link/:id": {
             "delete": {
                 "consumes": [
                     "application/json"
@@ -707,7 +707,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/redirecionadores/:codigo_hash/links": {
+        "/redirecionadores/:codigo_hash/links": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -809,7 +809,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/redirecionadores/:codigo_hash/links/:id": {
+        "/redirecionadores/:codigo_hash/links/:id": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -859,7 +859,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/redirecionadores/:nome_de_usuario": {
+        "/redirecionadores/:nome_de_usuario": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -905,7 +905,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/redirecionadores/historico": {
+        "/redirecionadores/historico": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -942,7 +942,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/redirecionadores/rehash/:codigo_hash": {
+        "/redirecionadores/rehash/:codigo_hash": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -988,7 +988,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/usuarios": {
+        "/usuarios": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -1023,109 +1023,9 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Usuários"
-                ],
-                "summary": "Cria um usuário",
-                "parameters": [
-                    {
-                        "description": "CPF",
-                        "name": "cpf",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Nome",
-                        "name": "nome",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Nome de Usuário",
-                        "name": "nome_de_usuario",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Email",
-                        "name": "email",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Senha",
-                        "name": "senha",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Data de Nascimento",
-                        "name": "data_de_nascimento",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Plano de Assinatura",
-                        "name": "plano_de_assinatura",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/Erro"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/Erro"
-                        }
-                    }
-                }
             }
         },
-        "/v1/api/usuarios/:nome_de_usuario": {
+        "/usuarios/:nome_de_usuario": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -1312,7 +1212,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/usuarios/:nome_de_usuario/troca_de_senha": {
+        "/usuarios/:nome_de_usuario/troca_de_senha": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -1358,7 +1258,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/usuarios/autentica/:valor": {
+        "/usuarios/autentica/:valor": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -1422,7 +1322,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/usuarios/historico": {
+        "/usuarios/historico": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -1459,7 +1359,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/usuarios/login": {
+        "/usuarios/login": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -1516,7 +1416,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/usuarios/troca_de_senha/:valor": {
+        "/usuarios/troca_de_senha/:valor": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -1571,7 +1471,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/usuarios_temporarios": {
+        "/usuarios_temporarios": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -1649,7 +1549,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/api/usuarios_temporarios/historico": {
+        "/usuarios_temporarios/historico": {
             "get": {
                 "consumes": [
                     "application/json"

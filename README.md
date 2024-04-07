@@ -1,6 +1,6 @@
-# Redirectify
+# Redirectfy
 
-O Redirectify é uma solução para redirecionamento de links que abrange tanto uma API para uso programático como uma aplicação Web responsiva para o usuário final.
+O Redirectfy é uma solução para redirecionamento de links que abrange tanto uma API para uso programático como uma aplicação Web responsiva para o usuário final.
 
 ## Roadmap
 
@@ -31,13 +31,13 @@ Apenas tenha o Docker instalado.
 1. Clone o repositório
 
     ```bash
-    git clone git@github.com:TheDevOpsCorp/redirectify.git
+    git clone git@github.com:TheDevOpsCorp/redirectfy.git
     ```
 
 2. Vá para a pasta raiz do repositório
 
     ```bash
-    cd redirectify
+    cd redirectfy
     ```
 
 3. Copie a configuração de ambiente
@@ -72,13 +72,13 @@ As instruções abaixo assumem que o desenvolvedor está em um sistema Linux. Se
 1. Clone o repositório
 
     ```bash
-    git clone git@github.com:TheDevOpsCorp/redirectify.git
+    git clone git@github.com:TheDevOpsCorp/redirectfy.git
     ```
 
 2. Vá para a pasta raiz do repositório
 
     ```bash
-    cd redirectify
+    cd redirectfy
     ```
 
 3. Baixe as dependências do projeto

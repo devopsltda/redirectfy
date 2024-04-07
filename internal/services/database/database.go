@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
-	"redirectify/internal/utils"
+	"redirectfy/internal/utils"
 	"time"
 
 	"github.com/tursodatabase/go-libsql"

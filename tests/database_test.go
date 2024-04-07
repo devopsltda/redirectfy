@@ -1,8 +1,8 @@
 package tests
 
 import (
-	"redirectify/internal/models"
-	"redirectify/internal/services/database"
+	"redirectfy/internal/models"
+	"redirectfy/internal/services/database"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

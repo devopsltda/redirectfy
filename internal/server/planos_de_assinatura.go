@@ -4,11 +4,11 @@ import (
 	"log/slog"
 	"net/http"
 
-	"redirectify/internal/utils"
+	"redirectfy/internal/utils"
 
 	"github.com/labstack/echo/v4"
 
-	_ "redirectify/internal/models"
+	_ "redirectfy/internal/models"
 )
 
 // PlanoDeAssinaturaReadByNome godoc
@@ -29,7 +29,7 @@ import (
 //
 // @Failure 500  {object} utils.Erro
 //
-// @Router  /v1/api/planos_de_assinatura/:nome [get]
+// @Router  /planos_de_assinatura/:nome [get]
 func (s *Server) PlanoDeAssinaturaReadByNome(c echo.Context) error {
 	nome := c.Param("nome")
 
@@ -63,7 +63,7 @@ func (s *Server) PlanoDeAssinaturaReadByNome(c echo.Context) error {
 //
 // @Failure 500  {object} utils.Erro
 //
-// @Router  /v1/api/planos_de_assinatura [get]
+// @Router  /planos_de_assinatura [get]
 func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
 	planosDeAssinatura, err := s.PlanoDeAssinaturaModel.ReadAll()
 
@@ -99,7 +99,7 @@ func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
 //
 // @Failure 500                             {object} utils.Erro
 //
-// @Router  /v1/api/planos_de_assinatura [post]
+// @Router  /planos_de_assinatura [post]
 func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 	parametros := struct {
 		Nome                    string `json:"nome"`
@@ -170,7 +170,7 @@ func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 //
 // @Failure 500                             {object} utils.Erro
 //
-// @Router  /v1/api/planos_de_assinatura/:nome [patch]
+// @Router  /planos_de_assinatura/:nome [patch]
 func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 	type parametrosUpdate struct {
 		Nome                    string `json:"nome"`
@@ -241,7 +241,7 @@ func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 //
 // @Failure 500  {object} utils.Erro
 //
-// @Router  /v1/api/planos_de_assinatura/:nome [delete]
+// @Router  /planos_de_assinatura/:nome [delete]
 func (s *Server) PlanoDeAssinaturaRemove(c echo.Context) error {
 	nome := c.Param("nome")
 

@@ -9,9 +9,9 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
-	"redirectify/internal/auth"
+	"redirectfy/internal/auth"
 
-	_ "redirectify/docs"
+	_ "redirectfy/docs"
 )
 
 // @title API do Redirectify
@@ -33,16 +33,11 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.Use(middleware.Recover())
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
 		Skipper: func(c echo.Context) bool {
-			return strings.Contains(c.Path(), "/api/docs")
+			return strings.Contains(c.Path(), "/docs")
 		},
 	}))
 
-	// API - v1
-	v1 := e.Group("/v1")
-
-	// API
-	a := v1.Group("/api")
-	a.Use(echojwt.WithConfig(echojwt.Config{
+	e.Use(echojwt.WithConfig(echojwt.Config{
 		SigningKey:  []byte(auth.ChaveDeAcesso),
 		TokenLookup: "cookie:access-token",
 		NewClaimsFunc: func(c echo.Context) jwt.Claims {
@@ -52,47 +47,47 @@ func (s *Server) RegisterRoutes() http.Handler {
 	}))
 
 	// API - Documentação Swagger
-	a.GET("/docs/*", echoSwagger.WrapHandler)
+	e.GET("/docs/*", echoSwagger.WrapHandler)
 
 	// API - Usuário
-	a.GET("/usuarios", s.UsuarioReadAll)
-	a.GET("/usuarios/historico", s.HistoricoUsuarioReadAll)
-	a.GET("/usuarios/:nome_de_usuario", s.UsuarioReadByNomeDeUsuario)
-	a.POST("/usuarios_temporarios", s.UsuarioTemporarioCreate)
-	a.POST("/usuarios_temporarios/historico", s.HistoricoUsuarioTemporarioReadAll)
-	a.PATCH("/usuarios/:nome_de_usuario", s.UsuarioUpdate)
-	a.DELETE("/usuarios/:nome_de_usuario", s.UsuarioRemove)
+	e.GET("/usuarios", s.UsuarioReadAll)
+	e.GET("/usuarios/historico", s.HistoricoUsuarioReadAll)
+	e.GET("/usuarios/:nome_de_usuario", s.UsuarioReadByNomeDeUsuario)
+	e.POST("/usuarios_temporarios", s.UsuarioTemporarioCreate)
+	e.POST("/usuarios_temporarios/historico", s.HistoricoUsuarioTemporarioReadAll)
+	e.PATCH("/usuarios/:nome_de_usuario", s.UsuarioUpdate)
+	e.DELETE("/usuarios/:nome_de_usuario", s.UsuarioRemove)
 
 	// API - Autenticação
-	a.POST("/usuarios/login", s.UsuarioLogin)
-	a.PATCH("/usuarios/troca_de_senha/:valor", s.UsuarioTrocaDeSenha)
-	a.POST("/usuarios/:nome_de_usuario/troca_de_senha", s.UsuarioTrocaDeSenhaExigir)
-	a.PATCH("/autenticacao/:valor", s.UsuarioAutenticado)
+	e.POST("/usuarios/login", s.UsuarioLogin)
+	e.PATCH("/usuarios/troca_de_senha/:valor", s.UsuarioTrocaDeSenha)
+	e.POST("/usuarios/:nome_de_usuario/troca_de_senha", s.UsuarioTrocaDeSenhaExigir)
+	e.PATCH("/autenticacao/:valor", s.UsuarioAutenticado)
 
 	// API - Plano de Assinatura
-	a.GET("/planos_de_assinatura", s.PlanoDeAssinaturaReadAll)
-	a.GET("/planos_de_assinatura/historico", s.HistoricoPlanoDeAssinaturaReadAll)
-	a.GET("/planos_de_assinatura/:nome", s.PlanoDeAssinaturaReadByNome)
-	a.POST("/planos_de_assinatura", s.PlanoDeAssinaturaCreate)
-	a.PATCH("/planos_de_assinatura/:nome", s.PlanoDeAssinaturaUpdate)
-	a.DELETE("/planos_de_assinatura/:nome", s.PlanoDeAssinaturaRemove)
+	e.GET("/planos_de_assinatura", s.PlanoDeAssinaturaReadAll)
+	e.GET("/planos_de_assinatura/historico", s.HistoricoPlanoDeAssinaturaReadAll)
+	e.GET("/planos_de_assinatura/:nome", s.PlanoDeAssinaturaReadByNome)
+	e.POST("/planos_de_assinatura", s.PlanoDeAssinaturaCreate)
+	e.PATCH("/planos_de_assinatura/:nome", s.PlanoDeAssinaturaUpdate)
+	e.DELETE("/planos_de_assinatura/:nome", s.PlanoDeAssinaturaRemove)
 
 	// API - Redirecionador
-	a.GET("/redirecionadores", s.RedirecionadorReadAll)
-	a.GET("/redirecionadores/historico", s.HistoricoRedirecionadorReadAll)
-	a.GET("/redirecionadores/:codigo_hash", s.RedirecionadorReadByCodigoHash)
-	a.POST("/redirecionadores", s.RedirecionadorCreate)
-	a.PATCH("/redirecionadores/:codigo_hash/rehash", s.RedirecionadorRehash)
-	a.PATCH("/redirecionadores/:codigo_hash", s.RedirecionadorUpdate)
-	a.DELETE("/redirecionadores/:codigo_hash", s.RedirecionadorRemove)
+	e.GET("/redirecionadores", s.RedirecionadorReadAll)
+	e.GET("/redirecionadores/historico", s.HistoricoRedirecionadorReadAll)
+	e.GET("/redirecionadores/:codigo_hash", s.RedirecionadorReadByCodigoHash)
+	e.POST("/redirecionadores", s.RedirecionadorCreate)
+	e.PATCH("/redirecionadores/:codigo_hash/rehash", s.RedirecionadorRehash)
+	e.PATCH("/redirecionadores/:codigo_hash", s.RedirecionadorUpdate)
+	e.DELETE("/redirecionadores/:codigo_hash", s.RedirecionadorRemove)
 
 	// API - Link
-	a.GET("/redirecionadores/:codigo_hash/links", s.LinkReadByCodigoHash)
-	a.GET("/redirecionadores/:codigo_hash/links/historico", s.HistoricoLinkReadAll)
-	a.GET("/redirecionadores/:codigo_hash/links/:id", s.LinkReadById)
-	a.POST("/redirecionadores/:codigo_hash/links", s.LinkCreate)
-	a.PATCH("/redirecionadores/:codigo_hash/links/:id", s.LinkUpdate)
-	a.DELETE("/redirecionadores/:codigo_hash/links/:id", s.LinkRemove)
+	e.GET("/redirecionadores/:codigo_hash/links", s.LinkReadByCodigoHash)
+	e.GET("/redirecionadores/:codigo_hash/links/historico", s.HistoricoLinkReadAll)
+	e.GET("/redirecionadores/:codigo_hash/links/:id", s.LinkReadById)
+	e.POST("/redirecionadores/:codigo_hash/links", s.LinkCreate)
+	e.PATCH("/redirecionadores/:codigo_hash/links/:id", s.LinkUpdate)
+	e.DELETE("/redirecionadores/:codigo_hash/links/:id", s.LinkRemove)
 
 	return e
 }

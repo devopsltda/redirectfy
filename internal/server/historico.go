@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"redirectify/internal/utils"
+	"redirectfy/internal/utils"
 
-	_ "redirectify/internal/models"
+	_ "redirectfy/internal/models"
 )
 
 // HistoricoPlanoDeAssinaturaReadAll godoc
@@ -26,7 +26,7 @@ import (
 //
 // @Failure 500 {object} Erro
 //
-// @Router  /v1/api/planos_de_assinatura/historico [get]
+// @Router  /planos_de_assinatura/historico [get]
 func (s *Server) HistoricoPlanoDeAssinaturaReadAll(c echo.Context) error {
 	historico, err := s.HistoricoModel.PlanoDeAssinaturaReadAll()
 
@@ -54,7 +54,7 @@ func (s *Server) HistoricoPlanoDeAssinaturaReadAll(c echo.Context) error {
 //
 // @Failure 500 {object} Erro
 //
-// @Router  /v1/api/usuarios_temporarios/historico [get]
+// @Router  /usuarios_temporarios/historico [get]
 func (s *Server) HistoricoUsuarioTemporarioReadAll(c echo.Context) error {
 	historico, err := s.HistoricoModel.UsuarioTemporarioReadAll()
 
@@ -82,7 +82,7 @@ func (s *Server) HistoricoUsuarioTemporarioReadAll(c echo.Context) error {
 //
 // @Failure 500 {object} Erro
 //
-// @Router  /v1/api/usuarios/historico [get]
+// @Router  /usuarios/historico [get]
 func (s *Server) HistoricoUsuarioReadAll(c echo.Context) error {
 	historico, err := s.HistoricoModel.UsuarioReadAll()
 
@@ -110,7 +110,7 @@ func (s *Server) HistoricoUsuarioReadAll(c echo.Context) error {
 //
 // @Failure 500 {object} Erro
 //
-// @Router  /v1/api/redirecionadores/historico [get]
+// @Router  /redirecionadores/historico [get]
 func (s *Server) HistoricoRedirecionadorReadAll(c echo.Context) error {
 	historico, err := s.HistoricoModel.RedirecionadorReadAll()
 
@@ -138,7 +138,7 @@ func (s *Server) HistoricoRedirecionadorReadAll(c echo.Context) error {
 //
 // @Failure 500 {object} Erro
 //
-// @Router  /v1/api/links/historico [get]
+// @Router  /links/historico [get]
 func (s *Server) HistoricoLinkReadAll(c echo.Context) error {
 	historico, err := s.HistoricoModel.LinkReadAll()
 

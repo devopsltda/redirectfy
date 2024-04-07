@@ -9,10 +9,10 @@ import (
 	"strconv"
 	"time"
 
-	"redirectify/internal/models"
-	"redirectify/internal/services/database"
-	"redirectify/internal/services/email"
-	"redirectify/internal/utils"
+	"redirectfy/internal/models"
+	"redirectfy/internal/services/database"
+	"redirectfy/internal/services/email"
+	"redirectfy/internal/utils"
 
 	_ "github.com/joho/godotenv/autoload"
 )

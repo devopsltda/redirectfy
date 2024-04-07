@@ -37,7 +37,7 @@ func (e *Email) SendValidacao(id int64, nome, valor, email string) error {
 	message := `From: Redirectify <{{ .From }}>
 To: {{ .Nome }} <{{ .Email }}>
 Subject: Olá, {{ .Nome }}! Confirme seu endereço de email
-Message-ID: <{{ .Id }}no-reply@redirectify.com>
+Message-ID: <{{ .Id }}no-reply@redirectfy.com>
 Content-Type: text/html; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
@@ -86,7 +86,7 @@ func (e *Email) SendTrocaDeSenha(id int64, nome, valor, email string) error {
 	message := `From: Redirectify <{{ .From }}>
 To: {{ .Nome }} <{{ .Email }}>
 Subject: Olá, {{ .Nome }}! Confirme seu endereço de email
-Message-ID: <{{ .Id }}no-reply@redirectify.com>
+Message-ID: <{{ .Id }}no-reply@redirectfy.com>
 Content-Type: text/html; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
