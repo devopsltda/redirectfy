@@ -13,12 +13,19 @@ import (
 // HistoricoPlanoDeAssinaturaReadAll godoc
 //
 // @Summary Retorna o histórico de ações relativas a planos de assinatura no sistema
+//
 // @Tags    Histórico
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Success 200 {object} []models.HistoricoPlanoDeAssinatura
+//
 // @Failure 400 {object} Erro
+//
 // @Failure 500 {object} Erro
+//
 // @Router  /v1/api/planos_de_assinatura/historico [get]
 func (s *Server) HistoricoPlanoDeAssinaturaReadAll(c echo.Context) error {
 	historico, err := s.HistoricoModel.PlanoDeAssinaturaReadAll()
@@ -34,12 +41,19 @@ func (s *Server) HistoricoPlanoDeAssinaturaReadAll(c echo.Context) error {
 // HistoricoUsuarioTemporarioReadAll godoc
 //
 // @Summary Retorna o histórico de ações relativas a usuários temporários no sistema
+//
 // @Tags    Histórico
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Success 200 {object} []models.HistoricoUsuarioTemporario
+//
 // @Failure 400 {object} Erro
+//
 // @Failure 500 {object} Erro
+//
 // @Router  /v1/api/usuarios_temporarios/historico [get]
 func (s *Server) HistoricoUsuarioTemporarioReadAll(c echo.Context) error {
 	historico, err := s.HistoricoModel.UsuarioTemporarioReadAll()
@@ -55,12 +69,19 @@ func (s *Server) HistoricoUsuarioTemporarioReadAll(c echo.Context) error {
 // HistoricoUsuarioReadAll godoc
 //
 // @Summary Retorna o histórico de ações relativas a usuários no sistema
+//
 // @Tags    Histórico
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Success 200 {object} []models.HistoricoUsuario
+//
 // @Failure 400 {object} Erro
+//
 // @Failure 500 {object} Erro
+//
 // @Router  /v1/api/usuarios/historico [get]
 func (s *Server) HistoricoUsuarioReadAll(c echo.Context) error {
 	historico, err := s.HistoricoModel.UsuarioReadAll()
@@ -76,12 +97,19 @@ func (s *Server) HistoricoUsuarioReadAll(c echo.Context) error {
 // HistoricoRedirecionadorReadAll godoc
 //
 // @Summary Retorna o histórico de ações relativas a redirecionadores no sistema
+//
 // @Tags    Histórico
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Success 200 {object} []models.HistoricoRedirecionador
+//
 // @Failure 400 {object} Erro
+//
 // @Failure 500 {object} Erro
+//
 // @Router  /v1/api/redirecionadores/historico [get]
 func (s *Server) HistoricoRedirecionadorReadAll(c echo.Context) error {
 	historico, err := s.HistoricoModel.RedirecionadorReadAll()
@@ -97,12 +125,19 @@ func (s *Server) HistoricoRedirecionadorReadAll(c echo.Context) error {
 // HistoricoLinkReadAll godoc
 //
 // @Summary Retorna o histórico de ações relativas a links no sistema
+//
 // @Tags    Histórico
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Success 200 {object} []models.HistoricoLink
+//
 // @Failure 400 {object} Erro
+//
 // @Failure 500 {object} Erro
+//
 // @Router  /v1/api/links/historico [get]
 func (s *Server) HistoricoLinkReadAll(c echo.Context) error {
 	historico, err := s.HistoricoModel.LinkReadAll()

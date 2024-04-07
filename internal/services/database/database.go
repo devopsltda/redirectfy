@@ -18,6 +18,7 @@ var (
 	dbUrl   = os.Getenv("DB_URL")
 	dbName  = os.Getenv("DB_NAME")
 	dbToken = os.Getenv("DB_TOKEN")
+	dbSourcePath = os.Getenv("DB_SOURCE_PATH")
 
 	TempDir     string
 	dbConnector *libsql.Connector
@@ -28,7 +29,13 @@ func New() *sql.DB {
 
 	if utils.AppEnv == "test" {
 		db, err := sql.Open("sqlite", "file::memory:?cache=shared")
-		seed(db, os.Getenv("DB_SOURCE_PATH"))
+
+		if err != nil {
+			slog.Error("BancoDeDados", slog.Any("error", err))
+			os.Exit(1)
+		}
+
+		err = seed(db, dbSourcePath)
 
 		if err != nil {
 			slog.Error("BancoDeDados", slog.Any("error", err))
@@ -54,6 +61,13 @@ func New() *sql.DB {
 	}
 
 	db := sql.OpenDB(dbConnector)
+
+	if err != nil {
+		slog.Error("BancoDeDados", slog.Any("error", err))
+		os.Exit(1)
+	}
+
+	err = seed(db, dbSourcePath[1:])
 
 	if err != nil {
 		slog.Error("BancoDeDados", slog.Any("error", err))

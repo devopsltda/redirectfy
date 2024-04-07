@@ -15,9 +15,13 @@ import (
 )
 
 // @title API do Redirectify
+//
 // @version 1.0.0
+//
 // @description API para interagir com o Redirectify
+//
 // @contact.name Equipe da DevOps (Pablo Eduardo, Guilherme Bernardo e Eduardo Henrique)
+//
 // @contact.email comercialdevops@gmail.com
 func (s *Server) RegisterRoutes() http.Handler {
 	e := echo.New()

@@ -13,13 +13,21 @@ import (
 // PlanoDeAssinaturaReadByNome godoc
 //
 // @Summary Retorna o plano de assinatura com o nome fornecido
+//
 // @Tags    Planos de Assinatura
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   nome path     string  true  "Nome"
+//
 // @Success 200  {object} models.PlanoDeAssinatura
+//
 // @Failure 400  {object} utils.Erro
+//
 // @Failure 500  {object} utils.Erro
+//
 // @Router  /v1/api/planos_de_assinatura/:nome [get]
 func (s *Server) PlanoDeAssinaturaReadByNome(c echo.Context) error {
 	nome := c.Param("nome")
@@ -41,12 +49,19 @@ func (s *Server) PlanoDeAssinaturaReadByNome(c echo.Context) error {
 // PlanoDeAssinaturaReadAll godoc
 //
 // @Summary Retorna os planos de assinatura
+//
 // @Tags    Planos de Assinatura
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Success 200  {object} []models.PlanoDeAssinatura
+//
 // @Failure 400  {object} utils.Erro
+//
 // @Failure 500  {object} utils.Erro
+//
 // @Router  /v1/api/planos_de_assinatura [get]
 func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
 	planosDeAssinatura, err := s.PlanoDeAssinaturaModel.ReadAll()
@@ -62,16 +77,27 @@ func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
 // PlanoDeAssinaturaCreate godoc
 //
 // @Summary Cria um plano de assinatura
+//
 // @Tags    Planos de Assinatura
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   nome                            body     string true "Nome"
+//
 // @Param   valor_mensal                    body     int    true "Valor Mensal"
+//
 // @Param   limite_links_mensal             body     int    true "Limite de Links Mensal"
+//
 // @Param   ordenacao_aleatoria_links       body     bool   true "Ordenação Aleatória de Links"
+//
 // @Success 200                             {object} map[string]string
+//
 // @Failure 400                             {object} utils.Erro
+//
 // @Failure 500                             {object} utils.Erro
+//
 // @Router  /v1/api/planos_de_assinatura [post]
 func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 	parametros := struct {
@@ -117,17 +143,29 @@ func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 // PlanoDeAssinaturaUpdate godoc
 //
 // @Summary Atualiza um plano de assinatura
+//
 // @Tags    Planos de Assinatura
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   nome                            path     string true  "Nome"
+//
 // @Param   nome                            body     string false "Nome"
+//
 // @Param   valor_mensal                    body     int    false "Valor Mensal"
+//
 // @Param   limite_links_mensal             body     int    false "Limite de Links Mensal"
+//
 // @Param   ordenacao_aleatoria_links       body     bool   true  "Ordenação Aleatória de Links"
+//
 // @Success 200                             {object} map[string]string
+//
 // @Failure 400                             {object} utils.Erro
+//
 // @Failure 500                             {object} utils.Erro
+//
 // @Router  /v1/api/planos_de_assinatura/:nome [patch]
 func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 	type parametrosUpdate struct {
@@ -185,13 +223,21 @@ func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 // PlanoDeAssinaturaRemove godoc
 //
 // @Summary Remove um plano de assinatura
+//
 // @Tags    Planos de Assinatura
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   nome path     string true "Nome"
+//
 // @Success 200  {object} map[string]string
+//
 // @Failure 400  {object} utils.Erro
+//
 // @Failure 500  {object} utils.Erro
+//
 // @Router  /v1/api/planos_de_assinatura/:nome [delete]
 func (s *Server) PlanoDeAssinaturaRemove(c echo.Context) error {
 	nome := c.Param("nome")

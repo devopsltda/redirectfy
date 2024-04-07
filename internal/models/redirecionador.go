@@ -9,7 +9,7 @@ type Redirecionador struct {
 	Nome                    string         `json:"nome"`
 	CodigoHash              string         `json:"codigo_hash"`
 	OrdemDeRedirecionamento string         `json:"ordem_de_redirecionamento"`
-	Usuario                 int64          `json:"usuario"`
+	Usuario                 string         `json:"usuario"`
 	CriadoEm                string         `json:"criado_em"`
 	AtualizadoEm            string         `json:"atualizado_em"`
 	RemovidoEm              sql.NullString `json:"removido_em" swaggertype:"string"`
@@ -47,10 +47,13 @@ func (r *RedirecionadorModel) ReadByCodigoHash(codigoHash string) (Redirecionado
 	return redirecionador, nil
 }
 
-func (r *RedirecionadorModel) ReadAll() ([]Redirecionador, error) {
+func (r *RedirecionadorModel) ReadAll(nomeDeUsuario string) ([]Redirecionador, error) {
 	var redirecionadores []Redirecionador
 
-	rows, err := r.DB.Query("SELECT ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL")
+	rows, err := r.DB.Query(
+		"SELECT ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND USUARIO = $1",
+		nomeDeUsuario,
+	)
 
 	if err != nil {
 		return nil, err
@@ -105,7 +108,7 @@ func (r *RedirecionadorModel) CheckIfCodigoHashExists(codigoHash string) (bool, 
 	return true, nil
 }
 
-func (r *RedirecionadorModel) Create(nome, codigoHash, ordemDeRedirecionamento string, usuario int64) (int64, error) {
+func (r *RedirecionadorModel) Create(nome, codigoHash, ordemDeRedirecionamento, usuario string) (int64, error) {
 	result, err := r.DB.Exec(
 		"INSERT INTO REDIRECIONADOR (NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO) VALUES ($1, $2, $3, $4) RETURNING ID",
 		nome,

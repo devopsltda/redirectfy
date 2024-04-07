@@ -20,13 +20,21 @@ type RedirecionadorReadByCodigoHashResponse struct {
 // RedirecionadorReadByCodigoHash godoc
 //
 // @Summary Retorna o redirecionador com o código hash fornecido
+//
 // @Tags    Redirecionadors
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   codigo_hash path     string true "Código Hash"
+//
 // @Success 200         {object} models.Redirecionador
+//
 // @Failure 400         {object} utils.Erro
+//
 // @Failure 500         {object} utils.Erro
+//
 // @Router  /v1/api/redirecionadores/:codigo_hash [get]
 func (s *Server) RedirecionadorReadByCodigoHash(c echo.Context) error {
 	codigoHash := c.Param("codigo_hash")
@@ -57,15 +65,30 @@ func (s *Server) RedirecionadorReadByCodigoHash(c echo.Context) error {
 // RedirecionadorReadAll godoc
 //
 // @Summary Retorna os redirecionadores
+//
 // @Tags    Redirecionadores
+//
 // @Accept  json
+//
 // @Produce json
-// @Success 200 {object} []models.Redirecionador
-// @Failure 400 {object} utils.Erro
-// @Failure 500 {object} utils.Erro
-// @Router  /v1/api/redirecionadores [get]
+//
+// @Param   nome_de_usuario path     string true "Nome de Usuário"
+//
+// @Success 200             {object} []models.Redirecionador
+//
+// @Failure 400             {object} utils.Erro
+//
+// @Failure 500             {object} utils.Erro
+//
+// @Router  /v1/api/redirecionadores/:nome_de_usuario [get]
 func (s *Server) RedirecionadorReadAll(c echo.Context) error {
-	redirecionadores, err := s.RedirecionadorModel.ReadAll()
+	nomeDeUsuario := c.Param("nome_de_usuario")
+
+	if !utils.ValidaNomeDeUsuario(nomeDeUsuario) {
+		return utils.ErroValidacaoNomeDeUsuario
+	}
+
+	redirecionadores, err := s.RedirecionadorModel.ReadAll(nomeDeUsuario)
 
 	if err != nil {
 		slog.Error("RedirecionadorReadAll", slog.Any("error", err))
@@ -78,21 +101,32 @@ func (s *Server) RedirecionadorReadAll(c echo.Context) error {
 // RedirecionadorCreate godoc
 //
 // @Summary Cria um redirecionador
+//
+//
 // @Tags    Redirecionadores
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   nome                      body     string true  "Nome"
+//
 // @Param   ordem_de_redirecionamento body     string true  "Ordem de Redirecionamento"
-// @Param   usuario                   body     string int   "Usuário"
+//
+// @Param   nome_de_usuario           body     string true  "Nome de Usuário"
+//
 // @Success 200                       {object} map[string]string
+//
 // @Failure 400                       {object} utils.Erro
+//
 // @Failure 500                       {object} utils.Erro
+//
 // @Router  /v1/api/redirecionadores [post]
 func (s *Server) RedirecionadorCreate(c echo.Context) error {
 	parametros := struct {
 		Nome                    string `json:"nome"`
 		OrdemDeRedirecionamento string `json:"ordem_de_redirecionamento"`
-		Usuario                 int64  `json:"usuario"`
+		Usuario                 string  `json:"nome_de_usuario"`
 	}{}
 
 	var erros []string
@@ -109,8 +143,8 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça uma ordem de redirecionamento válida para o parâmetro 'ordem_de_redirecionamento'.")
 	}
 
-	if err := utils.Validate.Var(parametros.Usuario, "required,gte=0"); err != nil {
-		erros = append(erros, "Por favor, forneça um usuário válido para o parâmetro 'usuario'.")
+	if !utils.ValidaNomeDeUsuario(parametros.Usuario) {
+		erros = append(erros, "Por favor, forneça um nome de usuário válido para o parâmetro 'nome_de_usuario'.")
 	}
 
 	if len(erros) > 0 {
@@ -150,13 +184,21 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 // RedirecionadorRehash godoc
 //
 // @Summary Recria o hash de um redirecionador
+//
 // @Tags    Redirecionadores
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   codigo_hash path     string true "Código Hash"
+//
 // @Success 200         {object} map[string]string
+//
 // @Failure 400         {object} utils.Erro
+//
 // @Failure 500         {object} utils.Erro
+//
 // @Router  /v1/api/redirecionadores/rehash/:codigo_hash [patch]
 func (s *Server) RedirecionadorRehash(c echo.Context) error {
 	codigoHash := c.Param("codigo_hash")
@@ -193,15 +235,25 @@ func (s *Server) RedirecionadorRehash(c echo.Context) error {
 // RedirecionadorUpdate godoc
 //
 // @Summary Atualiza um redirecionador
+//
 // @Tags    Redirecionadores
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   codigo_hash               path     string true  "Código Hash"
+//
 // @Param   nome                      body     string false "Nome"
+//
 // @Param   ordem_de_redirecionamento body     string false "Ordem de Redirecionamento"
+//
 // @Success 200                       {object} map[string]string
+//
 // @Failure 400                       {object} utils.Erro
+//
 // @Failure 500                       {object} utils.Erro
+//
 // @Router  /v1/api/redirecionadores/:codigo_hash [patch]
 func (s *Server) RedirecionadorUpdate(c echo.Context) error {
 	parametros := struct {
@@ -247,13 +299,21 @@ func (s *Server) RedirecionadorUpdate(c echo.Context) error {
 // RedirecionadorRemove godoc
 //
 // @Summary Remove um redirecionador
+//
 // @Tags    Redirecionadors
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   codigo_hash path     string true "Código Hash"
+//
 // @Success 200         {object} map[string]string
+//
 // @Failure 400         {object} utils.Erro
+//
 // @Failure 500         {object} utils.Erro
+//
 // @Router  /v1/api/redirecionadores/:codigo_hash [delete]
 func (s *Server) RedirecionadorRemove(c echo.Context) error {
 	codigoHash := c.Param("codigo_hash")

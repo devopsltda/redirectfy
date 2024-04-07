@@ -16,14 +16,23 @@ import (
 // LinkReadById godoc
 //
 // @Summary Retorna o link com o id fornecido do redirecionador com o código hash fornecido
+//
 // @Tags    Links
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   codigo_hash path     string true "Código Hash"
+//
 // @Param   id          path     int true "Id"
+//
 // @Success 200         {object} models.Link
+//
 // @Failure 400         {object} utils.Erro
+//
 // @Failure 500         {object} utils.Erro
+//
 // @Router  /v1/api/redirecionadores/:codigo_hash/links/:id [get]
 func (s *Server) LinkReadById(c echo.Context) error {
 	id := c.Param("id")
@@ -57,13 +66,21 @@ func (s *Server) LinkReadById(c echo.Context) error {
 // LinkReadByCodigoHash godoc
 //
 // @Summary Retorna os links do redirecionador com o código hash fornecido
+//
 // @Tags    Links
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   codigo_hash path     string true "Código Hash"
+//
 // @Success 200         {object} []models.Link
+//
 // @Failure 400         {object} utils.Erro
+//
 // @Failure 500         {object} utils.Erro
+//
 // @Router  /v1/api/redirecionadores/:codigo_hash/links [get]
 func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
 	codigoHash := c.Param("codigo_hash")
@@ -85,14 +102,23 @@ func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
 // LinkCreate godoc
 //
 // @Summary Cria links no redirecionador com o código hash fornecido
+//
 // @Tags    Links
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   codigo_hash         path     string true "Código Hash"
+//
 // @Param   links               body     []models.LinkToBatchInsert true "Links"
+//
 // @Success 200                 {object} map[string]string
+//
 // @Failure 400                 {object} utils.Erro
+//
 // @Failure 500                 {object} utils.Erro
+//
 // @Router  /v1/api/redirecionadores/:codigo_hash/links [post]
 func (s *Server) LinkCreate(c echo.Context) error {
 	parametros := struct {
@@ -142,17 +168,29 @@ func (s *Server) LinkCreate(c echo.Context) error {
 // LinkUpdate godoc
 //
 // @Summary Atualiza um link específico de um redirecionador específico
+//
 // @Tags    Links
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   codigo_hash path     string true  "Código Hash"
+//
 // @Param   id          path     int    true  "Id"
+//
 // @Param   nome        body     string false "Nome"
+//
 // @Param   link        body     string false "Link"
+//
 // @Param   plataforma  body     string false "Plataforma"
+//
 // @Success 200         {object} map[string]string
+//
 // @Failure 400         {object} utils.Erro
+//
 // @Failure 500         {object} utils.Erro
+//
 // @Router  /v1/api/redirecionadores/:codigo_hash/link/:id [patch]
 func (s *Server) LinkUpdate(c echo.Context) error {
 	parametros := struct {
@@ -202,14 +240,23 @@ func (s *Server) LinkUpdate(c echo.Context) error {
 // LinkRemove godoc
 //
 // @Summary Remove um link específico de um redirecionador específico
+//
 // @Tags    Links
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   codigo_hash path     string true "Código Hash"
+//
 // @Param   id          path     int    true "Id"
+//
 // @Success 200         {object} map[string]string
+//
 // @Failure 400         {object} utils.Erro
+//
 // @Failure 500         {object} utils.Erro
+//
 // @Router  /v1/api/redirecionadores/:codigo_hash/link/:id [delete]
 func (s *Server) LinkRemove(c echo.Context) error {
 	id := c.Param("id")

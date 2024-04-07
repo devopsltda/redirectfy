@@ -33,13 +33,21 @@ func criaNomeDeUsuario(s string) string {
 // UsuarioReadByNomeDeUsuario godoc
 //
 // @Summary Retorna o usuário com o nome de usuário fornecido
+//
 // @Tags    Usuários
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   nome_de_usuario path     string  true  "Nome de Usuário"
+//
 // @Success 200             {object} models.Usuario
+//
 // @Failure 400             {object} utils.Erro
+//
 // @Failure 500             {object} utils.Erro
+//
 // @Router  /v1/api/usuarios/:nome_de_usuario [get]
 func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
@@ -61,12 +69,19 @@ func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 // UsuarioReadAll godoc
 //
 // @Summary Retorna todos os usuários
+//
 // @Tags    Usuários
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Success 200             {object} []models.Usuario
+//
 // @Failure 400             {object} utils.Erro
+//
 // @Failure 500             {object} utils.Erro
+//
 // @Router  /v1/api/usuarios [get]
 func (s *Server) UsuarioReadAll(c echo.Context) error {
 	usuarios, err := s.UsuarioModel.ReadAll()
@@ -82,19 +97,33 @@ func (s *Server) UsuarioReadAll(c echo.Context) error {
 // UsuarioCreate godoc
 //
 // @Summary Cria um usuário
+//
 // @Tags    Usuários
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   cpf                 body     string true "CPF"
+//
 // @Param   nome                body     string true "Nome"
+//
 // @Param   nome_de_usuario     body     string true "Nome de Usuário"
+//
 // @Param   email               body     string true "Email"
+//
 // @Param   senha               body     string true "Senha"
+//
 // @Param   data_de_nascimento  body     string true "Data de Nascimento"
+//
 // @Param   plano_de_assinatura body     string true "Plano de Assinatura"
+//
 // @Success 200                 {object} map[string]string
+//
 // @Failure 400                 {object} utils.Erro
+//
 // @Failure 500                 {object} utils.Erro
+//
 // @Router  /v1/api/usuarios [post]
 func (s *Server) UsuarioCreate(c echo.Context) error {
 	parametros := struct {
@@ -203,16 +232,27 @@ func (s *Server) UsuarioCreate(c echo.Context) error {
 // UsuarioTemporarioCreate godoc
 //
 // @Summary Cria um usuário temporário
+//
 // @Tags    UsuáriosTemporários
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   customer.document   body     string        true "CPF"
+//
 // @Param   customer.name       body     string        true "Nome"
+//
 // @Param   customer.email      body     string        true "Email"
+//
 // @Param   products            body     []produto    true "Plano de Assinatura"
+//
 // @Success 200                 {object} map[string]string
+//
 // @Failure 400                 {object} utils.Erro
+//
 // @Failure 500                 {object} utils.Erro
+//
 // @Router  /v1/api/usuarios_temporarios [post]
 func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 	parametros := struct {
@@ -297,20 +337,35 @@ func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 // UsuarioUpdate godoc
 //
 // @Summary Atualiza um usuário
+//
 // @Tags    Usuários
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   nome_de_usuario     path     string true "Nome de Usuário"
+//
 // @Param   cpf                 body     string false "CPF"
+//
 // @Param   nome                body     string false "Nome"
+//
 // @Param   nome_de_usuario     body     string false "Nome de Usuário"
+//
 // @Param   email               body     string false "Email"
+//
 // @Param   senha               body     string false "Senha"
+//
 // @Param   data_de_nascimento  body     string false "Data de Nascimento"
+//
 // @Param   plano_de_assinatura body     string false "Plano de Assinatura"
+//
 // @Success 200                 {object} map[string]string
+//
 // @Failure 400                 {object} utils.Erro
+//
 // @Failure 500                 {object} utils.Erro
+//
 // @Router  /v1/api/usuarios/:nome_de_usuario [patch]
 func (s *Server) UsuarioUpdate(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
@@ -405,15 +460,25 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 // UsuarioAutenticado godoc
 //
 // @Summary Autentica um usuário
+//
 // @Tags    Usuários
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   valor              path     string true "Valor"
+//
 // @Param   senha              body     string true "Senha"
+//
 // @Param   data_de_nascimento body     string true "Data de Nascimento"
+//
 // @Success 200                {object} map[string]string
+//
 // @Failure 400                {object} utils.Erro
+//
 // @Failure 500                {object} utils.Erro
+//
 // @Router  /v1/api/usuarios/autentica/:valor [patch]
 func (s *Server) UsuarioAutenticado(c echo.Context) error {
 	type parametrosUpdate struct {
@@ -503,13 +568,21 @@ func (s *Server) UsuarioAutenticado(c echo.Context) error {
 // UsuarioTrocaDeSenhaExigir godoc
 //
 // @Summary Exige a troca de senha de um usuário
+//
 // @Tags    Usuários
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   nome_de_usuario   path     string true "Nome de Usuário"
+//
 // @Success 200               {object} map[string]string
+//
 // @Failure 400               {object} utils.Erro
+//
 // @Failure 500               {object} utils.Erro
+//
 // @Router  /v1/api/usuarios/:nome_de_usuario/troca_de_senha [patch]
 func (s *Server) UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
@@ -561,14 +634,23 @@ func (s *Server) UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 // UsuarioTrocaDeSenha godoc
 //
 // @Summary Troca a senha de um usuário
+//
 // @Tags    Usuários
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   valor             path     string true "Valor"
+//
 // @Param   senha_nova        body     string true "Senha Nova"
+//
 // @Success 200               {object} map[string]string
+//
 // @Failure 400               {object} utils.Erro
+//
 // @Failure 500               {object} utils.Erro
+//
 // @Router  /v1/api/usuarios/troca_de_senha/:valor [patch]
 func (s *Server) UsuarioTrocaDeSenha(c echo.Context) error {
 	valor := c.Param("valor")
@@ -625,13 +707,21 @@ func (s *Server) UsuarioTrocaDeSenha(c echo.Context) error {
 // UsuarioRemove godoc
 //
 // @Summary Remove um usuário
+//
 // @Tags    Usuários
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   nome_de_usuario   path     string true "Nome de Usuário"
+//
 // @Success 200               {object} map[string]string
+//
 // @Failure 400               {object} utils.Erro
+//
 // @Failure 500               {object} utils.Erro
+//
 // @Router  /v1/api/usuarios/:nome_de_usuario [delete]
 func (s *Server) UsuarioRemove(c echo.Context) error {
 	nomeDeUsuario := c.Param("nome_de_usuario")
@@ -653,14 +743,23 @@ func (s *Server) UsuarioRemove(c echo.Context) error {
 // UsuarioLogin godoc
 //
 // @Summary Autentica o usuário
+//
 // @Tags    Usuários
+//
 // @Accept  json
+//
 // @Produce json
+//
 // @Param   email             body     string true "Email"
+//
 // @Param   senha             body     string true  "Senha"
+//
 // @Success 200               {object} map[string]string
+//
 // @Failure 400               {object} utils.Erro
+//
 // @Failure 500               {object} utils.Erro
+//
 // @Router  /v1/api/usuarios/login [post]
 func (s *Server) UsuarioLogin(c echo.Context) error {
 	parametros := struct {
