@@ -46,18 +46,16 @@ func TestDatabasePlanoAssinatura(t *testing.T) {
 			100,
 			true,
 		)
-		models, err := p.ReadByNome(
+		_, err := p.ReadByNome(
 			"plano teste",
 		)
-		println(models.Nome)
 		assert.NoError(t, err)
 	})
 
 	t.Run("Consultar 1 plano de assinatura(sql nulo)", func(t *testing.T) {
-		models, err := p.ReadByNome(
+		_, err := p.ReadByNome(
 			"plano teste",
 		)
-		println(models.Nome)
 		assert.NoError(t, err)
 	})
 
@@ -142,7 +140,7 @@ func TestDatabaseUsuario(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
-	t.Run("Adicionar usuário DUPLICADO(msm cpf) ao banco de dados", func(t *testing.T) {
+	t.Run("Adicionar usuário DUPLICADO(msm cpf) ao banco de dados[EXPECTED ERROR]", func(t *testing.T) {
 		u.Create(
 			"02958985261",
 			"Eduardo Henrique Freire Machado",
@@ -162,6 +160,19 @@ func TestDatabaseUsuario(t *testing.T) {
 			"1",
 		)
 		assert.Error(t, err)
+	})
+
+	t.Run("Adicionar usuario no banco de dados(sem plano de assinatura criado[EXPECTED ERROR])", func(t *testing.T) {
+		_, err := u.Create(
+			"09921080218",
+			"Guilherme Lucas Pereira Bernardo",
+			"GuilhermeBN",
+			"bguilherem51@gmail.com",
+			"senha-muito-complexa-aqui",
+			"2000-10-31",
+			"askdjaksdjaksj",
+		)
+		assert.Equal(t, err, nil)
 	})
 
 	t.Run("Atualizar usuário do banco de dados", func(t *testing.T) {
@@ -186,7 +197,7 @@ func TestDatabaseUsuario(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
-	t.Run("Atualizar usuário(COM OS MESMOS DADOS) do banco de dados", func(t *testing.T) {
+	t.Run("Atualizar usuário(COM OS MESMOS DADOS) do banco de dados[EXPECTED ERROR]", func(t *testing.T) {
 		u.Create( //Cria usuario
 			"09921080218",
 			"Guilherme Lucas Pereira Bernardo",
@@ -257,7 +268,7 @@ func TestDatabaseUsuario(t *testing.T) {
 			"bguilherme51@gmail.com",
 			"Senha123",
 			"01-01-2000",
-			"1",
+			"Gratuito",
 		)
 		err := u.Remove(
 			"GuilhermeBN",

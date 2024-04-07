@@ -1,27 +1,69 @@
 package tests
 
-// import (
-// 	"net/http"
-// 	"net/http/httptest"
-// 	"strings"
-// 	"testing"
+import (
+	"net/http"
+	"net/http/httptest"
+	"redirectfy/internal/models"
+	"redirectfy/internal/server"
+	"redirectfy/internal/services/database"
+	"strings"
+	"testing"
+	
+	"github.com/labstack/echo/v4"
+	"github.com/stretchr/testify/assert"
+)
 
-// 	"github.com/labstack/echo/v4"
-// 	"github.com/stretchr/testify/assert"
-
-// 	"redirectfy/internal/handlers/v1/api"
-// 	"redirectfy/internal/services/database"
-// 	"testing"
-// )
-
-// var (
-// 	mockDB = map[string]*User{
-// 		"jon@labstack.com": &User{"Jon Snow", "jon@labstack.com"},
-// 	}
-// 	userJSON = `{"name":"Jon Snow","email":"jon@labstack.com"}`
-// )
-
-// func TestUserHandler(t *testing.T) {
-// 	database.New()
-// 	defer database.Db.Close()
-// }
+func TestCreateHandler(t *testing.T) {
+	// Initialize your mock database and other necessary setup here
+	db := database.New()
+	defer db.Close()
+	
+	s := server.Server{ //setup necessário no inicio de cada testsuite dos handlers
+		PlanoDeAssinaturaModel: &models.PlanoDeAssinaturaModel{DB: db},
+		UsuarioModel:           &models.UsuarioModel{DB: db},
+		UsuarioTemporarioModel: &models.UsuarioTemporarioModel{DB: db},
+		EmailAutenticacaoModel: &models.EmailAutenticacaoModel{DB: db},
+		LinkModel:              &models.LinkModel{DB: db},
+		RedirecionadorModel:    &models.RedirecionadorModel{DB: db},
+		HistoricoModel:         &models.HistoricoModel{DB: db},
+	}
+	
+	t.Run("Criar usuário handler Successfull", func(t *testing.T) {
+		// Create a new Echo instance
+		e := echo.New()
+		
+		// Define the request body with the correct structure
+		JSON := `{
+			"cpf": 53076281291,
+			"nome": "Guilherme Bernardo",
+			"email": "bguilherme51@gmail.com",
+			"products": [
+			{
+				"Name": "Gratuito"
+			}
+			]
+			}`
+			
+			// Create a new request
+			req := httptest.NewRequest(http.MethodPost, "/api/usuarios_temporarios", strings.NewReader(JSON))
+			req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+			
+			// Create a ResponseRecorder to record the response
+			rec := httptest.NewRecorder()
+			
+			// Create a new Context
+			c := e.NewContext(req, rec)
+			
+			if assert.NoError(t, s.UsuarioTemporarioCreate(c)) {
+				// Call your handler function
+				assert.Equal(t, http.StatusCreated, rec.Code)
+				// Add more assertions here to check the response body, headers, etc.
+			}
+		})
+	}
+	
+	
+	// func TestReadsUsuarioHandler(t *testing.T)  {
+		
+		// }
+		
