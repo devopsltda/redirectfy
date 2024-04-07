@@ -49,7 +49,7 @@ func (u *UsuarioTemporarioModel) ReadById(id int64) (UsuarioTemporario, error) {
 
 func (u *UsuarioTemporarioModel) Create(cpf, nome, nomeDeUsuario, email, planoDeAssinatura string) (int64, error) {
 	result, err := u.DB.Exec(
-		"INSERT INTO USUARIO_TEMPORARIO (CPF, NOME, NOME_DE_USUARIO, EMAIL, PLANO_DE_ASSINATURA) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING ID",
+		"INSERT INTO USUARIO_TEMPORARIO (CPF, NOME, NOME_DE_USUARIO, EMAIL, PLANO_DE_ASSINATURA) VALUES (?, ?, ?, ?, ?) RETURNING ID",
 		cpf,
 		nome,
 		nomeDeUsuario,
