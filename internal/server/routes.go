@@ -63,7 +63,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.POST("/usuarios/login", s.UsuarioLogin)
 	e.PATCH("/usuarios/troca_de_senha/:valor", s.UsuarioTrocaDeSenha)
 	e.POST("/usuarios/:nome_de_usuario/troca_de_senha", s.UsuarioTrocaDeSenhaExigir)
-	e.PATCH("/autenticacao/:valor", s.UsuarioAutenticado)
 
 	// API - Plano de Assinatura
 	e.GET("/planos_de_assinatura", s.PlanoDeAssinaturaReadAll)

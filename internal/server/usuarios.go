@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"log/slog"
 	"net/http"
 	"strings"
@@ -20,13 +21,13 @@ type productData struct {
 }
 
 type customerData struct {
-	Name string `json:"name"`
+	Name     string `json:"name"`
 	Document string `json:"document"`
-	Email string `json:"email"`
+	Email    string `json:"email"`
 }
 
 type parametrosKirvano struct {
-	Customer customerData `json:"customer"`
+	Customer customerData  `json:"customer"`
 	Products []productData `json:"products"`
 } // @name ParametrosKirvano
 
@@ -190,7 +191,7 @@ func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 		}
 	}
 
-	id, err := s.EmailAutenticacaoModel.Create(valor, "senha", usuarioId)
+	id, err := s.EmailAutenticacaoModel.Create(valor, "nova_senha", usuarioId)
 
 	if err != nil {
 		slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
@@ -204,7 +205,7 @@ func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	return c.JSON(http.StatusOK, utils.MensagemUsuarioCriadoComSucesso)
+	return c.JSON(http.StatusCreated, utils.MensagemUsuarioCriadoComSucesso)
 }
 
 // UsuarioUpdate godoc
@@ -330,114 +331,6 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 	return c.JSON(http.StatusOK, utils.MensagemUsuarioAtualizadoComSucesso)
 }
 
-// UsuarioAutenticado godoc
-//
-// @Summary Autentica um usuário
-//
-// @Tags    Usuários
-//
-// @Accept  json
-//
-// @Produce json
-//
-// @Param   valor              path     string true "Valor"
-//
-// @Param   senha              body     string true "Senha"
-//
-// @Param   data_de_nascimento body     string true "Data de Nascimento"
-//
-// @Success 200                {object} map[string]string
-//
-// @Failure 400                {object} utils.Erro
-//
-// @Failure 500                {object} utils.Erro
-//
-// @Router  /usuarios/autentica/:valor [patch]
-func (s *Server) UsuarioAutenticado(c echo.Context) error {
-	type parametrosUpdate struct {
-		Senha            string `json:"senha"`
-		DataDeNascimento string `json:"data_de_nascimento"`
-	}
-
-	parametros := parametrosUpdate{}
-
-	valor := c.Param("valor")
-
-	if !utils.ValidaNomeDeUsuario(valor) {
-		return utils.ErroValidacaoNomeDeUsuario
-	}
-
-	var erros []string
-
-	if err := utils.Validate.Var(parametros.Senha, "required,min=8,max=72"); parametros.Senha != "" && err != nil {
-		erros = append(erros, "Por favor, forneça uma senha válida (texto de 8 a 72 caracteres, podendo conter letras, números e símbolos) para o parâmetro 'senha'.")
-	}
-
-	if err := utils.Validate.Var(parametros.DataDeNascimento, "required,datetime=2006-01-02"); parametros.DataDeNascimento != "" && err != nil {
-		erros = append(erros, "Por favor, forneça uma data de nascimento válida para o parâmetro 'data_de_nascimento'.")
-	}
-
-	if (parametrosUpdate{}) == parametros {
-		erros = append(erros, "Por favor, forneça algum valor válido para a atualização.")
-	}
-
-	if len(erros) > 0 {
-		return utils.ErroValidacaoParametro(erros)
-	}
-
-	senha, err := argon2id.CreateHash(parametros.Senha+utils.Pepper, utils.SenhaParams)
-
-	if err != nil {
-		slog.Error("UsuarioCreate", slog.Any("error", err))
-		return utils.ErroCriacaoSenha
-	}
-
-	usuarioTemporarioId, err := s.EmailAutenticacaoModel.CheckIfValorExistsAndIsValid(valor, "senha")
-
-	if err != nil {
-		slog.Error("UsuarioAutenticado", slog.Any("error", err))
-		return utils.ErroBancoDados
-	}
-
-	usuarioTemporario, err := s.UsuarioTemporarioModel.ReadById(usuarioTemporarioId)
-
-	if err != nil {
-		slog.Error("UsuarioAutenticado", slog.Any("error", err))
-		return utils.ErroBancoDados
-	}
-
-	_, err = s.UsuarioModel.Create(
-		usuarioTemporario.Cpf,
-		usuarioTemporario.Nome,
-		usuarioTemporario.NomeDeUsuario,
-		usuarioTemporario.Email,
-		senha,
-		parametros.DataDeNascimento,
-		usuarioTemporario.PlanoDeAssinatura,
-	)
-
-	if err != nil {
-		slog.Error("UsuarioAutenticado", slog.Any("error", err))
-		return utils.ErroBancoDados
-	}
-
-	err = s.EmailAutenticacaoModel.Expirar(valor)
-
-	if err != nil {
-		slog.Error("UsuarioAutenticado", slog.Any("error", err))
-		return utils.ErroBancoDados
-	}
-
-	err = s.UsuarioTemporarioModel.Remove(usuarioTemporarioId)
-
-	if err != nil {
-		slog.Error("UsuarioAutenticado", slog.Any("error", err))
-		return utils.ErroBancoDados
-	}
-
-	return c.JSON(http.StatusOK, utils.MensagemUsuarioAutenticadoComSucesso)
-}
-
 // UsuarioTemporarioParaPermanente godoc
 //
 // @Summary Cria um usuário permanente a partir de um temporário
@@ -469,7 +362,7 @@ func (s *Server) UsuarioTemporarioParaPermanente(c echo.Context) error {
 	}
 
 	parametros := struct {
-		SenhaNova string `json:"senha_nova"`
+		SenhaNova        string `json:"senha_nova"`
 		DataDeNascimento string `json:"data_de_nascimento"`
 	}{}
 
@@ -489,6 +382,7 @@ func (s *Server) UsuarioTemporarioParaPermanente(c echo.Context) error {
 	}
 
 	usuario, err := s.EmailAutenticacaoModel.CheckIfValorExistsAndIsValid(valor, "nova_senha")
+	fmt.Println(usuario)
 
 	if err != nil {
 		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))
@@ -503,6 +397,7 @@ func (s *Server) UsuarioTemporarioParaPermanente(c echo.Context) error {
 	}
 
 	usuarioTemporario, err := s.UsuarioTemporarioModel.ReadById(usuario)
+	fmt.Println(usuarioTemporario)
 
 	if err != nil {
 		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))

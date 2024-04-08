@@ -127,7 +127,8 @@ func PathWithNoAuthRequired(c echo.Context) bool {
 		(c.Path() == "/autenticacao/:valor" && c.Request().Method == "PATCH") ||
 		(c.Path() == "/planos_de_assinatura" && c.Request().Method == "GET") ||
 		(c.Path() == "/planos_de_assinatura/:nome" && c.Request().Method == "GET") ||
-		(c.Path() == "/usuarios_temporarios" && c.Request().Method == "POST")
+		(c.Path() == "/usuarios_temporarios" && c.Request().Method == "POST") ||
+		(c.Path() == "/usuarios/criar_permanente/:valor" && c.Request().Method == "POST")
 }
 
 func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
