@@ -165,6 +165,8 @@ definitions:
     properties:
       customer:
         $ref: '#/definitions/server.customerData'
+      event:
+        type: string
       products:
         items:
           $ref: '#/definitions/server.productData'
@@ -1096,48 +1098,6 @@ paths:
           schema:
             $ref: '#/definitions/Erro'
       summary: Exige a troca de senha de um usuário
-      tags:
-      - Usuários
-  /usuarios/autentica/:valor:
-    patch:
-      consumes:
-      - application/json
-      parameters:
-      - description: Valor
-        in: path
-        name: valor
-        required: true
-        type: string
-      - description: Senha
-        in: body
-        name: senha
-        required: true
-        schema:
-          type: string
-      - description: Data de Nascimento
-        in: body
-        name: data_de_nascimento
-        required: true
-        schema:
-          type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/Erro'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/Erro'
-      summary: Autentica um usuário
       tags:
       - Usuários
   /usuarios/criar_permanente/:valor:

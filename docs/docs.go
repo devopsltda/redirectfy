@@ -1258,70 +1258,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/usuarios/autentica/:valor": {
-            "patch": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Usuários"
-                ],
-                "summary": "Autentica um usuário",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Valor",
-                        "name": "valor",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Senha",
-                        "name": "senha",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Data de Nascimento",
-                        "name": "data_de_nascimento",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/Erro"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/Erro"
-                        }
-                    }
-                }
-            }
-        },
         "/usuarios/criar_permanente/:valor": {
             "post": {
                 "consumes": [
@@ -1873,6 +1809,9 @@ const docTemplate = `{
             "properties": {
                 "customer": {
                     "$ref": "#/definitions/server.customerData"
+                },
+                "event": {
+                    "type": "string"
                 },
                 "products": {
                     "type": "array",
