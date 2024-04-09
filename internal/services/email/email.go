@@ -49,10 +49,10 @@ Content-Disposition: inline
   </head>
   <div>
     <h1>Confirme seu email</h1>
-    <p>Clique <a href="https://localhost:8080/v1/api/autenticacao/{{ .Valor }}">aqui</a>.</p>
+    <p>Clique <a href="https://localhost:4200/finishSignup/{{ .Valor }}">aqui</a>.</p>
     <p>
     Caso não consiga, acesse diretamente pelo link 
-		<a href="https://localhost:8080/v1/api/autenticacao/{{ .Valor }}">https://localhost:8080/v1/api/autenticacao/{{ .Valor }}</a>
+		<a href="https://localhost:4200/finishSignup/{{ .Valor }}">https://localhost:4200/finishSignup/{{ .Valor }}</a>
     .</p>
     <strong>Não responda este email.</strong>
   </div>
@@ -98,10 +98,10 @@ Content-Disposition: inline
   </head>
   <div>
     <h1>Confirme seu email</h1>
-    <p>Clique <a href="https://localhost:8080/v1/api/usuarios/troca_de_senha/{{ .Valor }}">aqui</a>.</p>
+    <p>Clique <a href="https://localhost:4200/finishSignup/{{ .Valor }}">aqui</a>.</p>
     <p>
     Caso não consiga, acesse diretamente pelo link 
-		<a href="https://localhost:8080/v1/api/usuarios/troca_de_senha/{{ .Valor }}">https://localhost:8080/v1/api/usuarios/troca_de_senha/{{ .Valor }}</a>
+		<a href="https://localhost:4200/finishSignup/{{ .Valor }}">https://localhost:4200/finishSignup/{{ .Valor }}</a>
     .</p>
     <strong>Não responda este email.</strong>
   </div>
