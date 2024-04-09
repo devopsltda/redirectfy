@@ -27,6 +27,7 @@ type customerData struct {
 }
 
 type parametrosKirvano struct {
+	Event    string        `json:"event"`
 	Customer customerData  `json:"customer"`
 	Products []productData `json:"products"`
 } // @name ParametrosKirvano
@@ -140,6 +141,10 @@ func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça o CPF, email, data de nascimento, nome, nome de usuário, senha e plano de assinatura do usuário nos parâmetro 'cpf', 'email', 'data_de_nascimento', 'nome', 'nome_de_usuario', 'senha' e 'plano_de_assinatura', respectivamente.")
 	}
 
+	if err := utils.Validate.Var(parametros.Event, "required,oneof=SALE_APPROVED SALE_REFUNDED SUBSCRIPTION_CANCELED SUBSCRIPTION_EXPIRED SUBSCRIPTION_RENEWED"); err != nil {
+		erros = append(erros, "Por favor, forneça um CPF válido (texto numérico com 11 dígitos) para o parâmetro 'cpf'.")
+	}
+
 	if err := utils.Validate.Var(parametros.Customer.Document, "required,numeric,len=11"); err != nil {
 		erros = append(erros, "Por favor, forneça um CPF válido (texto numérico com 11 dígitos) para o parâmetro 'cpf'.")
 	}
@@ -164,45 +169,62 @@ func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 
 	nomeDeUsuario := criaNomeDeUsuario(parametros.Customer.Email)
 
-	usuarioId, err := s.UsuarioTemporarioModel.Create(
-		parametros.Customer.Document,
-		parametros.Customer.Name,
-		nomeDeUsuario,
-		parametros.Customer.Email,
-		parametros.Products[0].Name,
-	)
-
-	if err != nil {
-		slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
-		return utils.ErroBancoDados
-	}
-
-	var valor string
-	valorExiste := true
-
-	for valorExiste {
-		valor = utils.GeraHashCode(120)
-
-		valorExiste, err = s.EmailAutenticacaoModel.CheckIfValorExists(valor)
+	switch parametros.Event {
+	case "SALE_APPROVED":
+		usuarioId, err := s.UsuarioTemporarioModel.Create(
+			parametros.Customer.Document,
+			parametros.Customer.Name,
+			nomeDeUsuario,
+			parametros.Customer.Email,
+			parametros.Products[0].Name,
+		)
 
 		if err != nil {
 			slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
 			return utils.ErroBancoDados
 		}
-	}
 
-	id, err := s.EmailAutenticacaoModel.Create(valor, "nova_senha", usuarioId)
+		var valor string
+		valorExiste := true
 
-	if err != nil {
-		slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
-		return utils.ErroBancoDados
-	}
+		for valorExiste {
+			valor = utils.GeraHashCode(120)
 
-	err = s.email.SendValidacao(id, parametros.Customer.Name, valor, parametros.Customer.Email)
+			valorExiste, err = s.EmailAutenticacaoModel.CheckIfValorExists(valor)
 
-	if err != nil {
-		slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
-		return utils.ErroBancoDados
+			if err != nil {
+				slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
+				return utils.ErroBancoDados
+			}
+		}
+
+		id, err := s.EmailAutenticacaoModel.Create(valor, "nova_senha", usuarioId)
+
+		if err != nil {
+			slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
+			return utils.ErroBancoDados
+		}
+
+		err = s.email.SendValidacao(id, parametros.Customer.Name, valor, parametros.Customer.Email)
+
+		if err != nil {
+			slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
+			return utils.ErroBancoDados
+		}
+	case "SALE_REFUNDED", "SUBSCRIPTION_CANCELED", "SUBSCRIPTION_EXPIRED":
+		err := s.UsuarioModel.Update(nomeDeUsuario, "", "", "", "", "", "Gratuito")
+
+		if err != nil {
+			slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
+			return utils.ErroBancoDados
+		}
+	case "SUBSCRIPTION_RENEWED":
+		err := s.UsuarioModel.Update(nomeDeUsuario, "", "", "", "", "", parametros.Products[0].Name)
+
+		if err != nil {
+			slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
+			return utils.ErroBancoDados
+		}
 	}
 
 	return c.JSON(http.StatusCreated, utils.MensagemUsuarioCriadoComSucesso)
@@ -314,9 +336,9 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 	}
 
 	err := s.UsuarioModel.Update(
+		parametros.NomeDeUsuario,
 		parametros.Cpf,
 		parametros.Nome,
-		parametros.NomeDeUsuario,
 		parametros.Email,
 		parametros.Senha,
 		parametros.DataDeNascimento,
@@ -397,7 +419,6 @@ func (s *Server) UsuarioTemporarioParaPermanente(c echo.Context) error {
 	}
 
 	usuarioTemporario, err := s.UsuarioTemporarioModel.ReadById(usuario)
-	fmt.Println(usuarioTemporario)
 
 	if err != nil {
 		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))

@@ -24,9 +24,12 @@ var SenhaParams = &argon2id.Params{
 }
 
 /*** Variáveis de Ambient ***/
-var AppEnv = os.Getenv("APP_ENV")
-var Pepper = os.Getenv("PEPPER")
-var TempoExpiracao, _ = strconv.Atoi(os.Getenv("VALIDATION_EXPIRE_TIME"))
+var (
+	AppEnv = os.Getenv("APP_ENV")
+	Pepper = os.Getenv("PEPPER")
+	KirvanoToken = os.Getenv("KIRVANO_TOKEN")
+	TempoExpiracao, _ = strconv.Atoi(os.Getenv("VALIDATION_EXPIRE_TIME"))
+)
 
 /*** Código Hash ***/
 var seededRand *rand.Rand = rand.New(rand.NewPCG(uint64(time.Now().Unix()), uint64(time.Now().Add(10*time.Second).Unix())))

@@ -132,6 +132,13 @@ func (s *Server) LinkCreate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça um código hash válido para o parâmetro 'codigo_hash'.")
 	}
 
+	withinLimit, err := s.RedirecionadorModel.WithinLimit(parametros.CodigoHash, len(parametros.Links))
+
+	if err != nil || !withinLimit {
+		slog.Error("LinkCreate", slog.Any("error", err))
+		return utils.ErroBancoDados
+	}
+
 	for _, link := range parametros.Links {
 		if err := c.Bind(&parametros); err != nil {
 			erros = append(erros, "Por favor, forneça o código hash, link e plataforma nos parâmetro 'codigo_hash', 'link' e 'plataforma', respectivamente.")
@@ -148,14 +155,13 @@ func (s *Server) LinkCreate(c echo.Context) error {
 		if err := utils.Validate.Var(link.Plataforma, "required,oneof=whatsapp telegram"); err != nil {
 			erros = append(erros, "Por favor, forneça uma plataforma válida para o parâmetro 'plataforma'.")
 		}
-
 	}
 
 	if len(erros) > 0 {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	err := s.LinkModel.Create(parametros.CodigoHash, parametros.Links)
+	err = s.LinkModel.Create(parametros.CodigoHash, parametros.Links)
 
 	if err != nil {
 		slog.Error("LinkCreate", slog.Any("error", err))

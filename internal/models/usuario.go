@@ -138,7 +138,7 @@ func (u *UsuarioModel) TrocaSenha(id int64, senha string) error {
 	return nil
 }
 
-func (u *UsuarioModel) Update(cpf, nome, nomeDeUsuario, email, senha, dataDeNascimento, planoDeAssinatura string) error {
+func (u *UsuarioModel) Update(nomeDeUsuario, cpf, nome, email, senha, dataDeNascimento, planoDeAssinatura string) error {
 	sqlQuery := "UPDATE USUARIO SET ATUALIZADO_EM = CURRENT_TIMESTAMP"
 
 	if cpf != "" {
@@ -147,10 +147,6 @@ func (u *UsuarioModel) Update(cpf, nome, nomeDeUsuario, email, senha, dataDeNasc
 
 	if nome != "" {
 		sqlQuery += ", NOME = '" + nome + "'"
-	}
-
-	if nomeDeUsuario != "" {
-		sqlQuery += ", NOME_DE_USUARIO = '" + nomeDeUsuario + "'"
 	}
 
 	if email != "" {

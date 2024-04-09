@@ -130,6 +130,47 @@ func (r *RedirecionadorModel) Create(nome, codigoHash, ordemDeRedirecionamento, 
 	return id, nil
 }
 
+func (r *RedirecionadorModel) WithinLimit(codigoHash string, quantidadeDeLinks int) (bool, error) {
+	var quantidadeLinks int
+	var limiteLinksMensal int
+
+	row := r.DB.QueryRow(`SELECT (
+																 SELECT COUNT(*)
+																 FROM LINK
+																			INNER JOIN REDIRECIONADOR ON REDIRECIONADOR.USUARIO = USUARIO.NOME
+															 ),
+															 USUARIO.LIMITE_LINKS_MENSAL
+												FROM (
+													SELECT USUARIO.NOME,
+																 USUARIO.PLANO_DE_ASSINATURA,
+																 PLANO_DE_ASSINATURA.LIMITE_LINKS_MENSAL
+													FROM USUARIO
+															 INNER JOIN REDIRECIONADOR ON REDIRECIONADOR.USUARIO = USUARIO.NOME_DE_USUARIO
+															 INNER JOIN PLANO_DE_ASSINATURA ON PLANO_DE_ASSINATURA.NOME = USUARIO.PLANO_DE_ASSINATURA
+													WHERE USUARIO.REMOVIDO_EM IS NULL
+																AND REDIRECIONADOR.CODIGO_HASH = ?
+												) AS USUARIO`,
+		codigoHash,
+	)
+
+	if err := row.Scan(
+		&quantidadeLinks,
+		&limiteLinksMensal,
+	); err != nil {
+		return false, err
+	}
+
+	if err := row.Err(); err != nil {
+		return false, err
+	}
+
+	if quantidadeLinks > limiteLinksMensal {
+		return false, nil
+	}
+
+	return true, nil
+}
+
 func (r *RedirecionadorModel) Rehash(codigoHashAntigo, codigoHashNovo string) error {
 	_, err := r.DB.Exec(
 		"UPDATE REDIRECIONADOR SET ATUALIZADO_EM = CURRENT_TIMESTAMP, CODIGO_HASH = ? WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = ?",

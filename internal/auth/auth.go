@@ -128,13 +128,18 @@ func PathWithNoAuthRequired(c echo.Context) bool {
 		(c.Path() == "/planos_de_assinatura" && c.Request().Method == "GET") ||
 		(c.Path() == "/planos_de_assinatura/:nome" && c.Request().Method == "GET") ||
 		(c.Path() == "/usuarios_temporarios" && c.Request().Method == "POST") ||
-		(c.Path() == "/usuarios/criar_permanente/:valor" && c.Request().Method == "POST")
+		(c.Path() == "/usuarios/criar_permanente/:valor" && c.Request().Method == "POST") ||
+		(c.Path() == "/redirecionadores/:codigo_hash/rehash" && c.Get("usuario") != nil && c.Get("usuario").(*jwt.Token).Claims.(*Claims).PlanoDeAssinatura == "Super Pro")
 }
 
 func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		if c.Get("usuario") == nil || PathWithNoAuthRequired(c) {
+		if PathWithNoAuthRequired(c) {
 			return next(c)
+		}
+
+		if c.Get("usuario") == nil {
+			return utils.ErroAssinaturaJWT
 		}
 
 		nomeDeUsuario := c.Get("usuario").(*jwt.Token)
