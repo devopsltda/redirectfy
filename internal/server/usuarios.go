@@ -142,15 +142,15 @@ func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 	}
 
 	if err := utils.Validate.Var(parametros.Event, "required,oneof=SALE_APPROVED SALE_REFUNDED SUBSCRIPTION_CANCELED SUBSCRIPTION_EXPIRED SUBSCRIPTION_RENEWED"); err != nil {
-		erros = append(erros, "Por favor, forneça um CPF válido (texto numérico com 11 dígitos) para o parâmetro 'cpf'.")
+		erros = append(erros, "Por favor, forneça um evento válido (SALE_APPROVED, SALE_REFUNDED, SUBSCRIPTION_CANCELED, SUBSCRIPTION_EXPIRED ou SUBSCRIPTION_RENEWED) para o parâmetro 'event'.")
 	}
 
 	if err := utils.Validate.Var(parametros.Customer.Document, "required,numeric,len=11"); err != nil {
-		erros = append(erros, "Por favor, forneça um CPF válido (texto numérico com 11 dígitos) para o parâmetro 'cpf'.")
+		erros = append(erros, "Por favor, forneça um CPF válido (texto numérico com 11 dígitos) para o parâmetro 'document'.")
 	}
 
 	if err := utils.Validate.Var(parametros.Customer.Name, "required,min=3,max=240"); err != nil {
-		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 240 caracteres) para o parâmetro 'nome'.")
+		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 240 caracteres) para o parâmetro 'name'.")
 	}
 
 	if err := utils.Validate.Var(parametros.Customer.Email, "required,email"); err != nil {
