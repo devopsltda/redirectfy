@@ -1,7 +1,6 @@
 package server
 
 import (
-	"log/slog"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -22,17 +21,17 @@ import (
 //
 // @Success 200 {object} []models.HistoricoPlanoDeAssinatura
 //
-// @Failure 400 {object} Erro
+// @Failure 400 {object} *echo.HTTPError
 //
-// @Failure 500 {object} Erro
+// @Failure 500 {object} *echo.HTTPError
 //
 // @Router  /planos_de_assinatura/historico [get]
 func (s *Server) HistoricoPlanoDeAssinaturaReadAll(c echo.Context) error {
 	historico, err := s.HistoricoModel.PlanoDeAssinaturaReadAll()
 
 	if err != nil {
-		slog.Error("HistoricoPlanoDeAssinaturaReadAll", slog.Any("error", err))
-		return utils.ErroBancoDados
+		utils.ErroLog("HistoricoPlanoDeAssinaturaReadAll", "Erro na leitura do histórico de planos de assinatura", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível ler o histórico dos planos de assinatura.")
 	}
 
 	return c.JSON(http.StatusOK, historico)
@@ -50,17 +49,17 @@ func (s *Server) HistoricoPlanoDeAssinaturaReadAll(c echo.Context) error {
 //
 // @Success 200 {object} []models.HistoricoUsuarioTemporario
 //
-// @Failure 400 {object} Erro
+// @Failure 400 {object} *echo.HTTPError
 //
-// @Failure 500 {object} Erro
+// @Failure 500 {object} *echo.HTTPError
 //
 // @Router  /usuarios_temporarios/historico [get]
 func (s *Server) HistoricoUsuarioTemporarioReadAll(c echo.Context) error {
 	historico, err := s.HistoricoModel.UsuarioTemporarioReadAll()
 
 	if err != nil {
-		slog.Error("HistoricoUsuarioTemporarioReadAll", slog.Any("error", err))
-		return utils.ErroBancoDados
+		utils.ErroLog("HistoricoUsuarioTemporarioReadAll", "Erro na leitura do histórico de usuários temporários", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível ler o histórico dos usuários temporários.")
 	}
 
 	return c.JSON(http.StatusOK, historico)
@@ -78,17 +77,17 @@ func (s *Server) HistoricoUsuarioTemporarioReadAll(c echo.Context) error {
 //
 // @Success 200 {object} []models.HistoricoUsuario
 //
-// @Failure 400 {object} Erro
+// @Failure 400 {object} *echo.HTTPError
 //
-// @Failure 500 {object} Erro
+// @Failure 500 {object} *echo.HTTPError
 //
 // @Router  /usuarios/historico [get]
 func (s *Server) HistoricoUsuarioReadAll(c echo.Context) error {
 	historico, err := s.HistoricoModel.UsuarioReadAll()
 
 	if err != nil {
-		slog.Error("HistoricoUsuarioReadAll", slog.Any("error", err))
-		return utils.ErroBancoDados
+		utils.ErroLog("HistoricoUsuarioReadAll", "Erro na leitura do histórico de usuários", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível ler o histórico dos usuários.")
 	}
 
 	return c.JSON(http.StatusOK, historico)
@@ -106,17 +105,17 @@ func (s *Server) HistoricoUsuarioReadAll(c echo.Context) error {
 //
 // @Success 200 {object} []models.HistoricoRedirecionador
 //
-// @Failure 400 {object} Erro
+// @Failure 400 {object} *echo.HTTPError
 //
-// @Failure 500 {object} Erro
+// @Failure 500 {object} *echo.HTTPError
 //
 // @Router  /redirecionadores/historico [get]
 func (s *Server) HistoricoRedirecionadorReadAll(c echo.Context) error {
 	historico, err := s.HistoricoModel.RedirecionadorReadAll()
 
 	if err != nil {
-		slog.Error("HistoricoRedirecionadorReadAll", slog.Any("error", err))
-		return utils.ErroBancoDados
+		utils.ErroLog("HistoricoRedirecionadorReadAll", "Erro na leitura do histórico de redirecionadores", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível ler o histórico dos usuários.")
 	}
 
 	return c.JSON(http.StatusOK, historico)
@@ -134,17 +133,17 @@ func (s *Server) HistoricoRedirecionadorReadAll(c echo.Context) error {
 //
 // @Success 200 {object} []models.HistoricoLink
 //
-// @Failure 400 {object} Erro
+// @Failure 400 {object} *echo.HTTPError
 //
-// @Failure 500 {object} Erro
+// @Failure 500 {object} *echo.HTTPError
 //
 // @Router  /links/historico [get]
 func (s *Server) HistoricoLinkReadAll(c echo.Context) error {
 	historico, err := s.HistoricoModel.LinkReadAll()
 
 	if err != nil {
-		slog.Error("HistoricoLinkReadAll", slog.Any("error", err))
-		return utils.ErroBancoDados
+		utils.ErroLog("HistoricoLinkReadAll", "Erro na leitura do histórico de links", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível ler o histórico dos links.")
 	}
 
 	return c.JSON(http.StatusOK, historico)

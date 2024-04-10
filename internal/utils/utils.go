@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"log/slog"
 	"math/rand/v2"
 	"net/http"
 	"os"
@@ -79,9 +80,6 @@ var MensagemUsuarioNaoAutenticado = "O usuário não está autenticado."
 
 var MensagemJWTInvalido = "Token JWT Inválido."
 
-/*** Erro ***/
-type Erro echo.HTTPError // @name Erro
-
 var ErroLogin = echo.NewHTTPError(http.StatusBadRequest, []string{"O email ou senha fornecidos estão incorretos."})
 var ErroCriacaoSenha = echo.NewHTTPError(http.StatusBadRequest, []string{"Ocorreu um erro ao criar a senha."})
 var ErroAssinaturaJWT = echo.NewHTTPError(http.StatusBadRequest, []string{"Ocorreu um erro na assinatura do token JWT."})
@@ -91,11 +89,28 @@ var ErroValidacaoCodigoHash = echo.NewHTTPError(http.StatusBadRequest, []string{
 var ErroValidacaoNomeDeUsuario = echo.NewHTTPError(http.StatusBadRequest, []string{"Por favor, forneça um nome de usuário válido (apenas contém letras, números ou os símbolos '-' e '_')."})
 var ErroUsuarioNaoAutenticado = echo.NewHTTPError(http.StatusUnauthorized, []string{"Por favor, autentique seu usuário no email enviado ou solicite um novo email."})
 
+func DebugLog(nomeFuncao, mensagem string, erro error) {
+	slog.Error(nomeFuncao, slog.String("message", mensagem), slog.Any("error", erro))
+}
+
+func ErroLog(nomeFuncao, mensagem string, erro error) {
+	slog.Error(nomeFuncao, slog.String("message", mensagem), slog.Any("error", erro))
+}
+
+func Erro(code int, message string) *echo.HTTPError {
+	return echo.NewHTTPError(
+		code,
+		map[string]string{
+			"erros": message,
+		},
+	)
+}
+
 func ErroValidacaoParametro(mensagens []string) *echo.HTTPError {
 	return echo.NewHTTPError(
 		http.StatusBadRequest,
 		map[string][]string{
-			"error": mensagens,
+			"erros": mensagens,
 		},
 	)
 }
