@@ -93,7 +93,7 @@ func (ea *EmailAutenticacaoModel) CheckIfValorExistsAndIsValid(valor, tipo strin
 	var usuarioTemporario int64
 
 	row := ea.DB.QueryRow(
-		"SELECT TIPO, USUARIO_TEMPORARIO FROM EMAIL_AUTENTICACAO WHERE VALOR = ? AND EXPIRA_EM > CURRENT_TIMESTAMP",
+		"SELECT TIPO, USUARIO_TEMPORARIO FROM EMAIL_AUTENTICACAO WHERE VALOR = ?",
 		valor,
 	)
 
