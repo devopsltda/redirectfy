@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"fmt"
+	"errors"
 	"net/http"
 	"os"
 	"time"
@@ -92,7 +92,7 @@ func VerificaToken(tokenFornecido string) error {
 	}
 
 	if !token.Valid {
-		return fmt.Errorf(utils.MensagemJWTInvalido)
+		return errors.New("O seu token de autenticação é inválido.")
 	}
 
 	return nil
@@ -119,17 +119,16 @@ func SetCookieUsuario(nomeDeUsuario string, expiraEm time.Time, c echo.Context) 
 }
 
 func PathWithNoAuthRequired(c echo.Context) bool {
-	return (c.Request().URL.Path == "/usuarios/login" && c.Request().Method == "POST") ||
-		(c.Request().URL.Path == "/usuarios" && c.Request().Method == "POST") ||
-		(c.Path() == "/usuarios/troca_de_senha/:valor" && c.Request().Method == "PATCH") ||
-		(c.Path() == "/usuarios/:nome_de_usuario/troca_de_senha" && c.Request().Method == "POST") ||
+	return (c.Request().URL.Path == "/u/login" && c.Request().Method == "POST") ||
+		(c.Path() == "/u/change_password/:hash" && c.Request().Method == "PATCH") ||
+		(c.Path() == "/u/:username/change_password" && c.Request().Method == "POST") ||
 		(c.Path() == "/docs/*" && c.Request().Method == "GET") ||
-		(c.Path() == "/autenticacao/:valor" && c.Request().Method == "PATCH") ||
-		(c.Path() == "/planos_de_assinatura" && c.Request().Method == "GET") ||
-		(c.Path() == "/planos_de_assinatura/:nome" && c.Request().Method == "GET") ||
-		(c.Path() == "/usuarios_temporarios" && c.Request().Method == "POST") ||
-		(c.Path() == "/usuarios/criar_permanente/:valor" && c.Request().Method == "POST") ||
-		(c.Path() == "/redirecionadores/:codigo_hash/rehash" && c.Get("usuario") != nil && c.Get("usuario").(*jwt.Token).Claims.(*Claims).PlanoDeAssinatura == "Super Pro")
+		(c.Path() == "/pricing" && c.Request().Method == "GET") ||
+		(c.Path() == "/pricing/:name" && c.Request().Method == "GET") ||
+		(c.Path() == "/kirvano" && c.Request().Method == "POST") ||
+		(c.Path() == "/kirvano/to_user/:hash" && c.Request().Method == "POST") ||
+		(c.Path() == "/r/:hash" && c.Request().Method == "GET") || 
+		(c.Path() == "/r/:hash/refresh" && c.Get("usuario") != nil && c.Get("usuario").(*jwt.Token).Claims.(*Claims).PlanoDeAssinatura == "Super Pro")
 }
 
 func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
@@ -139,12 +138,21 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		if c.Get("usuario") == nil {
-			return utils.ErroAssinaturaJWT
+			return utils.Erro(http.StatusBadRequest, "Você não contém um ou mais dos cookies necessários para autenticação.")
 		}
 
 		nomeDeUsuario := c.Get("usuario").(*jwt.Token)
+		nomeDeUsuarioCookie, err := c.Cookie("usuario")
+
+		if err != nil {
+			return utils.Erro(http.StatusBadRequest, "Você não contém um ou mais dos cookies necessários para autenticação.")
+		}
 
 		claims := nomeDeUsuario.Claims.(*Claims)
+
+		if claims.NomeDeUsuario != nomeDeUsuarioCookie.Value {
+			return utils.Erro(http.StatusUnauthorized, "O seu token de autenticação é inválido.")
+		}
 
 		if time.Until(claims.RegisteredClaims.ExpiresAt.Time) < 15*time.Minute {
 			refreshCookie, err := c.Cookie("refresh-token")
@@ -156,7 +164,7 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 				if err != nil {
 					if err == jwt.ErrSignatureInvalid {
-						return utils.ErroAssinaturaJWT
+						return utils.Erro(http.StatusUnauthorized, "O seu token de autenticação é inválido.")
 					}
 				}
 
@@ -164,7 +172,7 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 					err = GeraTokensESetaCookies(claims.Id, claims.Nome, claims.NomeDeUsuario, claims.PlanoDeAssinatura, c)
 
 					if err != nil {
-						return utils.ErroAssinaturaJWT
+						return utils.Erro(http.StatusUnauthorized, "O seu token de autenticação é inválido.")
 					}
 				}
 			}

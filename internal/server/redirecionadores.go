@@ -38,15 +38,15 @@ func (s *Server) RedirecionadorReadAll(c echo.Context) error {
 	cookie, err := c.Cookie("usuario")
 
 	if err != nil {
-		slog.Error("RedirecionadorReadAll", slog.Any("error", err))
-		return utils.ErroBancoDados
+		utils.DebugLog("RedirecionadorReadAll", "Erro leitura do nome do usuário pelo cookie", err)
+		return utils.Erro(http.StatusBadRequest, "Não foi possível ler o nome de usuário.")
 	}
 
 	redirecionadores, err := s.RedirecionadorModel.ReadAll(cookie.Value)
 
 	if err != nil {
-		slog.Error("RedirecionadorReadAll", slog.Any("error", err))
-		return utils.ErroBancoDados
+		utils.ErroLog("RedirecionadorReadAll", "Erro na leitura dos redirecionadores do usuário", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível ler os redirecionadores do usuário.")
 	}
 
 	return c.JSON(http.StatusOK, redirecionadores)
@@ -75,21 +75,22 @@ func (s *Server) RedirecionadorReadByCodigoHash(c echo.Context) error {
 	codigoHash := c.Param("hash")
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
-		return utils.ErroValidacaoCodigoHash
+		utils.DebugLog("RedirecionadorReadByCodigoHash", "Erro na validação do código hash do redirecionador", err)
+		return utils.Erro(http.StatusBadRequest, "O 'hash' inserido é inválido, por favor insira um 'hash' existente com 10 caracteres.")
 	}
 
 	redirecionador, err := s.RedirecionadorModel.ReadByCodigoHash(codigoHash)
 
 	if err != nil {
-		slog.Error("RedirecionadorReadByCodigoHash", slog.Any("error", err))
-		return utils.ErroBancoDados
+		utils.ErroLog("RedirecionadorReadByCodigoHash", "Erro na leitura do redirecionador do usuário", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível ler os redirecionadores do usuário.")
 	}
 
 	links, err := s.LinkModel.ReadByCodigoHash(codigoHash)
 
 	if err != nil {
-		slog.Error("LinkReadByCodigoHash", slog.Any("error", err))
-		return utils.ErroBancoDados
+		utils.ErroLog("RedirecionadorReadByCodigoHash", "Erro na leitura dos links do redirecionador do usuário", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível ler os links do redirecionador do usuário.")
 	}
 
 	picked_links := models.LinkPicker(links)

@@ -45,7 +45,7 @@ func (s *Server) LinkReadById(c echo.Context) error {
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
 		utils.DebugLog("LinkReadById", "Erro na validação do código hash do redirecionador do link", err)
-		return utils.Erro(http.StatusBadRequest, "O 'codigo_hash' inserido é inválido, por favor insira um 'codigo_hash' existente com 10 caracteres.")
+		return utils.Erro(http.StatusBadRequest, "O 'hash' inserido é inválido, por favor insira um 'hash' existente com 10 caracteres.")
 	}
 
 	parsedId, err := strconv.ParseInt(id, 10, 64)
@@ -128,7 +128,7 @@ func (s *Server) LinkCreate(c echo.Context) error {
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
 		utils.DebugLog("LinkCreate", "Erro na validação do código hash do redirecionador do link", err)
-		return utils.Erro(http.StatusBadRequest, "O 'codigo_hash' inserido é inválido, por favor insira um 'codigo_hash' existente com 10 caracteres.")
+		return utils.Erro(http.StatusBadRequest, "O 'hash' inserido é inválido, por favor insira um 'hash' existente com 10 caracteres.")
 	}
 
 	parametros := struct {
@@ -138,19 +138,23 @@ func (s *Server) LinkCreate(c echo.Context) error {
 	var erros []string
 
 	if err := c.Bind(&parametros); err != nil {
-		erros = append(erros, "Por favor, forneça o nome, link e plataforma nos parâmetros 'nome', 'link' e 'plataforma', respectivamente.")
+		utils.DebugLog("LinkCreate", "Não foram inseridos os links na requisição", nil)
+		erros = append(erros, "Por favor, forneça os links no parâmetro 'links'.")
 	}
 
 	for i, link := range parametros.Links {
 		if err := utils.Validate.Var(link.Nome, "required,min=3,max=120"); err != nil {
+			utils.DebugLog("LinkCreate", fmt.Sprintf("Erro no link %d: nome inválido para o parâmetro 'nome'", i+1), nil)
 			erros = append(erros, fmt.Sprintf("Link %d: Por favor, forneça um nome válido (texto de 3 a 120 caracteres) para o parâmetro 'nome'.", i+1))
 		}
 
 		if err := utils.Validate.Var(link.Link, "required"); err != nil {
+			utils.DebugLog("LinkCreate", fmt.Sprintf("Erro no link %d: link inválido para o parâmetro 'link'", i+1), nil)
 			erros = append(erros, fmt.Sprintf("Link %d: Por favor, forneça link válido (exemplo: 'https://t.me/+<numero_telefone>' ou 'https://wa.me/<numero_telefone>', a depender da plataforma) para o parâmetro 'link'.", i+1))
 		}
 
 		if err := utils.Validate.Var(link.Plataforma, "required,oneof=whatsapp telegram"); err != nil {
+			utils.DebugLog("LinkCreate", fmt.Sprintf("Erro no link %d: plataforma inválida para o parâmetro 'plataforma'", i+1), nil)
 			erros = append(erros, fmt.Sprintf("Link %d: Por favor, forneça uma plataforma válida ('instagram' ou 'whatsapp') para o parâmetro 'plataforma'.", i+1))
 		}
 	}
@@ -219,7 +223,7 @@ func (s *Server) LinkUpdate(c echo.Context) error {
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
 		utils.DebugLog("LinkUpdate", "Erro na validação do código hash do redirecionador do link", err)
-		return utils.Erro(http.StatusBadRequest, "O 'codigo_hash' inserido é inválido, por favor insira um 'codigo_hash' existente com 10 caracteres.")
+		return utils.Erro(http.StatusBadRequest, "O 'hash' inserido é inválido, por favor insira um 'hash' existente com 10 caracteres.")
 	}
 
 	parsedId, err := strconv.ParseInt(id, 10, 64)
@@ -228,8 +232,6 @@ func (s *Server) LinkUpdate(c echo.Context) error {
 		utils.ErroLog("LinkUpdate", "Erro na transformação do id para inteiro", err)
 		return utils.Erro(http.StatusBadRequest, "Houve um erro na transformação do id para um número inteiro. Por favor, insira um id válido.")
 	}
-
-
 
 	type parametrosUpdate struct {
 		Nome       string `json:"nome"`
@@ -242,18 +244,22 @@ func (s *Server) LinkUpdate(c echo.Context) error {
 	var erros []string
 
 	if err := c.Bind(&parametros); err != nil {
+		utils.DebugLog("LinkUpdate", "Não foram inseridos os parâmetros na requisição", nil)
 		erros = append(erros, "Por favor, forneça o nome, link e plataforma nos parâmetro 'nome', 'link' e 'plataforma', respectivamente.")
 	}
 
 	if err := utils.Validate.Var(parametros.Nome, "min=3,max=120"); parametros.Nome != "" && err != nil {
+		utils.DebugLog("LinkUpdate", "Erro no nome inválido para o parâmetro 'nome'", nil)
 		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 120 caracteres) para o parâmetro 'nome'.")
 	}
 
 	if err := utils.Validate.Var(parametros.Plataforma, "oneof=whatsapp telegram"); parametros.Plataforma != "" && err != nil {
+		utils.DebugLog("LinkUpdate", "Erro na plataforma inválida para o parâmetro 'plataforma'", nil)
 		erros = append(erros, "Por favor, forneça uma plataforma válida ('instagram' ou 'whatsapp') para o parâmetro 'plataforma'.")
 	}
 
 	if (parametrosUpdate{}) == parametros {
+		utils.DebugLog("LinkCreate", "Parâmetros para atualização estão vazios", nil)
 		erros = append(erros, "Por favor, forneça algum valor válido para a atualização.")
 	}
 
@@ -303,7 +309,7 @@ func (s *Server) LinkRemove(c echo.Context) error {
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
 		utils.DebugLog("LinkRemove", "Erro na validação do código hash do redirecionador do link", err)
-		return utils.Erro(http.StatusBadRequest, "O 'codigo_hash' inserido é inválido, por favor insira um 'codigo_hash' existente com 10 caracteres.")
+		return utils.Erro(http.StatusBadRequest, "O 'hash' inserido é inválido, por favor insira um 'hash' existente com 10 caracteres.")
 	}
 
 	parsedId, err := strconv.ParseInt(id, 10, 64)

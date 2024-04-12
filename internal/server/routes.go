@@ -48,6 +48,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 		Skipper: auth.PathWithNoAuthRequired,
 	}))
 
+	e.Use(auth.TokenRefreshMiddleware)
+
 	// API - Documentação Swagger
 	e.GET("/docs/*", echoSwagger.WrapHandler)
 
