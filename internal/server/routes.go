@@ -68,9 +68,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 	// API - Plano de Assinatura
 	e.GET("/pricing", s.PlanoDeAssinaturaReadAll)
 	e.GET("/pricing/:name", s.PlanoDeAssinaturaReadByNome)
-	e.POST("/pricing", s.PlanoDeAssinaturaCreate)
-	e.PATCH("/pricing/:name", s.PlanoDeAssinaturaUpdate)
-	e.DELETE("/pricing/:name", s.PlanoDeAssinaturaRemove)
 
 	// API - Redirecionador
 	e.GET("/r", s.RedirecionadorReadAll)
@@ -88,11 +85,11 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.DELETE("/r/:hash/links/:id", s.LinkRemove)
 
 	// API - Admin
-	e.GET("/admin/user_history", s.UserHistory)
-	e.GET("/admin/redirect_history", s.RedirectHistory)
-	e.GET("/admin/kirvano_history", s.KirvanoHistory)
-	e.GET("/admin/pricing_history", s.PricingHistory)
-	e.GET("/admin/link_history", s.LinkHistory)
+	// e.GET("/admin/user_history", s.UserHistory)
+	// e.GET("/admin/redirect_history", s.RedirectHistory)
+	// e.GET("/admin/kirvano_history", s.KirvanoHistory)
+	// e.GET("/admin/pricing_history", s.PricingHistory)
+	// e.GET("/admin/link_history", s.LinkHistory)
 
 	return e
 }

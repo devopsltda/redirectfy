@@ -10,191 +10,6 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/admin/kirvano_history": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Retorna o histórico de ações relativas a usuários da Kirvano no sistema",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/HistoricoUsuarioTemporario"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/link_history": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Retorna o histórico de ações relativas a links no sistema",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/HistoricoLink"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/pricing_history": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Retorna o histórico de ações relativas a planos de assinatura no sistema",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/HistoricoPlanoDeAssinatura"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/redirect_history": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Retorna o histórico de ações relativas a redirecionadores no sistema",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/HistoricoRedirecionador"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/user_history": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Retorna o histórico de ações relativas a usuários no sistema",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/HistoricoUsuario"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
         "/kirvano": {
             "post": {
                 "consumes": [
@@ -342,79 +157,6 @@
                         }
                     }
                 }
-            },
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Planos de Assinatura"
-                ],
-                "summary": "Cria um plano de assinatura",
-                "parameters": [
-                    {
-                        "description": "Nome",
-                        "name": "nome",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Valor Mensal",
-                        "name": "valor_mensal",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "description": "Limite de Links Mensal",
-                        "name": "limite_links_mensal",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "description": "Ordenação Aleatória de Links",
-                        "name": "ordenacao_aleatoria_links",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "boolean"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    }
-                }
             }
         },
         "/pricing/:name": {
@@ -458,130 +200,41 @@
                         }
                     }
                 }
-            },
-            "delete": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Planos de Assinatura"
-                ],
-                "summary": "Remove um plano de assinatura",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Nome",
-                        "name": "name",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Planos de Assinatura"
-                ],
-                "summary": "Atualiza um plano de assinatura",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Nome",
-                        "name": "name",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Nome",
-                        "name": "nome",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Valor Mensal",
-                        "name": "valor_mensal",
-                        "in": "body",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "description": "Limite de Links Mensal",
-                        "name": "limite_links_mensal",
-                        "in": "body",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "description": "Ordenação Aleatória de Links",
-                        "name": "ordenacao_aleatoria_links",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "boolean"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    }
-                }
             }
         },
         "/r": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Redirecionadores"
+                ],
+                "summary": "Retorna os redirecionadores de um usuário específico",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Redirecionador"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    }
+                }
+            },
             "post": {
                 "consumes": [
                     "application/json"
@@ -1460,217 +1113,6 @@
         }
     },
     "definitions": {
-        "HistoricoLink": {
-            "type": "object",
-            "properties": {
-                "atualizado_em": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "bitmask": {
-                    "type": "integer"
-                },
-                "criado_em": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "criado_em_": {
-                    "type": "string"
-                },
-                "id": {
-                    "$ref": "#/definitions/sql.NullInt64"
-                },
-                "link": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "plataforma": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "redirecionador": {
-                    "$ref": "#/definitions/sql.NullInt64"
-                },
-                "removido_em": {
-                    "type": "string"
-                },
-                "rowid": {
-                    "type": "integer"
-                },
-                "versao": {
-                    "type": "integer"
-                }
-            }
-        },
-        "HistoricoPlanoDeAssinatura": {
-            "type": "object",
-            "properties": {
-                "atualizado_em": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "bitmask": {
-                    "type": "integer"
-                },
-                "criado_em": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "criado_em_": {
-                    "type": "string"
-                },
-                "id": {
-                    "$ref": "#/definitions/sql.NullInt64"
-                },
-                "limite_links_mensal": {
-                    "$ref": "#/definitions/sql.NullInt64"
-                },
-                "nome": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "ordenacao_aleatoria_links": {
-                    "$ref": "#/definitions/sql.NullBool"
-                },
-                "removido_em": {
-                    "type": "integer"
-                },
-                "rowid": {
-                    "type": "integer"
-                },
-                "valor_mensal": {
-                    "$ref": "#/definitions/sql.NullInt64"
-                },
-                "versao": {
-                    "type": "integer"
-                }
-            }
-        },
-        "HistoricoRedirecionador": {
-            "type": "object",
-            "properties": {
-                "atualizado_em": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "bitmask": {
-                    "type": "integer"
-                },
-                "codigo_hash": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "criado_em": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "criado_em_": {
-                    "type": "string"
-                },
-                "id": {
-                    "$ref": "#/definitions/sql.NullInt64"
-                },
-                "nome": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "ordem_de_redirecionamento": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "removido_em": {
-                    "type": "string"
-                },
-                "rowid": {
-                    "type": "integer"
-                },
-                "usuario": {
-                    "$ref": "#/definitions/sql.NullInt64"
-                },
-                "versao": {
-                    "type": "integer"
-                }
-            }
-        },
-        "HistoricoUsuario": {
-            "type": "object",
-            "properties": {
-                "atualizado_em": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "bitmask": {
-                    "type": "integer"
-                },
-                "cpf": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "criado_em": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "criado_em_": {
-                    "type": "string"
-                },
-                "data_de_nascimento": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "email": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "id": {
-                    "$ref": "#/definitions/sql.NullInt64"
-                },
-                "nome": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "nome_de_usuario": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "plano_de_assinatura": {
-                    "$ref": "#/definitions/sql.NullInt64"
-                },
-                "removido_em": {
-                    "type": "string"
-                },
-                "rowid": {
-                    "type": "integer"
-                },
-                "senha": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "versao": {
-                    "type": "integer"
-                }
-            }
-        },
-        "HistoricoUsuarioTemporario": {
-            "type": "object",
-            "properties": {
-                "bitmask": {
-                    "type": "integer"
-                },
-                "cpf": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "criado_em": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "criado_em_": {
-                    "type": "string"
-                },
-                "email": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "id": {
-                    "$ref": "#/definitions/sql.NullInt64"
-                },
-                "nome": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "nome_de_usuario": {
-                    "$ref": "#/definitions/sql.NullString"
-                },
-                "plano_de_assinatura": {
-                    "$ref": "#/definitions/sql.NullInt64"
-                },
-                "removido_em": {
-                    "type": "string"
-                },
-                "rowid": {
-                    "type": "integer"
-                },
-                "versao": {
-                    "type": "integer"
-                }
-            }
-        },
         "Link": {
             "type": "object",
             "properties": {
@@ -1852,42 +1294,6 @@
             "properties": {
                 "name": {
                     "type": "string"
-                }
-            }
-        },
-        "sql.NullBool": {
-            "type": "object",
-            "properties": {
-                "bool": {
-                    "type": "boolean"
-                },
-                "valid": {
-                    "description": "Valid is true if Bool is not NULL",
-                    "type": "boolean"
-                }
-            }
-        },
-        "sql.NullInt64": {
-            "type": "object",
-            "properties": {
-                "int64": {
-                    "type": "integer"
-                },
-                "valid": {
-                    "description": "Valid is true if Int64 is not NULL",
-                    "type": "boolean"
-                }
-            }
-        },
-        "sql.NullString": {
-            "type": "object",
-            "properties": {
-                "string": {
-                    "type": "string"
-                },
-                "valid": {
-                    "description": "Valid is true if String is not NULL",
-                    "type": "boolean"
                 }
             }
         }

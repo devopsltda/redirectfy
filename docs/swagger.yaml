@@ -1,143 +1,4 @@
 definitions:
-  HistoricoLink:
-    properties:
-      atualizado_em:
-        $ref: '#/definitions/sql.NullString'
-      bitmask:
-        type: integer
-      criado_em:
-        $ref: '#/definitions/sql.NullString'
-      criado_em_:
-        type: string
-      id:
-        $ref: '#/definitions/sql.NullInt64'
-      link:
-        $ref: '#/definitions/sql.NullString'
-      plataforma:
-        $ref: '#/definitions/sql.NullString'
-      redirecionador:
-        $ref: '#/definitions/sql.NullInt64'
-      removido_em:
-        type: string
-      rowid:
-        type: integer
-      versao:
-        type: integer
-    type: object
-  HistoricoPlanoDeAssinatura:
-    properties:
-      atualizado_em:
-        $ref: '#/definitions/sql.NullString'
-      bitmask:
-        type: integer
-      criado_em:
-        $ref: '#/definitions/sql.NullString'
-      criado_em_:
-        type: string
-      id:
-        $ref: '#/definitions/sql.NullInt64'
-      limite_links_mensal:
-        $ref: '#/definitions/sql.NullInt64'
-      nome:
-        $ref: '#/definitions/sql.NullString'
-      ordenacao_aleatoria_links:
-        $ref: '#/definitions/sql.NullBool'
-      removido_em:
-        type: integer
-      rowid:
-        type: integer
-      valor_mensal:
-        $ref: '#/definitions/sql.NullInt64'
-      versao:
-        type: integer
-    type: object
-  HistoricoRedirecionador:
-    properties:
-      atualizado_em:
-        $ref: '#/definitions/sql.NullString'
-      bitmask:
-        type: integer
-      codigo_hash:
-        $ref: '#/definitions/sql.NullString'
-      criado_em:
-        $ref: '#/definitions/sql.NullString'
-      criado_em_:
-        type: string
-      id:
-        $ref: '#/definitions/sql.NullInt64'
-      nome:
-        $ref: '#/definitions/sql.NullString'
-      ordem_de_redirecionamento:
-        $ref: '#/definitions/sql.NullString'
-      removido_em:
-        type: string
-      rowid:
-        type: integer
-      usuario:
-        $ref: '#/definitions/sql.NullInt64'
-      versao:
-        type: integer
-    type: object
-  HistoricoUsuario:
-    properties:
-      atualizado_em:
-        $ref: '#/definitions/sql.NullString'
-      bitmask:
-        type: integer
-      cpf:
-        $ref: '#/definitions/sql.NullString'
-      criado_em:
-        $ref: '#/definitions/sql.NullString'
-      criado_em_:
-        type: string
-      data_de_nascimento:
-        $ref: '#/definitions/sql.NullString'
-      email:
-        $ref: '#/definitions/sql.NullString'
-      id:
-        $ref: '#/definitions/sql.NullInt64'
-      nome:
-        $ref: '#/definitions/sql.NullString'
-      nome_de_usuario:
-        $ref: '#/definitions/sql.NullString'
-      plano_de_assinatura:
-        $ref: '#/definitions/sql.NullInt64'
-      removido_em:
-        type: string
-      rowid:
-        type: integer
-      senha:
-        $ref: '#/definitions/sql.NullString'
-      versao:
-        type: integer
-    type: object
-  HistoricoUsuarioTemporario:
-    properties:
-      bitmask:
-        type: integer
-      cpf:
-        $ref: '#/definitions/sql.NullString'
-      criado_em:
-        $ref: '#/definitions/sql.NullString'
-      criado_em_:
-        type: string
-      email:
-        $ref: '#/definitions/sql.NullString'
-      id:
-        $ref: '#/definitions/sql.NullInt64'
-      nome:
-        $ref: '#/definitions/sql.NullString'
-      nome_de_usuario:
-        $ref: '#/definitions/sql.NullString'
-      plano_de_assinatura:
-        $ref: '#/definitions/sql.NullInt64'
-      removido_em:
-        type: string
-      rowid:
-        type: integer
-      versao:
-        type: integer
-    type: object
   Link:
     properties:
       atualizado_em:
@@ -258,30 +119,6 @@ definitions:
       name:
         type: string
     type: object
-  sql.NullBool:
-    properties:
-      bool:
-        type: boolean
-      valid:
-        description: Valid is true if Bool is not NULL
-        type: boolean
-    type: object
-  sql.NullInt64:
-    properties:
-      int64:
-        type: integer
-      valid:
-        description: Valid is true if Int64 is not NULL
-        type: boolean
-    type: object
-  sql.NullString:
-    properties:
-      string:
-        type: string
-      valid:
-        description: Valid is true if String is not NULL
-        type: boolean
-    type: object
 info:
   contact:
     email: comercialdevops@gmail.com
@@ -290,126 +127,6 @@ info:
   title: API do Redirectify
   version: 1.0.0
 paths:
-  /admin/kirvano_history:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/HistoricoUsuarioTemporario'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-      summary: Retorna o histórico de ações relativas a usuários da Kirvano no sistema
-      tags:
-      - Admin
-  /admin/link_history:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/HistoricoLink'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-      summary: Retorna o histórico de ações relativas a links no sistema
-      tags:
-      - Admin
-  /admin/pricing_history:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/HistoricoPlanoDeAssinatura'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-      summary: Retorna o histórico de ações relativas a planos de assinatura no sistema
-      tags:
-      - Admin
-  /admin/redirect_history:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/HistoricoRedirecionador'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-      summary: Retorna o histórico de ações relativas a redirecionadores no sistema
-      tags:
-      - Admin
-  /admin/user_history:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/HistoricoUsuario'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-      summary: Retorna o histórico de ações relativas a usuários no sistema
-      tags:
-      - Admin
   /kirvano:
     post:
       consumes:
@@ -507,84 +224,7 @@ paths:
       summary: Retorna os planos de assinatura
       tags:
       - Planos de Assinatura
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Nome
-        in: body
-        name: nome
-        required: true
-        schema:
-          type: string
-      - description: Valor Mensal
-        in: body
-        name: valor_mensal
-        required: true
-        schema:
-          type: integer
-      - description: Limite de Links Mensal
-        in: body
-        name: limite_links_mensal
-        required: true
-        schema:
-          type: integer
-      - description: Ordenação Aleatória de Links
-        in: body
-        name: ordenacao_aleatoria_links
-        required: true
-        schema:
-          type: boolean
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-      summary: Cria um plano de assinatura
-      tags:
-      - Planos de Assinatura
   /pricing/:name:
-    delete:
-      consumes:
-      - application/json
-      parameters:
-      - description: Nome
-        in: path
-        name: name
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-      summary: Remove um plano de assinatura
-      tags:
-      - Planos de Assinatura
     get:
       consumes:
       - application/json
@@ -612,45 +252,17 @@ paths:
       summary: Retorna o plano de assinatura com o nome fornecido
       tags:
       - Planos de Assinatura
-    patch:
+  /r:
+    get:
       consumes:
       - application/json
-      parameters:
-      - description: Nome
-        in: path
-        name: name
-        required: true
-        type: string
-      - description: Nome
-        in: body
-        name: nome
-        schema:
-          type: string
-      - description: Valor Mensal
-        in: body
-        name: valor_mensal
-        schema:
-          type: integer
-      - description: Limite de Links Mensal
-        in: body
-        name: limite_links_mensal
-        schema:
-          type: integer
-      - description: Ordenação Aleatória de Links
-        in: body
-        name: ordenacao_aleatoria_links
-        required: true
-        schema:
-          type: boolean
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/Redirecionador'
         "400":
           description: Bad Request
           schema:
@@ -659,10 +271,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/echo.HTTPError'
-      summary: Atualiza um plano de assinatura
+      summary: Retorna os redirecionadores de um usuário específico
       tags:
-      - Planos de Assinatura
-  /r:
+      - Redirecionadores
     post:
       consumes:
       - application/json
