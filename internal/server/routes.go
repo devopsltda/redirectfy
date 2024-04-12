@@ -27,6 +27,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e := echo.New()
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"http://localhost:4200"},
+		AllowCredentials: true,
+		ExposeHeaders: []string{"Set-Cookie"},
 	}))
 	e.Use(middleware.Logger())
 	e.Use(middleware.Secure())
