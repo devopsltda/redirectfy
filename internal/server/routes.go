@@ -71,6 +71,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.DELETE("/pricing/:name", s.PlanoDeAssinaturaRemove)
 
 	// API - Redirecionador
+	e.GET("/r", s.RedirecionadorReadAll)
 	e.GET("/r/:hash", s.RedirecionadorReadByCodigoHash)
 	e.POST("/r", s.RedirecionadorCreate)
 	e.PATCH("/r/:hash/refresh", s.RedirecionadorRehash)

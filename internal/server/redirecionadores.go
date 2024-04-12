@@ -17,6 +17,41 @@ type RedirecionadorReadByCodigoHashResponse struct {
 	L []models.Link         `json:"links"`
 }
 
+// RedirecionadorReadAll godoc
+//
+// @Summary Retorna os redirecionadores de um usuário específico
+//
+// @Tags    Redirecionadores
+//
+// @Accept  json
+//
+// @Produce json
+//
+// @Success 200         {object} models.Redirecionador
+//
+// @Failure 400         {object} echo.HTTPError
+//
+// @Failure 500         {object} echo.HTTPError
+//
+// @Router  /r [get]
+func (s *Server) RedirecionadorReadAll(c echo.Context) error {
+	cookie, err := c.Cookie("usuario")
+
+	if err != nil {
+		slog.Error("RedirecionadorReadAll", slog.Any("error", err))
+		return utils.ErroBancoDados
+	}
+
+	redirecionadores, err := s.RedirecionadorModel.ReadAll(cookie.Value)
+
+	if err != nil {
+		slog.Error("RedirecionadorReadAll", slog.Any("error", err))
+		return utils.ErroBancoDados
+	}
+
+	return c.JSON(http.StatusOK, redirecionadores)
+}
+
 // RedirecionadorReadByCodigoHash godoc
 //
 // @Summary Retorna o redirecionador com o código hash fornecido
