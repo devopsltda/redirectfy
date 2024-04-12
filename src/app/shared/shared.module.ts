@@ -21,7 +21,7 @@ import { CardItemLinkComponent } from './card-item-link/card-item-link.component
 import { HeaderComponent } from './header/header.component';
 import { ContentWindowComponent } from './content-window/content-window.component';
 import { ContentGridComponent } from './content-grid/content-grid.component';
-
+import { ToastModule } from 'primeng/toast';
 
 
 @NgModule({
@@ -47,8 +47,8 @@ import { ContentGridComponent } from './content-grid/content-grid.component';
     CardItemLinkComponent,
     HeaderComponent,
     ContentWindowComponent,
-    ContentGridComponent
-
+    ContentGridComponent,
+    ToastModule
 
   ],
   exports:[
@@ -72,7 +72,8 @@ import { ContentGridComponent } from './content-grid/content-grid.component';
     CardItemLinkComponent,
     HeaderComponent,
     ContentWindowComponent,
-    ContentGridComponent
+    ContentGridComponent,
+    ToastModule
   ]
 })
 export class SharedModule { }

@@ -15,14 +15,14 @@ import { MyAccountComponent } from './pages/my-account/my-account.component';
 export const routes: Routes = [
   {path:'',pathMatch:'full',redirectTo:'login'},
   {path:'login',component:LoginComponent},
-  {path:'signup',component:SignupComponent},
+  {path:'finishSignup/:hashSignup',component:SignupComponent},
   {path:'signup/complete',component:SignupCompleteComponent},
   {path:'recovery',component:RecoveryPasswordComponent},
   {path:'recoverySend',component:RecoverySendComponent},
   {path:'newPassword',component:ResetPasswordComponent},
   {path:'newPasswordComplete',component:ResetCompleteComponent},
   {path:'home',component:HomeComponent},
-  {path:'myaccount',component:MyAccountComponent},
+  {path:'account',component:MyAccountComponent},
   {path:'newRedirect',component:CreateRedirectComponent},
 
 

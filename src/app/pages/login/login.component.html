@@ -1,7 +1,9 @@
-<app-grid ngClass="items-center">
+<app-grid ngClass=" items-center">
+  <p-toast></p-toast>
   <header class="flex md:flex-col md:justify-start md:items-center md:bg-[#257F7A]  w-full md:w-2/3 h-fit md:h-full justify-center md:m-0 mt-12">
     <app-redirectify-logo-name class="md:hidden" ></app-redirectify-logo-name>
     <div class="md:flex mt-72 hidden flex-col gap-2 items-start  justify-center">
+
       <svg class="w-48  h-42" viewBox="0 0 203 196" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M19.6233 0H0V19.6233V175.933V195.557L203 195.557V175.933H19.6233V19.6233H183.377L183.377 121.8H138.591L101.119 86.6134H133.98V66.9901H85.2599H65.6366V86.6134V136.01H85.2599V98.6407L129.92 140.576V141.423H130.822L131.022 141.611L131.198 141.423H183.377L203 141.423L203 19.6233L203 0H183.377H19.6233Z" fill="white"/>
       </svg>
@@ -18,15 +20,24 @@
     </p>
     <p class="hidden md:flex text-sm  w-96 md:text-4xl md:font-semibold text-[#434343] mt-48" >
       Seja Bem-Vindo ao  Redirectfy.
-    <form action="" class="flex flex-col mt-16 md:w-96" >
-      <span class="p-float-label mb-9 w-60 md:w-full">
-        <input id="email" type="text" pInputText class="border w-60 md:w-full h-12 focus:border-teal-500 hover:border-teal-500 pl-2"/>
-        <label for="email">Email</label>
+    <form action="" class="flex flex-col mt-16 md:w-96" [formGroup]="loginForm" (ngSubmit)="onSubmit()" >
+      <span class="flex flex-col mb-9">
+        <span class="p-float-label w-60 md:w-full">
+          <input id="email" type="text" formControlName="email"  pInputText class="border {{(invalidTouchedDirtyControl('email'))?'ng-invalid ng-dirty border-red-400':''}} w-60 md:w-full  h-12 focus:border-teal-500 hover:border-teal-500 pl-2"/>
+          <label for="email">Email</label>
+        </span>
+        @if((invalidTouchedDirtyControl('email')) || formSubmited){
+          <p class="pl-1 text-sm text-red-400" *ngIf="this.loginForm.controls['email'].errors?.['required']">Este campo é obrigatorio</p>
+          <p class="pl-1 text-sm text-red-400" *ngIf="this.loginForm.controls['email'].errors?.['email']">Email invalido</p>
+        }
       </span>
       <span class="p-float-label w-60 md:w-full">
-        <input id="password" type="password" pInputText class="border md:w-full  w-60 h-12 focus:border-teal-500 hover:border-teal-500 pl-2"/>
+        <input id="password" type="password" formControlName="senha"   pInputText class="{{(invalidTouchedDirtyControl('senha'))?'ng-invalid ng-dirty border-red-400':''}} border md:w-full  w-60 h-12 focus:border-teal-500 hover:border-teal-500 pl-2"/>
         <label for="password">Senha</label>
       </span>
+      @if((invalidTouchedDirtyControl('senha')) || formSubmited){
+        <p class="pl-1 text-sm text-red-400" *ngIf="this.loginForm.controls['senha'].errors?.['required']">Este campo é obrigatorio</p>
+      }
       <span class="flex justify-end w-full mt-2 ">
         <button class="mt-1 text-[#7E7E7E] underline text-sm" routerLink="/recovery"><p>Esqueceu a Senha?</p></button>
       </span>
