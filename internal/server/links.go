@@ -23,7 +23,7 @@ import (
 //
 // @Produce json
 //
-// @Param   codigo_hash path     string true "Código Hash"
+// @Param   hash        path     string true "Código Hash"
 //
 // @Param   id          path     int true "Id"
 //
@@ -33,10 +33,10 @@ import (
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /redirecionadores/:codigo_hash/links/:id [get]
+// @Router  /r/:hash/links/:id [get]
 func (s *Server) LinkReadById(c echo.Context) error {
 	id := c.Param("id")
-	codigoHash := c.Param("codigo_hash")
+	codigoHash := c.Param("hash")
 
 	if err := utils.Validate.Var(id, "required,gte=0"); err != nil {
 		utils.DebugLog("LinkReadById", "Erro na validação do id do link", err)
@@ -75,7 +75,7 @@ func (s *Server) LinkReadById(c echo.Context) error {
 //
 // @Produce json
 //
-// @Param   codigo_hash path     string true "Código Hash"
+// @Param   hash        path     string true "Código Hash"
 //
 // @Success 200         {object} []models.Link
 //
@@ -83,9 +83,9 @@ func (s *Server) LinkReadById(c echo.Context) error {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /redirecionadores/:codigo_hash/links [get]
+// @Router  /r/:hash/links [get]
 func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
-	codigoHash := c.Param("codigo_hash")
+	codigoHash := c.Param("hash")
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
 		utils.DebugLog("LinkReadByCodigoHash", "Erro na validação do código hash do redirecionador dos links", err)
@@ -112,7 +112,7 @@ func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
 //
 // @Produce json
 //
-// @Param   codigo_hash         path     string true "Código Hash"
+// @Param   hash                path     string true "Código Hash"
 //
 // @Param   links               body     []models.LinkToBatchInsert true "Links"
 //
@@ -122,9 +122,9 @@ func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
 //
 // @Failure 500                 {object} echo.HTTPError
 //
-// @Router  /redirecionadores/:codigo_hash/links [post]
+// @Router  /r/:hash/links [post]
 func (s *Server) LinkCreate(c echo.Context) error {
-	codigoHash := c.Param("codigo_hash")
+	codigoHash := c.Param("hash")
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
 		utils.DebugLog("LinkCreate", "Erro na validação do código hash do redirecionador do link", err)
@@ -191,7 +191,7 @@ func (s *Server) LinkCreate(c echo.Context) error {
 //
 // @Produce json
 //
-// @Param   codigo_hash path     string true  "Código Hash"
+// @Param   hash        path     string true  "Código Hash"
 //
 // @Param   id          path     int    true  "Id"
 //
@@ -207,10 +207,10 @@ func (s *Server) LinkCreate(c echo.Context) error {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /redirecionadores/:codigo_hash/link/:id [patch]
+// @Router  /r/:hash/link/:id [patch]
 func (s *Server) LinkUpdate(c echo.Context) error {
 	id := c.Param("id")
-	codigoHash := c.Param("codigo_hash")
+	codigoHash := c.Param("hash")
 
 	if err := utils.Validate.Var(id, "required,gte=0"); err != nil {
 		utils.DebugLog("LinkUpdate", "Erro na validação do id do link", err)
@@ -281,7 +281,7 @@ func (s *Server) LinkUpdate(c echo.Context) error {
 //
 // @Produce json
 //
-// @Param   codigo_hash path     string true "Código Hash"
+// @Param   hash        path     string true "Código Hash"
 //
 // @Param   id          path     int    true "Id"
 //
@@ -291,10 +291,10 @@ func (s *Server) LinkUpdate(c echo.Context) error {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /redirecionadores/:codigo_hash/link/:id [delete]
+// @Router  /r/:hash/link/:id [delete]
 func (s *Server) LinkRemove(c echo.Context) error {
 	id := c.Param("id")
-	codigoHash := c.Param("codigo_hash")
+	codigoHash := c.Param("hash")
 
 	if err := utils.Validate.Var(id, "required,gte=0"); err != nil {
 		utils.DebugLog("LinkRemove", "Erro na validação do id do link", err)

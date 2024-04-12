@@ -21,7 +21,7 @@ import (
 //
 // @Produce json
 //
-// @Param   nome path     string  true  "Nome"
+// @Param   name path     string  true  "Nome"
 //
 // @Success 200  {object} models.PlanoDeAssinatura
 //
@@ -29,9 +29,9 @@ import (
 //
 // @Failure 500  {object} echo.HTTPError
 //
-// @Router  /planos_de_assinatura/:nome [get]
+// @Router  /pricing/:name [get]
 func (s *Server) PlanoDeAssinaturaReadByNome(c echo.Context) error {
-	nome := c.Param("nome")
+	nome := c.Param("name")
 
 	if err := utils.Validate.Var(nome, "required,min=3,max=120"); err != nil {
 		return utils.ErroValidacaoNome
@@ -63,7 +63,7 @@ func (s *Server) PlanoDeAssinaturaReadByNome(c echo.Context) error {
 //
 // @Failure 500  {object} echo.HTTPError
 //
-// @Router  /planos_de_assinatura [get]
+// @Router  /pricing [get]
 func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
 	planosDeAssinatura, err := s.PlanoDeAssinaturaModel.ReadAll()
 
@@ -99,7 +99,7 @@ func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
 //
 // @Failure 500                             {object} echo.HTTPError
 //
-// @Router  /planos_de_assinatura [post]
+// @Router  /pricing [post]
 func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 	parametros := struct {
 		Nome                    string `json:"nome"`
@@ -154,7 +154,7 @@ func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 //
 // @Produce json
 //
-// @Param   nome                            path     string true  "Nome"
+// @Param   name                            path     string true  "Nome"
 //
 // @Param   nome                            body     string false "Nome"
 //
@@ -170,7 +170,7 @@ func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 //
 // @Failure 500                             {object} echo.HTTPError
 //
-// @Router  /planos_de_assinatura/:nome [patch]
+// @Router  /pricing/:name [patch]
 func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 	type parametrosUpdate struct {
 		Nome                    string `json:"nome"`
@@ -233,7 +233,7 @@ func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 //
 // @Produce json
 //
-// @Param   nome path     string true "Nome"
+// @Param   name path     string true "Nome"
 //
 // @Success 200  {object} map[string]string
 //
@@ -241,7 +241,7 @@ func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 //
 // @Failure 500  {object} echo.HTTPError
 //
-// @Router  /planos_de_assinatura/:nome [delete]
+// @Router  /pricing/:name [delete]
 func (s *Server) PlanoDeAssinaturaRemove(c echo.Context) error {
 	nome := c.Param("nome")
 

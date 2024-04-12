@@ -21,13 +21,13 @@ type RedirecionadorReadByCodigoHashResponse struct {
 //
 // @Summary Retorna o redirecionador com o código hash fornecido
 //
-// @Tags    Redirecionadors
+// @Tags    Redirecionadores
 //
 // @Accept  json
 //
 // @Produce json
 //
-// @Param   codigo_hash path     string true "Código Hash"
+// @Param   hash        path     string true "Código Hash"
 //
 // @Success 200         {object} models.Redirecionador
 //
@@ -35,9 +35,9 @@ type RedirecionadorReadByCodigoHashResponse struct {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /redirecionadores/:codigo_hash [get]
+// @Router  /r/:hash [get]
 func (s *Server) RedirecionadorReadByCodigoHash(c echo.Context) error {
-	codigoHash := c.Param("codigo_hash")
+	codigoHash := c.Param("hash")
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
 		return utils.ErroValidacaoCodigoHash
@@ -62,42 +62,6 @@ func (s *Server) RedirecionadorReadByCodigoHash(c echo.Context) error {
 	return c.JSON(http.StatusOK, RedirecionadorReadByCodigoHashResponse{R: redirecionador, L: picked_links})
 }
 
-// RedirecionadorReadAll godoc
-//
-// @Summary Retorna os redirecionadores
-//
-// @Tags    Redirecionadores
-//
-// @Accept  json
-//
-// @Produce json
-//
-// @Param   nome_de_usuario path     string true "Nome de Usuário"
-//
-// @Success 200             {object} []models.Redirecionador
-//
-// @Failure 400             {object} echo.HTTPError
-//
-// @Failure 500             {object} echo.HTTPError
-//
-// @Router  /redirecionadores/:nome_de_usuario [get]
-func (s *Server) RedirecionadorReadAll(c echo.Context) error {
-	nomeDeUsuario := c.Param("nome_de_usuario")
-
-	if !utils.ValidaNomeDeUsuario(nomeDeUsuario) {
-		return utils.ErroValidacaoNomeDeUsuario
-	}
-
-	redirecionadores, err := s.RedirecionadorModel.ReadAll(nomeDeUsuario)
-
-	if err != nil {
-		slog.Error("RedirecionadorReadAll", slog.Any("error", err))
-		return utils.ErroBancoDados
-	}
-
-	return c.JSON(http.StatusOK, redirecionadores)
-}
-
 // RedirecionadorCreate godoc
 //
 // @Summary Cria um redirecionador
@@ -120,7 +84,7 @@ func (s *Server) RedirecionadorReadAll(c echo.Context) error {
 //
 // @Failure 500                       {object} echo.HTTPError
 //
-// @Router  /redirecionadores [post]
+// @Router  /r [post]
 func (s *Server) RedirecionadorCreate(c echo.Context) error {
 	parametros := struct {
 		Nome                    string `json:"nome"`
@@ -190,7 +154,7 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 //
 // @Produce json
 //
-// @Param   codigo_hash path     string true "Código Hash"
+// @Param   hash        path     string true "Código Hash"
 //
 // @Success 200         {object} map[string]string
 //
@@ -198,9 +162,9 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /redirecionadores/rehash/:codigo_hash [patch]
+// @Router  /r/:hash/refresh [patch]
 func (s *Server) RedirecionadorRehash(c echo.Context) error {
-	codigoHash := c.Param("codigo_hash")
+	codigoHash := c.Param("hash")
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
 		return utils.ErroValidacaoCodigoHash
@@ -241,7 +205,7 @@ func (s *Server) RedirecionadorRehash(c echo.Context) error {
 //
 // @Produce json
 //
-// @Param   codigo_hash               path     string true  "Código Hash"
+// @Param   hash                      path     string true  "Código Hash"
 //
 // @Param   nome                      body     string false "Nome"
 //
@@ -253,7 +217,7 @@ func (s *Server) RedirecionadorRehash(c echo.Context) error {
 //
 // @Failure 500                       {object} echo.HTTPError
 //
-// @Router  /redirecionadores/:codigo_hash [patch]
+// @Router  /r/:hash [patch]
 func (s *Server) RedirecionadorUpdate(c echo.Context) error {
 	parametros := struct {
 		Nome                    string `json:"nome"`
@@ -262,7 +226,7 @@ func (s *Server) RedirecionadorUpdate(c echo.Context) error {
 
 	var erros []string
 
-	codigoHash := c.Param("codigo_hash")
+	codigoHash := c.Param("hash")
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
 		slog.Error("RedirecionadorUpdate", slog.Any("error", err))
@@ -299,13 +263,13 @@ func (s *Server) RedirecionadorUpdate(c echo.Context) error {
 //
 // @Summary Remove um redirecionador
 //
-// @Tags    Redirecionadors
+// @Tags    Redirecionadores
 //
 // @Accept  json
 //
 // @Produce json
 //
-// @Param   codigo_hash path     string true "Código Hash"
+// @Param   hash        path     string true "Código Hash"
 //
 // @Success 200         {object} map[string]string
 //
@@ -313,9 +277,9 @@ func (s *Server) RedirecionadorUpdate(c echo.Context) error {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /redirecionadores/:codigo_hash [delete]
+// @Router  /r/:hash [delete]
 func (s *Server) RedirecionadorRemove(c echo.Context) error {
-	codigoHash := c.Param("codigo_hash")
+	codigoHash := c.Param("hash")
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
 		return utils.ErroValidacaoCodigoHash

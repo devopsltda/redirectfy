@@ -290,7 +290,31 @@ info:
   title: API do Redirectify
   version: 1.0.0
 paths:
-  /links/historico:
+  /admin/kirvano_history:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/HistoricoUsuarioTemporario'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Retorna o histórico de ações relativas a usuários da Kirvano no sistema
+      tags:
+      - Admin
+  /admin/link_history:
     get:
       consumes:
       - application/json
@@ -313,8 +337,153 @@ paths:
             $ref: '#/definitions/echo.HTTPError'
       summary: Retorna o histórico de ações relativas a links no sistema
       tags:
-      - Histórico
-  /planos_de_assinatura:
+      - Admin
+  /admin/pricing_history:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/HistoricoPlanoDeAssinatura'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Retorna o histórico de ações relativas a planos de assinatura no sistema
+      tags:
+      - Admin
+  /admin/redirect_history:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/HistoricoRedirecionador'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Retorna o histórico de ações relativas a redirecionadores no sistema
+      tags:
+      - Admin
+  /admin/user_history:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/HistoricoUsuario'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Retorna o histórico de ações relativas a usuários no sistema
+      tags:
+      - Admin
+  /kirvano:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ParametrosKirvano'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Cria um usuário da Kirvano
+      tags:
+      - Kirvano
+  /kirvano/to_user/:hash:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Valor
+        in: path
+        name: hash
+        required: true
+        type: string
+      - description: Senha Nova
+        in: body
+        name: senha_nova
+        required: true
+        schema:
+          type: string
+      - description: Data de Nascimento
+        in: body
+        name: data_de_nascimento
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Cria um usuário a partir de um usuário da Kirvano
+      tags:
+      - Kirvano
+  /pricing:
     get:
       consumes:
       - application/json
@@ -386,14 +555,14 @@ paths:
       summary: Cria um plano de assinatura
       tags:
       - Planos de Assinatura
-  /planos_de_assinatura/:nome:
+  /pricing/:name:
     delete:
       consumes:
       - application/json
       parameters:
       - description: Nome
         in: path
-        name: nome
+        name: name
         required: true
         type: string
       produces:
@@ -422,7 +591,7 @@ paths:
       parameters:
       - description: Nome
         in: path
-        name: nome
+        name: name
         required: true
         type: string
       produces:
@@ -449,7 +618,7 @@ paths:
       parameters:
       - description: Nome
         in: path
-        name: nome
+        name: name
         required: true
         type: string
       - description: Nome
@@ -493,31 +662,7 @@ paths:
       summary: Atualiza um plano de assinatura
       tags:
       - Planos de Assinatura
-  /planos_de_assinatura/historico:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/HistoricoPlanoDeAssinatura'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-      summary: Retorna o histórico de ações relativas a planos de assinatura no sistema
-      tags:
-      - Histórico
-  /redirecionadores:
+  /r:
     post:
       consumes:
       - application/json
@@ -560,14 +705,14 @@ paths:
       summary: Cria um redirecionador
       tags:
       - Redirecionadores
-  /redirecionadores/:codigo_hash:
+  /r/:hash:
     delete:
       consumes:
       - application/json
       parameters:
       - description: Código Hash
         in: path
-        name: codigo_hash
+        name: hash
         required: true
         type: string
       produces:
@@ -589,14 +734,14 @@ paths:
             $ref: '#/definitions/echo.HTTPError'
       summary: Remove um redirecionador
       tags:
-      - Redirecionadors
+      - Redirecionadores
     get:
       consumes:
       - application/json
       parameters:
       - description: Código Hash
         in: path
-        name: codigo_hash
+        name: hash
         required: true
         type: string
       produces:
@@ -616,14 +761,14 @@ paths:
             $ref: '#/definitions/echo.HTTPError'
       summary: Retorna o redirecionador com o código hash fornecido
       tags:
-      - Redirecionadors
+      - Redirecionadores
     patch:
       consumes:
       - application/json
       parameters:
       - description: Código Hash
         in: path
-        name: codigo_hash
+        name: hash
         required: true
         type: string
       - description: Nome
@@ -656,14 +801,14 @@ paths:
       summary: Atualiza um redirecionador
       tags:
       - Redirecionadores
-  /redirecionadores/:codigo_hash/link/:id:
+  /r/:hash/link/:id:
     delete:
       consumes:
       - application/json
       parameters:
       - description: Código Hash
         in: path
-        name: codigo_hash
+        name: hash
         required: true
         type: string
       - description: Id
@@ -697,7 +842,7 @@ paths:
       parameters:
       - description: Código Hash
         in: path
-        name: codigo_hash
+        name: hash
         required: true
         type: string
       - description: Id
@@ -740,14 +885,14 @@ paths:
       summary: Atualiza um link específico de um redirecionador específico
       tags:
       - Links
-  /redirecionadores/:codigo_hash/links:
+  /r/:hash/links:
     get:
       consumes:
       - application/json
       parameters:
       - description: Código Hash
         in: path
-        name: codigo_hash
+        name: hash
         required: true
         type: string
       produces:
@@ -776,7 +921,7 @@ paths:
       parameters:
       - description: Código Hash
         in: path
-        name: codigo_hash
+        name: hash
         required: true
         type: string
       - description: Links
@@ -807,14 +952,14 @@ paths:
       summary: Cria links no redirecionador com o código hash fornecido
       tags:
       - Links
-  /redirecionadores/:codigo_hash/links/:id:
+  /r/:hash/links/:id:
     get:
       consumes:
       - application/json
       parameters:
       - description: Código Hash
         in: path
-        name: codigo_hash
+        name: hash
         required: true
         type: string
       - description: Id
@@ -841,68 +986,14 @@ paths:
         fornecido
       tags:
       - Links
-  /redirecionadores/:nome_de_usuario:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: Nome de Usuário
-        in: path
-        name: nome_de_usuario
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/Redirecionador'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-      summary: Retorna os redirecionadores
-      tags:
-      - Redirecionadores
-  /redirecionadores/historico:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/HistoricoRedirecionador'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-      summary: Retorna o histórico de ações relativas a redirecionadores no sistema
-      tags:
-      - Histórico
-  /redirecionadores/rehash/:codigo_hash:
+  /r/:hash/refresh:
     patch:
       consumes:
       - application/json
       parameters:
       - description: Código Hash
         in: path
-        name: codigo_hash
+        name: hash
         required: true
         type: string
       produces:
@@ -925,67 +1016,14 @@ paths:
       summary: Recria o hash de um redirecionador
       tags:
       - Redirecionadores
-  /usuarios:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/Usuario'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-      summary: Retorna todos os usuários
-      tags:
-      - Usuários
-  /usuarios/:nome_de_usuario:
-    delete:
-      consumes:
-      - application/json
-      parameters:
-      - description: Nome de Usuário
-        in: path
-        name: nome_de_usuario
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-      summary: Remove um usuário
-      tags:
-      - Usuários
+  /u/:username:
     get:
       consumes:
       - application/json
       parameters:
       - description: Nome de Usuário
         in: path
-        name: nome_de_usuario
+        name: username
         required: true
         type: string
       produces:
@@ -1012,7 +1050,7 @@ paths:
       parameters:
       - description: Nome de Usuário
         in: path
-        name: nome_de_usuario
+        name: username
         required: true
         type: string
       - description: CPF
@@ -1070,14 +1108,14 @@ paths:
       summary: Atualiza um usuário
       tags:
       - Usuários
-  /usuarios/:nome_de_usuario/troca_de_senha:
+  /u/:username/change_password:
     patch:
       consumes:
       - application/json
       parameters:
       - description: Nome de Usuário
         in: path
-        name: nome_de_usuario
+        name: username
         required: true
         type: string
       produces:
@@ -1100,25 +1138,19 @@ paths:
       summary: Exige a troca de senha de um usuário
       tags:
       - Usuários
-  /usuarios/criar_permanente/:valor:
-    post:
+  /u/change_password/:hash:
+    patch:
       consumes:
       - application/json
       parameters:
       - description: Valor
         in: path
-        name: valor
+        name: hash
         required: true
         type: string
       - description: Senha Nova
         in: body
         name: senha_nova
-        required: true
-        schema:
-          type: string
-      - description: Data de Nascimento
-        in: body
-        name: data_de_nascimento
         required: true
         schema:
           type: string
@@ -1139,34 +1171,10 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/echo.HTTPError'
-      summary: Cria um usuário permanente a partir de um temporário
+      summary: Troca a senha de um usuário
       tags:
       - Usuários
-  /usuarios/historico:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/HistoricoUsuario'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-      summary: Retorna o histórico de ações relativas a usuários no sistema
-      tags:
-      - Histórico
-  /usuarios/login:
+  /u/login:
     post:
       consumes:
       - application/json
@@ -1203,53 +1211,10 @@ paths:
       summary: Autentica o usuário
       tags:
       - Usuários
-  /usuarios/troca_de_senha/:valor:
-    patch:
-      consumes:
-      - application/json
-      parameters:
-      - description: Valor
-        in: path
-        name: valor
-        required: true
-        type: string
-      - description: Senha Nova
-        in: body
-        name: senha_nova
-        required: true
-        schema:
-          type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-      summary: Troca a senha de um usuário
-      tags:
-      - Usuários
-  /usuarios_temporarios:
+  /u/logout:
     post:
       consumes:
       - application/json
-      parameters:
-      - description: Request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/ParametrosKirvano'
       produces:
       - application/json
       responses:
@@ -1267,31 +1232,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/echo.HTTPError'
-      summary: Cria um usuário temporário
+      summary: Remove cookies de autenticação do usuário
       tags:
-      - UsuáriosTemporários
-  /usuarios_temporarios/historico:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/HistoricoUsuarioTemporario'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-      summary: Retorna o histórico de ações relativas a usuários temporários no sistema
-      tags:
-      - Histórico
+      - Usuários
 swagger: "2.0"

@@ -50,44 +50,46 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.GET("/docs/*", echoSwagger.WrapHandler)
 
 	// API - Usuário
-	e.GET("/usuarios", s.UsuarioReadAll)
-	e.GET("/usuarios/historico", s.HistoricoUsuarioReadAll)
-	e.GET("/usuarios/:nome_de_usuario", s.UsuarioReadByNomeDeUsuario)
-	e.POST("/usuarios/criar_permanente/:valor", s.UsuarioTemporarioParaPermanente)
-	e.POST("/usuarios_temporarios", s.UsuarioTemporarioCreate)
-	e.POST("/usuarios_temporarios/historico", s.HistoricoUsuarioTemporarioReadAll)
-	e.PATCH("/usuarios/:nome_de_usuario", s.UsuarioUpdate)
-	e.DELETE("/usuarios/:nome_de_usuario", s.UsuarioRemove)
+	e.GET("/u/:username", s.UsuarioReadByNomeDeUsuario)
+	e.PATCH("/u/:username", s.UsuarioUpdate)
+
+	// API - Kirvano
+	e.POST("/kirvano/to_user/:hash", s.KirvanoToUser)
+	e.POST("/kirvano", s.KirvanoCreate)
 
 	// API - Autenticação
-	e.POST("/usuarios/login", s.UsuarioLogin)
-	e.PATCH("/usuarios/troca_de_senha/:valor", s.UsuarioTrocaDeSenha)
-	e.POST("/usuarios/:nome_de_usuario/troca_de_senha", s.UsuarioTrocaDeSenhaExigir)
+	e.POST("/u/login", s.UsuarioLogin)
+	e.POST("/u/logout", s.UsuarioLogout)
+	e.PATCH("/u/change_password/:hash", s.UsuarioTrocaDeSenha)
+	e.PATCH("/u/:username/change_password", s.UsuarioTrocaDeSenhaExigir)
 
 	// API - Plano de Assinatura
-	e.GET("/planos_de_assinatura", s.PlanoDeAssinaturaReadAll)
-	e.GET("/planos_de_assinatura/historico", s.HistoricoPlanoDeAssinaturaReadAll)
-	e.GET("/planos_de_assinatura/:nome", s.PlanoDeAssinaturaReadByNome)
-	e.POST("/planos_de_assinatura", s.PlanoDeAssinaturaCreate)
-	e.PATCH("/planos_de_assinatura/:nome", s.PlanoDeAssinaturaUpdate)
-	e.DELETE("/planos_de_assinatura/:nome", s.PlanoDeAssinaturaRemove)
+	e.GET("/pricing", s.PlanoDeAssinaturaReadAll)
+	e.GET("/pricing/:name", s.PlanoDeAssinaturaReadByNome)
+	e.POST("/pricing", s.PlanoDeAssinaturaCreate)
+	e.PATCH("/pricing/:name", s.PlanoDeAssinaturaUpdate)
+	e.DELETE("/pricing/:name", s.PlanoDeAssinaturaRemove)
 
 	// API - Redirecionador
-	e.GET("/redirecionadores", s.RedirecionadorReadAll)
-	e.GET("/redirecionadores/historico", s.HistoricoRedirecionadorReadAll)
-	e.GET("/redirecionadores/:codigo_hash", s.RedirecionadorReadByCodigoHash)
-	e.POST("/redirecionadores", s.RedirecionadorCreate)
-	e.PATCH("/redirecionadores/:codigo_hash/rehash", s.RedirecionadorRehash)
-	e.PATCH("/redirecionadores/:codigo_hash", s.RedirecionadorUpdate)
-	e.DELETE("/redirecionadores/:codigo_hash", s.RedirecionadorRemove)
+	e.GET("/r/:hash", s.RedirecionadorReadByCodigoHash)
+	e.POST("/r", s.RedirecionadorCreate)
+	e.PATCH("/r/:hash/refresh", s.RedirecionadorRehash)
+	e.PATCH("/r/:hash", s.RedirecionadorUpdate)
+	e.DELETE("/r/:hash", s.RedirecionadorRemove)
 
 	// API - Link
-	e.GET("/redirecionadores/:codigo_hash/links", s.LinkReadByCodigoHash)
-	e.GET("/redirecionadores/:codigo_hash/links/historico", s.HistoricoLinkReadAll)
-	e.GET("/redirecionadores/:codigo_hash/links/:id", s.LinkReadById)
-	e.POST("/redirecionadores/:codigo_hash/links", s.LinkCreate)
-	e.PATCH("/redirecionadores/:codigo_hash/links/:id", s.LinkUpdate)
-	e.DELETE("/redirecionadores/:codigo_hash/links/:id", s.LinkRemove)
+	e.GET("/r/:hash/links", s.LinkReadByCodigoHash)
+	e.GET("/r/:hash/links/:id", s.LinkReadById)
+	e.POST("/r/:hash/links", s.LinkCreate)
+	e.PATCH("/r/:hash/links/:id", s.LinkUpdate)
+	e.DELETE("/r/:hash/links/:id", s.LinkRemove)
+
+	// API - Admin
+	e.GET("/admin/user_history", s.UserHistory)
+	e.GET("/admin/redirect_history", s.RedirectHistory)
+	e.GET("/admin/kirvano_history", s.KirvanoHistory)
+	e.GET("/admin/pricing_history", s.PricingHistory)
+	e.GET("/admin/link_history", s.LinkHistory)
 
 	return e
 }

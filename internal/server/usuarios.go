@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 	"strings"
+	"time"
 	"unicode"
 
 	"redirectfy/internal/auth"
@@ -59,7 +60,7 @@ func criaNomeDeUsuario(s string) string {
 //
 // @Produce json
 //
-// @Param   nome_de_usuario path     string  true  "Nome de Usuário"
+// @Param   username        path     string  true  "Nome de Usuário"
 //
 // @Success 200             {object} models.Usuario
 //
@@ -67,9 +68,9 @@ func criaNomeDeUsuario(s string) string {
 //
 // @Failure 500             {object} echo.HTTPError
 //
-// @Router  /usuarios/:nome_de_usuario [get]
+// @Router  /u/:username [get]
 func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
-	nomeDeUsuario := c.Param("nome_de_usuario")
+	nomeDeUsuario := c.Param("username")
 
 	if !utils.ValidaNomeDeUsuario(nomeDeUsuario) {
 		return utils.ErroValidacaoNomeDeUsuario
@@ -85,39 +86,11 @@ func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 	return c.JSON(http.StatusOK, usuario)
 }
 
-// UsuarioReadAll godoc
+// KirvanoCreate godoc
 //
-// @Summary Retorna todos os usuários
+// @Summary Cria um usuário da Kirvano
 //
-// @Tags    Usuários
-//
-// @Accept  json
-//
-// @Produce json
-//
-// @Success 200             {object} []models.Usuario
-//
-// @Failure 400             {object} echo.HTTPError
-//
-// @Failure 500             {object} echo.HTTPError
-//
-// @Router  /usuarios [get]
-func (s *Server) UsuarioReadAll(c echo.Context) error {
-	usuarios, err := s.UsuarioModel.ReadAll()
-
-	if err != nil {
-		slog.Error("UsuarioReadAll", slog.Any("error", err))
-		return utils.ErroBancoDados
-	}
-
-	return c.JSON(http.StatusOK, usuarios)
-}
-
-// UsuarioTemporarioCreate godoc
-//
-// @Summary Cria um usuário temporário
-//
-// @Tags    UsuáriosTemporários
+// @Tags    Kirvano
 //
 // @Accept  json
 //
@@ -131,8 +104,8 @@ func (s *Server) UsuarioReadAll(c echo.Context) error {
 //
 // @Failure 500                 {object} echo.HTTPError
 //
-// @Router  /usuarios_temporarios [post]
-func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
+// @Router  /kirvano [post]
+func (s *Server) KirvanoCreate(c echo.Context) error {
 	var parametros parametrosKirvano
 
 	var erros []string
@@ -240,7 +213,7 @@ func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 //
 // @Produce json
 //
-// @Param   nome_de_usuario     path     string true "Nome de Usuário"
+// @Param   username            path     string true "Nome de Usuário"
 //
 // @Param   cpf                 body     string false "CPF"
 //
@@ -262,9 +235,9 @@ func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 //
 // @Failure 500                 {object} echo.HTTPError
 //
-// @Router  /usuarios/:nome_de_usuario [patch]
+// @Router  /u/:username [patch]
 func (s *Server) UsuarioUpdate(c echo.Context) error {
-	nomeDeUsuario := c.Param("nome_de_usuario")
+	nomeDeUsuario := c.Param("username")
 
 	type parametrosUpdate struct {
 		Cpf               string `json:"cpf"`
@@ -353,17 +326,17 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 	return c.JSON(http.StatusOK, utils.MensagemUsuarioAtualizadoComSucesso)
 }
 
-// UsuarioTemporarioParaPermanente godoc
+// KirvanoToUser godoc
 //
-// @Summary Cria um usuário permanente a partir de um temporário
+// @Summary Cria um usuário a partir de um usuário da Kirvano
 //
-// @Tags    Usuários
+// @Tags    Kirvano
 //
 // @Accept  json
 //
 // @Produce json
 //
-// @Param   valor              path     string true "Valor"
+// @Param   hash               path     string true "Valor"
 //
 // @Param   senha_nova         body     string true "Senha Nova"
 //
@@ -375,9 +348,9 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 //
 // @Failure 500                {object} echo.HTTPError
 //
-// @Router  /usuarios/criar_permanente/:valor [post]
-func (s *Server) UsuarioTemporarioParaPermanente(c echo.Context) error {
-	valor := c.Param("valor")
+// @Router  /kirvano/to_user/:hash [post]
+func (s *Server) KirvanoToUser(c echo.Context) error {
+	valor := c.Param("hash")
 
 	if !utils.ValidaNomeDeUsuario(valor) {
 		return utils.ErroValidacaoNomeDeUsuario
@@ -467,7 +440,7 @@ func (s *Server) UsuarioTemporarioParaPermanente(c echo.Context) error {
 //
 // @Produce json
 //
-// @Param   nome_de_usuario   path     string true "Nome de Usuário"
+// @Param   username          path     string true "Nome de Usuário"
 //
 // @Success 200               {object} map[string]string
 //
@@ -475,9 +448,9 @@ func (s *Server) UsuarioTemporarioParaPermanente(c echo.Context) error {
 //
 // @Failure 500               {object} echo.HTTPError
 //
-// @Router  /usuarios/:nome_de_usuario/troca_de_senha [patch]
+// @Router  /u/:username/change_password [patch]
 func (s *Server) UsuarioTrocaDeSenhaExigir(c echo.Context) error {
-	nomeDeUsuario := c.Param("nome_de_usuario")
+	nomeDeUsuario := c.Param("username")
 
 	if !utils.ValidaNomeDeUsuario(nomeDeUsuario) {
 		return utils.ErroValidacaoNomeDeUsuario
@@ -533,7 +506,7 @@ func (s *Server) UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 //
 // @Produce json
 //
-// @Param   valor             path     string true "Valor"
+// @Param   hash              path     string true "Valor"
 //
 // @Param   senha_nova        body     string true "Senha Nova"
 //
@@ -543,9 +516,9 @@ func (s *Server) UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 //
 // @Failure 500               {object} echo.HTTPError
 //
-// @Router  /usuarios/troca_de_senha/:valor [patch]
+// @Router  /u/change_password/:hash [patch]
 func (s *Server) UsuarioTrocaDeSenha(c echo.Context) error {
-	valor := c.Param("valor")
+	valor := c.Param("hash")
 
 	if !utils.ValidaNomeDeUsuario(valor) {
 		return utils.ErroValidacaoNomeDeUsuario
@@ -596,42 +569,6 @@ func (s *Server) UsuarioTrocaDeSenha(c echo.Context) error {
 	return c.JSON(http.StatusOK, utils.MensagemUsuarioSenhaTrocadaComSucesso)
 }
 
-// UsuarioRemove godoc
-//
-// @Summary Remove um usuário
-//
-// @Tags    Usuários
-//
-// @Accept  json
-//
-// @Produce json
-//
-// @Param   nome_de_usuario   path     string true "Nome de Usuário"
-//
-// @Success 200               {object} map[string]string
-//
-// @Failure 400               {object} echo.HTTPError
-//
-// @Failure 500               {object} echo.HTTPError
-//
-// @Router  /usuarios/:nome_de_usuario [delete]
-func (s *Server) UsuarioRemove(c echo.Context) error {
-	nomeDeUsuario := c.Param("nome_de_usuario")
-
-	if !utils.ValidaNomeDeUsuario(nomeDeUsuario) {
-		return utils.ErroValidacaoNomeDeUsuario
-	}
-
-	err := s.UsuarioModel.Remove(nomeDeUsuario)
-
-	if err != nil {
-		slog.Error("UsuarioRemove", slog.Any("error", err))
-		return utils.ErroBancoDados
-	}
-
-	return c.JSON(http.StatusOK, utils.MensagemUsuarioRemovidoComSucesso)
-}
-
 // UsuarioLogin godoc
 //
 // @Summary Autentica o usuário
@@ -652,7 +589,7 @@ func (s *Server) UsuarioRemove(c echo.Context) error {
 //
 // @Failure 500               {object} echo.HTTPError
 //
-// @Router  /usuarios/login [post]
+// @Router  /u/login [post]
 func (s *Server) UsuarioLogin(c echo.Context) error {
 	parametros := struct {
 		Email string `json:"email"`
@@ -696,6 +633,31 @@ func (s *Server) UsuarioLogin(c echo.Context) error {
 	if err != nil {
 		slog.Error("UsuarioLogin", slog.Any("error", err))
 		return utils.ErroAssinaturaJWT
+	}
+
+	return c.JSON(http.StatusOK, utils.MensagemUsuarioLogadoComSucesso)
+}
+
+// UsuarioLogout godoc
+//
+// @Summary Remove cookies de autenticação do usuário
+//
+// @Tags    Usuários
+//
+// @Accept  json
+//
+// @Produce json
+//
+// @Success 200               {object} map[string]string
+//
+// @Failure 400               {object} echo.HTTPError
+//
+// @Failure 500               {object} echo.HTTPError
+//
+// @Router  /u/logout [post]
+func (s *Server) UsuarioLogout(c echo.Context) error {
+	for _, c := range c.Cookies() {
+		c.Expires = time.Now()
 	}
 
 	return c.JSON(http.StatusOK, utils.MensagemUsuarioLogadoComSucesso)

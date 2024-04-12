@@ -18,7 +18,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/links/historico": {
+        "/admin/kirvano_history": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -27,7 +27,44 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Histórico"
+                    "Admin"
+                ],
+                "summary": "Retorna o histórico de ações relativas a usuários da Kirvano no sistema",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/HistoricoUsuarioTemporario"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/link_history": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
                 ],
                 "summary": "Retorna o histórico de ações relativas a links no sistema",
                 "responses": {
@@ -55,7 +92,230 @@ const docTemplate = `{
                 }
             }
         },
-        "/planos_de_assinatura": {
+        "/admin/pricing_history": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Retorna o histórico de ações relativas a planos de assinatura no sistema",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/HistoricoPlanoDeAssinatura"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/redirect_history": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Retorna o histórico de ações relativas a redirecionadores no sistema",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/HistoricoRedirecionador"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/user_history": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Retorna o histórico de ações relativas a usuários no sistema",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/HistoricoUsuario"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/kirvano": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Kirvano"
+                ],
+                "summary": "Cria um usuário da Kirvano",
+                "parameters": [
+                    {
+                        "description": "Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ParametrosKirvano"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/kirvano/to_user/:hash": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Kirvano"
+                ],
+                "summary": "Cria um usuário a partir de um usuário da Kirvano",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Valor",
+                        "name": "hash",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Senha Nova",
+                        "name": "senha_nova",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Data de Nascimento",
+                        "name": "data_de_nascimento",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/pricing": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -165,7 +425,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/planos_de_assinatura/:nome": {
+        "/pricing/:name": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -181,7 +441,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Nome",
-                        "name": "nome",
+                        "name": "name",
                         "in": "path",
                         "required": true
                     }
@@ -222,7 +482,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Nome",
-                        "name": "nome",
+                        "name": "name",
                         "in": "path",
                         "required": true
                     }
@@ -266,7 +526,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Nome",
-                        "name": "nome",
+                        "name": "name",
                         "in": "path",
                         "required": true
                     },
@@ -329,44 +589,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/planos_de_assinatura/historico": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Histórico"
-                ],
-                "summary": "Retorna o histórico de ações relativas a planos de assinatura no sistema",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/HistoricoPlanoDeAssinatura"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
-        "/redirecionadores": {
+        "/r": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -432,7 +655,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/redirecionadores/:codigo_hash": {
+        "/r/:hash": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -441,14 +664,14 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Redirecionadors"
+                    "Redirecionadores"
                 ],
                 "summary": "Retorna o redirecionador com o código hash fornecido",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "Código Hash",
-                        "name": "codigo_hash",
+                        "name": "hash",
                         "in": "path",
                         "required": true
                     }
@@ -482,14 +705,14 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Redirecionadors"
+                    "Redirecionadores"
                 ],
                 "summary": "Remove um redirecionador",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "Código Hash",
-                        "name": "codigo_hash",
+                        "name": "hash",
                         "in": "path",
                         "required": true
                     }
@@ -533,7 +756,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Código Hash",
-                        "name": "codigo_hash",
+                        "name": "hash",
                         "in": "path",
                         "required": true
                     },
@@ -579,7 +802,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/redirecionadores/:codigo_hash/link/:id": {
+        "/r/:hash/link/:id": {
             "delete": {
                 "consumes": [
                     "application/json"
@@ -595,7 +818,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Código Hash",
-                        "name": "codigo_hash",
+                        "name": "hash",
                         "in": "path",
                         "required": true
                     },
@@ -646,7 +869,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Código Hash",
-                        "name": "codigo_hash",
+                        "name": "hash",
                         "in": "path",
                         "required": true
                     },
@@ -707,7 +930,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/redirecionadores/:codigo_hash/links": {
+        "/r/:hash/links": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -723,7 +946,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Código Hash",
-                        "name": "codigo_hash",
+                        "name": "hash",
                         "in": "path",
                         "required": true
                     }
@@ -767,7 +990,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Código Hash",
-                        "name": "codigo_hash",
+                        "name": "hash",
                         "in": "path",
                         "required": true
                     },
@@ -809,7 +1032,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/redirecionadores/:codigo_hash/links/:id": {
+        "/r/:hash/links/:id": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -825,7 +1048,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Código Hash",
-                        "name": "codigo_hash",
+                        "name": "hash",
                         "in": "path",
                         "required": true
                     },
@@ -859,90 +1082,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/redirecionadores/:nome_de_usuario": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Redirecionadores"
-                ],
-                "summary": "Retorna os redirecionadores",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Nome de Usuário",
-                        "name": "nome_de_usuario",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Redirecionador"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
-        "/redirecionadores/historico": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Histórico"
-                ],
-                "summary": "Retorna o histórico de ações relativas a redirecionadores no sistema",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/HistoricoRedirecionador"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
-        "/redirecionadores/rehash/:codigo_hash": {
+        "/r/:hash/refresh": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -958,7 +1098,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Código Hash",
-                        "name": "codigo_hash",
+                        "name": "hash",
                         "in": "path",
                         "required": true
                     }
@@ -988,44 +1128,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/usuarios": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Usuários"
-                ],
-                "summary": "Retorna todos os usuários",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Usuario"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
-        "/usuarios/:nome_de_usuario": {
+        "/u/:username": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -1041,7 +1144,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Nome de Usuário",
-                        "name": "nome_de_usuario",
+                        "name": "username",
                         "in": "path",
                         "required": true
                     }
@@ -1051,50 +1154,6 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/Usuario"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Usuários"
-                ],
-                "summary": "Remove um usuário",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Nome de Usuário",
-                        "name": "nome_de_usuario",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
                         }
                     },
                     "400": {
@@ -1126,7 +1185,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Nome de Usuário",
-                        "name": "nome_de_usuario",
+                        "name": "username",
                         "in": "path",
                         "required": true
                     },
@@ -1212,7 +1271,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/usuarios/:nome_de_usuario/troca_de_senha": {
+        "/u/:username/change_password": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -1228,7 +1287,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Nome de Usuário",
-                        "name": "nome_de_usuario",
+                        "name": "username",
                         "in": "path",
                         "required": true
                     }
@@ -1258,8 +1317,8 @@ const docTemplate = `{
                 }
             }
         },
-        "/usuarios/criar_permanente/:valor": {
-            "post": {
+        "/u/change_password/:hash": {
+            "patch": {
                 "consumes": [
                     "application/json"
                 ],
@@ -1269,12 +1328,12 @@ const docTemplate = `{
                 "tags": [
                     "Usuários"
                 ],
-                "summary": "Cria um usuário permanente a partir de um temporário",
+                "summary": "Troca a senha de um usuário",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "Valor",
-                        "name": "valor",
+                        "name": "hash",
                         "in": "path",
                         "required": true
                     },
@@ -1286,15 +1345,6 @@ const docTemplate = `{
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "description": "Data de Nascimento",
-                        "name": "data_de_nascimento",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -1322,44 +1372,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/usuarios/historico": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Histórico"
-                ],
-                "summary": "Retorna o histórico de ações relativas a usuários no sistema",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/HistoricoUsuario"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
-        "/usuarios/login": {
+        "/u/login": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -1416,8 +1429,8 @@ const docTemplate = `{
                 }
             }
         },
-        "/usuarios/troca_de_senha/:valor": {
-            "patch": {
+        "/u/logout": {
+            "post": {
                 "consumes": [
                     "application/json"
                 ],
@@ -1427,25 +1440,7 @@ const docTemplate = `{
                 "tags": [
                     "Usuários"
                 ],
-                "summary": "Troca a senha de um usuário",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Valor",
-                        "name": "valor",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Senha Nova",
-                        "name": "senha_nova",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "summary": "Remove cookies de autenticação do usuário",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1453,91 +1448,6 @@ const docTemplate = `{
                             "type": "object",
                             "additionalProperties": {
                                 "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
-        "/usuarios_temporarios": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "UsuáriosTemporários"
-                ],
-                "summary": "Cria um usuário temporário",
-                "parameters": [
-                    {
-                        "description": "Request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/ParametrosKirvano"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
-        "/usuarios_temporarios/historico": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Histórico"
-                ],
-                "summary": "Retorna o histórico de ações relativas a usuários temporários no sistema",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/HistoricoUsuarioTemporario"
                             }
                         }
                     },
