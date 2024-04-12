@@ -63,9 +63,9 @@ func criaNomeDeUsuario(s string) string {
 //
 // @Success 200             {object} models.Usuario
 //
-// @Failure 400             {object} utils.Erro
+// @Failure 400             {object} echo.HTTPError
 //
-// @Failure 500             {object} utils.Erro
+// @Failure 500             {object} echo.HTTPError
 //
 // @Router  /usuarios/:nome_de_usuario [get]
 func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
@@ -97,9 +97,9 @@ func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 //
 // @Success 200             {object} []models.Usuario
 //
-// @Failure 400             {object} utils.Erro
+// @Failure 400             {object} echo.HTTPError
 //
-// @Failure 500             {object} utils.Erro
+// @Failure 500             {object} echo.HTTPError
 //
 // @Router  /usuarios [get]
 func (s *Server) UsuarioReadAll(c echo.Context) error {
@@ -127,9 +127,9 @@ func (s *Server) UsuarioReadAll(c echo.Context) error {
 //
 // @Success 200                 {object} map[string]string
 //
-// @Failure 400                 {object} utils.Erro
+// @Failure 400                 {object} echo.HTTPError
 //
-// @Failure 500                 {object} utils.Erro
+// @Failure 500                 {object} echo.HTTPError
 //
 // @Router  /usuarios_temporarios [post]
 func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
@@ -258,9 +258,9 @@ func (s *Server) UsuarioTemporarioCreate(c echo.Context) error {
 //
 // @Success 200                 {object} map[string]string
 //
-// @Failure 400                 {object} utils.Erro
+// @Failure 400                 {object} echo.HTTPError
 //
-// @Failure 500                 {object} utils.Erro
+// @Failure 500                 {object} echo.HTTPError
 //
 // @Router  /usuarios/:nome_de_usuario [patch]
 func (s *Server) UsuarioUpdate(c echo.Context) error {
@@ -371,9 +371,9 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 //
 // @Success 200                {object} map[string]string
 //
-// @Failure 400                {object} utils.Erro
+// @Failure 400                {object} echo.HTTPError
 //
-// @Failure 500                {object} utils.Erro
+// @Failure 500                {object} echo.HTTPError
 //
 // @Router  /usuarios/criar_permanente/:valor [post]
 func (s *Server) UsuarioTemporarioParaPermanente(c echo.Context) error {
@@ -471,9 +471,9 @@ func (s *Server) UsuarioTemporarioParaPermanente(c echo.Context) error {
 //
 // @Success 200               {object} map[string]string
 //
-// @Failure 400               {object} utils.Erro
+// @Failure 400               {object} echo.HTTPError
 //
-// @Failure 500               {object} utils.Erro
+// @Failure 500               {object} echo.HTTPError
 //
 // @Router  /usuarios/:nome_de_usuario/troca_de_senha [patch]
 func (s *Server) UsuarioTrocaDeSenhaExigir(c echo.Context) error {
@@ -539,9 +539,9 @@ func (s *Server) UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 //
 // @Success 200               {object} map[string]string
 //
-// @Failure 400               {object} utils.Erro
+// @Failure 400               {object} echo.HTTPError
 //
-// @Failure 500               {object} utils.Erro
+// @Failure 500               {object} echo.HTTPError
 //
 // @Router  /usuarios/troca_de_senha/:valor [patch]
 func (s *Server) UsuarioTrocaDeSenha(c echo.Context) error {
@@ -610,9 +610,9 @@ func (s *Server) UsuarioTrocaDeSenha(c echo.Context) error {
 //
 // @Success 200               {object} map[string]string
 //
-// @Failure 400               {object} utils.Erro
+// @Failure 400               {object} echo.HTTPError
 //
-// @Failure 500               {object} utils.Erro
+// @Failure 500               {object} echo.HTTPError
 //
 // @Router  /usuarios/:nome_de_usuario [delete]
 func (s *Server) UsuarioRemove(c echo.Context) error {
@@ -648,9 +648,9 @@ func (s *Server) UsuarioRemove(c echo.Context) error {
 //
 // @Success 200               {object} map[string]string
 //
-// @Failure 400               {object} utils.Erro
+// @Failure 400               {object} echo.HTTPError
 //
-// @Failure 500               {object} utils.Erro
+// @Failure 500               {object} echo.HTTPError
 //
 // @Router  /usuarios/login [post]
 func (s *Server) UsuarioLogin(c echo.Context) error {

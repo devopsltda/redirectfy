@@ -21,9 +21,9 @@ import (
 //
 // @Success 200 {object} []models.HistoricoPlanoDeAssinatura
 //
-// @Failure 400 {object} *echo.HTTPError
+// @Failure 400 {object} echo.HTTPError
 //
-// @Failure 500 {object} *echo.HTTPError
+// @Failure 500 {object} echo.HTTPError
 //
 // @Router  /planos_de_assinatura/historico [get]
 func (s *Server) HistoricoPlanoDeAssinaturaReadAll(c echo.Context) error {
@@ -49,9 +49,9 @@ func (s *Server) HistoricoPlanoDeAssinaturaReadAll(c echo.Context) error {
 //
 // @Success 200 {object} []models.HistoricoUsuarioTemporario
 //
-// @Failure 400 {object} *echo.HTTPError
+// @Failure 400 {object} echo.HTTPError
 //
-// @Failure 500 {object} *echo.HTTPError
+// @Failure 500 {object} echo.HTTPError
 //
 // @Router  /usuarios_temporarios/historico [get]
 func (s *Server) HistoricoUsuarioTemporarioReadAll(c echo.Context) error {
@@ -77,9 +77,9 @@ func (s *Server) HistoricoUsuarioTemporarioReadAll(c echo.Context) error {
 //
 // @Success 200 {object} []models.HistoricoUsuario
 //
-// @Failure 400 {object} *echo.HTTPError
+// @Failure 400 {object} echo.HTTPError
 //
-// @Failure 500 {object} *echo.HTTPError
+// @Failure 500 {object} echo.HTTPError
 //
 // @Router  /usuarios/historico [get]
 func (s *Server) HistoricoUsuarioReadAll(c echo.Context) error {
@@ -105,9 +105,9 @@ func (s *Server) HistoricoUsuarioReadAll(c echo.Context) error {
 //
 // @Success 200 {object} []models.HistoricoRedirecionador
 //
-// @Failure 400 {object} *echo.HTTPError
+// @Failure 400 {object} echo.HTTPError
 //
-// @Failure 500 {object} *echo.HTTPError
+// @Failure 500 {object} echo.HTTPError
 //
 // @Router  /redirecionadores/historico [get]
 func (s *Server) HistoricoRedirecionadorReadAll(c echo.Context) error {
@@ -133,9 +133,9 @@ func (s *Server) HistoricoRedirecionadorReadAll(c echo.Context) error {
 //
 // @Success 200 {object} []models.HistoricoLink
 //
-// @Failure 400 {object} *echo.HTTPError
+// @Failure 400 {object} echo.HTTPError
 //
-// @Failure 500 {object} *echo.HTTPError
+// @Failure 500 {object} echo.HTTPError
 //
 // @Router  /links/historico [get]
 func (s *Server) HistoricoLinkReadAll(c echo.Context) error {

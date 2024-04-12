@@ -29,9 +29,9 @@ import (
 //
 // @Success 200         {object} models.Link
 //
-// @Failure 400         {object} *echo.HTTPError
+// @Failure 400         {object} echo.HTTPError
 //
-// @Failure 500         {object} *echo.HTTPError
+// @Failure 500         {object} echo.HTTPError
 //
 // @Router  /redirecionadores/:codigo_hash/links/:id [get]
 func (s *Server) LinkReadById(c echo.Context) error {
@@ -79,9 +79,9 @@ func (s *Server) LinkReadById(c echo.Context) error {
 //
 // @Success 200         {object} []models.Link
 //
-// @Failure 400         {object} *echo.HTTPError
+// @Failure 400         {object} echo.HTTPError
 //
-// @Failure 500         {object} *echo.HTTPError
+// @Failure 500         {object} echo.HTTPError
 //
 // @Router  /redirecionadores/:codigo_hash/links [get]
 func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
@@ -118,9 +118,9 @@ func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
 //
 // @Success 200                 {object} map[string]string
 //
-// @Failure 400                 {object} *echo.HTTPError
+// @Failure 400                 {object} echo.HTTPError
 //
-// @Failure 500                 {object} *echo.HTTPError
+// @Failure 500                 {object} echo.HTTPError
 //
 // @Router  /redirecionadores/:codigo_hash/links [post]
 func (s *Server) LinkCreate(c echo.Context) error {
@@ -203,9 +203,9 @@ func (s *Server) LinkCreate(c echo.Context) error {
 //
 // @Success 200         {object} map[string]string
 //
-// @Failure 400         {object} *echo.HTTPError
+// @Failure 400         {object} echo.HTTPError
 //
-// @Failure 500         {object} *echo.HTTPError
+// @Failure 500         {object} echo.HTTPError
 //
 // @Router  /redirecionadores/:codigo_hash/link/:id [patch]
 func (s *Server) LinkUpdate(c echo.Context) error {
@@ -287,9 +287,9 @@ func (s *Server) LinkUpdate(c echo.Context) error {
 //
 // @Success 200         {object} map[string]string
 //
-// @Failure 400         {object} *echo.HTTPError
+// @Failure 400         {object} echo.HTTPError
 //
-// @Failure 500         {object} *echo.HTTPError
+// @Failure 500         {object} echo.HTTPError
 //
 // @Router  /redirecionadores/:codigo_hash/link/:id [delete]
 func (s *Server) LinkRemove(c echo.Context) error {

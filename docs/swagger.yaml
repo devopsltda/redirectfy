@@ -1,8 +1,4 @@
 definitions:
-  Erro:
-    properties:
-      message: {}
-    type: object
   HistoricoLink:
     properties:
       atualizado_em:
@@ -235,6 +231,10 @@ definitions:
       senha:
         type: string
     type: object
+  echo.HTTPError:
+    properties:
+      message: {}
+    type: object
   models.LinkToBatchInsert:
     properties:
       link:
@@ -306,11 +306,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Retorna o histórico de ações relativas a links no sistema
       tags:
       - Histórico
@@ -330,11 +330,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Retorna os planos de assinatura
       tags:
       - Planos de Assinatura
@@ -378,11 +378,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Cria um plano de assinatura
       tags:
       - Planos de Assinatura
@@ -408,11 +408,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Remove um plano de assinatura
       tags:
       - Planos de Assinatura
@@ -435,11 +435,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Retorna o plano de assinatura com o nome fornecido
       tags:
       - Planos de Assinatura
@@ -485,11 +485,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Atualiza um plano de assinatura
       tags:
       - Planos de Assinatura
@@ -509,11 +509,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Retorna o histórico de ações relativas a planos de assinatura no sistema
       tags:
       - Histórico
@@ -552,11 +552,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Cria um redirecionador
       tags:
       - Redirecionadores
@@ -582,11 +582,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Remove um redirecionador
       tags:
       - Redirecionadors
@@ -609,11 +609,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Retorna o redirecionador com o código hash fornecido
       tags:
       - Redirecionadors
@@ -648,11 +648,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Atualiza um redirecionador
       tags:
       - Redirecionadores
@@ -683,11 +683,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Remove um link específico de um redirecionador específico
       tags:
       - Links
@@ -732,11 +732,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Atualiza um link específico de um redirecionador específico
       tags:
       - Links
@@ -762,11 +762,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Retorna os links do redirecionador com o código hash fornecido
       tags:
       - Links
@@ -799,11 +799,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Cria links no redirecionador com o código hash fornecido
       tags:
       - Links
@@ -832,11 +832,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Retorna o link com o id fornecido do redirecionador com o código hash
         fornecido
       tags:
@@ -863,11 +863,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Retorna os redirecionadores
       tags:
       - Redirecionadores
@@ -887,11 +887,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Retorna o histórico de ações relativas a redirecionadores no sistema
       tags:
       - Histórico
@@ -917,11 +917,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Recria o hash de um redirecionador
       tags:
       - Redirecionadores
@@ -941,11 +941,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Retorna todos os usuários
       tags:
       - Usuários
@@ -971,11 +971,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Remove um usuário
       tags:
       - Usuários
@@ -998,11 +998,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Retorna o usuário com o nome de usuário fornecido
       tags:
       - Usuários
@@ -1062,11 +1062,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Atualiza um usuário
       tags:
       - Usuários
@@ -1092,11 +1092,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Exige a troca de senha de um usuário
       tags:
       - Usuários
@@ -1134,11 +1134,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Cria um usuário permanente a partir de um temporário
       tags:
       - Usuários
@@ -1158,11 +1158,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Retorna o histórico de ações relativas a usuários no sistema
       tags:
       - Histórico
@@ -1195,11 +1195,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Autentica o usuário
       tags:
       - Usuários
@@ -1231,11 +1231,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Troca a senha de um usuário
       tags:
       - Usuários
@@ -1262,11 +1262,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Cria um usuário temporário
       tags:
       - UsuáriosTemporários
@@ -1286,11 +1286,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/Erro'
+            $ref: '#/definitions/echo.HTTPError'
       summary: Retorna o histórico de ações relativas a usuários temporários no sistema
       tags:
       - Histórico

@@ -31,9 +31,9 @@ type RedirecionadorReadByCodigoHashResponse struct {
 //
 // @Success 200         {object} models.Redirecionador
 //
-// @Failure 400         {object} utils.Erro
+// @Failure 400         {object} echo.HTTPError
 //
-// @Failure 500         {object} utils.Erro
+// @Failure 500         {object} echo.HTTPError
 //
 // @Router  /redirecionadores/:codigo_hash [get]
 func (s *Server) RedirecionadorReadByCodigoHash(c echo.Context) error {
@@ -76,9 +76,9 @@ func (s *Server) RedirecionadorReadByCodigoHash(c echo.Context) error {
 //
 // @Success 200             {object} []models.Redirecionador
 //
-// @Failure 400             {object} utils.Erro
+// @Failure 400             {object} echo.HTTPError
 //
-// @Failure 500             {object} utils.Erro
+// @Failure 500             {object} echo.HTTPError
 //
 // @Router  /redirecionadores/:nome_de_usuario [get]
 func (s *Server) RedirecionadorReadAll(c echo.Context) error {
@@ -116,9 +116,9 @@ func (s *Server) RedirecionadorReadAll(c echo.Context) error {
 //
 // @Success 200                       {object} map[string]string
 //
-// @Failure 400                       {object} utils.Erro
+// @Failure 400                       {object} echo.HTTPError
 //
-// @Failure 500                       {object} utils.Erro
+// @Failure 500                       {object} echo.HTTPError
 //
 // @Router  /redirecionadores [post]
 func (s *Server) RedirecionadorCreate(c echo.Context) error {
@@ -194,9 +194,9 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 //
 // @Success 200         {object} map[string]string
 //
-// @Failure 400         {object} utils.Erro
+// @Failure 400         {object} echo.HTTPError
 //
-// @Failure 500         {object} utils.Erro
+// @Failure 500         {object} echo.HTTPError
 //
 // @Router  /redirecionadores/rehash/:codigo_hash [patch]
 func (s *Server) RedirecionadorRehash(c echo.Context) error {
@@ -249,9 +249,9 @@ func (s *Server) RedirecionadorRehash(c echo.Context) error {
 //
 // @Success 200                       {object} map[string]string
 //
-// @Failure 400                       {object} utils.Erro
+// @Failure 400                       {object} echo.HTTPError
 //
-// @Failure 500                       {object} utils.Erro
+// @Failure 500                       {object} echo.HTTPError
 //
 // @Router  /redirecionadores/:codigo_hash [patch]
 func (s *Server) RedirecionadorUpdate(c echo.Context) error {
@@ -309,9 +309,9 @@ func (s *Server) RedirecionadorUpdate(c echo.Context) error {
 //
 // @Success 200         {object} map[string]string
 //
-// @Failure 400         {object} utils.Erro
+// @Failure 400         {object} echo.HTTPError
 //
-// @Failure 500         {object} utils.Erro
+// @Failure 500         {object} echo.HTTPError
 //
 // @Router  /redirecionadores/:codigo_hash [delete]
 func (s *Server) RedirecionadorRemove(c echo.Context) error {

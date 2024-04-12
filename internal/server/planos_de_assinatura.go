@@ -25,9 +25,9 @@ import (
 //
 // @Success 200  {object} models.PlanoDeAssinatura
 //
-// @Failure 400  {object} utils.Erro
+// @Failure 400  {object} echo.HTTPError
 //
-// @Failure 500  {object} utils.Erro
+// @Failure 500  {object} echo.HTTPError
 //
 // @Router  /planos_de_assinatura/:nome [get]
 func (s *Server) PlanoDeAssinaturaReadByNome(c echo.Context) error {
@@ -59,9 +59,9 @@ func (s *Server) PlanoDeAssinaturaReadByNome(c echo.Context) error {
 //
 // @Success 200  {object} []models.PlanoDeAssinatura
 //
-// @Failure 400  {object} utils.Erro
+// @Failure 400  {object} echo.HTTPError
 //
-// @Failure 500  {object} utils.Erro
+// @Failure 500  {object} echo.HTTPError
 //
 // @Router  /planos_de_assinatura [get]
 func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
@@ -95,9 +95,9 @@ func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
 //
 // @Success 200                             {object} map[string]string
 //
-// @Failure 400                             {object} utils.Erro
+// @Failure 400                             {object} echo.HTTPError
 //
-// @Failure 500                             {object} utils.Erro
+// @Failure 500                             {object} echo.HTTPError
 //
 // @Router  /planos_de_assinatura [post]
 func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
@@ -166,9 +166,9 @@ func (s *Server) PlanoDeAssinaturaCreate(c echo.Context) error {
 //
 // @Success 200                             {object} map[string]string
 //
-// @Failure 400                             {object} utils.Erro
+// @Failure 400                             {object} echo.HTTPError
 //
-// @Failure 500                             {object} utils.Erro
+// @Failure 500                             {object} echo.HTTPError
 //
 // @Router  /planos_de_assinatura/:nome [patch]
 func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
@@ -237,9 +237,9 @@ func (s *Server) PlanoDeAssinaturaUpdate(c echo.Context) error {
 //
 // @Success 200  {object} map[string]string
 //
-// @Failure 400  {object} utils.Erro
+// @Failure 400  {object} echo.HTTPError
 //
-// @Failure 500  {object} utils.Erro
+// @Failure 500  {object} echo.HTTPError
 //
 // @Router  /planos_de_assinatura/:nome [delete]
 func (s *Server) PlanoDeAssinaturaRemove(c echo.Context) error {
