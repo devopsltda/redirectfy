@@ -70,8 +70,8 @@ func ErroLog(nomeFuncao, mensagem string, erro error) {
 func Erro(code int, message string) *echo.HTTPError {
 	return echo.NewHTTPError(
 		code,
-		map[string]string{
-			"erros": message,
+		map[string][]string{
+			"erros": {message},
 		},
 	)
 }
