@@ -149,7 +149,7 @@ func PricingMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		if PathWithNoAuthRequired(c) {
+		if PathWithNoAuthRequired(c) || c.Get("usuario") == nil {
 			return next(c)
 		}
 
