@@ -67,13 +67,6 @@ func New() *sql.DB {
 		os.Exit(1)
 	}
 
-	err = seed(db, dbSourcePath[1:])
-
-	if err != nil {
-		slog.Error("BancoDeDados", slog.Any("error", err))
-		os.Exit(1)
-	}
-
 	return db
 }
 
