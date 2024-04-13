@@ -25,7 +25,6 @@ func TestCreateHandler(t *testing.T) {
 		EmailAutenticacaoModel: &models.EmailAutenticacaoModel{DB: db},
 		LinkModel:              &models.LinkModel{DB: db},
 		RedirecionadorModel:    &models.RedirecionadorModel{DB: db},
-		HistoricoModel:         &models.HistoricoModel{DB: db},
 	}
 
 	t.Run("Criar usuário handler Successfull", func(t *testing.T) {
@@ -45,7 +44,7 @@ func TestCreateHandler(t *testing.T) {
 		// Create a new Context
 		c := e.NewContext(req, rec)
 
-		if assert.NoError(t, s.UsuarioTemporarioCreate(c)) {
+		if assert.NoError(t, s.KirvanoCreate(c)) {
 			// Call your handler function
 			assert.Equal(t, http.StatusCreated, rec.Code)
 			// Add more assertions here to check the response body, headers, etc.
@@ -68,7 +67,7 @@ func TestCreateHandler(t *testing.T) {
 		// Create a new Context
 		c := e.NewContext(req, rec)
 
-		if assert.Error(t, s.UsuarioTemporarioCreate(c)) {
+		if assert.Error(t, s.KirvanoCreate(c)) {
 			// Call your handler function
 			assert.Equal(t, http.StatusOK, rec.Code)
 			// Add more assertions here to check the response body, headers, etc.
@@ -91,7 +90,7 @@ func TestCreateHandler(t *testing.T) {
 		// Create a new Context
 		c := e.NewContext(req, rec)
 
-		if assert.Error(t, s.UsuarioTemporarioCreate(c)) {
+		if assert.Error(t, s.KirvanoCreate(c)) {
 			// Call your handler function
 			assert.Equal(t, 400, rec.Code)
 			// Add more assertions here to check the response body, headers, etc.
@@ -115,7 +114,7 @@ func TestCreateHandler(t *testing.T) {
 		// Create a new Context
 		c := e.NewContext(req, rec)
 
-		if assert.Error(t, s.UsuarioTemporarioCreate(c)) {
+		if assert.Error(t, s.KirvanoCreate(c)) {
 			// Call your handler function
 			assert.Equal(t, 400, rec.Code)
 			// Add more assertions here to check the response body, headers, etc.
@@ -138,7 +137,7 @@ func TestCreateHandler(t *testing.T) {
 		// Create a new Context
 		c := e.NewContext(req, rec)
 
-		if assert.Error(t, s.UsuarioTemporarioCreate(c)) {
+		if assert.Error(t, s.KirvanoCreate(c)) {
 			// Call your handler function
 			assert.Equal(t, 400, rec.Code)
 			// Add more assertions here to check the response body, headers, etc.
@@ -161,7 +160,7 @@ func TestCreateHandler(t *testing.T) {
 		// Create a new Context
 		c := e.NewContext(req, rec)
 
-		if assert.Error(t, s.UsuarioTemporarioCreate(c)) {
+		if assert.Error(t, s.KirvanoCreate(c)) {
 			// Call your handler function
 			assert.Equal(t, 400, rec.Code)
 			// Add more assertions here to check the response body, headers, etc.
@@ -185,7 +184,7 @@ func TestCreateHandler(t *testing.T) {
 		// Create a new Context
 		c := e.NewContext(req, rec)
 
-		if assert.Error(t, s.UsuarioTemporarioCreate(c)) {
+		if assert.Error(t, s.KirvanoCreate(c)) {
 			// Call your handler function
 			assert.Equal(t, 400, rec.Code)
 			// Add more assertions here to check the response body, headers, etc.
@@ -208,7 +207,7 @@ func TestCreateHandler(t *testing.T) {
 		// Create a new Context
 		c := e.NewContext(req, rec)
 
-		if assert.Error(t, s.UsuarioTemporarioCreate(c)) {
+		if assert.Error(t, s.KirvanoCreate(c)) {
 			// Call your handler function
 			assert.Equal(t, 400, rec.Code)
 			// Add more assertions here to check the response body, headers, etc.
@@ -232,7 +231,7 @@ func TestCreateHandler(t *testing.T) {
 		// Create a new Context
 		c := e.NewContext(req, rec)
 
-		if assert.Error(t, s.UsuarioTemporarioCreate(c)) {
+		if assert.Error(t, s.KirvanoCreate(c)) {
 			// Call your handler function
 			assert.Equal(t, 400, rec.Code)
 			// Add more assertions here to check the response body, headers, etc.
@@ -256,7 +255,7 @@ func TestCreateHandler(t *testing.T) {
 		// Create a new Context
 		c := e.NewContext(req, rec)
 
-		if assert.Error(t, s.UsuarioTemporarioCreate(c)) {
+		if assert.Error(t, s.KirvanoCreate(c)) {
 			// Call your handler function
 			assert.Equal(t, 400, rec.Code)
 			// Add more assertions here to check the response body, headers, etc.

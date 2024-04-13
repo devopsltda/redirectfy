@@ -53,6 +53,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 	// API - Documentação Swagger
 	e.GET("/docs/*", echoSwagger.WrapHandler)
 
+	// API - Obter Links do Redirecionador
+	e.GET("/to/:hash", s.RedirecionadorLinksToGoTo)
+
 	// API - Usuário
 	e.GET("/u/:username", s.UsuarioReadByNomeDeUsuario)
 	e.PATCH("/u/:username", s.UsuarioUpdate)
@@ -75,7 +78,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.GET("/r", s.RedirecionadorReadAll)
 	e.GET("/r/:hash", s.RedirecionadorReadByCodigoHash)
 	e.POST("/r", s.RedirecionadorCreate)
-	e.PATCH("/r/:hash/refresh", s.RedirecionadorRehash)
+	e.PATCH("/r/:hash/refresh", auth.PricingMiddleware(s.RedirecionadorRefresh))
 	e.PATCH("/r/:hash", s.RedirecionadorUpdate)
 	e.DELETE("/r/:hash", s.RedirecionadorRemove)
 

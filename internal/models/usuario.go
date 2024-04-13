@@ -12,7 +12,7 @@ type Usuario struct {
 	Email             string         `json:"email"`
 	Senha             string         `json:"senha"`
 	DataDeNascimento  string         `json:"data_de_nascimento"`
-	PlanoDeAssinatura int64          `json:"plano_de_assinatura"`
+	PlanoDeAssinatura string          `json:"plano_de_assinatura"`
 	CriadoEm          string         `json:"criado_em"`
 	AtualizadoEm      string         `json:"atualizado_em"`
 	RemovidoEm        sql.NullString `json:"removido_em" swaggertype:"string"`

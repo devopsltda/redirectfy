@@ -2,7 +2,6 @@ package server
 
 import (
 	"fmt"
-	"log/slog"
 	"net/http"
 	"strings"
 	"time"
@@ -72,15 +71,16 @@ func criaNomeDeUsuario(s string) string {
 func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 	nomeDeUsuario := c.Param("username")
 
-	if !utils.ValidaNomeDeUsuario(nomeDeUsuario) {
-		return utils.ErroValidacaoNomeDeUsuario
+	if !utils.IsURLSafe(nomeDeUsuario) {
+		utils.DebugLog("UsuarioReadByNomeDeUsuario", "Erro de validação do nome do usuário no parâmetro 'username'", nil)
+		return utils.Erro(http.StatusBadRequest, "Por favor, forneça um nome de usuário válido (3 a 120 caracteres, composto de apenas letras, números e '-' ou '_').")
 	}
 
 	usuario, err := s.UsuarioModel.ReadByNomeDeUsuario(nomeDeUsuario)
 
 	if err != nil {
-		slog.Error("UsuarioReadByNomeDeUsuario", slog.Any("error", err))
-		return utils.ErroBancoDados
+		utils.ErroLog("UsuarioReadByNomeDeUsuario", "Erro na leitura do usuário", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível ler o usuário.")
 	}
 
 	return c.JSON(http.StatusOK, usuario)
@@ -111,29 +111,36 @@ func (s *Server) KirvanoCreate(c echo.Context) error {
 	var erros []string
 
 	if err := c.Bind(&parametros); err != nil {
+		utils.DebugLog("KirvanoCreate", "Não foram inseridos os parâmetros na requisição", nil)
 		erros = append(erros, "Por favor, forneça o CPF, email, data de nascimento, nome, nome de usuário, senha e plano de assinatura do usuário nos parâmetro 'cpf', 'email', 'data_de_nascimento', 'nome', 'nome_de_usuario', 'senha' e 'plano_de_assinatura', respectivamente.")
 	}
 
 	if err := utils.Validate.Var(parametros.Event, "required,oneof=SALE_APPROVED SALE_REFUNDED SUBSCRIPTION_CANCELED SUBSCRIPTION_EXPIRED SUBSCRIPTION_RENEWED"); err != nil {
+		utils.DebugLog("KirvanoCreate", "Erro no nome de evento inválido no parâmetro 'event'", nil)
 		erros = append(erros, "Por favor, forneça um evento válido (SALE_APPROVED, SALE_REFUNDED, SUBSCRIPTION_CANCELED, SUBSCRIPTION_EXPIRED ou SUBSCRIPTION_RENEWED) para o parâmetro 'event'.")
 	}
 
 	if err := utils.Validate.Var(parametros.Customer.Document, "required,numeric,len=11"); err != nil {
+		utils.DebugLog("KirvanoCreate", "Erro no CPF inválido no parâmetro 'customer.document'", nil)
 		erros = append(erros, "Por favor, forneça um CPF válido (texto numérico com 11 dígitos) para o parâmetro 'document'.")
 	}
 
 	if err := utils.Validate.Var(parametros.Customer.Name, "required,min=3,max=240"); err != nil {
+		utils.DebugLog("KirvanoCreate", "Erro no nome inválido no parâmetro 'customer.name'", nil)
 		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 240 caracteres) para o parâmetro 'name'.")
 	}
 
 	if err := utils.Validate.Var(parametros.Customer.Email, "required,email"); err != nil {
+		utils.DebugLog("KirvanoCreate", "Erro no email inválido no parâmetro 'customer.email'", nil)
 		erros = append(erros, "Por favor, forneça um email válido para o parâmetro 'email'.")
 	}
 
 	if len(parametros.Products) != 1 {
-		erros = append(erros, "Por favor, forneça um nome válido para o parâmetro 'plano_de_assinatura'.")
+		utils.DebugLog("KirvanoCreate", "Erro no parâmetro 'products' que possui mais de um produto", nil)
+		erros = append(erros, "Por favor, forneça um único produto no parâmetro 'products'.")
 	} else if err := utils.Validate.Var(parametros.Products[0].Name, "required,min=3,max=120"); err != nil {
-		erros = append(erros, "Por favor, forneça um nome válido para o parâmetro 'plano_de_assinatura'.")
+		utils.DebugLog("KirvanoCreate", "Erro no nome inválido no parâmetro 'products.name'", nil)
+		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 120 caracteres) no parâmetro 'products.name'.")
 	}
 
 	if len(erros) > 0 {
@@ -144,7 +151,7 @@ func (s *Server) KirvanoCreate(c echo.Context) error {
 
 	switch parametros.Event {
 	case "SALE_APPROVED":
-		usuarioId, err := s.UsuarioTemporarioModel.Create(
+		usuarioId, err := s.UsuarioKirvanoModel.Create(
 			parametros.Customer.Document,
 			parametros.Customer.Name,
 			nomeDeUsuario,
@@ -153,8 +160,8 @@ func (s *Server) KirvanoCreate(c echo.Context) error {
 		)
 
 		if err != nil {
-			slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
-			return utils.ErroBancoDados
+			utils.ErroLog("KirvanoCreate", "Erro na criação do usuário da Kirvano", err)
+			return utils.Erro(http.StatusInternalServerError, "Não foi possível criar o usuário da Kirvano.")
 		}
 
 		var valor string
@@ -166,41 +173,34 @@ func (s *Server) KirvanoCreate(c echo.Context) error {
 			valorExiste, err = s.EmailAutenticacaoModel.CheckIfValorExists(valor)
 
 			if err != nil {
-				slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
-				return utils.ErroBancoDados
+				utils.ErroLog("KirvanoCreate", "Erro na checagem da existência do valor do email de autenticação", err)
+				return utils.Erro(http.StatusInternalServerError, "Não foi possível verificar se havia um valor disponível para o email de autenticação.")
 			}
 		}
 
 		id, err := s.EmailAutenticacaoModel.Create(valor, "nova_senha", usuarioId)
 
 		if err != nil {
-			slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
-			return utils.ErroBancoDados
+			utils.ErroLog("KirvanoCreate", "Erro na criação do email de autenticação", err)
+			return utils.Erro(http.StatusInternalServerError, "Não foi possível criar email de autenticação para o usuário da Kirvano.")
 		}
 
 		err = s.email.SendValidacao(id, parametros.Customer.Name, valor, parametros.Customer.Email)
 
 		if err != nil {
-			slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
-			return utils.ErroBancoDados
+			utils.ErroLog("KirvanoCreate", "Erro no envio do email de autenticação", err)
+			return utils.Erro(http.StatusInternalServerError, "Não foi possível enviar o email de autenticação para o usuário da Kirvano.")
 		}
 	case "SALE_REFUNDED", "SUBSCRIPTION_CANCELED", "SUBSCRIPTION_EXPIRED":
 		err := s.UsuarioModel.Update(nomeDeUsuario, "", "", "", "", "", "Gratuito")
 
 		if err != nil {
-			slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
-			return utils.ErroBancoDados
-		}
-	case "SUBSCRIPTION_RENEWED":
-		err := s.UsuarioModel.Update(nomeDeUsuario, "", "", "", "", "", parametros.Products[0].Name)
-
-		if err != nil {
-			slog.Error("UsuarioTemporarioCreate", slog.Any("error", err))
-			return utils.ErroBancoDados
+			utils.ErroLog("KirvanoCreate", "Erro na atualização do usuário", err)
+			return utils.Erro(http.StatusInternalServerError, "Não foi possível atualizar o usuário.")
 		}
 	}
 
-	return c.JSON(http.StatusCreated, utils.MensagemUsuarioCriadoComSucesso)
+	return c.JSON(http.StatusCreated, "O usuário da Kirvano foi criado com sucesso.")
 }
 
 // UsuarioUpdate godoc
@@ -251,8 +251,9 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 
 	parametros := parametrosUpdate{}
 
-	if !utils.ValidaNomeDeUsuario(nomeDeUsuario) {
-		return utils.ErroValidacaoNomeDeUsuario
+	if !utils.IsURLSafe(nomeDeUsuario) {
+		utils.DebugLog("UsuarioUpdate", "Erro de validação do nome do usuário no parâmetro 'username'", nil)
+		return utils.Erro(http.StatusBadRequest, "Por favor, forneça um nome de usuário válido (3 a 120 caracteres, composto de apenas letras, números e '-' ou '_').")
 	}
 
 	var erros []string
@@ -269,7 +270,7 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 240 caracteres) para o parâmetro 'nome'.")
 	}
 
-	if err := utils.Validate.Var(parametros.NomeDeUsuario, "min=3,max=120"); parametros.NomeDeUsuario != "" && err != nil || !utils.ValidaNomeDeUsuario(parametros.NomeDeUsuario) {
+	if err := utils.Validate.Var(parametros.NomeDeUsuario, "min=3,max=120"); parametros.NomeDeUsuario != "" && err != nil || !utils.IsURLSafe(parametros.NomeDeUsuario) {
 		erros = append(erros, "Por favor, forneça um nome de usuário válido (texto de 3 a 120 caracteres, contendo apenas letras, número, '_' ou '-') para o parâmetro 'nome_de_usuario'.")
 	}
 
@@ -323,7 +324,7 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	return c.JSON(http.StatusOK, utils.MensagemUsuarioAtualizadoComSucesso)
+	return c.JSON(http.StatusOK, "O usuário foi atualizado com sucesso.")
 }
 
 // KirvanoToUser godoc
@@ -352,8 +353,9 @@ func (s *Server) UsuarioUpdate(c echo.Context) error {
 func (s *Server) KirvanoToUser(c echo.Context) error {
 	valor := c.Param("hash")
 
-	if !utils.ValidaNomeDeUsuario(valor) {
-		return utils.ErroValidacaoNomeDeUsuario
+	if !utils.IsURLSafe(valor) {
+		utils.DebugLog("KirvanoToUser", "Erro na validação do código hash do email de autenticação", nil)
+		return utils.Erro(http.StatusBadRequest, "O 'hash' inserido é inválido, por favor insira um 'hash' existente.")
 	}
 
 	parametros := struct {
@@ -362,17 +364,17 @@ func (s *Server) KirvanoToUser(c echo.Context) error {
 	}{}
 
 	if err := c.Bind(&parametros); err != nil {
-		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))
+		slog.Error("KirvanoToUser", slog.Any("error", err))
 		return utils.ErroCriacaoSenha
 	}
 
 	if err := utils.Validate.Var(parametros.SenhaNova, "required,min=8,max=72"); err != nil {
-		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))
+		slog.Error("KirvanoToUser", slog.Any("error", err))
 		return utils.ErroCriacaoSenha
 	}
 
 	if err := utils.Validate.Var(parametros.DataDeNascimento, "required,datetime=2006-01-02"); err != nil {
-		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))
+		slog.Error("KirvanoToUser", slog.Any("error", err))
 		return utils.ErroCriacaoSenha
 	}
 
@@ -380,21 +382,21 @@ func (s *Server) KirvanoToUser(c echo.Context) error {
 	fmt.Println(usuario)
 
 	if err != nil {
-		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))
+		slog.Error("KirvanoToUser", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
 	senhaComHash, err := argon2id.CreateHash(parametros.SenhaNova+utils.Pepper, utils.SenhaParams)
 
 	if err != nil {
-		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))
+		slog.Error("KirvanoToUser", slog.Any("error", err))
 		return utils.ErroCriacaoSenha
 	}
 
-	usuarioTemporario, err := s.UsuarioTemporarioModel.ReadById(usuario)
+	usuarioTemporario, err := s.UsuarioKirvanoModel.ReadById(usuario)
 
 	if err != nil {
-		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))
+		slog.Error("KirvanoToUser", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -409,28 +411,28 @@ func (s *Server) KirvanoToUser(c echo.Context) error {
 	)
 
 	if err != nil {
-		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))
+		slog.Error("KirvanoToUser", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
-	err = s.UsuarioTemporarioModel.Remove(usuario)
+	err = s.UsuarioKirvanoModel.Remove(usuario)
 
 	if err != nil {
-		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))
+		slog.Error("KirvanoToUser", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
 	err = s.EmailAutenticacaoModel.Expirar(valor)
 
 	if err != nil {
-		slog.Error("UsuarioTemporarioParaPermanente", slog.Any("error", err))
+		slog.Error("KirvanoToUser", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
-	return c.JSON(http.StatusOK, utils.MensagemUsuarioSenhaTrocadaComSucesso)
+	return c.JSON(http.StatusOK, "O usuário foi criado com sucesso.")
 }
 
-// UsuarioTrocaDeSenhaExigir godoc
+// UsuarioSolicitarTrocaDeSenha godoc
 //
 // @Summary Exige a troca de senha de um usuário
 //
@@ -449,11 +451,12 @@ func (s *Server) KirvanoToUser(c echo.Context) error {
 // @Failure 500               {object} echo.HTTPError
 //
 // @Router  /u/:username/change_password [patch]
-func (s *Server) UsuarioTrocaDeSenhaExigir(c echo.Context) error {
+func (s *Server) UsuarioSolicitarTrocaDeSenha(c echo.Context) error {
 	nomeDeUsuario := c.Param("username")
 
-	if !utils.ValidaNomeDeUsuario(nomeDeUsuario) {
-		return utils.ErroValidacaoNomeDeUsuario
+	if !utils.IsURLSafe(nomeDeUsuario) {
+		utils.DebugLog("UsuarioSolicitarTrocaDeSenha", "Erro de validação do nome do usuário no parâmetro 'username'", nil)
+		return utils.Erro(http.StatusBadRequest, "Por favor, forneça um nome de usuário válido (3 a 120 caracteres, composto de apenas letras, números e '-' ou '_').")
 	}
 
 	var err error
@@ -461,7 +464,7 @@ func (s *Server) UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 	usuario, err := s.UsuarioModel.ReadByNomeDeUsuario(nomeDeUsuario)
 
 	if err != nil {
-		slog.Error("UsuarioTrocaDeSenhaExigir", slog.Any("error", err))
+		slog.Error("UsuarioSolicitarTrocaDeSenha", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
@@ -474,7 +477,7 @@ func (s *Server) UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 		valorExiste, err = s.EmailAutenticacaoModel.CheckIfValorExists(valor)
 
 		if err != nil {
-			slog.Error("UsuarioTrocaDeSenhaExigir", slog.Any("error", err))
+			slog.Error("UsuarioSolicitarTrocaDeSenha", slog.Any("error", err))
 			return utils.ErroBancoDados
 		}
 	}
@@ -482,18 +485,18 @@ func (s *Server) UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 	id, err := s.EmailAutenticacaoModel.Create(valor, "senha", usuario.Id)
 
 	if err != nil {
-		slog.Error("UsuarioTrocaDeSenhaExigir", slog.Any("error", err))
+		slog.Error("UsuarioSolicitarTrocaDeSenha", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
 	err = s.email.SendTrocaDeSenha(id, usuario.Nome, valor, usuario.Email)
 
 	if err != nil {
-		slog.Error("UsuarioTrocaDeSenhaExigir", slog.Any("error", err))
+		slog.Error("UsuarioSolicitarTrocaDeSenha", slog.Any("error", err))
 		return utils.ErroBancoDados
 	}
 
-	return c.JSON(http.StatusOK, utils.MensagemUsuarioSenhaTrocadaComSucesso)
+	return c.JSON(http.StatusOK, "O pedido de troca de senha do usuário foi enviado com sucesso.")
 }
 
 // UsuarioTrocaDeSenha godoc
@@ -520,8 +523,9 @@ func (s *Server) UsuarioTrocaDeSenhaExigir(c echo.Context) error {
 func (s *Server) UsuarioTrocaDeSenha(c echo.Context) error {
 	valor := c.Param("hash")
 
-	if !utils.ValidaNomeDeUsuario(valor) {
-		return utils.ErroValidacaoNomeDeUsuario
+	if !utils.IsURLSafe(valor) {
+		utils.DebugLog("UsuarioTrocaDeSenha", "Erro na validação do código hash do email de autenticação", nil)
+		return utils.Erro(http.StatusBadRequest, "O 'hash' inserido é inválido, por favor insira um 'hash' existente.")
 	}
 
 	parametros := struct {
@@ -566,7 +570,7 @@ func (s *Server) UsuarioTrocaDeSenha(c echo.Context) error {
 		return utils.ErroBancoDados
 	}
 
-	return c.JSON(http.StatusOK, utils.MensagemUsuarioSenhaTrocadaComSucesso)
+	return c.JSON(http.StatusOK, "A senha do usuário foi trocada com sucesso.")
 }
 
 // UsuarioLogin godoc
@@ -631,11 +635,11 @@ func (s *Server) UsuarioLogin(c echo.Context) error {
 	err = auth.GeraTokensESetaCookies(id, nome, nomeDeUsuario, planoDeAssinatura, c)
 
 	if err != nil {
-		slog.Error("UsuarioLogin", slog.Any("error", err))
-		return utils.ErroAssinaturaJWT
+		utils.DebugLog("UsuarioLogin", "Erro na assinatura do token JWT", err)
+		return utils.Erro(http.StatusUnauthorized, "O seu token de autenticação não pôde ser criado.")
 	}
 
-	return c.JSON(http.StatusOK, utils.MensagemUsuarioLogadoComSucesso)
+	return c.JSON(http.StatusOK, "O usuário foi autenticado com sucesso.")
 }
 
 // UsuarioLogout godoc
@@ -650,15 +654,11 @@ func (s *Server) UsuarioLogin(c echo.Context) error {
 //
 // @Success 200               {object} map[string]string
 //
-// @Failure 400               {object} echo.HTTPError
-//
-// @Failure 500               {object} echo.HTTPError
-//
 // @Router  /u/logout [post]
 func (s *Server) UsuarioLogout(c echo.Context) error {
 	for _, c := range c.Cookies() {
 		c.Expires = time.Now()
 	}
 
-	return c.JSON(http.StatusOK, utils.MensagemUsuarioLogadoComSucesso)
+	return c.JSON(http.StatusOK, "A autenticação do usuário foi expirada com sucesso.")
 }

@@ -22,12 +22,11 @@ type Server struct {
 	db                     *sql.DB
 	email                  *email.Email
 	EmailAutenticacaoModel *models.EmailAutenticacaoModel
-	HistoricoModel         *models.HistoricoModel
 	LinkModel              *models.LinkModel
 	PlanoDeAssinaturaModel *models.PlanoDeAssinaturaModel
 	RedirecionadorModel    *models.RedirecionadorModel
 	UsuarioModel           *models.UsuarioModel
-	UsuarioTemporarioModel *models.UsuarioTemporarioModel
+	UsuarioKirvanoModel    *models.UsuarioKirvanoModel
 }
 
 func NewServer() *http.Server {
@@ -47,12 +46,11 @@ func NewServer() *http.Server {
 		db:                     database.New(),
 		email:                  email.New(),
 		EmailAutenticacaoModel: &models.EmailAutenticacaoModel{DB: db},
-		HistoricoModel:         &models.HistoricoModel{DB: db},
 		LinkModel:              &models.LinkModel{DB: db},
 		PlanoDeAssinaturaModel: &models.PlanoDeAssinaturaModel{DB: db},
 		RedirecionadorModel:    &models.RedirecionadorModel{DB: db},
 		UsuarioModel:           &models.UsuarioModel{DB: db},
-		UsuarioTemporarioModel: &models.UsuarioTemporarioModel{DB: db},
+		UsuarioKirvanoModel:    &models.UsuarioKirvanoModel{DB: db},
 	}
 
 	// Declare Server config

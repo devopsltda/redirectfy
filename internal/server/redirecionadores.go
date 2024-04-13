@@ -1,8 +1,8 @@
 package server
 
 import (
-	"log/slog"
 	"net/http"
+	"strings"
 
 	"redirectfy/internal/models"
 	"redirectfy/internal/utils"
@@ -38,7 +38,7 @@ func (s *Server) RedirecionadorReadAll(c echo.Context) error {
 	cookie, err := c.Cookie("usuario")
 
 	if err != nil {
-		utils.DebugLog("RedirecionadorReadAll", "Erro leitura do nome do usuário pelo cookie", err)
+		utils.DebugLog("RedirecionadorReadAll", "Erro na leitura do nome do usuário pelo cookie", err)
 		return utils.Erro(http.StatusBadRequest, "Não foi possível ler o nome de usuário.")
 	}
 
@@ -93,9 +93,66 @@ func (s *Server) RedirecionadorReadByCodigoHash(c echo.Context) error {
 		return utils.Erro(http.StatusInternalServerError, "Não foi possível ler os links do redirecionador do usuário.")
 	}
 
-	picked_links := models.LinkPicker(links)
+	return c.JSON(http.StatusOK, RedirecionadorReadByCodigoHashResponse{
+		R: redirecionador,
+		L: links,
+	})
+}
 
-	return c.JSON(http.StatusOK, RedirecionadorReadByCodigoHashResponse{R: redirecionador, L: picked_links})
+// RedirecionadorLinksToGoTo godoc
+//
+// @Summary Retorna os links selecionados daquele redirecionador
+//
+// @Tags    Redirecionadores
+//
+// @Accept  json
+//
+// @Produce json
+//
+// @Param   hash        path     string true "Código Hash"
+//
+// @Success 200         {object} []models.Link
+//
+// @Failure 400         {object} echo.HTTPError
+//
+// @Failure 500         {object} echo.HTTPError
+//
+// @Router  /r/:hash [get]
+func (s *Server) RedirecionadorLinksToGoTo(c echo.Context) error {
+	codigoHash := c.Param("hash")
+
+	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
+		utils.DebugLog("RedirecionadorLinksToGoTo", "Erro na validação do código hash do redirecionador", err)
+		return utils.Erro(http.StatusBadRequest, "O 'hash' inserido é inválido, por favor insira um 'hash' existente com 10 caracteres.")
+	}
+
+	redirecionador, err := s.RedirecionadorModel.ReadByCodigoHash(codigoHash)
+
+	if err != nil {
+		utils.ErroLog("RedirecionadorLinksToGoTo", "Erro na leitura do redirecionador", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível ler o redirecionador.")
+	}
+
+	links, err := s.LinkModel.ReadByCodigoHash(codigoHash)
+
+	if err != nil {
+		utils.ErroLog("RedirecionadorLinksToGoTo", "Erro na leitura dos links do redirecionador", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível ler os links do redirecionador.")
+	}
+
+	usuario, err := s.UsuarioModel.ReadByNomeDeUsuario(redirecionador.Usuario)
+
+	if err != nil {
+		utils.ErroLog("RedirecionadorLinksToGoTo", "Erro na leitura do usuário do redirecionador", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível ler o usuário do redirecionador.")
+	}
+
+	picked_links := models.LinkPicker(links, strings.HasPrefix(usuario.PlanoDeAssinatura, "Pro"))
+
+	return c.JSON(http.StatusOK, RedirecionadorReadByCodigoHashResponse{
+		R: redirecionador,
+		L: picked_links,
+	})
 }
 
 // RedirecionadorCreate godoc
@@ -131,18 +188,22 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 	var erros []string
 
 	if err := c.Bind(&parametros); err != nil {
-		erros = append(erros, "Por favor, forneça o nome, redirecionador do whatsapp, redirecionador do telegram, ordem de redirecionamento e usuário nos parâmetro 'nome', 'redirecionador_whatsapp', 'redirecionador_telegram', 'ordem_de_redirecionamento' e 'usuario', respectivamente.")
+		utils.DebugLog("RedirecionadorCreate", "Não foram inseridos os parâmetros na requisição", nil)
+		erros = append(erros, "Por favor, forneça o nome e ordem de redirecionamento nos parâmetro 'nome' e 'ordem_de_redirecionamento', respectivamente.")
 	}
 
 	if err := utils.Validate.Var(parametros.Nome, "required,min=3,max=120"); err != nil {
+		utils.DebugLog("RedirecionadorCreate", "Erro no nome inválido para o parâmetro 'nome'", nil)
 		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 120 caracteres) para o parâmetro 'nome'.")
 	}
 
 	if err := utils.Validate.Var(parametros.OrdemDeRedirecionamento, "required,max=120,oneof=telegram0x2Cwhatsapp whatsapp0x2Ctelegram"); err != nil {
-		erros = append(erros, "Por favor, forneça uma ordem de redirecionamento válida para o parâmetro 'ordem_de_redirecionamento'.")
+		utils.DebugLog("RedirecionadorCreate", "Erro na ordem de redirecionamento inválida para o parâmetro 'ordem_de_redirecionamento'", nil)
+		erros = append(erros, "Por favor, forneça uma ordem de redirecionamento válida ('telegram,whatsapp' ou 'whatsapp,telegram') para o parâmetro 'ordem_de_redirecionamento'.")
 	}
 
-	if !utils.ValidaNomeDeUsuario(parametros.Usuario) {
+	if !utils.IsURLSafe(parametros.Usuario) {
+		utils.DebugLog("RedirecionadorCreate", "Erro na ordem de redirecionamento inválida para o parâmetro 'ordem_de_redirecionamento'", nil)
 		erros = append(erros, "Por favor, forneça um nome de usuário válido para o parâmetro 'nome_de_usuario'.")
 	}
 
@@ -160,8 +221,8 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 		codigoHashExiste, err = s.RedirecionadorModel.CheckIfCodigoHashExists(codigoHash)
 
 		if err != nil {
-			slog.Error("RedirecionadorCreate", slog.Any("error", err))
-			return utils.ErroBancoDados
+			utils.ErroLog("RedirecionadorCreate", "Erro na checagem da existência do código hash", err)
+			return utils.Erro(http.StatusInternalServerError, "Não foi possível verificar se havia um código hash disponível para o novo redirecionador.")
 		}
 	}
 
@@ -173,14 +234,14 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 	)
 
 	if err != nil {
-		slog.Error("RedirecionadorCreate", slog.Any("error", err))
-		return utils.ErroBancoDados
+		utils.ErroLog("RedirecionadorCreate", "Erro na criação do redirecionador", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível criar o redirecionador.")
 	}
 
 	return c.JSON(http.StatusCreated, codigoHash)
 }
 
-// RedirecionadorRehash godoc
+// RedirecionadorRefresh godoc
 //
 // @Summary Recria o hash de um redirecionador
 //
@@ -199,11 +260,12 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 // @Failure 500         {object} echo.HTTPError
 //
 // @Router  /r/:hash/refresh [patch]
-func (s *Server) RedirecionadorRehash(c echo.Context) error {
+func (s *Server) RedirecionadorRefresh(c echo.Context) error {
 	codigoHash := c.Param("hash")
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
-		return utils.ErroValidacaoCodigoHash
+		utils.DebugLog("RedirecionadorRefresh", "Erro na validação do código hash do redirecionador", err)
+		return utils.Erro(http.StatusBadRequest, "O 'hash' inserido é inválido, por favor insira um 'hash' existente com 10 caracteres.")
 	}
 
 	var err error
@@ -216,16 +278,16 @@ func (s *Server) RedirecionadorRehash(c echo.Context) error {
 		codigoHashExiste, err = s.RedirecionadorModel.CheckIfCodigoHashExists(codigoHashNovo)
 
 		if err != nil {
-			slog.Error("RedirecionadorRehash", slog.Any("error", err))
-			return utils.ErroBancoDados
+			utils.ErroLog("RedirecionadorRefresh", "Erro na checagem da existência do código hash", err)
+			return utils.Erro(http.StatusInternalServerError, "Não foi possível verificar se havia um código hash disponível para o novo redirecionador.")
 		}
 	}
 
 	err = s.RedirecionadorModel.Rehash(codigoHash, codigoHashNovo)
 
 	if err != nil {
-		slog.Error("RedirecionadorRehash", slog.Any("error", err))
-		return utils.ErroBancoDados
+		utils.ErroLog("RedirecionadorRefresh", "Erro na atualização do código hash do redirecionador", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível atualizar o código hash do redirecionador.")
 	}
 
 	return c.JSON(http.StatusOK, codigoHashNovo)
@@ -265,20 +327,23 @@ func (s *Server) RedirecionadorUpdate(c echo.Context) error {
 	codigoHash := c.Param("hash")
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
-		slog.Error("RedirecionadorUpdate", slog.Any("error", err))
-		return utils.ErroValidacaoCodigoHash
+		utils.DebugLog("RedirecionadorUpdate", "Erro na validação do código hash do redirecionador", err)
+		return utils.Erro(http.StatusBadRequest, "O 'hash' inserido é inválido, por favor insira um 'hash' existente com 10 caracteres.")
 	}
 
 	if err := c.Bind(&parametros); err != nil {
-		erros = append(erros, "Por favor, forneça o nome, redirecionador do whatsapp, redirecionador do telegram, ordem de redirecionamento e usuário nos parâmetro 'nome', 'redirecionador_whatsapp', 'redirecionador_telegram', 'ordem_de_redirecionamento' e 'usuario', respectivamente.")
+		utils.DebugLog("RedirecionadorUpdate", "Não foram inseridos os parâmetros na requisição", nil)
+		erros = append(erros, "Por favor, forneça o nome e/ou a ordem de redirecionamento nos parâmetros 'nome' e 'ordem_de_redirecionamento', respectivamente.")
 	}
 
 	if err := utils.Validate.Var(parametros.Nome, "min=3,max=120"); parametros.Nome != "" && err != nil {
+		utils.DebugLog("RedirecionadorUpdate", "Erro no nome inválido para o parâmetro 'nome'", nil)
 		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 120 caracteres) para o parâmetro 'nome'.")
 	}
 
 	if err := utils.Validate.Var(parametros.OrdemDeRedirecionamento, "max=120,oneof=telegram0x2Cwhatsapp whatsapp0x2Ctelegram"); parametros.OrdemDeRedirecionamento != "" && err != nil {
-		erros = append(erros, "Por favor, forneça uma ordem de redirecionamento válida para o parâmetro 'ordem_de_redirecionamento'.")
+		utils.DebugLog("RedirecionadorUpdate", "Erro na ordem de redirecionamento inválida para o parâmetro 'ordem_de_redirecionamento'", nil)
+		erros = append(erros, "Por favor, forneça uma ordem de redirecionamento válida ('telegram,whatsapp' ou 'whatsapp,telegram') para o parâmetro 'ordem_de_redirecionamento'.")
 	}
 
 	if len(erros) > 0 {
@@ -288,11 +353,11 @@ func (s *Server) RedirecionadorUpdate(c echo.Context) error {
 	err := s.RedirecionadorModel.Update(parametros.Nome, codigoHash, parametros.OrdemDeRedirecionamento)
 
 	if err != nil {
-		slog.Error("RedirecionadorUpdate", slog.Any("error", err))
-		return utils.ErroBancoDados
+		utils.ErroLog("RedirecionadorUpdate", "Erro na atualização do redirecionador", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível atualizar o redirecionador.")
 	}
 
-	return c.JSON(http.StatusOK, utils.MensagemRedirecionadorAtualizadoComSucesso)
+	return c.JSON(http.StatusOK, "O redirecionador foi atualizado com sucesso.")
 }
 
 // RedirecionadorRemove godoc
@@ -318,15 +383,16 @@ func (s *Server) RedirecionadorRemove(c echo.Context) error {
 	codigoHash := c.Param("hash")
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
-		return utils.ErroValidacaoCodigoHash
+		utils.DebugLog("RedirecionadorRemove", "Erro na validação do código hash do redirecionador", err)
+		return utils.Erro(http.StatusBadRequest, "O 'hash' inserido é inválido, por favor insira um 'hash' existente com 10 caracteres.")
 	}
 
 	err := s.RedirecionadorModel.Remove(codigoHash)
 
 	if err != nil {
-		slog.Error("RedirecionadorRemove", slog.Any("error", err))
-		return utils.ErroBancoDados
+		utils.ErroLog("RedirecionadorRemove", "Erro na remoção do redirecionador inserido", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível remover o redirecionador inserido.")
 	}
 
-	return c.JSON(http.StatusOK, utils.MensagemRedirecionadorRemovidoComSucesso)
+	return c.JSON(http.StatusOK, "O redirecionador foi removido com sucesso.")
 }

@@ -49,7 +49,7 @@ func GeraHashCode(length int) string {
 /*** Validação ***/
 var Validate = validator.New()
 
-func ValidaNomeDeUsuario(s string) bool {
+func IsURLSafe(s string) bool {
 	for _, c := range s {
 		if !unicode.IsLetter(c) && !unicode.IsNumber(c) && c != '_' && c != '-' {
 			return false
@@ -58,36 +58,6 @@ func ValidaNomeDeUsuario(s string) bool {
 
 	return true
 }
-
-/*** Mensagens de Confirmação ***/
-var MensagemPlanoDeAssinaturaCriadoComSucesso = "O plano de assinatura foi adicionado com sucesso."
-var MensagemPlanoDeAssinaturaAtualizadoComSucesso = "O plano de assinatura foi atualizado com sucesso."
-var MensagemPlanoDeAssinaturaRemovidoComSucesso = "O plano de assinatura foi removido com sucesso."
-
-var MensagemRedirecionadorAtualizadoComSucesso = "O redirecionador foi atualizado com sucesso."
-var MensagemRedirecionadorRemovidoComSucesso = "O redirecionador foi removido com sucesso."
-
-var MensagemLinkAtualizadoComSucesso = "O link foi atualizado com sucesso."
-var MensagemLinkRemovidoComSucesso = "O link foi removido com sucesso."
-
-var MensagemUsuarioCriadoComSucesso = "O usuário foi adicionado com sucesso."
-var MensagemUsuarioAtualizadoComSucesso = "O usuário foi atualizado com sucesso."
-var MensagemUsuarioAutenticadoComSucesso = "O usuário foi autenticado com sucesso."
-var MensagemUsuarioSenhaTrocadaComSucesso = "A senha do usuário foi trocada com sucesso."
-var MensagemUsuarioRemovidoComSucesso = "O usuário foi removido com sucesso."
-var MensagemUsuarioLogadoComSucesso = "O usuário foi logado com sucesso."
-var MensagemUsuarioNaoAutenticado = "O usuário não está autenticado."
-
-var MensagemJWTInvalido = "Token JWT Inválido."
-
-var ErroLogin = echo.NewHTTPError(http.StatusBadRequest, []string{"O email ou senha fornecidos estão incorretos."})
-var ErroCriacaoSenha = echo.NewHTTPError(http.StatusBadRequest, []string{"Ocorreu um erro ao criar a senha."})
-var ErroAssinaturaJWT = echo.NewHTTPError(http.StatusBadRequest, []string{"Ocorreu um erro na assinatura do token JWT."})
-var ErroBancoDados = echo.NewHTTPError(http.StatusInternalServerError, []string{"Ocorreu um erro no banco de dados."})
-var ErroValidacaoNome = echo.NewHTTPError(http.StatusBadRequest, []string{"Por favor, forneça um nome válido."})
-var ErroValidacaoCodigoHash = echo.NewHTTPError(http.StatusBadRequest, []string{"Por favor, forneça um código hash válido (apenas contém letras, números ou os símbolos '-' e '_' e tem 10 caracteres)."})
-var ErroValidacaoNomeDeUsuario = echo.NewHTTPError(http.StatusBadRequest, []string{"Por favor, forneça um nome de usuário válido (apenas contém letras, números ou os símbolos '-' e '_')."})
-var ErroUsuarioNaoAutenticado = echo.NewHTTPError(http.StatusUnauthorized, []string{"Por favor, autentique seu usuário no email enviado ou solicite um novo email."})
 
 func DebugLog(nomeFuncao, mensagem string, erro error) {
 	slog.Error(nomeFuncao, slog.String("message", mensagem), slog.Any("error", erro))

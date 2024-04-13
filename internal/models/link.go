@@ -159,7 +159,7 @@ func (l *LinkModel) Remove(id int64, codigoHash string) error {
 	return nil
 }
 
-func LinkPicker(links []Link) (picked_links []Link) {
+func LinkPicker(links []Link, isPro bool) (picked_links []Link) {
 	var (
 		linkWhatsapp  Link
 		linkTelegram  Link
@@ -174,6 +174,18 @@ func LinkPicker(links []Link) (picked_links []Link) {
 		case "telegram":
 			linksTelegram = append(linksTelegram, link)
 		}
+	}
+
+	if !isPro {
+		if len(linksWhatsapp) > 0 {
+			linkWhatsapp = linksWhatsapp[0]
+		}
+
+		if len(linksTelegram) > 0 {
+			linkTelegram = linksTelegram[0]
+		}
+
+		return []Link{linkWhatsapp, linkTelegram}
 	}
 
 	switch {

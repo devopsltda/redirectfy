@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"redirectfy/internal/utils"
@@ -127,8 +128,23 @@ func PathWithNoAuthRequired(c echo.Context) bool {
 		(c.Path() == "/pricing/:name" && c.Request().Method == "GET") ||
 		(c.Path() == "/kirvano" && c.Request().Method == "POST") ||
 		(c.Path() == "/kirvano/to_user/:hash" && c.Request().Method == "POST") ||
-		(c.Path() == "/r/:hash" && c.Request().Method == "GET") || 
-		(c.Path() == "/r/:hash/refresh" && c.Get("usuario") != nil && c.Get("usuario").(*jwt.Token).Claims.(*Claims).PlanoDeAssinatura == "Super Pro")
+		(c.Path() == "/r/:hash" && c.Request().Method == "GET")
+}
+
+func PricingMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		if c.Get("usuario") == nil {
+			utils.DebugLog("TokenRefreshMiddleware", "Erro ao ler o contexto 'usuario'", nil)
+			return utils.Erro(http.StatusBadRequest, "Você não contém um ou mais dos cookies necessários para autenticação.")
+		}
+
+		if !strings.HasPrefix(c.Get("usuario").(*jwt.Token).Claims.(*Claims).PlanoDeAssinatura, "Pro") {
+			utils.DebugLog("PricingMiddleware", "O usuário não tem o plano de assinatura apropriado para usar o rehash", nil)
+			return utils.Erro(http.StatusPaymentRequired, "O seu plano de assinatura não oferece o recurso de rehash.")
+		}
+
+		return next(c)
+	}
 }
 
 func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
@@ -138,6 +154,7 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		if c.Get("usuario") == nil {
+			utils.DebugLog("TokenRefreshMiddleware", "Erro ao ler o contexto 'usuario'", nil)
 			return utils.Erro(http.StatusBadRequest, "Você não contém um ou mais dos cookies necessários para autenticação.")
 		}
 
@@ -145,12 +162,14 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		nomeDeUsuarioCookie, err := c.Cookie("usuario")
 
 		if err != nil {
+			utils.DebugLog("TokenRefreshMiddleware", "Erro ao ler o cookie 'usuario'", err)
 			return utils.Erro(http.StatusBadRequest, "Você não contém um ou mais dos cookies necessários para autenticação.")
 		}
 
 		claims := nomeDeUsuario.Claims.(*Claims)
 
 		if claims.NomeDeUsuario != nomeDeUsuarioCookie.Value {
+			utils.DebugLog("TokenRefreshMiddleware", "O nome de usuário no token JWT não corresponde ao nome de usuário do cookie 'usuario'", err)
 			return utils.Erro(http.StatusUnauthorized, "O seu token de autenticação é inválido.")
 		}
 
@@ -164,6 +183,7 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 				if err != nil {
 					if err == jwt.ErrSignatureInvalid {
+						utils.DebugLog("TokenRefreshMiddleware", "Erro na assinatura do token JWT", err)
 						return utils.Erro(http.StatusUnauthorized, "O seu token de autenticação é inválido.")
 					}
 				}
@@ -172,6 +192,7 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 					err = GeraTokensESetaCookies(claims.Id, claims.Nome, claims.NomeDeUsuario, claims.PlanoDeAssinatura, c)
 
 					if err != nil {
+						utils.DebugLog("TokenRefreshMiddleware", "Erro na validação do token de autenticação", err)
 						return utils.Erro(http.StatusUnauthorized, "O seu token de autenticação é inválido.")
 					}
 				}

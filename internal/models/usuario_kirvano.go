@@ -4,7 +4,7 @@ import (
 	"database/sql"
 )
 
-type UsuarioTemporario struct {
+type UsuarioKirvano struct {
 	Id                int64          `json:"id"`
 	Cpf               string         `json:"cpf"`
 	Nome              string         `json:"nome"`
@@ -13,17 +13,17 @@ type UsuarioTemporario struct {
 	PlanoDeAssinatura string         `json:"plano_de_assinatura"`
 	CriadoEm          string         `json:"criado_em"`
 	RemovidoEm        sql.NullString `json:"removido_em" swaggertype:"string"`
-} // @name UsuarioTemporario
+} // @name UsuarioKirvano
 
-type UsuarioTemporarioModel struct {
+type UsuarioKirvanoModel struct {
 	DB *sql.DB
 }
 
-func (u *UsuarioTemporarioModel) ReadById(id int64) (UsuarioTemporario, error) {
-	var usuario UsuarioTemporario
+func (u *UsuarioKirvanoModel) ReadById(id int64) (UsuarioKirvano, error) {
+	var usuario UsuarioKirvano
 
 	row := u.DB.QueryRow(
-		"SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, PLANO_DE_ASSINATURA, CRIADO_EM, REMOVIDO_EM FROM USUARIO_TEMPORARIO WHERE REMOVIDO_EM IS NULL AND ID = ?",
+		"SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, PLANO_DE_ASSINATURA, CRIADO_EM, REMOVIDO_EM FROM USUARIO_KIRVANO WHERE REMOVIDO_EM IS NULL AND ID = ?",
 		id,
 	)
 
@@ -47,9 +47,9 @@ func (u *UsuarioTemporarioModel) ReadById(id int64) (UsuarioTemporario, error) {
 	return usuario, nil
 }
 
-func (u *UsuarioTemporarioModel) Create(cpf, nome, nomeDeUsuario, email, planoDeAssinatura string) (int64, error) {
+func (u *UsuarioKirvanoModel) Create(cpf, nome, nomeDeUsuario, email, planoDeAssinatura string) (int64, error) {
 	result, err := u.DB.Exec(
-		"INSERT INTO USUARIO_TEMPORARIO (CPF, NOME, NOME_DE_USUARIO, EMAIL, PLANO_DE_ASSINATURA) VALUES (?, ?, ?, ?, ?) RETURNING ID",
+		"INSERT INTO USUARIO_KIRVANO (CPF, NOME, NOME_DE_USUARIO, EMAIL, PLANO_DE_ASSINATURA) VALUES (?, ?, ?, ?, ?) RETURNING ID",
 		cpf,
 		nome,
 		nomeDeUsuario,
@@ -70,9 +70,9 @@ func (u *UsuarioTemporarioModel) Create(cpf, nome, nomeDeUsuario, email, planoDe
 	return id, nil
 }
 
-func (u *UsuarioTemporarioModel) Remove(id int64) error {
+func (u *UsuarioKirvanoModel) Remove(id int64) error {
 	_, err := u.DB.Exec(
-		"UPDATE USUARIO_TEMPORARIO SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE ID = ?",
+		"UPDATE USUARIO_KIRVANO SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE ID = ?",
 		id,
 	)
 

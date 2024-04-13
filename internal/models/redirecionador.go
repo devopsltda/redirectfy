@@ -132,18 +132,18 @@ func (r *RedirecionadorModel) Create(nome, codigoHash, ordemDeRedirecionamento, 
 
 func (r *RedirecionadorModel) WithinLimit(codigoHash string, quantidadeDeLinks int) (bool, error) {
 	var quantidadeLinks int
-	var limiteLinksMensal int
+	var limiteLinks int
 
 	row := r.DB.QueryRow(`SELECT (
 																 SELECT COUNT(*)
 																 FROM LINK
 																			INNER JOIN REDIRECIONADOR ON REDIRECIONADOR.USUARIO = USUARIO.NOME
 															 ),
-															 USUARIO.LIMITE_LINKS_MENSAL
+															 USUARIO.LIMITE_LINKS
 												FROM (
 													SELECT USUARIO.NOME,
 																 USUARIO.PLANO_DE_ASSINATURA,
-																 PLANO_DE_ASSINATURA.LIMITE_LINKS_MENSAL
+																 PLANO_DE_ASSINATURA.LIMITE_LINKS
 													FROM USUARIO
 															 INNER JOIN REDIRECIONADOR ON REDIRECIONADOR.USUARIO = USUARIO.NOME_DE_USUARIO
 															 INNER JOIN PLANO_DE_ASSINATURA ON PLANO_DE_ASSINATURA.NOME = USUARIO.PLANO_DE_ASSINATURA
@@ -155,7 +155,7 @@ func (r *RedirecionadorModel) WithinLimit(codigoHash string, quantidadeDeLinks i
 
 	if err := row.Scan(
 		&quantidadeLinks,
-		&limiteLinksMensal,
+		&limiteLinks,
 	); err != nil {
 		return false, err
 	}
@@ -164,7 +164,7 @@ func (r *RedirecionadorModel) WithinLimit(codigoHash string, quantidadeDeLinks i
 		return false, err
 	}
 
-	if quantidadeLinks > limiteLinksMensal {
+	if quantidadeLinks > limiteLinks {
 		return false, nil
 	}
 

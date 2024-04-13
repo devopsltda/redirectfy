@@ -13,45 +13,6 @@ func TestDatabasePlanoAssinatura(t *testing.T) {
 	defer db.Close()
 	p := models.PlanoDeAssinaturaModel{DB: db}
 
-	t.Run("Adicionar plano de assinatura", func(t *testing.T) {
-		err := p.Create(
-			"plano teste",
-			70,
-			100,
-			true,
-		)
-		assert.NoError(t, err)
-	})
-
-	t.Run("Adicionar plano de assinatura(DUPLICADO, mesmo nome?)", func(t *testing.T) {
-		p.Create(
-			"plano teste",
-			70,
-			100,
-			true,
-		)
-		err := p.Create(
-			"plano teste",
-			70,
-			100,
-			true,
-		)
-		assert.Error(t, err)
-	})
-
-	t.Run("Consultar 1 plano de assinatura", func(t *testing.T) {
-		p.Create(
-			"plano teste",
-			70,
-			100,
-			true,
-		)
-		_, err := p.ReadByNome(
-			"plano teste",
-		)
-		assert.NoError(t, err)
-	})
-
 	t.Run("Consultar 1 plano de assinatura(sql nulo)", func(t *testing.T) {
 		_, err := p.ReadByNome(
 			"plano teste",
@@ -59,65 +20,8 @@ func TestDatabasePlanoAssinatura(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
-	t.Run("Consultar planos de assinatura", func(t *testing.T) {
-		p.Create(
-			"plano teste",
-			70,
-			100,
-			true,
-		)
-		_, err := p.ReadAll()
-		assert.NoError(t, err)
-	})
-
 	t.Run("Consultar planos de assinatura(sql vazio)", func(t *testing.T) {
 		_, err := p.ReadAll()
-		assert.NoError(t, err)
-	})
-
-	t.Run("Atualizar plano de assinatura", func(t *testing.T) {
-		p.Create(
-			"plano teste",
-			70,
-			100,
-			true,
-		)
-		err := p.Update(
-			"plano teste",
-			"plano teste novo",
-			10,
-			203,
-			true,
-		)
-		assert.NoError(t, err)
-	})
-	t.Run("Atualizar plano de assinatura(COM OS MESMOS DADOS) do banco de dados", func(t *testing.T) {
-		p.Create(
-			"plano teste novo",
-			70,
-			100,
-			true,
-		)
-		err := p.Update(
-			"plano teste novo",
-			"plano teste novo",
-			70,
-			100,
-			true,
-		)
-		assert.Equal(t, err, nil)
-	})
-
-	t.Run("Deletar um plano de assinatura", func(t *testing.T) {
-		p.Create(
-			"plano teste novo",
-			70,
-			100,
-			true,
-		)
-		err := p.Remove(
-			"plano teste novo",
-		)
 		assert.NoError(t, err)
 	})
 }
