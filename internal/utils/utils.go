@@ -70,17 +70,13 @@ func ErroLog(nomeFuncao, mensagem string, erro error) {
 func Erro(code int, message string) *echo.HTTPError {
 	return echo.NewHTTPError(
 		code,
-		map[string][]string{
-			"erros": {message},
-		},
+		[]string{message},
 	)
 }
 
 func ErroValidacaoParametro(mensagens []string) *echo.HTTPError {
 	return echo.NewHTTPError(
 		http.StatusBadRequest,
-		map[string][]string{
-			"erros": mensagens,
-		},
+		mensagens,
 	)
 }
