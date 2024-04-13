@@ -11,11 +11,13 @@ import { ButtonPrimaryComponent } from '../../shared/button-primary/button-prima
 import { ButtonSecundaryComponent } from '../../shared/button-secundary/button-secundary.component';
 import { IconVisaCardComponent } from '../../shared/icon-visa-card/icon-visa-card.component';
 import { IconRightArrowComponent } from '../../shared/icon-right-arrow/icon-right-arrow.component';
+import { TopbarMyAccountComponent } from '../../shared/topbar-my-account/topbar-my-account.component';
+import { RedirectfyPremiumCardDesktopComponent } from '../../shared/redirectfy-premium-card-desktop/redirectfy-premium-card-desktop.component';
 
 @Component({
   selector: 'app-my-account',
   standalone: true,
-  imports: [SharedModule, RouterModule, NavbarComponent, GridComponent, CommonModule, ButtonNotificationComponent, UserBannerComponent, RedirectfyPremiumCardComponent, ButtonPrimaryComponent, ButtonSecundaryComponent, IconVisaCardComponent, IconRightArrowComponent],
+  imports: [SharedModule, RouterModule, NavbarComponent, GridComponent, CommonModule, ButtonNotificationComponent, UserBannerComponent, RedirectfyPremiumCardComponent, ButtonPrimaryComponent, ButtonSecundaryComponent, IconVisaCardComponent, IconRightArrowComponent, TopbarMyAccountComponent, RedirectfyPremiumCardDesktopComponent],
   templateUrl: './my-account.component.html',
   styleUrl: './my-account.component.scss'
 })
