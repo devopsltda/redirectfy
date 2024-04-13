@@ -27,7 +27,7 @@ var (
 func New() *sql.DB {
 	var err error
 
-	if utils.AppEnv == "test" {
+	if utils.AppEnv == "test" || utils.AppEnv == "debugtest" {
 		db, err := sql.Open("sqlite", "file::memory:?cache=shared")
 
 		if err != nil {

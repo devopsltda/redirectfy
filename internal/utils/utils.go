@@ -60,7 +60,7 @@ func IsURLSafe(s string) bool {
 }
 
 func DebugLog(nomeFuncao, mensagem string, erro error) {
-	slog.Error(nomeFuncao, slog.String("message", mensagem), slog.Any("error", erro))
+	slog.Debug(nomeFuncao, slog.String("message", mensagem), slog.Any("error", erro))
 }
 
 func ErroLog(nomeFuncao, mensagem string, erro error) {

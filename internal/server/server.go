@@ -30,7 +30,7 @@ type Server struct {
 }
 
 func NewServer() *http.Server {
-	if utils.AppEnv == "debug" {
+	if utils.AppEnv == "debug" || utils.AppEnv == "debugtest" {
 		appLevel := new(slog.LevelVar)
 		h := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: appLevel})
 		slog.SetDefault(slog.New(h))
