@@ -79,49 +79,6 @@ func TestDatabaseUsuario(t *testing.T) {
 		assert.Equal(t, err, nil)
 	})
 
-	t.Run("Atualizar usuário do banco de dados", func(t *testing.T) {
-		u.Create( //Cria usuario
-			"53076281291",
-			"Guilherme Bernardo",
-			"GuilhermeBn",
-			"bguilherme51@gmail.com",
-			"Senha123",
-			"01-01-2000",
-			"1",
-		)
-		err := u.Update(
-			"09921080218",
-			"Guilherme Lucas Pereira Bernardo",
-			"GuilhermeBN",
-			"bguilherem51@gmail.com",
-			"senha-muito-complexa-aqui",
-			"2000-10-31",
-			"1",
-		)
-		assert.NoError(t, err)
-	})
-
-	t.Run("Atualizar usuário(COM OS MESMOS DADOS) do banco de dados[EXPECTED ERROR]", func(t *testing.T) {
-		u.Create( //Cria usuario
-			"09921080218",
-			"Guilherme Lucas Pereira Bernardo",
-			"GuilhermeBN",
-			"bguilherem51@gmail.com",
-			"senha-muito-complexa-aqui",
-			"2000-10-31",
-			"1",
-		)
-		err := u.Update(
-			"09921080218",
-			"Guilherme Lucas Pereira Bernardo",
-			"GuilhermeBN",
-			"bguilherem51@gmail.com",
-			"senha-muito-complexa-aqui",
-			"2000-10-31",
-			"1",
-		)
-		assert.Equal(t, err, nil)
-	})
 	t.Run("Consultar 1 usuário do banco de dados", func(t *testing.T) {
 		u.Create( //Cria usuario
 			"53076281291",

@@ -138,39 +138,8 @@ func (u *UsuarioModel) TrocaSenha(id int64, senha string) error {
 	return nil
 }
 
-func (u *UsuarioModel) Update(nomeDeUsuario, cpf, nome, email, senha, dataDeNascimento, planoDeAssinatura string) error {
-	sqlQuery := "UPDATE USUARIO SET ATUALIZADO_EM = CURRENT_TIMESTAMP"
-
-	if cpf != "" {
-		sqlQuery += ", CPF = '" + cpf + "'"
-	}
-
-	if nome != "" {
-		sqlQuery += ", NOME = '" + nome + "'"
-	}
-
-	if email != "" {
-		sqlQuery += ", EMAIL = '" + email + "'"
-	}
-
-	if senha != "" {
-		sqlQuery += ", SENHA = '" + senha + "'"
-	}
-
-	if dataDeNascimento != "" {
-		sqlQuery += ", DATA_DE_NASCIMENTO = '" + dataDeNascimento + "'"
-	}
-
-	if planoDeAssinatura != "" {
-		sqlQuery += ", PLANO_DE_ASSINATURA = '" + planoDeAssinatura + "'"
-	}
-
-	sqlQuery += " WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = ?"
-
-	_, err := u.DB.Exec(
-		sqlQuery,
-		nomeDeUsuario,
-	)
+func (u *UsuarioModel) UpdatePlanoDeAssinatura(nomeDeUsuario, planoDeAssinatura string) error {
+	_, err := u.DB.Exec("UPDATE USUARIO SET ATUALIZADO_EM = CURRENT_TIMESTAMP, PLANO_DE_ASSINATURA = ? WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = ?", nomeDeUsuario)
 
 	if err != nil {
 		return err

@@ -98,11 +98,7 @@ func (ea *EmailAutenticacaoModel) CheckIfValorExistsAndIsValid(valor, tipo strin
 	)
 
 	if err := row.Scan(&tipoRetornado, &usuarioTemporario); err != nil {
-		if err == sql.ErrNoRows {
-			return 0, err
-		} else {
-			return 0, err
-		}
+		return 0, err
 	}
 
 	if err := row.Err(); err != nil {

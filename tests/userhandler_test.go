@@ -21,7 +21,7 @@ func TestCreateHandler(t *testing.T) {
 	s := server.Server{ //setup necessário no inicio de cada testsuite dos handlers
 		PlanoDeAssinaturaModel: &models.PlanoDeAssinaturaModel{DB: db},
 		UsuarioModel:           &models.UsuarioModel{DB: db},
-		UsuarioTemporarioModel: &models.UsuarioTemporarioModel{DB: db},
+		UsuarioKirvanoModel:    &models.UsuarioKirvanoModel{DB: db},
 		EmailAutenticacaoModel: &models.EmailAutenticacaoModel{DB: db},
 		LinkModel:              &models.LinkModel{DB: db},
 		RedirecionadorModel:    &models.RedirecionadorModel{DB: db},

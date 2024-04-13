@@ -58,7 +58,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	// API - Usuário
 	e.GET("/u/:username", s.UsuarioReadByNomeDeUsuario)
-	e.PATCH("/u/:username", s.UsuarioUpdate)
 
 	// API - Kirvano
 	e.POST("/kirvano/to_user/:hash", s.KirvanoToUser)
@@ -68,7 +67,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.POST("/u/login", s.UsuarioLogin)
 	e.POST("/u/logout", s.UsuarioLogout)
 	e.PATCH("/u/change_password/:hash", s.UsuarioTrocaDeSenha)
-	e.PATCH("/u/:username/change_password", s.UsuarioTrocaDeSenhaExigir)
+	e.PATCH("/u/:username/change_password", s.UsuarioSolicitarTrocaDeSenha)
 
 	// API - Plano de Assinatura
 	e.GET("/pricing", s.PlanoDeAssinaturaReadAll)
