@@ -13,7 +13,7 @@ type EmailAutenticacao struct {
 	Valor             string `json:"valor"`
 	Tipo              string `json:"tipo"`
 	ExpiraEm          string `json:"expira_em"`
-	UsuarioTemporario int64  `json:"usuario_temporario"`
+	UsuarioKirvano int64  `json:"usuario_kirvano"`
 } // @name EmailAutenticacao
 
 type EmailAutenticacaoModel struct {
@@ -24,7 +24,7 @@ func (ea *EmailAutenticacaoModel) ReadByValor(valor string) (EmailAutenticacao, 
 	var emailAutenticacao EmailAutenticacao
 
 	row := ea.DB.QueryRow(
-		"SELECT ID, VALOR, TIPO, EXPIRA_EM, USUARIO_TEMPORARIO FROM EMAIL_AUTENTICACAO WHERE VALOR = ?",
+		"SELECT ID, VALOR, TIPO, EXPIRA_EM, USUARIO_KIRVANO FROM EMAIL_AUTENTICACAO WHERE VALOR = ?",
 		valor,
 	)
 
@@ -33,7 +33,7 @@ func (ea *EmailAutenticacaoModel) ReadByValor(valor string) (EmailAutenticacao, 
 		&emailAutenticacao.Valor,
 		&emailAutenticacao.Tipo,
 		&emailAutenticacao.ExpiraEm,
-		&emailAutenticacao.UsuarioTemporario,
+		&emailAutenticacao.UsuarioKirvano,
 	); err != nil {
 		return emailAutenticacao, err
 	}
@@ -45,13 +45,13 @@ func (ea *EmailAutenticacaoModel) ReadByValor(valor string) (EmailAutenticacao, 
 	return emailAutenticacao, nil
 }
 
-func (ea *EmailAutenticacaoModel) Create(valor, tipo string, usuarioTemporario int64) (int64, error) {
+func (ea *EmailAutenticacaoModel) Create(valor, tipo string, usuarioKirvano int64) (int64, error) {
 	result, err := ea.DB.Exec(
-		"INSERT INTO EMAIL_AUTENTICACAO (VALOR, TIPO, EXPIRA_EM, USUARIO_TEMPORARIO) VALUES (?, ?, ?, ?) RETURNING ID",
+		"INSERT INTO EMAIL_AUTENTICACAO (VALOR, TIPO, EXPIRA_EM, USUARIO_KIRVANO) VALUES (?, ?, ?, ?) RETURNING ID",
 		valor,
 		tipo,
 		time.Now().In(time.FixedZone("GMT", 0)).Add(time.Minute*time.Duration(utils.TempoExpiracao)).Format("2006-01-02 03:04:05"),
-		usuarioTemporario,
+		usuarioKirvano,
 	)
 
 	if err != nil {
@@ -90,14 +90,14 @@ func (ea *EmailAutenticacaoModel) CheckIfValorExists(valor string) (bool, error)
 
 func (ea *EmailAutenticacaoModel) CheckIfValorExistsAndIsValid(valor, tipo string) (int64, error) {
 	var tipoRetornado string
-	var usuarioTemporario int64
+	var usuarioKirvano int64
 
 	row := ea.DB.QueryRow(
-		"SELECT TIPO, USUARIO_TEMPORARIO FROM EMAIL_AUTENTICACAO WHERE VALOR = ?",
+		"SELECT TIPO, USUARIO_KIRVANO FROM EMAIL_AUTENTICACAO WHERE VALOR = ?",
 		valor,
 	)
 
-	if err := row.Scan(&tipoRetornado, &usuarioTemporario); err != nil {
+	if err := row.Scan(&tipoRetornado, &usuarioKirvano); err != nil {
 		return 0, err
 	}
 
@@ -109,7 +109,7 @@ func (ea *EmailAutenticacaoModel) CheckIfValorExistsAndIsValid(valor, tipo strin
 		return 0, fmt.Errorf("Tipo do email de retornado não é '%s'.", tipo)
 	}
 
-	return usuarioTemporario, nil
+	return usuarioKirvano, nil
 }
 
 func (ea *EmailAutenticacaoModel) Expirar(valor string) error {

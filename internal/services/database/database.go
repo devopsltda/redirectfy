@@ -18,7 +18,6 @@ var (
 	dbUrl        = os.Getenv("DB_URL")
 	dbName       = os.Getenv("DB_NAME")
 	dbToken      = os.Getenv("DB_TOKEN")
-	dbSourcePath = os.Getenv("DB_SOURCE_PATH")
 
 	TempDir     string
 	dbConnector *libsql.Connector
@@ -35,7 +34,7 @@ func New() *sql.DB {
 			os.Exit(1)
 		}
 
-		err = seed(db, dbSourcePath)
+		err = seed(db, "../internal/services/database/source/")
 
 		if err != nil {
 			slog.Error("BancoDeDadosTeste", slog.Any("error", err))
