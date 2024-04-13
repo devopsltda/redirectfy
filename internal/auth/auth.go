@@ -153,12 +153,7 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			return next(c)
 		}
 
-		if c.Get("usuario") == nil {
-			utils.DebugLog("TokenRefreshMiddleware", "Erro ao ler o contexto 'usuario'", nil)
-			return utils.Erro(http.StatusBadRequest, "Você não contém um ou mais dos cookies necessários para autenticação.")
-		}
-
-		nomeDeUsuario := c.Get("usuario").(*jwt.Token)
+		usuario := c.Get("usuario").(*jwt.Token)
 		nomeDeUsuarioCookie, err := c.Cookie("usuario")
 
 		if err != nil {
@@ -166,7 +161,7 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			return utils.Erro(http.StatusBadRequest, "Você não contém um ou mais dos cookies necessários para autenticação.")
 		}
 
-		claims := nomeDeUsuario.Claims.(*Claims)
+		claims := usuario.Claims.(*Claims)
 
 		if claims.NomeDeUsuario != nomeDeUsuarioCookie.Value {
 			utils.DebugLog("TokenRefreshMiddleware", "O nome de usuário no token JWT não corresponde ao nome de usuário do cookie 'usuario'", err)
