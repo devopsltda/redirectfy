@@ -1,15 +1,18 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
+
+	"redirectfy/internal/auth"
+	"redirectfy/internal/utils"
 
 	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
-	"redirectfy/internal/auth"
 
 	_ "redirectfy/docs"
 )
@@ -26,9 +29,9 @@ import (
 func (s *Server) RegisterRoutes() http.Handler {
 	e := echo.New()
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:4200"},
+		AllowOrigins:     []string{"http://localhost:4200"},
 		AllowCredentials: true,
-		ExposeHeaders: []string{"Set-Cookie"},
+		ExposeHeaders:    []string{"Set-Cookie"},
 	}))
 	e.Use(middleware.Logger())
 	e.Use(middleware.Secure())
@@ -39,6 +42,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 		},
 	}))
 
+	e.Use(auth.TokenRefreshMiddleware)
 	e.Use(echojwt.WithConfig(echojwt.Config{
 		SigningKey:  []byte(auth.ChaveDeAcesso),
 		TokenLookup: "cookie:access-token",
@@ -46,9 +50,24 @@ func (s *Server) RegisterRoutes() http.Handler {
 			return new(auth.Claims)
 		},
 		Skipper: auth.PathWithNoAuthRequired,
+		ErrorHandler: func(c echo.Context, err error) error {
+			fmt.Println(err.Error())
+			switch err.Error() {
+			case echojwt.ErrJWTInvalid.Message.(string):
+				utils.ErroLog("EchoJwtErrorHandler", "Erro na validação do token JWT", err)
+				return utils.Erro(http.StatusUnauthorized, "Por favor, forneça um token JWT válido.")
+			case echojwt.ErrJWTMissing.Message.(string):
+				utils.ErroLog("EchoJwtErrorHandler", "Erro na busca pelo token JWT", err)
+				return utils.Erro(http.StatusUnauthorized, "Por favor, forneça um token JWT válido.")
+			case "missing value in cookies":
+				utils.ErroLog("EchoJwtErrorHandler", "Erro de cookies sem valores válidos", err)
+				return utils.Erro(http.StatusUnauthorized, "Por favor, forneça os cookies com tokens JWT válidos.")
+			default:
+				return nil
+			}
+		},
 	}))
-
-	e.Use(auth.TokenRefreshMiddleware)
+	e.Use(auth.IsUserTheSameMiddleware)
 
 	// API - Documentação Swagger
 	e.GET("/docs/*", echoSwagger.WrapHandler)

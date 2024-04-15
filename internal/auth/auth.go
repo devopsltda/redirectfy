@@ -128,7 +128,32 @@ func PathWithNoAuthRequired(c echo.Context) bool {
 		(c.Path() == "/pricing/:name" && c.Request().Method == "GET") ||
 		(c.Path() == "/kirvano" && c.Request().Method == "POST") ||
 		(c.Path() == "/kirvano/to_user/:hash" && c.Request().Method == "POST") ||
-		(c.Path() == "/r/:hash" && c.Request().Method == "GET")
+		(c.Path() == "/to/:hash" && c.Request().Method == "GET")
+}
+
+func IsUserTheSameMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		if PathWithNoAuthRequired(c) || c.Get("usuario") == nil {
+			return next(c)
+		}
+
+		usuario := c.Get("usuario").(*jwt.Token)
+		nomeDeUsuarioCookie, err := c.Cookie("usuario")
+
+		if err != nil {
+			utils.DebugLog("IsUserTheSameMiddleware", "Erro ao ler o cookie 'usuario'", err)
+			return utils.Erro(http.StatusBadRequest, "Você não contém um ou mais dos cookies necessários para autenticação.")
+		}
+
+		claims := usuario.Claims.(*Claims)
+
+		if claims.NomeDeUsuario != nomeDeUsuarioCookie.Value {
+			utils.DebugLog("IsUserTheSameMiddleware", "O nome de usuário no token JWT não corresponde ao nome de usuário do cookie 'usuario'", err)
+			return utils.Erro(http.StatusUnauthorized, "O seu token de autenticação é inválido.")
+		}
+
+		return next(c)
+	}
 }
 
 func PricingMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
@@ -154,19 +179,7 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		usuario := c.Get("usuario").(*jwt.Token)
-		nomeDeUsuarioCookie, err := c.Cookie("usuario")
-
-		if err != nil {
-			utils.DebugLog("TokenRefreshMiddleware", "Erro ao ler o cookie 'usuario'", err)
-			return utils.Erro(http.StatusBadRequest, "Você não contém um ou mais dos cookies necessários para autenticação.")
-		}
-
 		claims := usuario.Claims.(*Claims)
-
-		if claims.NomeDeUsuario != nomeDeUsuarioCookie.Value {
-			utils.DebugLog("TokenRefreshMiddleware", "O nome de usuário no token JWT não corresponde ao nome de usuário do cookie 'usuario'", err)
-			return utils.Erro(http.StatusUnauthorized, "O seu token de autenticação é inválido.")
-		}
 
 		if time.Until(claims.RegisteredClaims.ExpiresAt.Time) < 15*time.Minute {
 			refreshCookie, err := c.Cookie("refresh-token")
