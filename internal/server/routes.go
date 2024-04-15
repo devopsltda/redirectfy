@@ -30,7 +30,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{"http://localhost:4200"},
 		AllowCredentials: true,
-		ExposeHeaders:    []string{"Set-Cookie"},
 	}))
 	e.Use(middleware.Logger())
 	e.Use(middleware.Secure())
@@ -41,8 +40,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 		},
 	}))
 
-	e.Use(auth.TokenRefreshMiddleware)
 	e.Use(echojwt.WithConfig(echojwt.Config{
+		ContextKey: "usuario",
 		SigningKey:  []byte(auth.ChaveDeAcesso),
 		TokenLookup: "cookie:access-token",
 		NewClaimsFunc: func(c echo.Context) jwt.Claims {
@@ -65,6 +64,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 			}
 		},
 	}))
+	e.Use(auth.TokenRefreshMiddleware)
 	e.Use(auth.IsUserTheSameMiddleware)
 
 	// API - Not Found
