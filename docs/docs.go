@@ -87,8 +87,8 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Senha Nova",
-                        "name": "senha_nova",
+                        "description": "Senha",
+                        "name": "senha",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -267,15 +267,6 @@ const docTemplate = `{
                     {
                         "description": "Ordem de Redirecionamento",
                         "name": "ordem_de_redirecionamento",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Nome de Usuário",
-                        "name": "nome_de_usuario",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -781,6 +772,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/to/:hash": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Redirecionadores"
+                ],
+                "summary": "Retorna os links selecionados daquele redirecionador",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Código Hash",
+                        "name": "hash",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Link"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/u/:username": {
             "get": {
                 "consumes": [
@@ -807,106 +844,6 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/Usuario"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Usuários"
-                ],
-                "summary": "Atualiza um usuário",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Nome de Usuário",
-                        "name": "username",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "CPF",
-                        "name": "cpf",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Nome",
-                        "name": "nome",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Nome de Usuário",
-                        "name": "nome_de_usuario",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Email",
-                        "name": "email",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Senha",
-                        "name": "senha",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Data de Nascimento",
-                        "name": "data_de_nascimento",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Plano de Assinatura",
-                        "name": "plano_de_assinatura",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
                         }
                     },
                     "400": {
@@ -1073,6 +1010,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/echo.HTTPError"
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -1102,18 +1045,6 @@ const docTemplate = `{
                             "additionalProperties": {
                                 "type": "string"
                             }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/echo.HTTPError"
                         }
                     }
                 }
@@ -1179,7 +1110,7 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "limite_links_mensal": {
+                "limite_links": {
                     "type": "integer"
                 },
                 "nome": {
@@ -1191,7 +1122,7 @@ const docTemplate = `{
                 "removido_em": {
                     "type": "integer"
                 },
-                "valor_mensal": {
+                "valor": {
                     "type": "integer"
                 }
             }
@@ -1253,7 +1184,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "plano_de_assinatura": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "removido_em": {
                     "type": "string"

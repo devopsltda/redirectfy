@@ -67,6 +67,11 @@ func (s *Server) RegisterRoutes() http.Handler {
 	}))
 	e.Use(auth.IsUserTheSameMiddleware)
 
+	// API - Not Found
+	e.GET("/", func(c echo.Context) error {
+		return utils.Erro(http.StatusNotFound, "Esse endpoint não foi encontrado.")
+	})
+
 	// API - Documentação Swagger
 	e.GET("/docs/*", echoSwagger.WrapHandler)
 

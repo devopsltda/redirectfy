@@ -117,7 +117,7 @@ func (s *Server) RedirecionadorReadByCodigoHash(c echo.Context) error {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /r/:hash [get]
+// @Router  /to/:hash [get]
 func (s *Server) RedirecionadorLinksToGoTo(c echo.Context) error {
 	codigoHash := c.Param("hash")
 
