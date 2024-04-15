@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -51,7 +50,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 		},
 		Skipper: auth.PathWithNoAuthRequired,
 		ErrorHandler: func(c echo.Context, err error) error {
-			fmt.Println(err.Error())
 			switch err.Error() {
 			case echojwt.ErrJWTInvalid.Message.(string):
 				utils.ErroLog("EchoJwtErrorHandler", "Erro na validação do token JWT", err)

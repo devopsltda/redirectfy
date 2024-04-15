@@ -169,8 +169,6 @@ func (s *Server) RedirecionadorLinksToGoTo(c echo.Context) error {
 //
 // @Param   ordem_de_redirecionamento body     string true  "Ordem de Redirecionamento"
 //
-// @Param   nome_de_usuario           body     string true  "Nome de Usuário"
-//
 // @Success 200                       {object} map[string]string
 //
 // @Failure 400                       {object} echo.HTTPError
@@ -179,10 +177,16 @@ func (s *Server) RedirecionadorLinksToGoTo(c echo.Context) error {
 //
 // @Router  /r [post]
 func (s *Server) RedirecionadorCreate(c echo.Context) error {
+	cookie, err := c.Cookie("usuario")
+
+	if err != nil {
+		utils.DebugLog("RedirecionadorReadAll", "Erro na leitura do nome do usuário pelo cookie", err)
+		return utils.Erro(http.StatusBadRequest, "Não foi possível ler o nome de usuário.")
+	}
+
 	parametros := struct {
 		Nome                    string `json:"nome"`
 		OrdemDeRedirecionamento string `json:"ordem_de_redirecionamento"`
-		Usuario                 string `json:"nome_de_usuario"`
 	}{}
 
 	var erros []string
@@ -202,16 +206,10 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça uma ordem de redirecionamento válida ('telegram,whatsapp' ou 'whatsapp,telegram') para o parâmetro 'ordem_de_redirecionamento'.")
 	}
 
-	if !utils.IsURLSafe(parametros.Usuario) {
-		utils.DebugLog("RedirecionadorCreate", "Erro na ordem de redirecionamento inválida para o parâmetro 'ordem_de_redirecionamento'", nil)
-		erros = append(erros, "Por favor, forneça um nome de usuário válido para o parâmetro 'nome_de_usuario'.")
-	}
-
 	if len(erros) > 0 {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	var err error
 	var codigoHash string
 	codigoHashExiste := true
 
@@ -230,7 +228,7 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 		parametros.Nome,
 		codigoHash,
 		parametros.OrdemDeRedirecionamento,
-		parametros.Usuario,
+		cookie.Value,
 	)
 
 	if err != nil {
