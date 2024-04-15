@@ -67,11 +67,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.Use(auth.TokenRefreshMiddleware)
 	e.Use(auth.IsUserTheSameMiddleware)
 
-	// API - Not Found
-	e.GET("/", func(c echo.Context) error {
-		return utils.Erro(http.StatusNotFound, "Esse endpoint não foi encontrado.")
-	})
-
 	// API - Documentação Swagger
 	e.GET("/docs/*", echoSwagger.WrapHandler)
 
@@ -99,7 +94,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.GET("/r", s.RedirecionadorReadAll)
 	e.GET("/r/:hash", s.RedirecionadorReadByCodigoHash)
 	e.POST("/r", s.RedirecionadorCreate)
-	e.PATCH("/r/:hash/refresh", auth.PricingMiddleware(s.RedirecionadorRefresh))
+	e.PATCH("/r/:hash/refresh", s.RedirecionadorRefresh, auth.PricingMiddleware)
 	e.PATCH("/r/:hash", s.RedirecionadorUpdate)
 	e.DELETE("/r/:hash", s.RedirecionadorRemove)
 
