@@ -49,6 +49,19 @@ func GeraTokensESetaCookies(id int64, nome, nomeDeUsuario, planoDeAssinatura str
 	return nil
 }
 
+func GeraTokensESetaCookiesSemRefresh(id int64, nome, nomeDeUsuario, planoDeAssinatura string, c echo.Context) error {
+	accessToken, exp, err := GeraTokenAcesso(id, nome, nomeDeUsuario, planoDeAssinatura)
+
+	if err != nil {
+		return err
+	}
+
+	SetCookieToken("access-token", accessToken, exp, c)
+	SetCookieUsuario(nomeDeUsuario, exp, c)
+
+	return nil
+}
+
 func GeraTokenAcesso(id int64, nome, nomeDeUsuario, planoDeAssinatura string) (string, time.Time, error) {
 	expiraEm := time.Now().Add(1 * time.Hour)
 
@@ -56,7 +69,7 @@ func GeraTokenAcesso(id int64, nome, nomeDeUsuario, planoDeAssinatura string) (s
 }
 
 func GeraTokenRefresh(id int64, nome, nomeDeUsuario, planoDeAssinatura string) (string, time.Time, error) {
-	expiraEm := time.Now().Add(24 * time.Hour)
+	expiraEm := time.Now().Add(2 * time.Hour)
 
 	return GeraToken(id, nome, nomeDeUsuario, planoDeAssinatura, expiraEm, []byte(ChaveDeRefresh))
 }
@@ -197,7 +210,7 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 				}
 
 				if token != nil && token.Valid {
-					err = GeraTokensESetaCookies(claims.Id, claims.Nome, claims.NomeDeUsuario, claims.PlanoDeAssinatura, c)
+					err = GeraTokensESetaCookiesSemRefresh(claims.Id, claims.Nome, claims.NomeDeUsuario, claims.PlanoDeAssinatura, c)
 
 					if err != nil {
 						utils.DebugLog("TokenRefreshMiddleware", "Erro na validação do token de autenticação", err)
