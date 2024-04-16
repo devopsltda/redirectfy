@@ -1,12 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SharedModule } from '../../shared/shared.module';
 import { InputTextModule } from 'primeng/inputtext';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RedirectifyApiService } from '../../services/redirectify-api.service';
 import { MessageService } from 'primeng/api';
 import { error } from 'node:console';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-login',
@@ -16,16 +17,29 @@ import { error } from 'node:console';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent  {
+export class LoginComponent implements OnInit {
   loginForm!:FormGroup
   loginData!:any;
   formSubmited:boolean = false;
 
-  constructor( private formBuilder:FormBuilder , private redirectifyApi:RedirectifyApiService, private messageService:MessageService ){
+  constructor
+  (  private formBuilder:FormBuilder ,
+    private redirectifyApi:RedirectifyApiService,
+    private messageService:MessageService,
+    private cookie:CookieService,
+    private router:Router
+  )
+    {
     this.loginForm = this.formBuilder.group({
-      email:['pabloed0009@gmail.com',[Validators.required,Validators.email]],
+      email:['pabloeduardossantos@gmail.com',[Validators.required,Validators.email]],
       senha:['teste123',[Validators.required]]
     })
+  }
+
+  ngOnInit(): void {
+    if(this.cookie.check('refresh-token')){
+      this.router.navigate(['/home'])
+    }
   }
 
   invalidTouchedDirtyControl(controlador:string){
@@ -42,13 +56,15 @@ async onSubmit(){
     try{
         this.loginData = this.loginForm.getRawValue()
         const reqLogin = await this.redirectifyApi.login(this.loginData['email'],this.loginData['senha'])
-        console.log(reqLogin.headers.getAll('Set-Cookie'))
-
+        if(reqLogin.status == 200)
+          {
+          this.router.navigate(['/home'])
+          }
       } catch(error:any){
         if(error.status == 400){
-          console.log(error)
-          this.showError('Erro no Login','Email ou Senha incorretos')
+          this.showError('Login Invalido','Email ou Senha incorretos')
         }
+        this.showError('Login Invalido','Falha ao realizar o login')
       }
     }
 
