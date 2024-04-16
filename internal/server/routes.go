@@ -41,7 +41,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	}))
 
 	e.Use(echojwt.WithConfig(echojwt.Config{
-		ContextKey: "usuario",
+		ContextKey:  "usuario",
 		SigningKey:  []byte(auth.ChaveDeAcesso),
 		TokenLookup: "cookie:access-token",
 		NewClaimsFunc: func(c echo.Context) jwt.Claims {
@@ -65,7 +65,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 		},
 	}))
 	e.Use(auth.TokenRefreshMiddleware)
-	e.Use(auth.IsUserTheSameMiddleware)
 
 	// API - Documentação Swagger
 	e.GET("/docs/*", echoSwagger.WrapHandler)
@@ -94,7 +93,22 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.GET("/r", s.RedirecionadorReadAll)
 	e.GET("/r/:hash", s.RedirecionadorReadByCodigoHash)
 	e.POST("/r", s.RedirecionadorCreate)
-	e.PATCH("/r/:hash/refresh", s.RedirecionadorRefresh, auth.PricingMiddleware)
+	e.PATCH("/r/:hash/refresh", s.RedirecionadorRefresh, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			if c.Get("usuario") == nil {
+				utils.DebugLog("TokenRefreshMiddleware", "Erro ao ler o contexto 'usuario'", nil)
+				return utils.Erro(http.StatusBadRequest, "Você não contém um ou mais dos cookies necessários para autenticação.")
+			}
+
+			if !strings.HasPrefix(c.Get("usuario").(*jwt.Token).Claims.(*auth.Claims).PlanoDeAssinatura, "Pro") {
+				utils.DebugLog("PricingMiddleware", "O usuário não tem o plano de assinatura apropriado para usar o rehash", nil)
+				return utils.Erro(http.StatusPaymentRequired, "O seu plano de assinatura não oferece o recurso de rehash.")
+			}
+
+			return next(c)
+		}
+	})
+
 	e.PATCH("/r/:hash", s.RedirecionadorUpdate)
 	e.DELETE("/r/:hash", s.RedirecionadorRemove)
 

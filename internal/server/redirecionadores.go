@@ -4,9 +4,11 @@ import (
 	"net/http"
 	"strings"
 
+	"redirectfy/internal/auth"
 	"redirectfy/internal/models"
 	"redirectfy/internal/utils"
 
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 
 	_ "redirectfy/internal/models"
@@ -35,14 +37,8 @@ type RedirecionadorReadByCodigoHashResponse struct {
 //
 // @Router  /r [get]
 func (s *Server) RedirecionadorReadAll(c echo.Context) error {
-	cookie, err := c.Cookie("usuario")
-
-	if err != nil {
-		utils.DebugLog("RedirecionadorReadAll", "Erro na leitura do nome do usuário pelo cookie", err)
-		return utils.Erro(http.StatusBadRequest, "Não foi possível ler o nome de usuário.")
-	}
-
-	redirecionadores, err := s.RedirecionadorModel.ReadAll(cookie.Value)
+	nomeDeUsuario := c.Get("usuario").(*jwt.Token).Claims.(*auth.Claims).NomeDeUsuario
+	redirecionadores, err := s.RedirecionadorModel.ReadAll(nomeDeUsuario)
 
 	if err != nil {
 		utils.ErroLog("RedirecionadorReadAll", "Erro na leitura dos redirecionadores do usuário", err)
@@ -177,12 +173,7 @@ func (s *Server) RedirecionadorLinksToGoTo(c echo.Context) error {
 //
 // @Router  /r [post]
 func (s *Server) RedirecionadorCreate(c echo.Context) error {
-	cookie, err := c.Cookie("usuario")
-
-	if err != nil {
-		utils.DebugLog("RedirecionadorReadAll", "Erro na leitura do nome do usuário pelo cookie", err)
-		return utils.Erro(http.StatusBadRequest, "Não foi possível ler o nome de usuário.")
-	}
+	nomeDeUsuario := c.Get("usuario").(*jwt.Token).Claims.(*auth.Claims).NomeDeUsuario
 
 	parametros := struct {
 		Nome                    string `json:"nome"`
@@ -210,6 +201,7 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
+	var err error
 	var codigoHash string
 	codigoHashExiste := true
 
@@ -228,7 +220,7 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 		parametros.Nome,
 		codigoHash,
 		parametros.OrdemDeRedirecionamento,
-		cookie.Value,
+		nomeDeUsuario,
 	)
 
 	if err != nil {
