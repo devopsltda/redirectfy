@@ -10,6 +10,7 @@ export class RedirectifyApiService {
   // Rotas
   private prefix: string = 'http://localhost:8080';
   private loginRoute: string = `${this.prefix}/u/login`;
+  private logoutRoute: string = `${this.prefix}/u/logout`;
   private finishSignUpRoute: string = `${this.prefix}/kirvano/to_user/`;
   private getAllRedirectsRoute: string = `${this.prefix}/r`;
   private createRedirectRoute: string = `${this.prefix}/r`;
@@ -26,6 +27,7 @@ export class RedirectifyApiService {
         this.createRedirectRoute,
         {
           nome: nome,
+          links:links,
           ordem_de_redirecionamento: ordem_de_redirecionamento,
         },
         { withCredentials: true }
@@ -60,6 +62,22 @@ export class RedirectifyApiService {
       this.http.post<any>(
         this.loginRoute,
         { email: email, senha: senha },
+        { observe: 'response', withCredentials: true }
+      )
+    ).catch((error) => {
+      throw {
+        status: error.status,
+        statusText: error.statusText,
+        error: error.error,
+      };
+    });
+    return res;
+  }
+
+  async logout(){
+    const res = await lastValueFrom(
+      this.http.post<any>(
+        this.logoutRoute,'',
         { observe: 'response', withCredentials: true }
       )
     ).catch((error) => {
