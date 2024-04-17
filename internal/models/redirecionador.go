@@ -131,7 +131,7 @@ func (r *RedirecionadorModel) WithinLimit(nomeDeUsuario string) (bool, error) {
 	var quantidadeRedirecionadores int
 	var limiteRedirecionadores int
 
-	row := r.DB.QueryRow(`SELECT (SELECT COUNT(*) FROM REDIRECIONADOR WHERE REDIRECIONADOR.USUARIO = ?),
+	row := r.DB.QueryRow(`SELECT (SELECT COUNT(*) FROM REDIRECIONADOR WHERE REDIRECIONADOR.USUARIO = ? AND REDIRECIONADOR.REMOVIDO_EM IS NOT NULL),
 															 USUARIO.LIMITE_REDIRECIONADORES
 												FROM (
 													SELECT PLANO_DE_ASSINATURA.LIMITE_REDIRECIONADORES
