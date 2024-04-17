@@ -21,9 +21,10 @@ export class LoginComponent implements OnInit {
   loginForm!:FormGroup
   loginData!:any;
   formSubmited:boolean = false;
-
+  isAuthenticated:boolean = this.cookie.check('refresh-token') && this.cookie.check('access-token') && this.cookie.check('usuario')
   constructor
-  (  private formBuilder:FormBuilder ,
+  (
+    private formBuilder:FormBuilder ,
     private redirectifyApi:RedirectifyApiService,
     private messageService:MessageService,
     private cookie:CookieService,
@@ -31,13 +32,13 @@ export class LoginComponent implements OnInit {
   )
     {
     this.loginForm = this.formBuilder.group({
-      email:['pabloeduardossantos@gmail.com',[Validators.required,Validators.email]],
+      email:['pabloed0009@gmail.com',[Validators.required,Validators.email]],
       senha:['teste123',[Validators.required]]
     })
   }
 
   ngOnInit(): void {
-    if(this.cookie.check('refresh-token')){
+    if(this.isAuthenticated){
       this.router.navigate(['/home'])
     }
   }
