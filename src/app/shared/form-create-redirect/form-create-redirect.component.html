@@ -23,7 +23,7 @@
           <!-- Alternar Prioridade -->
           <div *ngIf="this.createData['whatsappData'] != undefined && this.createData['telegramData'] != undefined" class="md:flex flex-col hidden text-sm   gap-4  h-full items-center">
             <p>Prioridade</p>
-            <button class="bg-[#F7F7F7] w-14 h-14 rounded-md drop-shadow group hover:bg-[rgb(53,181,174,1)] flex items-center justify-center transition-all ease-in-out duration-300">
+            <button (click)="prioridade == 'whatsapp,telegram'?'telegram,whatsapp':'whatsapp,telegram'" class="bg-[#F7F7F7] w-14 h-14 rounded-md drop-shadow group hover:bg-[rgb(53,181,174,1)] flex items-center justify-center transition-all ease-in-out duration-300">
               <svg class="w-8 h-8 fill-[#257F7A] group-hover:fill-white" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#clip0_827_1903)">
                 <path d="M7.875 2.625L4.375 6.11625H7V12.25H8.75V6.11625H11.375L7.875 2.625ZM14 14.8837V8.75H12.25V14.8837H9.625L13.125 18.375L16.625 14.8837H14Z"/>
@@ -95,49 +95,56 @@
         <h4 class=" flex text-xl whitespace-nowrap text-gray-500 font-semibold w-fit justify-center items-center">Informações do Contato</h4>
       </span>
       <form [formGroup]="createLinkForm" (ngSubmit)="addContact('whatsapp')" class="flex flex-col h-full gap-8 items-center">
+        <div class="flex flex-col">
           <div class="flex gap-2">
             <label for="w-numero" class="flex  gap-2 items-center ease-in-out duration-300"> <app-icon-whatsapp ngClass="w-5 h-5"></app-icon-whatsapp></label>
                 <!-- Input Numero -->
                 <input formControlName="link" id="w-numero" placeholder="+XX (XX) 91234-5678" type="text" pInputText class="flex border-l-4 border-l-green-400  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
                 <!-- END Input Numero -->
-            </div>
-            <div class="flex gap-2">
-              <label for="w-numero" class="flex  gap-2 items-center ease-in-out duration-300">
-                <svg class="w-5 h-5" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <g clip-path="url(#clip0_485_732)">
-                    <path d="M13.3333 1.33331H2.66659C1.93325 1.33331 1.33992 1.93331 1.33992 2.66665L1.33325 14.6666L3.99992 12H13.3333C14.0666 12 14.6666 11.4 14.6666 10.6666V2.66665C14.6666 1.93331 14.0666 1.33331 13.3333 1.33331ZM13.3333 10.6666H3.44659L3.05325 11.06L2.66659 11.4466V2.66665H13.3333V10.6666ZM6.99992 9.33331H11.9999V7.99998H8.33325L6.99992 9.33331ZM9.57325 5.41998C9.70658 5.28665 9.70658 5.07998 9.57325 4.94665L8.39325 3.76665C8.25992 3.63331 8.05325 3.63331 7.91992 3.76665L3.99992 7.68665V9.33331H5.64659L9.57325 5.41998Z" fill="#257F7A"/>
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_485_732">
-                      <rect width="16" height="16" fill="white"/>
-                    </clipPath>
-                  </defs>
-                </svg>
-              </label>
-              <!-- Input Nome Contato -->
-              <input id="w-contato" formControlName="nome" placeholder="Nome do Contato (Opcional)" type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
-              <!-- END Input Nome Contato -->
-            </div>
+          </div>
+              <small *ngIf="this.createLinkForm.controls['link'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio</small>
+        </div>
+        <div class="flex flex-col">
           <div class="flex gap-2">
-            <label for="w-contato" class="flex  gap-2 items-center ease-in-out duration-300">
+            <label for="w-numero" class="flex  gap-2 items-center ease-in-out duration-300">
               <svg class="w-5 h-5" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g clip-path="url(#clip0_330_365)">
-                  <path d="M13.3333 2.66665V11.4466L12.5533 10.6666H2.66659V2.66665H13.3333ZM13.3333 1.33331H2.66659C1.93325 1.33331 1.33325 1.93331 1.33325 2.66665V10.6666C1.33325 11.4 1.93325 12 2.66659 12H11.9999L14.6666 14.6666V2.66665C14.6666 1.93331 14.0666 1.33331 13.3333 1.33331ZM11.9999 7.99998H3.99992V9.33331H11.9999V7.99998ZM11.9999 5.99998H3.99992V7.33331H11.9999V5.99998ZM11.9999 3.99998H3.99992V5.33331H11.9999V3.99998Z" fill="#257F7A"/>
+                <g clip-path="url(#clip0_485_732)">
+                  <path d="M13.3333 1.33331H2.66659C1.93325 1.33331 1.33992 1.93331 1.33992 2.66665L1.33325 14.6666L3.99992 12H13.3333C14.0666 12 14.6666 11.4 14.6666 10.6666V2.66665C14.6666 1.93331 14.0666 1.33331 13.3333 1.33331ZM13.3333 10.6666H3.44659L3.05325 11.06L2.66659 11.4466V2.66665H13.3333V10.6666ZM6.99992 9.33331H11.9999V7.99998H8.33325L6.99992 9.33331ZM9.57325 5.41998C9.70658 5.28665 9.70658 5.07998 9.57325 4.94665L8.39325 3.76665C8.25992 3.63331 8.05325 3.63331 7.91992 3.76665L3.99992 7.68665V9.33331H5.64659L9.57325 5.41998Z" fill="#257F7A"/>
                 </g>
                 <defs>
-                  <clipPath id="clip0_330_365">
+                  <clipPath id="clip0_485_732">
                     <rect width="16" height="16" fill="white"/>
                   </clipPath>
                 </defs>
               </svg>
             </label>
-            <!-- Input Mensagem Padrão -->
-            <input id="w-menssagem" placeholder="Mensagem Padrão (Opcional)" type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
-              <!-- END Input Mensagem Padrão -->
+            <!-- Input Nome Contato -->
+            <input id="w-contato" formControlName="nome" placeholder="Nome do Contato (Opcional)" type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
+            <!-- END Input Nome Contato -->
+          </div>
+        </div>
+          <div class="flex flex-col">
+            <div class="flex gap-2">
+              <label for="w-contato" class="flex  gap-2 items-center ease-in-out duration-300">
+                <svg class="w-5 h-5" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g clip-path="url(#clip0_330_365)">
+                    <path d="M13.3333 2.66665V11.4466L12.5533 10.6666H2.66659V2.66665H13.3333ZM13.3333 1.33331H2.66659C1.93325 1.33331 1.33325 1.93331 1.33325 2.66665V10.6666C1.33325 11.4 1.93325 12 2.66659 12H11.9999L14.6666 14.6666V2.66665C14.6666 1.93331 14.0666 1.33331 13.3333 1.33331ZM11.9999 7.99998H3.99992V9.33331H11.9999V7.99998ZM11.9999 5.99998H3.99992V7.33331H11.9999V5.99998ZM11.9999 3.99998H3.99992V5.33331H11.9999V3.99998Z" fill="#257F7A"/>
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_330_365">
+                      <rect width="16" height="16" fill="white"/>
+                    </clipPath>
+                  </defs>
+                </svg>
+              </label>
+              <!-- Input Mensagem Padrão -->
+              <input id="w-menssagem" formControlName="mensagem" placeholder="Mensagem Padrão (Opcional)" type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
+                <!-- END Input Mensagem Padrão -->
+            </div>
           </div>
           <div class="flex flex-col w-full h-40 justify-center gap-5 ">
             <app-button-primary type="submit" class="h-12" title="Adicionar Contato"></app-button-primary>
-            <app-button-secundary (click)="formStep = 'init'" title="Voltar" ></app-button-secundary>
+            <app-button-secundary (click)="formStep = 'init'; submitted=false" title="Voltar" ></app-button-secundary>
           </div>
       </form>
   </div>
@@ -148,11 +155,14 @@
       <h4 class=" flex text-xl whitespace-nowrap text-gray-500 font-semibold w-fit justify-center items-center">Informações do Contato</h4>
     </span>
     <form  [formGroup]="createLinkForm" class="flex flex-col h-full gap-8 items-center" (ngSubmit)="addContact('telegram')">
-      <div class="flex gap-2">
-          <label for="t-link" class="flex  gap-2 items-center ease-in-out duration-300"> <app-icon-telegram ngClass="w-5 h-5"></app-icon-telegram></label>
-          <!-- INPUT LINK -->
-          <input id="t-link" formControlName="link" placeholder="https://t.me/exemplo" type="text" pInputText class="flex border-l-4 border-l-[#26A5E5]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
-           <!-- END INPUT LINK -->
+      <div class="flex flex-col">
+        <div class="flex gap-2">
+            <label for="t-link" class="flex  gap-2 items-center ease-in-out duration-300"> <app-icon-telegram ngClass="w-5 h-5"></app-icon-telegram></label>
+            <!-- INPUT LINK -->
+            <input id="t-link" formControlName="link" placeholder="https://t.me/exemplo" type="text" pInputText class="flex border-l-4 border-l-[#26A5E5]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
+             <!-- END INPUT LINK -->
+        </div>
+        <small *ngIf="this.createLinkForm.controls['link'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio</small>
       </div>
       <div class="flex gap-2">
         <label for="t-nome" class="flex  gap-2 items-center ease-in-out duration-300">
@@ -173,7 +183,7 @@
       </div>
       <div class="flex flex-col w-full h-40 justify-center gap-5 ">
         <app-button-primary type="submit" class="h-12" title="Adicionar Contato"></app-button-primary>
-        <app-button-secundary title="Voltar" (click)="formStep = 'init'" ></app-button-secundary>
+        <app-button-secundary title="Voltar" (click)="formStep = 'init'; submitted=false" ></app-button-secundary>
       </div>
     </form>
   </div>
@@ -220,12 +230,12 @@
       <h4 class=" flex text-lg h-full whitespace-nowrap items-center  text-gray-500 font-semibold w-full justify-center  ">Titulo do Redirect</h4>
     </span>
     <div class="flex gap-2 p-float-label">
-      <input id="t-numero" type="text" pInputText class="flex   border w-64 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
+      <input [(ngModel)]="redirectName" id="t-numero" type="text" pInputText class="flex   border w-64 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
       <label for="t-numero" class="flex  gap-2 items-center ease-in-out duration-300">Insira um Nome (Opcional)</label>
     </div>
     <div class="w-96 h-full flex text-sm font-semibold flex-col items-center">
       <div class="flex flex-col w-full h-40 justify-center items-center gap-5 ">
-        <app-button-primary class="h-12 w-64" title="Criar" routerLink="/home"></app-button-primary>
+        <app-button-primary class="h-12 w-64" title="Criar" (click)="onSubmit()"></app-button-primary>
         <app-button-secundary class="h-12 w-64" (click)="formStep = 'init'" title="Voltar" ></app-button-secundary>
       </div>
     </div>
