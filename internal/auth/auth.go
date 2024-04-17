@@ -43,7 +43,7 @@ func GeraTokensESetaCookies(id int64, nome, nomeDeUsuario, planoDeAssinatura str
 
 	SetCookieToken("access-token", accessToken, exp, c)
 
-	refreshToken, exp, err := GeraToken(id, nome, nomeDeUsuario, planoDeAssinatura, time.Now().Add(limiteAccess), []byte(ChaveDeRefresh))
+	refreshToken, exp, err := GeraToken(id, nome, nomeDeUsuario, planoDeAssinatura, time.Now().Add(limiteRefresh), []byte(ChaveDeRefresh))
 
 	if err != nil {
 		return err
@@ -153,8 +153,10 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		// autenticação, logo ele existe e não está expirado.
 		token := c.Get("usuario").(*jwt.Token)
 		claims := token.Claims.(*Claims)
+		
+		timeUntilAccessExpiration := time.Until(claims.RegisteredClaims.ExpiresAt.Time)
 
-		if time.Until(claims.RegisteredClaims.ExpiresAt.Time) < limiteParaCriacaoDeNovoAccess {
+		if timeUntilAccessExpiration < limiteParaCriacaoDeNovoAccess {
 			refreshCookie, err := c.Cookie("refresh-token")
 
 			if err == nil && refreshCookie != nil {

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -161,9 +162,11 @@ func (s *Server) RedirecionadorLinksToGoTo(c echo.Context) error {
 //
 // @Produce json
 //
-// @Param   nome                      body     string true  "Nome"
+// @Param   nome                      body     string                     true "Nome"
 //
-// @Param   ordem_de_redirecionamento body     string true  "Ordem de Redirecionamento"
+// @Param   links                     body     []models.LinkToBatchInsert true "Links"
+//
+// @Param   ordem_de_redirecionamento body     string                     true "Ordem de Redirecionamento"
 //
 // @Success 200                       {object} map[string]string
 //
@@ -176,20 +179,43 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 	nomeDeUsuario := c.Get("usuario").(*jwt.Token).Claims.(*auth.Claims).NomeDeUsuario
 
 	parametros := struct {
-		Nome                    string `json:"nome"`
-		OrdemDeRedirecionamento string `json:"ordem_de_redirecionamento"`
+		Nome                    string                     `json:"nome"`
+		Links                   []models.LinkToBatchInsert `json:"links"`
+		OrdemDeRedirecionamento string                     `json:"ordem_de_redirecionamento"`
 	}{}
 
 	var erros []string
 
 	if err := c.Bind(&parametros); err != nil {
 		utils.DebugLog("RedirecionadorCreate", "Não foram inseridos os parâmetros na requisição", nil)
-		erros = append(erros, "Por favor, forneça o nome e ordem de redirecionamento nos parâmetro 'nome' e 'ordem_de_redirecionamento', respectivamente.")
+		erros = append(erros, "Por favor, forneça o nome, os links e a ordem de redirecionamento nos parâmetro 'nome', 'links' e 'ordem_de_redirecionamento', respectivamente.")
 	}
 
 	if err := utils.Validate.Var(parametros.Nome, "required,min=3,max=120"); err != nil {
 		utils.DebugLog("RedirecionadorCreate", "Erro no nome inválido para o parâmetro 'nome'", nil)
 		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 120 caracteres) para o parâmetro 'nome'.")
+	}
+
+	if len(parametros.Links) == 0 {
+		utils.DebugLog("RedirecionadorCreate", "Erro porque não há nenhum link a ser inserido", nil)
+		return utils.Erro(http.StatusInternalServerError, "Não foram passados links no parâmetro 'links'.")
+	}
+
+	for i, link := range parametros.Links {
+		if err := utils.Validate.Var(link.Nome, "required,min=3,max=120"); err != nil {
+			utils.DebugLog("RedirecionadorCreate", fmt.Sprintf("Erro no link %d: nome inválido para o parâmetro 'nome'", i+1), nil)
+			erros = append(erros, fmt.Sprintf("Link %d: Por favor, forneça um nome válido (texto de 3 a 120 caracteres) para o parâmetro 'nome'.", i+1))
+		}
+
+		if err := utils.Validate.Var(link.Link, "required"); err != nil {
+			utils.DebugLog("RedirecionadorCreate", fmt.Sprintf("Erro no link %d: link inválido para o parâmetro 'link'", i+1), nil)
+			erros = append(erros, fmt.Sprintf("Link %d: Por favor, forneça link válido (exemplo: 'https://t.me/+<numero_telefone>' ou 'https://wa.me/<numero_telefone>', a depender da plataforma) para o parâmetro 'link'.", i+1))
+		}
+
+		if err := utils.Validate.Var(link.Plataforma, "required,oneof=whatsapp telegram"); err != nil {
+			utils.DebugLog("RedirecionadorCreate", fmt.Sprintf("Erro no link %d: plataforma inválida para o parâmetro 'plataforma'", i+1), nil)
+			erros = append(erros, fmt.Sprintf("Link %d: Por favor, forneça uma plataforma válida ('instagram' ou 'whatsapp') para o parâmetro 'plataforma'.", i+1))
+		}
 	}
 
 	if err := utils.Validate.Var(parametros.OrdemDeRedirecionamento, "required,max=120,oneof=telegram0x2Cwhatsapp whatsapp0x2Ctelegram"); err != nil {
@@ -201,7 +227,18 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	var err error
+	withinLimit, err := s.RedirecionadorModel.WithinLimit(nomeDeUsuario)
+
+	if err != nil {
+		utils.ErroLog("RedirecionadorCreate", "Erro na checagem do limite de redirecionadores do usuário", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível checar o limite de redirecionadores do usuário.")
+	}
+
+	if !withinLimit {
+		utils.DebugLog("RedirecionadorCreate", "O limite de redirecionadores do usuário foi extrapolado", nil)
+		return utils.Erro(http.StatusPaymentRequired, "O limite de redirecionadores do seu plano já foi atingido. Para criar novos redirecionadores, melhore seu plano de assinatura ou remova redirecionadores já existentes.")
+	}
+
 	var codigoHash string
 	codigoHashExiste := true
 

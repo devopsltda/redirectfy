@@ -142,6 +142,11 @@ func (s *Server) LinkCreate(c echo.Context) error {
 		erros = append(erros, "Por favor, forneça os links no parâmetro 'links'.")
 	}
 
+	if len(parametros.Links) == 0 {
+		utils.DebugLog("LinkCreate", "Erro porque não há nenhum link a ser inserido", nil)
+		return utils.Erro(http.StatusInternalServerError, "Não foram passados links no parâmetro 'links'.")
+	}
+
 	for i, link := range parametros.Links {
 		if err := utils.Validate.Var(link.Nome, "required,min=3,max=120"); err != nil {
 			utils.DebugLog("LinkCreate", fmt.Sprintf("Erro no link %d: nome inválido para o parâmetro 'nome'", i+1), nil)
@@ -163,19 +168,7 @@ func (s *Server) LinkCreate(c echo.Context) error {
 		return utils.ErroValidacaoParametro(erros)
 	}
 
-	withinLimit, err := s.RedirecionadorModel.WithinLimit(codigoHash, len(parametros.Links))
-
-	if err != nil {
-		utils.ErroLog("LinkCreate", "Erro na checagem do limite de links do usuário", err)
-		return utils.Erro(http.StatusInternalServerError, "Não foi possível checar o limite de links do usuário.")
-	}
-
-	if !withinLimit {
-		utils.DebugLog("LinkCreate", "O limite de links do usuário foi extrapolado", nil)
-		return utils.Erro(http.StatusPaymentRequired, "O limite de links do seu plano já foi atingido. Para criar novos links, melhore seu plano de assinatura ou remova links já existentes.")
-	}
-
-	err = s.LinkModel.Create(codigoHash, parametros.Links)
+	err := s.LinkModel.Create(codigoHash, parametros.Links)
 
 	if err != nil {
 		utils.ErroLog("LinkCreate", "Erro na criação do link do redirecionador inserido", err)
@@ -275,6 +268,110 @@ func (s *Server) LinkUpdate(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, "O link foi atualizado com sucesso.")
+}
+
+// LinkDisable godoc
+//
+// @Summary Desativa um link específico de um redirecionador específico
+//
+// @Tags    Links
+//
+// @Accept  json
+//
+// @Produce json
+//
+// @Param   hash        path     string true "Código Hash"
+//
+// @Param   id          path     int    true "Id"
+//
+// @Success 200         {object} map[string]string
+//
+// @Failure 400         {object} echo.HTTPError
+//
+// @Failure 500         {object} echo.HTTPError
+//
+// @Router  /r/:hash/link/:id/disable [patch]
+func (s *Server) LinkDisable(c echo.Context) error {
+	id := c.Param("id")
+	codigoHash := c.Param("hash")
+
+	if err := utils.Validate.Var(id, "required,gte=0"); err != nil {
+		utils.DebugLog("LinkDisable", "Erro na validação do id do link", err)
+		return utils.Erro(http.StatusBadRequest, "O 'id' inserido é inválido, por favor insira um 'id' maior que 0.")
+	}
+
+	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
+		utils.DebugLog("LinkDisable", "Erro na validação do código hash do redirecionador do link", err)
+		return utils.Erro(http.StatusBadRequest, "O 'hash' inserido é inválido, por favor insira um 'hash' existente com 10 caracteres.")
+	}
+
+	parsedId, err := strconv.ParseInt(id, 10, 64)
+
+	if err != nil {
+		utils.ErroLog("LinkDisable", "Erro na transformação do id para inteiro", err)
+		return utils.Erro(http.StatusBadRequest, "Houve um erro na transformação do id para um número inteiro. Por favor, insira um id válido.")
+	}
+
+	err = s.LinkModel.Disable(parsedId, codigoHash)
+
+	if err != nil {
+		utils.ErroLog("LinkDisable", "Erro ao desativar link do redirecionador inserido", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível desativar o link do redirecionador inserido.")
+	}
+
+	return c.JSON(http.StatusOK, "O link foi desativado com sucesso.")
+}
+
+// LinkEnable godoc
+//
+// @Summary Ativa um link específico de um redirecionador específico
+//
+// @Tags    Links
+//
+// @Accept  json
+//
+// @Produce json
+//
+// @Param   hash        path     string true "Código Hash"
+//
+// @Param   id          path     int    true "Id"
+//
+// @Success 200         {object} map[string]string
+//
+// @Failure 400         {object} echo.HTTPError
+//
+// @Failure 500         {object} echo.HTTPError
+//
+// @Router  /r/:hash/link/:id/enable [patch]
+func (s *Server) LinkEnable(c echo.Context) error {
+	id := c.Param("id")
+	codigoHash := c.Param("hash")
+
+	if err := utils.Validate.Var(id, "required,gte=0"); err != nil {
+		utils.DebugLog("LinkEnable", "Erro na validação do id do link", err)
+		return utils.Erro(http.StatusBadRequest, "O 'id' inserido é inválido, por favor insira um 'id' maior que 0.")
+	}
+
+	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
+		utils.DebugLog("LinkEnable", "Erro na validação do código hash do redirecionador do link", err)
+		return utils.Erro(http.StatusBadRequest, "O 'hash' inserido é inválido, por favor insira um 'hash' existente com 10 caracteres.")
+	}
+
+	parsedId, err := strconv.ParseInt(id, 10, 64)
+
+	if err != nil {
+		utils.ErroLog("LinkEnable", "Erro na transformação do id para inteiro", err)
+		return utils.Erro(http.StatusBadRequest, "Houve um erro na transformação do id para um número inteiro. Por favor, insira um id válido.")
+	}
+
+	err = s.LinkModel.Enable(parsedId, codigoHash)
+
+	if err != nil {
+		utils.ErroLog("LinkEnable", "Erro ao ativar o link do redirecionador inserido", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível ativar o link do redirecionador inserido.")
+	}
+
+	return c.JSON(http.StatusOK, "O link foi ativado com sucesso.")
 }
 
 // LinkRemove godoc

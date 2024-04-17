@@ -15,7 +15,6 @@ type Usuario struct {
 	PlanoDeAssinatura string          `json:"plano_de_assinatura"`
 	CriadoEm          string         `json:"criado_em"`
 	AtualizadoEm      string         `json:"atualizado_em"`
-	RemovidoEm        sql.NullString `json:"removido_em" swaggertype:"string"`
 } // @name Usuario
 
 type UsuarioModel struct {
@@ -26,7 +25,7 @@ func (u *UsuarioModel) ReadByNomeDeUsuario(nomeDeUsuario string) (Usuario, error
 	var usuario Usuario
 
 	row := u.DB.QueryRow(
-		"SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = ?",
+		"SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = ?",
 		nomeDeUsuario,
 	)
 
@@ -41,7 +40,6 @@ func (u *UsuarioModel) ReadByNomeDeUsuario(nomeDeUsuario string) (Usuario, error
 		&usuario.PlanoDeAssinatura,
 		&usuario.CriadoEm,
 		&usuario.AtualizadoEm,
-		&usuario.RemovidoEm,
 	); err != nil {
 		return usuario, err
 	}
@@ -56,7 +54,7 @@ func (u *UsuarioModel) ReadByNomeDeUsuario(nomeDeUsuario string) (Usuario, error
 func (u *UsuarioModel) ReadAll() ([]Usuario, error) {
 	var usuarios []Usuario
 
-	rows, err := u.DB.Query("SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL")
+	rows, err := u.DB.Query("SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA, CRIADO_EM, ATUALIZADO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL")
 
 	if err != nil {
 		return nil, err
@@ -78,7 +76,6 @@ func (u *UsuarioModel) ReadAll() ([]Usuario, error) {
 			&usuario.PlanoDeAssinatura,
 			&usuario.CriadoEm,
 			&usuario.AtualizadoEm,
-			&usuario.RemovidoEm,
 		); err != nil {
 			return nil, err
 		}

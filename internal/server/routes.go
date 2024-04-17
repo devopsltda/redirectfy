@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -51,13 +52,14 @@ func (s *Server) RegisterRoutes() http.Handler {
 		ErrorHandler: func(c echo.Context, err error) error {
 			switch err.Error() {
 			case echojwt.ErrJWTInvalid.Message.(string):
-				utils.ErroLog("EchoJwtErrorHandler", "Erro na validação do token JWT", err)
+				utils.DebugLog("EchoJwtErrorHandler", "Erro na validação do token JWT", err)
 				return utils.Erro(http.StatusUnauthorized, "Por favor, forneça um token JWT válido.")
 			case echojwt.ErrJWTMissing.Message.(string):
-				utils.ErroLog("EchoJwtErrorHandler", "Erro na busca pelo token JWT", err)
+				utils.DebugLog("EchoJwtErrorHandler", "Erro na busca pelo token JWT", err)
 				return utils.Erro(http.StatusUnauthorized, "Por favor, forneça um token JWT válido.")
 			case "missing value in cookies":
-				utils.ErroLog("EchoJwtErrorHandler", "Erro de cookies sem valores válidos", err)
+				utils.DebugLog("EchoJwtErrorHandler", "Erro de cookies sem valores válidos", err)
+				utils.DebugLog("EchoJwtErrorHandler", fmt.Sprintf("%+v", c.Cookies()), err)
 				return utils.Erro(http.StatusUnauthorized, "Por favor, forneça os cookies com tokens JWT válidos.")
 			default:
 				return nil
@@ -108,7 +110,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 			return next(c)
 		}
 	})
-
 	e.PATCH("/r/:hash", s.RedirecionadorUpdate)
 	e.DELETE("/r/:hash", s.RedirecionadorRemove)
 
@@ -117,6 +118,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.GET("/r/:hash/links/:id", s.LinkReadById)
 	e.POST("/r/:hash/links", s.LinkCreate)
 	e.PATCH("/r/:hash/links/:id", s.LinkUpdate)
+	e.PATCH("/r/:hash/links/:id/enable", s.LinkEnable)
+	e.PATCH("/r/:hash/links/:id/disable", s.LinkDisable)
 	e.DELETE("/r/:hash/links/:id", s.LinkRemove)
 
 	// API - Admin

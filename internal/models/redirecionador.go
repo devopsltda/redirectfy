@@ -12,7 +12,6 @@ type Redirecionador struct {
 	Usuario                 string         `json:"usuario"`
 	CriadoEm                string         `json:"criado_em"`
 	AtualizadoEm            string         `json:"atualizado_em"`
-	RemovidoEm              sql.NullString `json:"removido_em" swaggertype:"string"`
 } // @name Redirecionador
 
 type RedirecionadorModel struct {
@@ -23,7 +22,7 @@ func (r *RedirecionadorModel) ReadByCodigoHash(codigoHash string) (Redirecionado
 	var redirecionador Redirecionador
 
 	row := r.DB.QueryRow(
-		"SELECT ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = ?",
+		"SELECT ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = ?",
 		codigoHash,
 	)
 
@@ -35,7 +34,6 @@ func (r *RedirecionadorModel) ReadByCodigoHash(codigoHash string) (Redirecionado
 		&redirecionador.Usuario,
 		&redirecionador.CriadoEm,
 		&redirecionador.AtualizadoEm,
-		&redirecionador.RemovidoEm,
 	); err != nil {
 		return redirecionador, err
 	}
@@ -51,7 +49,7 @@ func (r *RedirecionadorModel) ReadAll(nomeDeUsuario string) ([]Redirecionador, e
 	var redirecionadores []Redirecionador
 
 	rows, err := r.DB.Query(
-		"SELECT ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND USUARIO = ?",
+		"SELECT ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND USUARIO = ?",
 		nomeDeUsuario,
 	)
 
@@ -72,7 +70,6 @@ func (r *RedirecionadorModel) ReadAll(nomeDeUsuario string) ([]Redirecionador, e
 			&redirecionador.Usuario,
 			&redirecionador.CriadoEm,
 			&redirecionador.AtualizadoEm,
-			&redirecionador.RemovidoEm,
 		); err != nil {
 			return nil, err
 		}
@@ -130,32 +127,25 @@ func (r *RedirecionadorModel) Create(nome, codigoHash, ordemDeRedirecionamento, 
 	return id, nil
 }
 
-func (r *RedirecionadorModel) WithinLimit(codigoHash string, quantidadeDeLinks int) (bool, error) {
-	var quantidadeLinks int
-	var limiteLinks int
+func (r *RedirecionadorModel) WithinLimit(nomeDeUsuario string) (bool, error) {
+	var quantidadeRedirecionadores int
+	var limiteRedirecionadores int
 
-	row := r.DB.QueryRow(`SELECT (
-																 SELECT COUNT(*)
-																 FROM LINK
-																			INNER JOIN REDIRECIONADOR ON REDIRECIONADOR.USUARIO = USUARIO.NOME
-															 ),
-															 USUARIO.LIMITE_LINKS
+	row := r.DB.QueryRow(`SELECT (SELECT COUNT(*) FROM REDIRECIONADOR WHERE REDIRECIONADOR.USUARIO = ?),
+															 USUARIO.LIMITE_REDIRECIONADORES
 												FROM (
-													SELECT USUARIO.NOME,
-																 USUARIO.PLANO_DE_ASSINATURA,
-																 PLANO_DE_ASSINATURA.LIMITE_LINKS
+													SELECT PLANO_DE_ASSINATURA.LIMITE_REDIRECIONADORES
 													FROM USUARIO
-															 INNER JOIN REDIRECIONADOR ON REDIRECIONADOR.USUARIO = USUARIO.NOME_DE_USUARIO
 															 INNER JOIN PLANO_DE_ASSINATURA ON PLANO_DE_ASSINATURA.NOME = USUARIO.PLANO_DE_ASSINATURA
-													WHERE USUARIO.REMOVIDO_EM IS NULL
-																AND REDIRECIONADOR.CODIGO_HASH = ?
+													WHERE USUARIO.NOME_DE_USUARIO = ?
 												) AS USUARIO`,
-		codigoHash,
+		nomeDeUsuario,
+		nomeDeUsuario,
 	)
 
 	if err := row.Scan(
-		&quantidadeLinks,
-		&limiteLinks,
+		&quantidadeRedirecionadores,
+		&limiteRedirecionadores,
 	); err != nil {
 		return false, err
 	}
@@ -164,7 +154,7 @@ func (r *RedirecionadorModel) WithinLimit(codigoHash string, quantidadeDeLinks i
 		return false, err
 	}
 
-	if quantidadeLinks > limiteLinks {
+	if quantidadeRedirecionadores > limiteRedirecionadores {
 		return false, nil
 	}
 

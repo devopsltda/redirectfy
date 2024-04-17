@@ -9,10 +9,10 @@ import (
 )
 
 type EmailAutenticacao struct {
-	Id                int64  `json:"id"`
-	Valor             string `json:"valor"`
-	Tipo              string `json:"tipo"`
-	ExpiraEm          string `json:"expira_em"`
+	Id             int64  `json:"id"`
+	Valor          string `json:"valor"`
+	Tipo           string `json:"tipo"`
+	ExpiraEm       string `json:"expira_em"`
 	UsuarioKirvano int64  `json:"usuario_kirvano"`
 } // @name EmailAutenticacao
 

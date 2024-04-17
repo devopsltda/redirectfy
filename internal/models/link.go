@@ -20,7 +20,6 @@ type Link struct {
 	Redirecionador string         `json:"redirecionador"`
 	CriadoEm       string         `json:"criado_em"`
 	AtualizadoEm   string         `json:"atualizado_em"`
-	RemovidoEm     sql.NullString `json:"removido_em" swaggertype:"string"`
 } // @name Link
 
 type LinkModel struct {
@@ -31,7 +30,7 @@ func (l *LinkModel) ReadById(id int64, codigoHash string) (Link, error) {
 	var link Link
 
 	row := l.DB.QueryRow(
-		"SELECT ID, NOME, LINK, PLATAFORMA, REDIRECIONADOR, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM LINK WHERE REMOVIDO_EM IS NULL AND ID = ? AND REDIRECIONADOR = ?",
+		"SELECT ID, NOME, LINK, PLATAFORMA, REDIRECIONADOR, CRIADO_EM, ATUALIZADO_EM FROM LINK WHERE REMOVIDO_EM IS NULL AND ID = ? AND REDIRECIONADOR = ?",
 		id,
 		codigoHash,
 	)
@@ -44,7 +43,6 @@ func (l *LinkModel) ReadById(id int64, codigoHash string) (Link, error) {
 		&link.Redirecionador,
 		&link.CriadoEm,
 		&link.AtualizadoEm,
-		&link.RemovidoEm,
 	); err != nil {
 		return link, err
 	}
@@ -60,7 +58,7 @@ func (l *LinkModel) ReadByCodigoHash(codigoHash string) ([]Link, error) {
 	var links []Link
 
 	rows, err := l.DB.Query(
-		"SELECT ID, NOME, LINK, PLATAFORMA, REDIRECIONADOR, CRIADO_EM, ATUALIZADO_EM, REMOVIDO_EM FROM LINK WHERE REMOVIDO_EM IS NULL AND REDIRECIONADOR = ?",
+		"SELECT ID, NOME, LINK, PLATAFORMA, REDIRECIONADOR, CRIADO_EM, ATUALIZADO_EM FROM LINK WHERE REMOVIDO_EM IS NULL AND REDIRECIONADOR = ?",
 		codigoHash,
 	)
 
@@ -81,7 +79,6 @@ func (l *LinkModel) ReadByCodigoHash(codigoHash string) ([]Link, error) {
 			&link.Redirecionador,
 			&link.CriadoEm,
 			&link.AtualizadoEm,
-			&link.RemovidoEm,
 		); err != nil {
 			return nil, err
 		}
@@ -134,6 +131,34 @@ func (l *LinkModel) Update(id int64, codigoHash, nome, link, plataforma string) 
 
 	_, err := l.DB.Exec(
 		sqlQuery,
+		id,
+		codigoHash,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (l *LinkModel) Enable(id int64, codigoHash string) error {
+	_, err := l.DB.Exec(
+		"UPDATE LINK SET ATIVO = 1 WHERE ID = ? AND REDIRECIONADOR = ?",
+		id,
+		codigoHash,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (l *LinkModel) Disable(id int64, codigoHash string) error {
+	_, err := l.DB.Exec(
+		"UPDATE LINK SET ATIVO = 0 WHERE ID = ? AND REDIRECIONADOR = ?",
 		id,
 		codigoHash,
 	)

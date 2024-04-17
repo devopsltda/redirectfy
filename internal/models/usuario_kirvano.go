@@ -12,7 +12,6 @@ type UsuarioKirvano struct {
 	Email             string         `json:"email"`
 	PlanoDeAssinatura string         `json:"plano_de_assinatura"`
 	CriadoEm          string         `json:"criado_em"`
-	RemovidoEm        sql.NullString `json:"removido_em" swaggertype:"string"`
 } // @name UsuarioKirvano
 
 type UsuarioKirvanoModel struct {
@@ -23,7 +22,7 @@ func (u *UsuarioKirvanoModel) ReadById(id int64) (UsuarioKirvano, error) {
 	var usuario UsuarioKirvano
 
 	row := u.DB.QueryRow(
-		"SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, PLANO_DE_ASSINATURA, CRIADO_EM, REMOVIDO_EM FROM USUARIO_KIRVANO WHERE REMOVIDO_EM IS NULL AND ID = ?",
+		"SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, PLANO_DE_ASSINATURA, CRIADO_EM FROM USUARIO_KIRVANO WHERE REMOVIDO_EM IS NULL AND ID = ?",
 		id,
 	)
 
@@ -35,7 +34,6 @@ func (u *UsuarioKirvanoModel) ReadById(id int64) (UsuarioKirvano, error) {
 		&usuario.Email,
 		&usuario.PlanoDeAssinatura,
 		&usuario.CriadoEm,
-		&usuario.RemovidoEm,
 	); err != nil {
 		return usuario, err
 	}
