@@ -10,6 +10,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { CreateRedirectComponent } from './pages/create-redirect/create-redirect.component';
 import { Error404Component } from './pages/404/404.component';
 import { MyAccountComponent } from './pages/my-account/my-account.component';
+import { authGuard } from './guard/auth.guard';
 
 
 export const routes: Routes = [
@@ -21,7 +22,7 @@ export const routes: Routes = [
   {path:'recoverySend',component:RecoverySendComponent},
   {path:'newPassword',component:ResetPasswordComponent},
   {path:'newPasswordComplete',component:ResetCompleteComponent},
-  {path:'home',component:HomeComponent},
+  {path:'home',component:HomeComponent,canActivate:[authGuard]},
   {path:'account',component:MyAccountComponent},
   {path:'newRedirect',component:CreateRedirectComponent},
 
