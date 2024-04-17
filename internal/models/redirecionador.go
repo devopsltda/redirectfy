@@ -154,7 +154,7 @@ func (r *RedirecionadorModel) WithinLimit(nomeDeUsuario string) (bool, error) {
 		return false, err
 	}
 
-	if quantidadeRedirecionadores > limiteRedirecionadores {
+	if quantidadeRedirecionadores >= limiteRedirecionadores {
 		return false, nil
 	}
 
