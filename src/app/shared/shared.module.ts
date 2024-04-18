@@ -22,6 +22,7 @@ import { HeaderComponent } from './header/header.component';
 import { ContentWindowComponent } from './content-window/content-window.component';
 import { ContentGridComponent } from './content-grid/content-grid.component';
 import { ToastModule } from 'primeng/toast';
+import { CardSubscriptionPlanComponent } from './card-subscription-plan/card-subscription-plan.component';
 
 
 @NgModule({
@@ -48,7 +49,8 @@ import { ToastModule } from 'primeng/toast';
     HeaderComponent,
     ContentWindowComponent,
     ContentGridComponent,
-    ToastModule
+    ToastModule,
+    CardSubscriptionPlanComponent
 
   ],
   exports:[
@@ -73,7 +75,8 @@ import { ToastModule } from 'primeng/toast';
     HeaderComponent,
     ContentWindowComponent,
     ContentGridComponent,
-    ToastModule
+    ToastModule,
+    CardSubscriptionPlanComponent
   ]
 })
 export class SharedModule { }

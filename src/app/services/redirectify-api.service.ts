@@ -14,12 +14,24 @@ export class RedirectifyApiService {
   private finishSignUpRoute: string = `${this.prefix}/kirvano/to_user/`;
   private getAllRedirectsRoute: string = `${this.prefix}/r`;
   private createRedirectRoute: string = `${this.prefix}/r`;
-  private createRedirectLinksRoute: string = `${this.prefix}/r`;
+  private deleteRedirectRoute: string = `${this.prefix}/r`;
 
   constructor(private http: HttpClient, private cookies: CookieService) {}
 
 
+  // redirecionadores
+  async deleteRedirect(codigoHash:string){
+    const resDeleteRedirect = await lastValueFrom(this.http.delete(`${this.deleteRedirectRoute}/${codigoHash}`,{withCredentials:true}))
+    .catch((error) => {
+      throw {
+        status: error.status,
+        statusText: error.statusText,
+        error: error.error,
+      };
+    });
 
+    return resDeleteRedirect
+  }
   async createRedirect(nome: string, ordem_de_redirecionamento: string,links:{link:string,nome:string,plataforma:string}[]) {
 
     const resCreateRedirect = await lastValueFrom(
@@ -30,7 +42,7 @@ export class RedirectifyApiService {
           links:links,
           ordem_de_redirecionamento: ordem_de_redirecionamento,
         },
-        { withCredentials: true }
+        { withCredentials: true,observe:'response' }
       )
     ).catch((error) => {
       throw {
@@ -73,7 +85,7 @@ export class RedirectifyApiService {
     });
     return res;
   }
-
+  //  user
   async logout(){
     const res = await lastValueFrom(
       this.http.post<any>(
