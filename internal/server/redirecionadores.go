@@ -265,6 +265,13 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 		return utils.Erro(http.StatusInternalServerError, "Não foi possível criar o redirecionador.")
 	}
 
+	err = s.LinkModel.Create(codigoHash, parametros.Links)
+
+	if err != nil {
+		utils.ErroLog("RedirecionadorCreate", "Erro na criação dos links do redirecionador inserido", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível criar os links do redirecionador inserido.")
+	}
+
 	return c.JSON(http.StatusCreated, codigoHash)
 }
 

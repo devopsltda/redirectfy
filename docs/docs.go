@@ -265,6 +265,18 @@ const docTemplate = `{
                         }
                     },
                     {
+                        "description": "Links",
+                        "name": "links",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.LinkToBatchInsert"
+                            }
+                        }
+                    },
+                    {
                         "description": "Ordem de Redirecionamento",
                         "name": "ordem_de_redirecionamento",
                         "in": "body",
@@ -547,6 +559,112 @@ const docTemplate = `{
                         "schema": {
                             "type": "string"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/r/:hash/link/:id/disable": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Links"
+                ],
+                "summary": "Desativa um link específico de um redirecionador específico",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Código Hash",
+                        "name": "hash",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/echo.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/r/:hash/link/:id/enable": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Links"
+                ],
+                "summary": "Ativa um link específico de um redirecionador específico",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Código Hash",
+                        "name": "hash",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1075,9 +1193,6 @@ const docTemplate = `{
                 },
                 "redirecionador": {
                     "type": "string"
-                },
-                "removido_em": {
-                    "type": "string"
                 }
             }
         },
@@ -1110,7 +1225,7 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "limite_links": {
+                "limite_redirecionadores": {
                     "type": "integer"
                 },
                 "nome": {
@@ -1118,9 +1233,6 @@ const docTemplate = `{
                 },
                 "ordenacao_aleatoria_links": {
                     "type": "boolean"
-                },
-                "removido_em": {
-                    "type": "integer"
                 },
                 "valor": {
                     "type": "integer"
@@ -1146,9 +1258,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "ordem_de_redirecionamento": {
-                    "type": "string"
-                },
-                "removido_em": {
                     "type": "string"
                 },
                 "usuario": {
@@ -1184,9 +1293,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "plano_de_assinatura": {
-                    "type": "string"
-                },
-                "removido_em": {
                     "type": "string"
                 },
                 "senha": {

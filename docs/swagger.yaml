@@ -15,8 +15,6 @@ definitions:
         type: string
       redirecionador:
         type: string
-      removido_em:
-        type: string
     type: object
   ParametrosKirvano:
     properties:
@@ -37,14 +35,12 @@ definitions:
         type: string
       id:
         type: integer
-      limite_links:
+      limite_redirecionadores:
         type: integer
       nome:
         type: string
       ordenacao_aleatoria_links:
         type: boolean
-      removido_em:
-        type: integer
       valor:
         type: integer
     type: object
@@ -61,8 +57,6 @@ definitions:
       nome:
         type: string
       ordem_de_redirecionamento:
-        type: string
-      removido_em:
         type: string
       usuario:
         type: string
@@ -86,8 +80,6 @@ definitions:
       nome_de_usuario:
         type: string
       plano_de_assinatura:
-        type: string
-      removido_em:
         type: string
       senha:
         type: string
@@ -284,6 +276,14 @@ paths:
         required: true
         schema:
           type: string
+      - description: Links
+        in: body
+        name: links
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/models.LinkToBatchInsert'
+          type: array
       - description: Ordem de Redirecionamento
         in: body
         name: ordem_de_redirecionamento
@@ -488,6 +488,76 @@ paths:
           schema:
             $ref: '#/definitions/echo.HTTPError'
       summary: Atualiza um link específico de um redirecionador específico
+      tags:
+      - Links
+  /r/:hash/link/:id/disable:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Código Hash
+        in: path
+        name: hash
+        required: true
+        type: string
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Desativa um link específico de um redirecionador específico
+      tags:
+      - Links
+  /r/:hash/link/:id/enable:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Código Hash
+        in: path
+        name: hash
+        required: true
+        type: string
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Ativa um link específico de um redirecionador específico
       tags:
       - Links
   /r/:hash/links:

@@ -127,7 +127,7 @@ func (s *Server) LinkCreate(c echo.Context) error {
 	codigoHash := c.Param("hash")
 
 	if err := utils.Validate.Var(codigoHash, "required,len=10"); err != nil {
-		utils.DebugLog("LinkCreate", "Erro na validação do código hash do redirecionador do link", err)
+		utils.DebugLog("LinkCreate", "Erro na validação do código hash do redirecionador dos links", err)
 		return utils.Erro(http.StatusBadRequest, "O 'hash' inserido é inválido, por favor insira um 'hash' existente com 10 caracteres.")
 	}
 
@@ -171,11 +171,11 @@ func (s *Server) LinkCreate(c echo.Context) error {
 	err := s.LinkModel.Create(codigoHash, parametros.Links)
 
 	if err != nil {
-		utils.ErroLog("LinkCreate", "Erro na criação do link do redirecionador inserido", err)
-		return utils.Erro(http.StatusInternalServerError, "Não foi possível criar o link do redirecionador inserido.")
+		utils.ErroLog("LinkCreate", "Erro na criação dos links do redirecionador inserido", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível criar os links do redirecionador inserido.")
 	}
 
-	return c.JSON(http.StatusCreated, "O link foi criado com sucesso.")
+	return c.JSON(http.StatusCreated, "Os links foram criados com sucesso.")
 }
 
 // LinkUpdate godoc
