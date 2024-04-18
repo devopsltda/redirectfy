@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+ api:
+    build:
+      context: ./
+      dockerfile: Dockerfile.prod
+    container_name: api
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./path/to/api:/app
+    command: sh -c "go get ./... && make watch"
+
+ frontend:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/app
+    depends_on:
+      - api
