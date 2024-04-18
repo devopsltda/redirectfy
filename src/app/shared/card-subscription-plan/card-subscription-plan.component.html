@@ -1,0 +1,17 @@
+<div class="{{bgCardColor}} w-64 h-36 flex flex-col pt-4 justify-between relative rounded-lg">
+  <span class="flex w-full pl-4 items-center gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-12 {{logoFillColor}}" viewBox="0 0 48 47" fill="none">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M4.64 0.702698H0V5.3427V42.3027V46.9427H4.64H48V42.3027H4.64V5.3427H43.3599V34.1427H47.9999V5.3427H48V0.702698H47.9999H43.3599H4.64ZM31.6799 16.5427H20.1599H15.5199V21.1827V32.8627H20.1599V24.0266L30.7199 33.9424V34.1427H30.9333L30.9805 34.187L31.0221 34.1427H43.3599V29.5027H32.7703L23.9097 21.1827H31.6799V16.5427Z" />
+    </svg>
+    <div class="flex flex-col ">
+      <p class="text-2xl font-semibold p-0 m-0  {{titleTextColor}} ">Redirectfy</p>
+      <p class="text-xl font-semibold p-0 m-0 leading-5  {{planTextColor}}">{{planName}}</p>
+    </div>
+  </span>
+  <span class="flex flex-row-reverse  ">
+    <span class=" {{bgPricingColor}} rounded-md text-white w-fit px-3 py-1 absolute -bottom-2 -right-1"> R${{pricing}}{{isAnnual?'/Ano':'/Mês'}}</span>
+  </span>
+  <div>
+    <ng-content></ng-content>
+  </div>
+</div>
