@@ -75,7 +75,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.GET("/to/:hash", s.RedirecionadorLinksToGoTo)
 
 	// API - Usuário
-	e.GET("/u/:username", s.UsuarioReadByNomeDeUsuario)
+	e.GET("/u", s.UsuarioReadByNomeDeUsuario)
 
 	// API - Kirvano
 	e.POST("/kirvano/to_user/:hash", s.KirvanoToUser)

@@ -214,7 +214,7 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 
 		if err := utils.Validate.Var(link.Plataforma, "required,oneof=whatsapp telegram"); err != nil {
 			utils.DebugLog("RedirecionadorCreate", fmt.Sprintf("Erro no link %d: plataforma inválida para o parâmetro 'plataforma'", i+1), nil)
-			erros = append(erros, fmt.Sprintf("Link %d: Por favor, forneça uma plataforma válida ('instagram' ou 'whatsapp') para o parâmetro 'plataforma'.", i+1))
+			erros = append(erros, fmt.Sprintf("Link %d: Por favor, forneça uma plataforma válida ('telegram' ou 'whatsapp') para o parâmetro 'plataforma'.", i+1))
 		}
 	}
 

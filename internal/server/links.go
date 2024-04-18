@@ -160,7 +160,7 @@ func (s *Server) LinkCreate(c echo.Context) error {
 
 		if err := utils.Validate.Var(link.Plataforma, "required,oneof=whatsapp telegram"); err != nil {
 			utils.DebugLog("LinkCreate", fmt.Sprintf("Erro no link %d: plataforma inválida para o parâmetro 'plataforma'", i+1), nil)
-			erros = append(erros, fmt.Sprintf("Link %d: Por favor, forneça uma plataforma válida ('instagram' ou 'whatsapp') para o parâmetro 'plataforma'.", i+1))
+			erros = append(erros, fmt.Sprintf("Link %d: Por favor, forneça uma plataforma válida ('telegram' ou 'whatsapp') para o parâmetro 'plataforma'.", i+1))
 		}
 	}
 
@@ -248,7 +248,7 @@ func (s *Server) LinkUpdate(c echo.Context) error {
 
 	if err := utils.Validate.Var(parametros.Plataforma, "oneof=whatsapp telegram"); parametros.Plataforma != "" && err != nil {
 		utils.DebugLog("LinkUpdate", "Erro na plataforma inválida para o parâmetro 'plataforma'", nil)
-		erros = append(erros, "Por favor, forneça uma plataforma válida ('instagram' ou 'whatsapp') para o parâmetro 'plataforma'.")
+		erros = append(erros, "Por favor, forneça uma plataforma válida ('telegram' ou 'whatsapp') para o parâmetro 'plataforma'.")
 	}
 
 	if (parametrosUpdate{}) == parametros {

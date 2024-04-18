@@ -10,6 +10,7 @@ import (
 	"redirectfy/internal/utils"
 
 	"github.com/alexedwards/argon2id"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 
 	_ "redirectfy/internal/models"
@@ -58,22 +59,15 @@ func criaNomeDeUsuario(s string) string {
 //
 // @Produce json
 //
-// @Param   username        path     string  true  "Nome de Usuário"
-//
 // @Success 200             {object} models.Usuario
 //
 // @Failure 400             {object} echo.HTTPError
 //
 // @Failure 500             {object} echo.HTTPError
 //
-// @Router  /u/:username [get]
+// @Router  /u [get]
 func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
-	nomeDeUsuario := c.Param("username")
-
-	if !utils.IsURLSafe(nomeDeUsuario) {
-		utils.DebugLog("UsuarioReadByNomeDeUsuario", "Erro de validação do nome do usuário no parâmetro 'username'", nil)
-		return utils.Erro(http.StatusBadRequest, "Por favor, forneça um nome de usuário válido (3 a 120 caracteres, composto de apenas letras, números e '-' ou '_').")
-	}
+	nomeDeUsuario := c.Get("usuario").(*jwt.Token).Claims.(*auth.Claims).NomeDeUsuario
 
 	usuario, err := s.UsuarioModel.ReadByNomeDeUsuario(nomeDeUsuario)
 
