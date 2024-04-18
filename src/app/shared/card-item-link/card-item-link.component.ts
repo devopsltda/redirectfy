@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ButtonCopyComponent } from '../button-copy/button-copy.component';
 import { ButtonShareComponent } from '../button-share/button-share.component';
 import { ButtonDeleteComponent } from '../button-delete/button-delete.component';
@@ -12,4 +12,9 @@ import { ButtonDeleteComponent } from '../button-delete/button-delete.component'
 })
 export class CardItemLinkComponent {
   @Input() cardTitle:string = 'Card Title'
+  @Output() botãoClicado = new EventEmitter()
+
+  onClick(event:string){
+    this.botãoClicado.emit(event)
+  }
 }

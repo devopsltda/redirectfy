@@ -25,7 +25,7 @@ export class FormCreateRedirectComponent {
   getPlataforma!:string
   redirectName!:string
   prioridade:string = 'whatsapp,telegram'
-  submitData = []
+  submitData:any = []
   createData:{[key:string]:any} = {}
   createLinkForm!:FormGroup
 
@@ -98,17 +98,31 @@ export class FormCreateRedirectComponent {
     this.formStep = 'getContacts'
   }
 
+  generateRandomInteger(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
  async onSubmit(){
-    this.submitData = this.createData['whatsappData'].concat(this.createData['telegramData'])
+    for(let item of this.createData['whatsappData']){
+      this.submitData.push(
+        {
+        nome:`${item.nome?item.nome:'+'+item.link}`,
+        link:`https://wa.me/+${item.link}${item.mensagem ? `?text=${encodeURIComponent(item.mensagem)}` : ""}`,
+        plataforma:item.plataforma
+        }
+      )
+    }
     console.log(this.submitData)
     if(this.redirectName == undefined){
-      this.redirectName = `Redirect #${Math.random()}`
+      this.redirectName = `Redirect #${this.generateRandomInteger(1,100)}`
     }
+
     try{
-      const resApi = await this.api.createRedirect(this.redirectName,this.prioridade,[this.createData['whatsappData'],this.createData['telegramData']])
-      if (resApi.status == 200) {
+      const resApi = await this.api.createRedirect(this.redirectName,this.prioridade,this.submitData)
+      if (resApi.status == 201) {
         this.router.navigate(['/home'])
       }
+      console.log(resApi)
     } catch (error){
       console.log(error)
     }
