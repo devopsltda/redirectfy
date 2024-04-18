@@ -1,6 +1,6 @@
 <app-grid>
 <app-navbar></app-navbar>
-<div  @fadeIn500ms class="flex flex-col w-full h-full  pt-5 pb-8 px-10 bg-gray-100 overflow-hidden ">
+<div  @fadeIn500ms class="flex flex-col w-full h-full  pt-5 pb-8 px-10 md:bg-gray-100 bg-white  overflow-hidden ">
   <app-header title="Meus Redirects"></app-header>
   @if (homeData) {
     <app-content-window class="w-full h-[90%] ">
@@ -10,7 +10,7 @@
         </span>
         <div class="flex flex-col lg:flex-row  flex-wrap py-2 items-center lg:items-start lg:justify-center  gap-6 w-full h-fit px-2 pt-6">
           @for (item of getDisplayData(); track $index) {
-            <app-card-item-link></app-card-item-link>
+            <app-card-item-link  [cardTitle]="item.nome" (botãoClicado)="cardEvent($event,item)"></app-card-item-link>
           }
         </div>
         <div class="flex h-full items-center justify-center">
@@ -19,7 +19,7 @@
       </div>
     </app-content-window>
   } @else {
-    <div class="flex flex-col w-full h-full  border rounded-lg gap-8 drop-shadow items-center justify-center bg-white">
+    <div class="flex flex-col w-full h-full  md:border rounded-lg gap-8 md:drop-shadow items-center justify-center bg-white">
       <app-icon-box-empty></app-icon-box-empty>
       <p class="text-lg text-center">Você ainda não tem nenhum Redirect. <br> Adicione agora e comece a sua jornada.</p>
       <app-button-add routerLink="/newRedirect" class="w-64" title="Criar Redirect"></app-button-add>

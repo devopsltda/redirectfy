@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SharedModule } from 'primeng/api';
+
 import { RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { GridComponent } from '../../shared/grid/grid.component';
@@ -13,6 +13,7 @@ import { IconVisaCardComponent } from '../../shared/icon-visa-card/icon-visa-car
 import { IconRightArrowComponent } from '../../shared/icon-right-arrow/icon-right-arrow.component';
 import { TopbarMyAccountComponent } from '../../shared/topbar-my-account/topbar-my-account.component';
 import { RedirectfyPremiumCardDesktopComponent } from '../../shared/redirectfy-premium-card-desktop/redirectfy-premium-card-desktop.component';
+import { SharedModule } from '../../shared/shared.module';
 
 @Component({
   selector: 'app-my-account',

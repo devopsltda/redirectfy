@@ -1,42 +1,44 @@
 <app-grid>
     <app-navbar></app-navbar>
-    <div class="flex flex-col items-center w-full md:bg-[#F7F7F7]">
-        <app-topbar-my-account class="hidden md:inline w-full h-20 max-w-[80%] mt-4 mb-16"></app-topbar-my-account>
-        <div class="flex flex-col justify-center items-center gap-2 bg-white w-full max-w-[80%] p-5 md:border rounded-[10px]">
-            <h1 class="text-center mt-14 text-2xl font-semibold md:hidden">Minha Conta</h1>
-            <app-user-banner class="md:hidden"></app-user-banner>
-            <span class="hidden md:inline w-full text-center mb-5 mt-5 text-gray-300 tracking-[1px] text-[14px] font-medium">DETALHES DE COBRANÇA</span>
-            <hr class="hidden md:inline border-[#F7F7F7] w-full max-w-[80%]">
-            <span class="inline md:hidden w-full text-center mt-3 text-gray-300 tracking-[1px] text-[14px] font-medium">ASSINATURA E COBRANÇA</span>
-            <span class="hidden md:inline w-full text-center mt-20 mb-7 text-[#434343] tracking-[1px] text-[18px] font-medium">Detalhes do seu plano e cobrança mensal.</span>
-            <input pInputText class="w-[300px] text-[20px] border border-[#E0E0E0] border-l-4 p-2 rounded-md focus:outline-none focus:border-teal-500 hover:border-teal-500 shadow-md md:hidden" type="text" placeholder="Email: adalberto@gmail.com">
-            <input pInputText class="w-[300px] text-[20px] border border-[#E0E0E0] border-l-4 p-2 rounded-md focus:outline-none focus:border-teal-500 hover:border-teal-500 shadow-md md:hidden" type="text" placeholder="Senha: *************">
-            <button class="w-[300px] font-semibold text-[20px] border border-[#E0E0E0] border-l-4 p-2 rounded-md focus:outline-none focus:border-teal-500 hover:border-teal-500 shadow-md flex md:hidden">Alterar Senha da Conta <app-icon-right-arrow class="ml-6"></app-icon-right-arrow></button>
-            <app-redirectfy-premium-card class="md:hidden"></app-redirectfy-premium-card>
-            <app-redirectfy-premium-card-desktop class="hidden md:inline"></app-redirectfy-premium-card-desktop>
-            <div class="hidden md:inline text-left font-medium border-b-2 border-[#BABABA] p-2 w-[400px]">
-                <p class="ml-4 text-1xl">Total</p>
-                <h1 class="ml-4 mt-2 text-3xl">R$ 69,99/mês</h1>
-                <p class="ml-4 mb-2 text-1xl mt-4">*Impostos locais podem <br> ser aplicados</p>
-            </div>
-            <div class="hidden md:inline text-center text-2xl text-[#6C6C6C] font-medium mt-8">
-                <h1>Data da próxima fatura</h1>
-                <h1>29 de Fevereiro de 2024</h1>
-            </div>
-            <div class="flex items-start justify-start w-[300px]">
-                <div class="flex ml-2 gap-3">
-                    <app-icon-visa-card class="md:hidden"></app-icon-visa-card>
-                    <h1 class="font-semibold h-4 text-gray-300 mt-3 text-1xl md:hidden">***** *****</h1>
-                    <h1 class="font-semibold text-1xl mt-2 md:hidden">7624</h1>
-                </div>
-            </div>
-            <h1 class="text-left text-1xl font-medium w-[300px] md:hidden">Sua próxima data de cobrança é 29 <br> de Fevereiro de 2024.</h1>
-            <button class="w-[300px] font-semibold text-[20px] border border-[#E0E0E0] border-l-4 p-2 rounded-md focus:outline-none focus:border-teal-500 hover:border-teal-500 shadow-md flex md:hidden">Detalhes da Cobrança <app-icon-right-arrow class="ml-8"></app-icon-right-arrow></button>
-            <div class="flex w-full">
-                <app-button-primary class="w-[150px] mb-4 ml-4 h-14 shadow-md hidden md:inline" title="Voltar"></app-button-primary>
-            </div>
-            <app-button-primary class="w-[300px] mt-4 shadow-md md:hidden" title="Mudar Plano"></app-button-primary>
-            <app-button-secundary class="w-[300px] mb-4 shadow-md md:hidden" title="Cancelar Assinatura"></app-button-secundary>
-        </div>
+    <div class="flex flex-col  pt-5 pb-8 px-10 w-full h-full md:bg-[#F7F7F7]">
+        <!-- <app-topbar-my-account class="hidden md:inline w-full h-20 max-w-[80%] mt-4 mb-16"></app-topbar-my-account> -->
+        <app-header title="Minha Conta"></app-header>
+        <app-content-window>
+          <div class="flex flex-col justify-center items-center  bg-white w-full h-full md:border rounded-[10px]">
+              <app-user-banner class="md:hidden"></app-user-banner>
+              <span class="hidden md:inline w-full text-center mb-5 mt-5 text-gray-300 tracking-[1px] text-[14px] font-medium">DETALHES DE COBRANÇA</span>
+              <hr class="hidden md:inline border-[#F7F7F7] w-full max-w-[80%]">
+              <span class="inline md:hidden w-full text-center mt-3 text-gray-300 tracking-[1px] text-[14px] font-medium">ASSINATURA E COBRANÇA</span>
+              <span class="hidden md:inline w-full text-center mt-20 mb-7 text-[#434343] tracking-[1px] text-[18px] font-medium">Detalhes do seu plano e cobrança mensal.</span>
+              <input pInputText class="w-[300px] text-[20px] border border-[#E0E0E0] border-l-4 p-2 rounded-md focus:outline-none focus:border-teal-500 hover:border-teal-500 shadow-md md:hidden" type="text" placeholder="Email: adalberto@gmail.com">
+              <input pInputText class="w-[300px] text-[20px] border border-[#E0E0E0] border-l-4 p-2 rounded-md focus:outline-none focus:border-teal-500 hover:border-teal-500 shadow-md md:hidden" type="text" placeholder="Senha: *************">
+              <button class="w-[300px] font-semibold text-[20px] border border-[#E0E0E0] border-l-4 p-2 rounded-md focus:outline-none focus:border-teal-500 hover:border-teal-500 shadow-md flex md:hidden">Alterar Senha da Conta <app-icon-right-arrow class="ml-6"></app-icon-right-arrow></button>
+              <app-redirectfy-premium-card class="md:hidden"></app-redirectfy-premium-card>
+              <app-redirectfy-premium-card-desktop class="hidden md:inline"></app-redirectfy-premium-card-desktop>
+              <div class="hidden md:inline text-left font-medium border-b-2 border-[#BABABA] p-2 w-[400px]">
+                  <p class="ml-4 text-1xl">Total</p>
+                  <h1 class="ml-4 mt-2 text-3xl">R$ 69,99/mês</h1>
+                  <p class="ml-4 mb-2 text-1xl mt-4">*Impostos locais podem <br> ser aplicados</p>
+              </div>
+              <div class="hidden md:inline text-center text-2xl text-[#6C6C6C] font-medium mt-8">
+                  <h1>Data da próxima fatura</h1>
+                  <h1>29 de Fevereiro de 2024</h1>
+              </div>
+              <div class="flex items-start justify-start w-[300px]">
+                  <div class="flex ml-2 gap-3">
+                      <app-icon-visa-card class="md:hidden"></app-icon-visa-card>
+                      <h1 class="font-semibold h-4 text-gray-300 mt-3 text-1xl md:hidden">***** *****</h1>
+                      <h1 class="font-semibold text-1xl mt-2 md:hidden">7624</h1>
+                  </div>
+              </div>
+              <h1 class="text-left text-1xl font-medium w-[300px] md:hidden">Sua próxima data de cobrança é 29 <br> de Fevereiro de 2024.</h1>
+              <button class="w-[300px] font-semibold text-[20px] border border-[#E0E0E0] border-l-4 p-2 rounded-md focus:outline-none focus:border-teal-500 hover:border-teal-500 shadow-md flex md:hidden">Detalhes da Cobrança <app-icon-right-arrow class="ml-8"></app-icon-right-arrow></button>
+              <div class="flex w-full">
+                  <app-button-primary class="w-[150px] mb-4 ml-4 h-14 shadow-md hidden md:inline" title="Voltar"></app-button-primary>
+              </div>
+              <app-button-primary class="w-[300px] mt-4 shadow-md md:hidden" title="Mudar Plano"></app-button-primary>
+              <app-button-secundary class="w-[300px] mb-4 shadow-md md:hidden" title="Cancelar Assinatura"></app-button-secundary>
+          </div>
+        </app-content-window>
     </div>
 </app-grid>
