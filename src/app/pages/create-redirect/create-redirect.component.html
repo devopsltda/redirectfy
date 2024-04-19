@@ -1,11 +1,11 @@
 <app-grid>
   <app-navbar></app-navbar>
-  <app-content-grid class="w-full h-full">
+  <div class="flex flex-col w-full h-full  pt-5 pb-8 px-10 md:bg-gray-100 bg-white  overflow-hidden">
     <app-header title="Novo Redirect" class="relative">
-      <button class="md:hidden absolute right-4 w-8 border-2 bg-red-300 border-red-300 rounded-full text-xl text-white" routerLink="/home" >X</button>
+      <button class="md:hidden shadow-sm absolute right-4 w-8 border-2 bg-red-300 border-red-300 rounded-full text-lg text-white" routerLink="/home" >X</button>
     </app-header>
     <app-content-window class="w-full h-full">
       <app-form-create-redirect class="w-full h-full"></app-form-create-redirect>
     </app-content-window>
-  </app-content-grid>
+  </div>
 </app-grid>

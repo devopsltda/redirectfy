@@ -72,7 +72,7 @@
         </div>
       }
     <div class="flex flex-col w-fit md:w-full md:flex-row-reverse md:pt-16  md:pb-10 md:px-10  gap-5 md:justify-evenly">
-      <app-button-primary (click)="formStep = 'enterName'" class="w-72 md:m-0 mt-5"  title="Finalizar"></app-button-primary>
+      <app-button-primary *ngIf="createDataEmpty()" (click)="formStep = 'enterName'" class="w-72 md:m-0 mt-5"  title="Finalizar"></app-button-primary>
       <app-button-secundary  class=" w-72 h-12 hidden md:flex"title="Cancelar"></app-button-secundary>
       <app-button-secundary *ngIf="createDataEmpty() && this.createData['whatsappData'] != undefined && this.createData['telegramData'] != undefined " class="w-72 group md:hidden"title="Alternar Prioridade">
         <svg class="w-5 h-5 fill-[#257F7A] group-hover:fill-white" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -122,6 +122,7 @@
             <input id="w-contato" formControlName="nome" placeholder="Nome do Contato (Opcional)" type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
             <!-- END Input Nome Contato -->
           </div>
+          <small *ngIf="this.createLinkForm.controls['nome'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio</small>
         </div>
           <div class="flex flex-col">
             <div class="flex gap-2">
@@ -164,22 +165,25 @@
         </div>
         <small *ngIf="this.createLinkForm.controls['link'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio</small>
       </div>
-      <div class="flex gap-2">
-        <label for="t-nome" class="flex  gap-2 items-center ease-in-out duration-300">
-          <svg class="w-5 h-5" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g clip-path="url(#clip0_485_732)">
-          <path d="M13.3333 1.33331H2.66659C1.93325 1.33331 1.33992 1.93331 1.33992 2.66665L1.33325 14.6666L3.99992 12H13.3333C14.0666 12 14.6666 11.4 14.6666 10.6666V2.66665C14.6666 1.93331 14.0666 1.33331 13.3333 1.33331ZM13.3333 10.6666H3.44659L3.05325 11.06L2.66659 11.4466V2.66665H13.3333V10.6666ZM6.99992 9.33331H11.9999V7.99998H8.33325L6.99992 9.33331ZM9.57325 5.41998C9.70658 5.28665 9.70658 5.07998 9.57325 4.94665L8.39325 3.76665C8.25992 3.63331 8.05325 3.63331 7.91992 3.76665L3.99992 7.68665V9.33331H5.64659L9.57325 5.41998Z" fill="#257F7A"/>
-          </g>
-          <defs>
-          <clipPath id="clip0_485_732">
-          <rect width="16" height="16" fill="white"/>
-          </clipPath>
-          </defs>
-          </svg>
-        </label>
-        <!-- INPUT NOME -->
-        <input id="" formControlName="nome" placeholder="Nome do Contato (Opcional)" type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
-        <!-- END INPUT NOME  -->
+      <div class="flex-col gap-2">
+        <div class="flex gap-2">
+          <label for="t-nome" class="flex  gap-2 items-center ease-in-out duration-300">
+            <svg class="w-5 h-5" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_485_732)">
+            <path d="M13.3333 1.33331H2.66659C1.93325 1.33331 1.33992 1.93331 1.33992 2.66665L1.33325 14.6666L3.99992 12H13.3333C14.0666 12 14.6666 11.4 14.6666 10.6666V2.66665C14.6666 1.93331 14.0666 1.33331 13.3333 1.33331ZM13.3333 10.6666H3.44659L3.05325 11.06L2.66659 11.4466V2.66665H13.3333V10.6666ZM6.99992 9.33331H11.9999V7.99998H8.33325L6.99992 9.33331ZM9.57325 5.41998C9.70658 5.28665 9.70658 5.07998 9.57325 4.94665L8.39325 3.76665C8.25992 3.63331 8.05325 3.63331 7.91992 3.76665L3.99992 7.68665V9.33331H5.64659L9.57325 5.41998Z" fill="#257F7A"/>
+            </g>
+            <defs>
+            <clipPath id="clip0_485_732">
+            <rect width="16" height="16" fill="white"/>
+            </clipPath>
+            </defs>
+            </svg>
+          </label>
+          <!-- INPUT NOME -->
+          <input id="" formControlName="nome" placeholder="Nome do Contato (Opcional)" type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
+          <!-- END INPUT NOME  -->
+        </div>
+        <small *ngIf="this.createLinkForm.controls['nome'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio</small>
       </div>
       <div class="flex flex-col w-full h-40 justify-center gap-5 ">
         <app-button-primary type="submit" class="h-12" title="Adicionar Contato"></app-button-primary>

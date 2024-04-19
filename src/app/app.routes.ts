@@ -12,6 +12,7 @@ import { Error404Component } from './pages/404/404.component';
 import { MyAccountComponent } from './pages/my-account/my-account.component';
 import { authGuard } from './guard/auth.guard';
 import { BuyNowComponent } from './pages/buy-now/buy-now.component';
+import { EditRedirectComponent } from './pages/edit-redirect/edit-redirect.component';
 
 
 export const routes: Routes = [
@@ -23,10 +24,11 @@ export const routes: Routes = [
   {path:'recoverySend',component:RecoverySendComponent},
   {path:'newPassword',component:ResetPasswordComponent},
   {path:'newPasswordComplete',component:ResetCompleteComponent},
-  {path:'home',component:HomeComponent,canActivate:[authGuard]},
   {path:'account',component:MyAccountComponent},
   {path:'newRedirect',component:CreateRedirectComponent},
   {path:'buyNow',component:BuyNowComponent},
+  {path:'home',component:HomeComponent,canActivate:[authGuard]},
+  {path:'home/:hash_redirect',component:EditRedirectComponent},
 
 
 

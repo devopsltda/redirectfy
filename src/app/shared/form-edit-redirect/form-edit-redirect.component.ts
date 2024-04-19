@@ -1,42 +1,48 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IconWhatsappComponent } from '../icon-whatsapp/icon-whatsapp.component';
 import { IconTelegramComponent } from '../icon-telegram/icon-telegram.component';
 import { SharedModule } from '../shared.module';
-import { AnimationsModule, fadeInOutAnimation } from '../../animations/animations.module';
+
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RedirectifyApiService } from '../../services/redirectify-api.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { fadeInOutAnimation } from '../../animations/animations.module';
 
 
 @Component({
-  selector: 'app-form-create-redirect',
+  selector: 'app-form-edit-redirect',
   standalone: true,
-  imports: [IconWhatsappComponent,IconTelegramComponent,SharedModule,AnimationsModule,ReactiveFormsModule,CommonModule,FormsModule],
+  imports: [IconWhatsappComponent,IconTelegramComponent,SharedModule,ReactiveFormsModule,CommonModule,FormsModule],
   animations:[fadeInOutAnimation],
-  templateUrl: './form-create-redirect.component.html',
-  styleUrl: './form-create-redirect.component.scss'
+  templateUrl: './form-edit-redirect.component.html',
+  styleUrl: './form-edit-redirect.component.scss'
 })
-export class FormCreateRedirectComponent {
-
+export class FormEditRedirectComponent implements OnInit {
+  disableEditNome:boolean = true;
   submitted:boolean = false
-
+  nomeRedirecionador!:string
   formStep:string = 'init'
   getPlataforma!:string
   redirectName!:string
   prioridade:string = 'whatsapp,telegram'
   submitData:any = []
-  createData:{[key:string]:any} = {}
+  editData:any = {'whatsappData':[],'telegramData':[]}
   createLinkForm!:FormGroup
+  redirectData!:any
+  redirectHash:string = this.activatedRoute.snapshot.params['hash_redirect']
 
   constructor
   (
     private formBuilder:FormBuilder,
     private api:RedirectifyApiService,
-    private router:Router
+    private router:Router,
+    private activatedRoute:ActivatedRoute,
 
   )
   {
+
+
     this.createLinkForm = this.formBuilder.group({
       link:['',[Validators.required]],
       nome:['',[Validators.required]],
@@ -45,11 +51,29 @@ export class FormCreateRedirectComponent {
     })
   }
 
-  isValid(){
+  teste(){
+    console.log('oi')
+  }
+
+  async ngOnInit() {
+    this.redirectData = await this.getRedirectData()
+    this.nomeRedirecionador = this.redirectData.redirecionador.nome
+    for(let item of this.redirectData.links){
+      if(item.plataforma == 'whatsapp' ){
+        this.editData['whatsappData'].push(item)
+      } else{
+        this.editData['telegramData'].push(item)
+      }
+    }
+  }
+
+  async getRedirectData(){
+    return await this.api.getRedirect(this.redirectHash)
 
   }
-  createDataEmpty(){
-    return Object.keys(this.createData).length?true:false
+
+  editDataEmpty(){
+    return Object.keys(this.editData).length?true:false
   }
 
   addContact(plataforma:string){
@@ -59,34 +83,34 @@ export class FormCreateRedirectComponent {
       if(plataforma == 'whatsapp'){
         const data = this.createLinkForm.getRawValue()
         data['plataforma'] = plataforma
-        if(this.createData['whatsappData'] == undefined){
-          this.createData['whatsappData'] = [data]
+        if(this.editData['whatsappData'] == undefined){
+          this.editData['whatsappData'] = [data]
           this.createLinkForm.reset()
           this.formStep = 'init'
         } else{
-          this.createData['whatsappData'].push(data)
+          this.editData['whatsappData'].push(data)
           this.createLinkForm.reset()
           this.formStep = 'init'
         }
 
-        console.log(this.createData['whatsappData'])
+        console.log(this.editData['whatsappData'])
       } else if(plataforma == 'telegram'){
 
         const data = this.createLinkForm.getRawValue()
         data['plataforma'] = plataforma
 
-        if(this.createData['telegramData'] == undefined){
+        if(this.editData['telegramData'] == undefined){
 
-          this.createData['telegramData'] = [data]
+          this.editData['telegramData'] = [data]
           this.createLinkForm.reset()
           this.formStep = 'init'
         } else{
 
-          this.createData['telegramData'].push(data)
+          this.editData['telegramData'].push(data)
           this.createLinkForm.reset()
           this.formStep = 'init'
         }
-        console.log(this.createData)
+        console.log(this.editData)
       }
     }
   }
@@ -101,7 +125,7 @@ export class FormCreateRedirectComponent {
   }
 
  async onSubmit(){
-    for(let item of this.createData['whatsappData']){
+    for(let item of this.editData['whatsappData']){
       this.submitData.push(
         {
         nome:`${item.nome?item.nome:'+'+item.link}`,
@@ -110,7 +134,7 @@ export class FormCreateRedirectComponent {
         }
       )
     }
-    for(let item of this.createData['telegramData']){
+    for(let item of this.editData['telegramData']){
       this.submitData.push(
         {
         nome:`${item.nome?item.nome:item.link}`,

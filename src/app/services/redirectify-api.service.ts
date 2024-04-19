@@ -15,11 +15,24 @@ export class RedirectifyApiService {
   private getAllRedirectsRoute: string = `${this.prefix}/r`;
   private createRedirectRoute: string = `${this.prefix}/r`;
   private deleteRedirectRoute: string = `${this.prefix}/r`;
-
+  private getRedirectRoute: string = `${this.prefix}/r`;
   constructor(private http: HttpClient, private cookies: CookieService) {}
 
 
   // redirecionadores
+  async getRedirect(hash:string){
+    const resGetRedirect = await lastValueFrom(this.http.get(`${this.getRedirectRoute}/${hash}`,{withCredentials:true}))
+    .catch((error) => {
+      throw {
+        status: error.status,
+        statusText: error.statusText,
+        error: error.error,
+      };
+    });
+
+    return resGetRedirect
+  }
+
   async deleteRedirect(codigoHash:string){
     const resDeleteRedirect = await lastValueFrom(this.http.delete(`${this.deleteRedirectRoute}/${codigoHash}`,{withCredentials:true}))
     .catch((error) => {
