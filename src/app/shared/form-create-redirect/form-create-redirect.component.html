@@ -1,4 +1,5 @@
 <div class="flex flex-col w-full h-full">
+<p-toast></p-toast>
 @if (formStep == 'init') {
   <!-- Init -->
   <div @fadeIn500ms class="flex flex-col w-full h-full items-center gap-8">
@@ -94,7 +95,7 @@
       <span class="flex w-full h-20 p-3 justify-center items-center relative">
         <h4 class=" flex text-xl whitespace-nowrap text-gray-500 font-semibold w-fit justify-center items-center">Informações do Contato</h4>
       </span>
-      <form [formGroup]="createLinkForm" (ngSubmit)="addContact('whatsapp')" class="flex flex-col h-full gap-8 items-center">
+      <form [formGroup]="whatsappForm" (ngSubmit)="addContact('whatsapp')" class="flex flex-col h-full gap-8 items-center">
         <div class="flex flex-col">
           <div class="flex gap-2">
             <label for="w-numero" class="flex  gap-2 items-center ease-in-out duration-300"> <app-icon-whatsapp ngClass="w-5 h-5"></app-icon-whatsapp></label>
@@ -102,7 +103,8 @@
                 <input formControlName="link" id="w-numero" placeholder="+XX (XX) 91234-5678" type="text" pInputText class="flex border-l-4 border-l-green-400  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
                 <!-- END Input Numero -->
           </div>
-              <small *ngIf="this.createLinkForm.controls['link'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio</small>
+              <small *ngIf="this.whatsappForm.controls['link'].errors?.['required'] && submitted" class="text-red-500 ml-8">Este campo é obrigatorio</small>
+              <small *ngIf="this.whatsappForm.controls['link'].errors?.['pattern'] && submitted" class="text-red-500 ml-8">O campo deve ser somente numeros, <br> DDI+DDD+Numero (5511912345768)</small>
         </div>
         <div class="flex flex-col">
           <div class="flex gap-2">
@@ -119,10 +121,10 @@
               </svg>
             </label>
             <!-- Input Nome Contato -->
-            <input id="w-contato" formControlName="nome" placeholder="Nome do Contato (Opcional)" type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
+            <input id="w-contato" formControlName="nome" placeholder="Nome do Contato " type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
             <!-- END Input Nome Contato -->
           </div>
-          <small *ngIf="this.createLinkForm.controls['nome'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio</small>
+          <small *ngIf="this.whatsappForm.controls['nome'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio</small>
         </div>
           <div class="flex flex-col">
             <div class="flex gap-2">
@@ -155,7 +157,7 @@
     <span class="flex w-full h-20 p-3 justify-center items-center relative">
       <h4 class=" flex text-xl whitespace-nowrap text-gray-500 font-semibold w-fit justify-center items-center">Informações do Contato</h4>
     </span>
-    <form  [formGroup]="createLinkForm" class="flex flex-col h-full gap-8 items-center" (ngSubmit)="addContact('telegram')">
+    <form  [formGroup]="telegramForm" class="flex flex-col h-full gap-8 items-center" (ngSubmit)="addContact('telegram')">
       <div class="flex flex-col">
         <div class="flex gap-2">
             <label for="t-link" class="flex  gap-2 items-center ease-in-out duration-300"> <app-icon-telegram ngClass="w-5 h-5"></app-icon-telegram></label>
@@ -163,7 +165,8 @@
             <input id="t-link" formControlName="link" placeholder="https://t.me/exemplo" type="text" pInputText class="flex border-l-4 border-l-[#26A5E5]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
              <!-- END INPUT LINK -->
         </div>
-        <small *ngIf="this.createLinkForm.controls['link'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio</small>
+        <small *ngIf="this.telegramForm.controls['link'].errors?.['required'] && submitted" class="text-red-500 ml-8">Este campo é obrigatorio</small>
+        <small *ngIf="this.telegramForm.controls['link'].errors?.['pattern'] && submitted" class="text-red-500 ml-8">Este campo deve conter o <br> formato https://t.me/</small>
       </div>
       <div class="flex-col gap-2">
         <div class="flex gap-2">
@@ -180,10 +183,10 @@
             </svg>
           </label>
           <!-- INPUT NOME -->
-          <input id="" formControlName="nome" placeholder="Nome do Contato (Opcional)" type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
+          <input id="" formControlName="nome" placeholder="Nome do Contato " type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
           <!-- END INPUT NOME  -->
         </div>
-        <small *ngIf="this.createLinkForm.controls['nome'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio</small>
+        <small *ngIf="this.telegramForm.controls['nome'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio</small>
       </div>
       <div class="flex flex-col w-full h-40 justify-center gap-5 ">
         <app-button-primary type="submit" class="h-12" title="Adicionar Contato"></app-button-primary>

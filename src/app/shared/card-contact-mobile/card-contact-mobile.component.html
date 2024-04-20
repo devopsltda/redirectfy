@@ -1,13 +1,13 @@
-<div class="flex text-lg bg-[#F7F7F7]  text-[#3CB339]  items-center justify-center border-l-4 border-l-[#3CB339] hover:bg-gradient-to-r  gap-3 drop-shadow  rounded-lg w-64 h-12 transition-all ease-in-out duration-300   ">
-  <p class="flex w-full justify-center">Exemplo de Card</p>
+<div class="flex text-lg bg-[#F7F7F7]   {{isTelegram?'text-blue-400':'text-[#3CB339]'}}  items-center justify-center border-l-4 {{isTelegram?'border-l-blue-400':'border-l-[#3CB339]'}}  hover:bg-gradient-to-r  gap-3 drop-shadow  rounded-lg w-64 h-12 transition-all ease-in-out duration-300   ">
+  <p class="flex w-full justify-center">{{cardName}}</p>
   <span class="flex pr-2 relative h-full items-center">
-    <button class="peer">
+    <button (click)="menuIsOpen = !menuIsOpen" >
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 rotate-90">
         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
       </svg>
     </button>
-    <div class="absolute hidden flex-col rounded-md justify-evenly -top-12 -right-14 bg-white shadow-md border w-14 items-center pb-1  peer-focus:flex ">
-      <button class=>
+    <div class="absolute {{menuIsOpen?'flex':'hidden'}} flex-col rounded-md justify-evenly -top-12 -right-14 bg-white shadow-md border w-14 items-center pb-1  ">
+      <button title="Editar" (click)="cardEventEmmiter('editar') ">
         <svg class="w-7 h-7 fill-gray-500" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clip-path="url(#clip0_902_1985)">
           <path d="M3.375 19.4062V23.625H7.59375L20.0362 11.1825L15.8175 6.96375L3.375 19.4062ZM6.66 21.375H5.625V20.34L15.8175 10.1475L16.8525 11.1825L6.66 21.375ZM23.2987 6.33375L20.6663 3.70125C20.4413 3.47625 20.16 3.375 19.8675 3.375C19.575 3.375 19.2937 3.4875 19.08 3.70125L17.0212 5.76L21.24 9.97875L23.2987 7.92C23.7375 7.48125 23.7375 6.7725 23.2987 6.33375Z" fill="current"/>
@@ -31,7 +31,7 @@
           </defs>
         </svg>
       </button>
-      <button class="">
+      <button (click)="cardEventEmmiter('deletar')" >
         <svg class="w-8 h-8 fill-red-500" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clip-path="url(#clip0_902_1982)">
           <path d="M15.885 11.7788L13.5 14.1637L11.1037 11.7788L9.5175 13.365L11.9138 15.75L9.52875 18.135L11.115 19.7213L13.5 17.3363L15.885 19.7213L17.4712 18.135L15.0863 15.75L17.4712 13.365L15.885 11.7788ZM17.4375 4.5L16.3125 3.375H10.6875L9.5625 4.5H5.625V6.75H21.375V4.5H17.4375ZM6.75 21.375C6.75 22.6125 7.7625 23.625 9 23.625H18C19.2375 23.625 20.25 22.6125 20.25 21.375V7.875H6.75V21.375ZM9 10.125H18V21.375H9V10.125Z" fill="current"/>

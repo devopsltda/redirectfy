@@ -7,12 +7,15 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { CommonModule } from '@angular/common';
 import { RedirectifyApiService } from '../../services/redirectify-api.service';
 import { Router } from '@angular/router';
+import { create } from 'domain';
+import { MessageService } from 'primeng/api';
 
 
 @Component({
   selector: 'app-form-create-redirect',
   standalone: true,
   imports: [IconWhatsappComponent,IconTelegramComponent,SharedModule,AnimationsModule,ReactiveFormsModule,CommonModule,FormsModule],
+  providers:[MessageService],
   animations:[fadeInOutAnimation],
   templateUrl: './form-create-redirect.component.html',
   styleUrl: './form-create-redirect.component.scss'
@@ -27,68 +30,74 @@ export class FormCreateRedirectComponent {
   prioridade:string = 'whatsapp,telegram'
   submitData:any = []
   createData:{[key:string]:any} = {}
-  createLinkForm!:FormGroup
+  whatsappForm!:FormGroup
+  telegramForm!:FormGroup
 
   constructor
   (
     private formBuilder:FormBuilder,
     private api:RedirectifyApiService,
-    private router:Router
-
+    private router:Router,
+    private messageService:MessageService
   )
   {
-    this.createLinkForm = this.formBuilder.group({
-      link:['',[Validators.required]],
+    this.whatsappForm = this.formBuilder.group({
+      link:['',[Validators.required,Validators.pattern(/^\d{13,}$/)]],
       nome:['',[Validators.required]],
       mensagem:[''],
       plataforma:[]
     })
+
+    this.telegramForm = this.formBuilder.group({
+    link:['',[Validators.required,Validators.pattern(/^https:\/\/t\.me\/.*/ )]],
+      nome:['',[Validators.required]],
+      plataforma:[]
+    })
   }
 
-  isValid(){
-
-  }
   createDataEmpty(){
     return Object.keys(this.createData).length?true:false
   }
 
   addContact(plataforma:string){
     this.submitted = true
-    if(this.createLinkForm.valid){
+
+    if(this.whatsappForm.valid || this.telegramForm.valid){
       this.submitted = false
       if(plataforma == 'whatsapp'){
-        const data = this.createLinkForm.getRawValue()
+        const data = this.whatsappForm.getRawValue()
         data['plataforma'] = plataforma
         if(this.createData['whatsappData'] == undefined){
           this.createData['whatsappData'] = [data]
-          this.createLinkForm.reset()
+          this.whatsappForm.reset()
           this.formStep = 'init'
         } else{
           this.createData['whatsappData'].push(data)
-          this.createLinkForm.reset()
+          this.whatsappForm.reset()
           this.formStep = 'init'
         }
+      }
 
-        console.log(this.createData['whatsappData'])
-      } else if(plataforma == 'telegram'){
 
-        const data = this.createLinkForm.getRawValue()
+
+      else if(plataforma == 'telegram'){
+        const data = this.telegramForm.getRawValue()
         data['plataforma'] = plataforma
-
         if(this.createData['telegramData'] == undefined){
 
           this.createData['telegramData'] = [data]
-          this.createLinkForm.reset()
+          this.telegramForm.reset()
           this.formStep = 'init'
         } else{
-
           this.createData['telegramData'].push(data)
-          this.createLinkForm.reset()
+          this.telegramForm.reset()
           this.formStep = 'init'
         }
         console.log(this.createData)
       }
     }
+
+
   }
 
   getContacts(plataforma:string){
@@ -101,6 +110,7 @@ export class FormCreateRedirectComponent {
   }
 
  async onSubmit(){
+  if(this.createData['whatsappData']){
     for(let item of this.createData['whatsappData']){
       this.submitData.push(
         {
@@ -110,16 +120,19 @@ export class FormCreateRedirectComponent {
         }
       )
     }
-    for(let item of this.createData['telegramData']){
-      this.submitData.push(
-        {
-        nome:`${item.nome?item.nome:item.link}`,
-        link:item.link,
-        plataforma:item.plataforma
-        }
-      )
+  }
+    if(this.createData['telegramData']){
+      for(let item of this.createData['telegramData']){
+        this.submitData.push(
+          {
+          nome:`${item.nome?item.nome:item.link}`,
+          link:item.link,
+          plataforma:item.plataforma
+          }
+        )
+      }
     }
-    console.log(this.submitData)
+
     if(this.redirectName == undefined){
       this.redirectName = `Redirect #${this.generateRandomInteger(1,100)}`
     }
@@ -131,7 +144,7 @@ export class FormCreateRedirectComponent {
       }
       console.log(resApi)
     } catch (error){
-      console.log(error)
+      this.messageService.add({summary:"Falha ao Criar Redirecionador",detail:'Ocorreu um erro ao criar o redirecionador, ação não executada',severity:'error'})
     }
   }
 

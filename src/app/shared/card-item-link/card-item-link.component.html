@@ -1,7 +1,7 @@
 <!-- Card Item Link -->
 <div class="border-l-[6px] border-[#35B5AE] flex flex-col h-24 md:h-36 w-[15.9rem] bg-white drop-shadow-lg rounded-e-xl">
 
-  <h4 class=" pl-4 pr-1 items-start justify-center flex flex-col h-24 w-[15.5rem] -translate-y-2 -translate-x-2 drop-shadow-md rounded-e-lg text-lg font-medium text-white bg-[#35B5AE] border-[#72CBC6] border-l-[6px] text-wrap md:text-2xl ">{{cardTitle}} </h4>
+  <h4 [routerLink]="'/home/'+this.hash" class="pl-4 pr-1 items-start justify-center flex flex-col h-24 w-[15.5rem] -translate-y-2 -translate-x-2 drop-shadow-md rounded-e-lg text-lg font-medium text-white bg-[#35B5AE] border-[#72CBC6] border-l-[6px] text-wrap md:text-2xl ">{{cardTitle}} </h4>
 
   <!-- Linha dos Botoes -->
   <span class="flex w-full justify-between items-center pt-1 pl-2">
@@ -10,7 +10,6 @@
       <app-button-copy  (click)="onClick('copy')" ngClass="w-7 h-8"></app-button-copy>
       <app-button-share (click)="onClick('share')" ngClass="w-7 h-8"></app-button-share>
     </span>
-
   </span>
   <!-- END Linha dos Botoes -->
 </div>

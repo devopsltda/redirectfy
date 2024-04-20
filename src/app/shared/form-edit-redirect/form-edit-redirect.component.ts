@@ -8,6 +8,8 @@ import { CommonModule } from '@angular/common';
 import { RedirectifyApiService } from '../../services/redirectify-api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { fadeInOutAnimation } from '../../animations/animations.module';
+import { Hash } from 'crypto';
+import { get } from 'http';
 
 
 @Component({
@@ -19,18 +21,24 @@ import { fadeInOutAnimation } from '../../animations/animations.module';
   styleUrl: './form-edit-redirect.component.scss'
 })
 export class FormEditRedirectComponent implements OnInit {
+  editedLinks = []
+  redirectHash:string = this.activatedRoute.snapshot.params['hash_redirect']
+
   disableEditNome:boolean = true;
   submitted:boolean = false
+
   nomeRedirecionador!:string
   formStep:string = 'init'
   getPlataforma!:string
   redirectName!:string
   prioridade:string = 'whatsapp,telegram'
+
   submitData:any = []
   editData:any = {'whatsappData':[],'telegramData':[]}
-  createLinkForm!:FormGroup
   redirectData!:any
-  redirectHash:string = this.activatedRoute.snapshot.params['hash_redirect']
+  radioMenu!:any
+
+  createLinkForm!:FormGroup
 
   constructor
   (
@@ -47,13 +55,12 @@ export class FormEditRedirectComponent implements OnInit {
       link:['',[Validators.required]],
       nome:['',[Validators.required]],
       mensagem:[''],
-      plataforma:[]
+      plataforma:[],
+      id:[]
     })
   }
 
-  teste(){
-    console.log('oi')
-  }
+
 
   async ngOnInit() {
     this.redirectData = await this.getRedirectData()
@@ -67,6 +74,53 @@ export class FormEditRedirectComponent implements OnInit {
     }
   }
 
+  async buttonCardEvent(event:string,data:any){
+    console.log(data)
+    if(event == 'editar'){
+      if(data.plataforma == 'whatsapp'){
+        this.formStep = 'editW'
+        const link = data.link;
+        const matches = link.match(/https?:\/\/wa\.me\/\+(\d+)(\?text=(.*))?/);
+
+        let phoneNumber = '';
+        let message = '';
+
+        if (matches) {
+          phoneNumber = matches[1];
+          message = matches[3] || ''; // Se o texto não estiver presente, será uma string vazia
+        }
+        if(phoneNumber){
+          this.createLinkForm.controls['link'].setValue(phoneNumber)
+        }
+        if(message){
+          this.createLinkForm.controls['mensagem'].setValue(decodeURI(message))
+        }
+        this.createLinkForm.controls['nome'].setValue(data.nome)
+        this.createLinkForm.controls['plataforma'].setValue(data.plataforma)
+        this.createLinkForm.controls['id'].setValue(data.id)
+        console.log(this.createLinkForm.getRawValue())
+      } else{
+        this.formStep = 'editT'
+        this.createLinkForm.controls['link'].setValue(data.link)
+        this.createLinkForm.controls['nome'].setValue(data.nome)
+        this.createLinkForm.controls['plataforma'].setValue(data.plataforma)
+        this.createLinkForm.controls['id'].setValue(data.id)
+        console.log(this.createLinkForm.getRawValue())
+      }
+    }
+    else if(event =='deletar'){
+      try{
+        const res = await this.api.deleteLinkInRedirect(this.redirectHash,data.id)
+        if (res.status == 200){
+          await this.ngOnInit()
+        }
+      }
+      catch(error){
+
+      }
+    }
+  }
+
   async getRedirectData(){
     return await this.api.getRedirect(this.redirectHash)
 
@@ -76,52 +130,35 @@ export class FormEditRedirectComponent implements OnInit {
     return Object.keys(this.editData).length?true:false
   }
 
-  addContact(plataforma:string){
-    this.submitted = true
-    if(this.createLinkForm.valid){
-      this.submitted = false
-      if(plataforma == 'whatsapp'){
-        const data = this.createLinkForm.getRawValue()
-        data['plataforma'] = plataforma
-        if(this.editData['whatsappData'] == undefined){
-          this.editData['whatsappData'] = [data]
-          this.createLinkForm.reset()
-          this.formStep = 'init'
-        } else{
-          this.editData['whatsappData'].push(data)
-          this.createLinkForm.reset()
-          this.formStep = 'init'
-        }
-
-        console.log(this.editData['whatsappData'])
-      } else if(plataforma == 'telegram'){
-
-        const data = this.createLinkForm.getRawValue()
-        data['plataforma'] = plataforma
-
-        if(this.editData['telegramData'] == undefined){
-
-          this.editData['telegramData'] = [data]
-          this.createLinkForm.reset()
-          this.formStep = 'init'
-        } else{
-
-          this.editData['telegramData'].push(data)
-          this.createLinkForm.reset()
-          this.formStep = 'init'
-        }
-        console.log(this.editData)
+ async addContact(plataforma:string){
+    if (plataforma == 'whatsapp'){
+      let formData = [this.createLinkForm.getRawValue()]
+      formData[0].plataforma = plataforma
+      for (let item of formData) {
+        // Obter o valor correspondente à chave atual
+        this.submitData = [{
+          nome: `${item.nome ? item.nome : '+' + item.link}`,
+          link: `https://wa.me/+${item.link}${item.mensagem ? `?text=${encodeURIComponent(item.mensagem)}` : ""}`,
+          plataforma: item.plataforma
+        }]
       }
-    }
+      try{
+        const resApi = await this.api.addLinkToRedirect(this.redirectHash,this.submitData)
+        if(resApi.status == 201){
+          this.createLinkForm.reset()
+          this.ngOnInit()
+          this.formStep = 'init'
+        }
+
+      } catch (error) {
+        console.log(error)
+      }
   }
+}
 
   getContacts(plataforma:string){
     this.getPlataforma = plataforma
     this.formStep = 'getContacts'
-  }
-
-  generateRandomInteger(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
  async onSubmit(){
@@ -143,15 +180,10 @@ export class FormEditRedirectComponent implements OnInit {
         }
       )
     }
-    console.log(this.submitData)
-    if(this.redirectName == undefined){
-      this.redirectName = `Redirect #${this.generateRandomInteger(1,100)}`
-    }
-
     try{
-      const resApi = await this.api.createRedirect(this.redirectName,this.prioridade,this.submitData)
-      if (resApi.status == 201) {
-        this.router.navigate(['/home'])
+      const resApi = await this.api.addLinkToRedirect(this.redirectHash,this.submitData)
+      if (resApi.status == 200) {
+        this.router.navigate(['/home/'+this.redirectHash])
       }
       console.log(resApi)
     } catch (error){
@@ -159,4 +191,22 @@ export class FormEditRedirectComponent implements OnInit {
     }
   }
 
+  async saveEdits(){
+    let linkData = this.createLinkForm.getRawValue()
+    if(linkData.plataforma == 'whatsapp'){
+      for(let item of linkData){
+        linkData =
+          {
+          nome:`${item.nome?item.nome:'+'+item.link}`,
+          link:`https://wa.me/+${item.link}${item.mensagem ? `?text=${encodeURIComponent(item.mensagem)}` : ""}`,
+          plataforma:item.plataforma
+          }
+      }
+    }
+    console.log(linkData)
+    // const resSaveEdits = await this.api.addLinkToRedirect(this.redirectHash,linkData)
+    // if (resSaveEdits.status == 200){
+    //   this.formStep = 'init'
+    // }
+  }
 }

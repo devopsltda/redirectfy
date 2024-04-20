@@ -31,7 +31,7 @@
         @if(editDataEmpty()){
           <div class="flex md:flex-row h-fit  flex-col md:items-center  gap-4 md:gap-8">
             <!-- Alternar Prioridade -->
-            <div *ngIf="this.editData['whatsappData'] != undefined && this.editData['telegramData'] != undefined" class="md:flex flex-col hidden text-sm   gap-4  h-full items-center">
+            <div *ngIf="this.editData['whatsappData'].length != 0 && this.editData['telegramData'].length != 0 " class="md:flex flex-col hidden text-sm   gap-4  h-full items-center">
               <p>Prioridade</p>
               <button (click)="prioridade == 'whatsapp,telegram'?'telegram,whatsapp':'whatsapp,telegram'" class="bg-[#F7F7F7] w-14 h-14 rounded-md drop-shadow group hover:bg-[rgb(53,181,174,1)] flex items-center justify-center transition-all ease-in-out duration-300">
                 <svg class="w-8 h-8 fill-[#257F7A] group-hover:fill-white" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -46,9 +46,9 @@
                   </svg>
               </button>
             </div>
-            <div class="flex flex-col gap-5 md:gap-8   {{this.editData['whatsappData'] != undefined && this.editData['telegramData'] != undefined?'md:pr-40 md:pl-8':'md:pl-0 md:pr-0'}}">
+            <div class="flex flex-col gap-5 md:gap-8   {{this.editData['whatsappData'].length != 0 && this.editData['telegramData'].length != 0?'md:pr-40 md:pl-8':'md:pl-0 md:pr-0'}}">
               <!-- Botão links wpp -->
-              <button  (click)="getContacts('whatsapp')" *ngIf="this.editData['whatsappData'] != undefined" (click)="formStep = 'getWContacts'" class=" flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7]  shadow-md text-sm items-center justify-around rounded-md border-l-4 border-l-green-400">
+              <button  (click)="getContacts('whatsapp')" *ngIf="this.editData['whatsappData'].length" (click)="formStep = 'getWContacts'" class=" flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7]  shadow-md text-sm items-center justify-around rounded-md border-l-4 border-l-green-400">
               <app-icon-whatsapp ngClass="w-5 h-5"></app-icon-whatsapp>
                Contatos do WhatsApp
               <svg class="w-5 h-5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -63,7 +63,7 @@
               </svg>
               </button>
                <!-- END Botão links wpp -->
-              <button (click)="getContacts('telegram')" *ngIf="this.editData['telegramData'] != undefined" class="flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7] shadow-md text-sm items-center justify-between px-[0.95rem]  rounded-md border-l-4 border-l-[#28A9EA]">
+              <button (click)="getContacts('telegram')" *ngIf="this.editData['telegramData'].length " class="flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7] shadow-md text-sm items-center justify-between px-[0.95rem]  rounded-md border-l-4 border-l-[#28A9EA]">
               <app-icon-telegram ngClass="w-[1.1rem] h-5"></app-icon-telegram>
                Links do Telegram
                 <svg class="w-5 h-5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -82,7 +82,7 @@
           </div>
         }
       <div class="flex flex-col w-fit md:w-full md:flex-row-reverse md:pt-16  md:pb-10 md:px-10  gap-5 md:justify-evenly">
-        <app-button-primary *ngIf="editDataEmpty()" (click)="formStep = 'enterName'" class="w-72 md:m-0 mt-5"  title="Finalizar"></app-button-primary>
+        <app-button-primary *ngIf="editDataEmpty()" (click)="formStep = 'enterName'" class="w-72 md:m-0 mt-5"  title="Salvar Tudo"></app-button-primary>
         <app-button-secundary  class=" w-72 h-12 hidden md:flex"title="Cancelar"></app-button-secundary>
         <app-button-secundary *ngIf="editDataEmpty() && this.editData['whatsappData'] != undefined && this.editData['telegramData'] != undefined " class="w-72 group md:hidden"title="Alternar Prioridade">
           <svg class="w-5 h-5 fill-[#257F7A] group-hover:fill-white" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -98,13 +98,34 @@
           </app-button-secundary>
       </div>
     </div>
+  }@else if (formStep == 'getContacts') {
+    <div @fadeIn500ms class="flex flex-col w-full h-4/6 items-center gap-8 px-3 overflow-y-auto overflow-x-hidden">
+      <span class="flex w-full h-fit pt-5 px-3 justify-center items-center relative ">
+        <h4 class=" flex text-lg h-full whitespace-nowrap items-center  text-gray-500 font-semibold w-full justify-center  ">{{getPlataforma == 'whatsapp'?'WhatsApps':'Telegrams'}} Vinculados</h4>
+      </span>
+      <div class="w-96  flex text-sm font-semibold flex-col items-center gap-4  ">
+      @if(getPlataforma == 'whatsapp'){
+          @for (item of this.redirectData.links; track $index) {
+            <app-card-contact-mobile *ngIf="this.item.plataforma == 'whatsapp'" [cardName]=" item.plataforma == 'whatsapp'?item.nome:''" (cardEvent)="buttonCardEvent($event,item)" ></app-card-contact-mobile>
+          }
+      } @else if(getPlataforma == 'telegram') {
+
+        @for (item of this.redirectData.links; track $index) {
+          <app-card-contact-mobile [isTelegram]="true" *ngIf="this.item.plataforma == 'telegram'" [cardName]=" item.plataforma == 'telegram'?item.nome:''" (cardEvent)="buttonCardEvent($event,item)" ></app-card-contact-mobile>
+        }
+      }
+    </div>
+  </div>
+  <div class="flex flex-col w-full justify-center items-center ">
+    <app-button-secundary class="w-64 h-12 mt-20" (click)="formStep = 'init'" title="Voltar" ></app-button-secundary>
+  </div>
   }
-  @else if (formStep == 'formAddW') {
+  @else if (formStep == 'formAddW' || formStep == 'editW') {
     <div @fadeIn500ms class="flex flex-col w-full h-full items-center gap-8 ">
         <span class="flex w-full h-20 p-3 justify-center items-center relative">
           <h4 class=" flex text-xl whitespace-nowrap text-gray-500 font-semibold w-fit justify-center items-center">Informações do Contato</h4>
         </span>
-        <form [formGroup]="createLinkForm" (ngSubmit)="addContact('whatsapp')" class="flex flex-col h-full gap-8 items-center">
+        <form [formGroup]="createLinkForm" (ngSubmit)="formStep == 'formAddW'?addContact('whatsapp'):saveEdits()" class="flex flex-col h-full gap-8 items-center">
           <div class="flex flex-col">
             <div class="flex gap-2">
               <label for="w-numero" class="flex  gap-2 items-center ease-in-out duration-300"> <app-icon-whatsapp ngClass="w-5 h-5"></app-icon-whatsapp></label>
@@ -150,90 +171,63 @@
                 </label>
                 <!-- Input Mensagem Padrão -->
                 <input id="w-menssagem" formControlName="mensagem" placeholder="Mensagem Padrão (Opcional)" type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
-                  <!-- END Input Mensagem Padrão -->
+                <!-- END Input Mensagem Padrão -->
               </div>
             </div>
             <div class="flex flex-col w-full h-40 justify-center gap-5 ">
-              <app-button-primary type="submit" class="h-12" title="Adicionar Contato"></app-button-primary>
-              <app-button-secundary (click)="formStep = 'init'; submitted=false" title="Voltar" ></app-button-secundary>
+              <app-button-primary *ngIf="formStep == 'formAddW';else elseT" type="submit" class="h-12" title='Adicionar Contato'></app-button-primary>
+              <ng-template #elseT>
+                <app-button-primary  type="submit" class="h-12" title='Salvar Edição'></app-button-primary>
+              </ng-template>
+              <app-button-secundary (click)="createLinkForm.reset()" (click)="formStep == 'editW'?formStep= 'getContacts': formStep = 'init'; submitted=false" title="Voltar" ></app-button-secundary>
             </div>
         </form>
     </div>
   }
-  @else if (formStep == 'formAddT'){
-    <div  @fadeIn500ms class="flex flex-col w-full h-full items-center gap-8 ">
+  @else if (formStep == 'formAddT' || formStep == 'editT'){
+    <div @fadeIn500ms class="flex flex-col w-full h-full items-center gap-8 ">
       <span class="flex w-full h-20 p-3 justify-center items-center relative">
         <h4 class=" flex text-xl whitespace-nowrap text-gray-500 font-semibold w-fit justify-center items-center">Informações do Contato</h4>
       </span>
-      <form  [formGroup]="createLinkForm" class="flex flex-col h-full gap-8 items-center" (ngSubmit)="addContact('telegram')">
+      <form [formGroup]="createLinkForm" (ngSubmit)="addContact('telegram')" class="flex flex-col h-full gap-8 items-center">
         <div class="flex flex-col">
           <div class="flex gap-2">
-              <label for="t-link" class="flex  gap-2 items-center ease-in-out duration-300"> <app-icon-telegram ngClass="w-5 h-5"></app-icon-telegram></label>
-              <!-- INPUT LINK -->
-              <input id="t-link" formControlName="link" placeholder="https://t.me/exemplo" type="text" pInputText class="flex border-l-4 border-l-[#26A5E5]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
-               <!-- END INPUT LINK -->
+            <label for="w-numero" class="flex  gap-2 items-center ease-in-out duration-300"> <app-icon-telegram ngClass="w-5 h-5"></app-icon-telegram></label>
+                <!-- Input Link -->
+                <input formControlName="link" id="w-Link" placeholder="https://t.me/exemplo" type="text" pInputText class="flex border-l-4 border-l-blue-400  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
+                <!-- END Input Link -->
           </div>
-          <small *ngIf="this.createLinkForm.controls['link'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio</small>
+              <small *ngIf="this.createLinkForm.controls['link'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio</small>
         </div>
-        <div class="flex-col gap-2">
+        <div class="flex flex-col">
           <div class="flex gap-2">
-            <label for="t-nome" class="flex  gap-2 items-center ease-in-out duration-300">
+            <label for="w-numero" class="flex  gap-2 items-center ease-in-out duration-300">
               <svg class="w-5 h-5" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <g clip-path="url(#clip0_485_732)">
-              <path d="M13.3333 1.33331H2.66659C1.93325 1.33331 1.33992 1.93331 1.33992 2.66665L1.33325 14.6666L3.99992 12H13.3333C14.0666 12 14.6666 11.4 14.6666 10.6666V2.66665C14.6666 1.93331 14.0666 1.33331 13.3333 1.33331ZM13.3333 10.6666H3.44659L3.05325 11.06L2.66659 11.4466V2.66665H13.3333V10.6666ZM6.99992 9.33331H11.9999V7.99998H8.33325L6.99992 9.33331ZM9.57325 5.41998C9.70658 5.28665 9.70658 5.07998 9.57325 4.94665L8.39325 3.76665C8.25992 3.63331 8.05325 3.63331 7.91992 3.76665L3.99992 7.68665V9.33331H5.64659L9.57325 5.41998Z" fill="#257F7A"/>
-              </g>
-              <defs>
-              <clipPath id="clip0_485_732">
-              <rect width="16" height="16" fill="white"/>
-              </clipPath>
-              </defs>
+                <g clip-path="url(#clip0_485_732)">
+                  <path d="M13.3333 1.33331H2.66659C1.93325 1.33331 1.33992 1.93331 1.33992 2.66665L1.33325 14.6666L3.99992 12H13.3333C14.0666 12 14.6666 11.4 14.6666 10.6666V2.66665C14.6666 1.93331 14.0666 1.33331 13.3333 1.33331ZM13.3333 10.6666H3.44659L3.05325 11.06L2.66659 11.4466V2.66665H13.3333V10.6666ZM6.99992 9.33331H11.9999V7.99998H8.33325L6.99992 9.33331ZM9.57325 5.41998C9.70658 5.28665 9.70658 5.07998 9.57325 4.94665L8.39325 3.76665C8.25992 3.63331 8.05325 3.63331 7.91992 3.76665L3.99992 7.68665V9.33331H5.64659L9.57325 5.41998Z" fill="#257F7A"/>
+                </g>
+                <defs>
+                  <clipPath id="clip0_485_732">
+                    <rect width="16" height="16" fill="white"/>
+                  </clipPath>
+                </defs>
               </svg>
             </label>
-            <!-- INPUT NOME -->
-            <input id="" formControlName="nome" placeholder="Nome do Contato (Opcional)" type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
-            <!-- END INPUT NOME  -->
+            <!-- Input Nome Contato -->
+            <input id="w-contato" formControlName="nome" placeholder="Nome do Contato (Opcional)" type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
+            <!-- END Input Nome Contato -->
           </div>
           <small *ngIf="this.createLinkForm.controls['nome'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio</small>
         </div>
-        <div class="flex flex-col w-full h-40 justify-center gap-5 ">
-          <app-button-primary type="submit" class="h-12" title="Adicionar Contato"></app-button-primary>
-          <app-button-secundary title="Voltar" (click)="formStep = 'init'; submitted=false" ></app-button-secundary>
-        </div>
+          <div class="flex flex-col w-full h-40 justify-center gap-5 ">
+            <app-button-primary *ngIf="formStep == 'formAddT';else elseT" type="submit" class="h-12" title='Adicionar Contato'></app-button-primary>
+            <ng-template #elseT>
+              <app-button-primary type="submit" class="h-12" title='Salvar Edição'></app-button-primary>
+
+            </ng-template>
+            <app-button-secundary (click)="createLinkForm.reset()" (click)="formStep == 'editT'?formStep= 'getContacts': formStep = 'init'; submitted=false" title="Voltar" ></app-button-secundary>
+          </div>
       </form>
-    </div>
-
-  }
-  @else if (formStep == 'getContacts') {
-    <div @fadeIn500ms class="flex flex-col w-full h-4/6 items-center gap-8 px-3 overflow-y-auto overflow-x-hidden">
-      <span class="flex w-full h-fit pt-5 px-3 justify-center items-center relative ">
-        <h4 class=" flex text-lg h-full whitespace-nowrap items-center  text-gray-500 font-semibold w-full justify-center  ">{{getPlataforma == 'whatsapp'?'WhatsApps':'Telegrams'}} Vinculados</h4>
-      </span>
-      <div class="w-96  flex text-sm font-semibold flex-col items-center gap-4  ">
-      @if(getPlataforma == 'whatsapp'){
-          <app-card-contact-mobile></app-card-contact-mobile>
-          <app-card-contact-mobile></app-card-contact-mobile>
-          <app-card-contact-mobile></app-card-contact-mobile>
-          <app-card-contact-mobile></app-card-contact-mobile>
-          <app-card-contact-mobile></app-card-contact-mobile>
-          <app-card-contact-mobile></app-card-contact-mobile>
-          <app-card-contact-mobile></app-card-contact-mobile>
-          <app-card-contact-mobile></app-card-contact-mobile>
-          <app-card-contact-mobile></app-card-contact-mobile>
-      } @else if(getPlataforma == 'telegram') {
-
-        @for (data of editData['telegramData']; track $index) {
-
-          <label  for="contatoWppSelecionado1" class="flex w-full h-14  justify-evenly items-center border-b border-b-gray-100 text-[#C2C2C2]"> <input class="" type="radio" name="contatoWppSelecionado" id="contatoWppSelecionado1">
-            <p class="w-28">{{data.nome}}</p>
-            <p>{{data.link}}</p>
-          </label>
-
-        }
-      }
-    </div>
-  </div>
-  <div class="flex flex-col w-full justify-center items-center ">
-    <app-button-secundary class="w-64 h-12 mt-20" (click)="formStep = 'init'" title="Voltar" ></app-button-secundary>
   </div>
   }
   </div>

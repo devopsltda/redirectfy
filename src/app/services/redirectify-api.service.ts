@@ -16,10 +16,37 @@ export class RedirectifyApiService {
   private createRedirectRoute: string = `${this.prefix}/r`;
   private deleteRedirectRoute: string = `${this.prefix}/r`;
   private getRedirectRoute: string = `${this.prefix}/r`;
+  private addLinkToRedirectRoute: string = `${this.prefix}/r`;
+  private deleteLinkInRedirectRoute: string = `${this.prefix}/r`;
   constructor(private http: HttpClient, private cookies: CookieService) {}
 
 
   // redirecionadores
+  async deleteLinkInRedirect(hash:string,idLink:number){
+    const resGetRedirect = await lastValueFrom(this.http.delete(`${this.deleteLinkInRedirectRoute}/${hash}/links/${idLink}`,{withCredentials:true,observe:'response'}))
+    .catch((error) => {
+      throw {
+        status: error.status,
+        statusText: error.statusText,
+        error: error.error,
+      };
+    });
+
+    return resGetRedirect
+  }
+  async addLinkToRedirect(hash:string,link:any){
+    const resGetRedirect = await lastValueFrom(this.http.post(`${this.addLinkToRedirectRoute}/${hash}/links`,{links:link},{withCredentials:true,observe:'response'}))
+    .catch((error) => {
+      throw {
+        status: error.status,
+        statusText: error.statusText,
+        error: error.error,
+      };
+    });
+
+    return resGetRedirect
+  }
+
   async getRedirect(hash:string){
     const resGetRedirect = await lastValueFrom(this.http.get(`${this.getRedirectRoute}/${hash}`,{withCredentials:true}))
     .catch((error) => {

@@ -1,12 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
 
 @Component({
   selector: 'app-card-contact-mobile',
   standalone: true,
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './card-contact-mobile.component.html',
   styleUrl: './card-contact-mobile.component.scss'
 })
 export class CardContactMobileComponent {
 
+  @Output() cardEvent = new EventEmitter()
+  @Input() cardName = 'Card Name'
+  @Input() isTelegram:boolean = false
+  menuIsOpen:boolean = false
+  menuRadio!:boolean
+
+  cardEventEmmiter(event:string){
+    this.cardEvent.emit(event)
+  }
+
+  test(){
+    console.log(this.menuRadio)
+  }
 }

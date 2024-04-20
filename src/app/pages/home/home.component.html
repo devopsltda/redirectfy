@@ -10,7 +10,7 @@
         </span>
         <div class="flex flex-col lg:flex-row  flex-wrap py-2 items-center lg:items-start lg:justify-center  gap-6 w-full h-fit px-2 pt-6">
           @for (item of getDisplayData(); track $index) {
-            <app-card-item-link [routerLink]="'/home/'+item.codigo_hash" [cardTitle]="item.nome" (botãoClicado)="cardEvent($event,item)"></app-card-item-link>
+            <app-card-item-link [cardTitle]="item.nome" [hash]="item.codigo_hash" (botãoClicado)="cardEvent($event,item)" ></app-card-item-link>
           }
         </div>
         <div class="flex h-full items-center justify-center">
