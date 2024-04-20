@@ -406,160 +406,6 @@ paths:
       summary: Atualiza um redirecionador
       tags:
       - Redirecionadores
-  /r/:hash/link/:id:
-    delete:
-      consumes:
-      - application/json
-      parameters:
-      - description: Código Hash
-        in: path
-        name: hash
-        required: true
-        type: string
-      - description: Id
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-      summary: Remove um link específico de um redirecionador específico
-      tags:
-      - Links
-    patch:
-      consumes:
-      - application/json
-      parameters:
-      - description: Código Hash
-        in: path
-        name: hash
-        required: true
-        type: string
-      - description: Id
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Nome
-        in: body
-        name: nome
-        schema:
-          type: string
-      - description: Link
-        in: body
-        name: link
-        schema:
-          type: string
-      - description: Plataforma
-        in: body
-        name: plataforma
-        schema:
-          type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-      summary: Atualiza um link específico de um redirecionador específico
-      tags:
-      - Links
-  /r/:hash/link/:id/disable:
-    patch:
-      consumes:
-      - application/json
-      parameters:
-      - description: Código Hash
-        in: path
-        name: hash
-        required: true
-        type: string
-      - description: Id
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-      summary: Desativa um link específico de um redirecionador específico
-      tags:
-      - Links
-  /r/:hash/link/:id/enable:
-    patch:
-      consumes:
-      - application/json
-      parameters:
-      - description: Código Hash
-        in: path
-        name: hash
-        required: true
-        type: string
-      - description: Id
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/echo.HTTPError'
-      summary: Ativa um link específico de um redirecionador específico
-      tags:
-      - Links
   /r/:hash/links:
     get:
       consumes:
@@ -628,6 +474,40 @@ paths:
       tags:
       - Links
   /r/:hash/links/:id:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Código Hash
+        in: path
+        name: hash
+        required: true
+        type: string
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Remove um link específico de um redirecionador específico
+      tags:
+      - Links
     get:
       consumes:
       - application/json
@@ -659,6 +539,125 @@ paths:
             $ref: '#/definitions/echo.HTTPError'
       summary: Retorna o link com o id fornecido do redirecionador com o código hash
         fornecido
+      tags:
+      - Links
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Código Hash
+        in: path
+        name: hash
+        required: true
+        type: string
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Nome
+        in: body
+        name: nome
+        schema:
+          type: string
+      - description: Link
+        in: body
+        name: link
+        schema:
+          type: string
+      - description: Plataforma
+        in: body
+        name: plataforma
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Atualiza um link específico de um redirecionador específico
+      tags:
+      - Links
+  /r/:hash/links/:id/disable:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Código Hash
+        in: path
+        name: hash
+        required: true
+        type: string
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Desativa um link específico de um redirecionador específico
+      tags:
+      - Links
+  /r/:hash/links/:id/enable:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Código Hash
+        in: path
+        name: hash
+        required: true
+        type: string
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Ativa um link específico de um redirecionador específico
       tags:
       - Links
   /r/:hash/refresh:
@@ -721,16 +720,10 @@ paths:
       summary: Retorna os links selecionados daquele redirecionador
       tags:
       - Redirecionadores
-  /u/:username:
+  /u:
     get:
       consumes:
       - application/json
-      parameters:
-      - description: Nome de Usuário
-        in: path
-        name: username
-        required: true
-        type: string
       produces:
       - application/json
       responses:

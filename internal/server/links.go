@@ -204,7 +204,7 @@ func (s *Server) LinkCreate(c echo.Context) error {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /r/:hash/link/:id [patch]
+// @Router  /r/:hash/links/:id [patch]
 func (s *Server) LinkUpdate(c echo.Context) error {
 	id := c.Param("id")
 	codigoHash := c.Param("hash")
@@ -290,7 +290,7 @@ func (s *Server) LinkUpdate(c echo.Context) error {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /r/:hash/link/:id/disable [patch]
+// @Router  /r/:hash/links/:id/disable [patch]
 func (s *Server) LinkDisable(c echo.Context) error {
 	id := c.Param("id")
 	codigoHash := c.Param("hash")
@@ -342,7 +342,7 @@ func (s *Server) LinkDisable(c echo.Context) error {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /r/:hash/link/:id/enable [patch]
+// @Router  /r/:hash/links/:id/enable [patch]
 func (s *Server) LinkEnable(c echo.Context) error {
 	id := c.Param("id")
 	codigoHash := c.Param("hash")
@@ -394,7 +394,7 @@ func (s *Server) LinkEnable(c echo.Context) error {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /r/:hash/link/:id [delete]
+// @Router  /r/:hash/links/:id [delete]
 func (s *Server) LinkRemove(c echo.Context) error {
 	id := c.Param("id")
 	codigoHash := c.Param("hash")
