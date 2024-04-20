@@ -28,20 +28,22 @@ import (
 // @contact.email comercialdevops@gmail.com
 func (s *Server) RegisterRoutes() http.Handler {
 	e := echo.New()
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+
+	api := e.Group("/api")
+	api.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{"http://localhost:4200"},
 		AllowCredentials: true,
 	}))
-	e.Use(middleware.Logger())
-	e.Use(middleware.Secure())
-	e.Use(middleware.Recover())
-	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
+	api.Use(middleware.Logger())
+	api.Use(middleware.Secure())
+	api.Use(middleware.Recover())
+	api.Use(middleware.GzipWithConfig(middleware.GzipConfig{
 		Skipper: func(c echo.Context) bool {
 			return strings.Contains(c.Path(), "/docs")
 		},
 	}))
 
-	e.Use(echojwt.WithConfig(echojwt.Config{
+	api.Use(echojwt.WithConfig(echojwt.Config{
 		ContextKey:  "usuario",
 		SigningKey:  []byte(auth.ChaveDeAcesso),
 		TokenLookup: "cookie:access-token",
@@ -66,36 +68,36 @@ func (s *Server) RegisterRoutes() http.Handler {
 			}
 		},
 	}))
-	e.Use(auth.TokenRefreshMiddleware)
+	api.Use(auth.TokenRefreshMiddleware)
 
 	// API - Documentação Swagger
-	e.GET("/docs/*", echoSwagger.WrapHandler)
+	api.GET("/docs/*", echoSwagger.WrapHandler)
 
 	// API - Obter Links do Redirecionador
-	e.GET("/to/:hash", s.RedirecionadorLinksToGoTo)
+	api.GET("/to/:hash", s.RedirecionadorLinksToGoTo)
 
 	// API - Usuário
-	e.GET("/u", s.UsuarioReadByNomeDeUsuario)
+	api.GET("/u", s.UsuarioReadByNomeDeUsuario)
 
 	// API - Kirvano
-	e.POST("/kirvano/to_user/:hash", s.KirvanoToUser)
-	e.POST("/kirvano", s.KirvanoCreate)
+	api.POST("/kirvano/to_user/:hash", s.KirvanoToUser)
+	api.POST("/kirvano", s.KirvanoCreate)
 
 	// API - Autenticação
-	e.POST("/u/login", s.UsuarioLogin)
-	e.POST("/u/logout", s.UsuarioLogout)
-	e.PATCH("/u/change_password/:hash", s.UsuarioTrocaDeSenha)
-	e.PATCH("/u/:username/change_password", s.UsuarioSolicitarTrocaDeSenha)
+	api.POST("/u/login", s.UsuarioLogin)
+	api.POST("/u/logout", s.UsuarioLogout)
+	api.PATCH("/u/change_password/:hash", s.UsuarioTrocaDeSenha)
+	api.PATCH("/u/:username/change_password", s.UsuarioSolicitarTrocaDeSenha)
 
 	// API - Plano de Assinatura
-	e.GET("/pricing", s.PlanoDeAssinaturaReadAll)
-	e.GET("/pricing/:name", s.PlanoDeAssinaturaReadByNome)
+	api.GET("/pricing", s.PlanoDeAssinaturaReadAll)
+	api.GET("/pricing/:name", s.PlanoDeAssinaturaReadByNome)
 
 	// API - Redirecionador
-	e.GET("/r", s.RedirecionadorReadAll)
-	e.GET("/r/:hash", s.RedirecionadorReadByCodigoHash)
-	e.POST("/r", s.RedirecionadorCreate)
-	e.PATCH("/r/:hash/refresh", s.RedirecionadorRefresh, func(next echo.HandlerFunc) echo.HandlerFunc {
+	api.GET("/r", s.RedirecionadorReadAll)
+	api.GET("/r/:hash", s.RedirecionadorReadByCodigoHash)
+	api.POST("/r", s.RedirecionadorCreate)
+	api.PATCH("/r/:hash/refresh", s.RedirecionadorRefresh, func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			if c.Get("usuario") == nil {
 				utils.DebugLog("TokenRefreshMiddleware", "Erro ao ler o contexto 'usuario'", nil)
@@ -110,24 +112,24 @@ func (s *Server) RegisterRoutes() http.Handler {
 			return next(c)
 		}
 	})
-	e.PATCH("/r/:hash", s.RedirecionadorUpdate)
-	e.DELETE("/r/:hash", s.RedirecionadorRemove)
+	api.PATCH("/r/:hash", s.RedirecionadorUpdate)
+	api.DELETE("/r/:hash", s.RedirecionadorRemove)
 
 	// API - Link
-	e.GET("/r/:hash/links", s.LinkReadByCodigoHash)
-	e.GET("/r/:hash/links/:id", s.LinkReadById)
-	e.POST("/r/:hash/links", s.LinkCreate)
-	e.PATCH("/r/:hash/links/:id", s.LinkUpdate)
-	e.PATCH("/r/:hash/links/:id/enable", s.LinkEnable)
-	e.PATCH("/r/:hash/links/:id/disable", s.LinkDisable)
-	e.DELETE("/r/:hash/links/:id", s.LinkRemove)
+	api.GET("/r/:hash/links", s.LinkReadByCodigoHash)
+	api.GET("/r/:hash/links/:id", s.LinkReadById)
+	api.POST("/r/:hash/links", s.LinkCreate)
+	api.PATCH("/r/:hash/links/:id", s.LinkUpdate)
+	api.PATCH("/r/:hash/links/:id/enable", s.LinkEnable)
+	api.PATCH("/r/:hash/links/:id/disable", s.LinkDisable)
+	api.DELETE("/r/:hash/links/:id", s.LinkRemove)
 
 	// API - Admin
-	// e.GET("/admin/user_history", s.UserHistory)
-	// e.GET("/admin/redirect_history", s.RedirectHistory)
-	// e.GET("/admin/kirvano_history", s.KirvanoHistory)
-	// e.GET("/admin/pricing_history", s.PricingHistory)
-	// e.GET("/admin/link_history", s.LinkHistory)
+	// api.GET("/admin/user_history", s.UserHistory)
+	// api.GET("/admin/redirect_history", s.RedirectHistory)
+	// api.GET("/admin/kirvano_history", s.KirvanoHistory)
+	// api.GET("/admin/pricing_history", s.PricingHistory)
+	// api.GET("/admin/link_history", s.LinkHistory)
 
 	return e
 }
