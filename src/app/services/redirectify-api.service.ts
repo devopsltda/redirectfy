@@ -8,7 +8,7 @@ import { lastValueFrom } from 'rxjs';
 })
 export class RedirectifyApiService {
   // Rotas
-  private prefix: string = 'http://localhost:8080';
+  private prefix: string = 'http://localhost:8080/api';
   private loginRoute: string = `${this.prefix}/u/login`;
   private logoutRoute: string = `${this.prefix}/u/logout`;
   private finishSignUpRoute: string = `${this.prefix}/kirvano/to_user/`;
@@ -18,8 +18,22 @@ export class RedirectifyApiService {
   private getRedirectRoute: string = `${this.prefix}/r`;
   private addLinkToRedirectRoute: string = `${this.prefix}/r`;
   private deleteLinkInRedirectRoute: string = `${this.prefix}/r`;
+  private getUserRoute: string = `${this.prefix}/u`
   constructor(private http: HttpClient, private cookies: CookieService) {}
 
+  // Usuário
+  async getUser(){
+    const resGetUser = await lastValueFrom(this.http.get(this.getUserRoute,{withCredentials:true,observe:'response'}))
+    .catch((error) => {
+      throw {
+        status: error.status,
+        statusText: error.statusText,
+        error: error.error,
+      };
+    });
+
+    return resGetUser.body
+  }
 
   // redirecionadores
   async deleteLinkInRedirect(hash:string,idLink:number){
@@ -34,6 +48,8 @@ export class RedirectifyApiService {
 
     return resGetRedirect
   }
+
+
   async addLinkToRedirect(hash:string,link:any){
     const resGetRedirect = await lastValueFrom(this.http.post(`${this.addLinkToRedirectRoute}/${hash}/links`,{links:link},{withCredentials:true,observe:'response'}))
     .catch((error) => {
