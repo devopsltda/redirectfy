@@ -13,11 +13,12 @@ type LinkToBatchInsert struct {
 }
 
 type Link struct {
-	Id             int64          `json:"id"`
-	Nome           string         `json:"nome"`
-	Link           string         `json:"link"`
-	Plataforma     string         `json:"plataforma"`
-	Redirecionador string         `json:"redirecionador"`
+	Id             int64  `json:"id"`
+	Nome           string `json:"nome"`
+	Link           string `json:"link"`
+	Ativo          bool   `json:"ativo"`
+	Plataforma     string `json:"plataforma"`
+	Redirecionador string `json:"redirecionador"`
 } // @name Link
 
 type LinkModel struct {
@@ -28,7 +29,7 @@ func (l *LinkModel) ReadById(id int64, codigoHash string) (Link, error) {
 	var link Link
 
 	row := l.DB.QueryRow(
-		"SELECT ID, NOME, LINK, PLATAFORMA, REDIRECIONADOR FROM LINK WHERE REMOVIDO_EM IS NULL AND ID = ? AND REDIRECIONADOR = ?",
+		"SELECT ID, NOME, LINK, ATIVO, PLATAFORMA, REDIRECIONADOR FROM LINK WHERE REMOVIDO_EM IS NULL AND ID = ? AND REDIRECIONADOR = ?",
 		id,
 		codigoHash,
 	)
@@ -37,6 +38,7 @@ func (l *LinkModel) ReadById(id int64, codigoHash string) (Link, error) {
 		&link.Id,
 		&link.Nome,
 		&link.Link,
+		&link.Ativo,
 		&link.Plataforma,
 		&link.Redirecionador,
 	); err != nil {
@@ -54,7 +56,7 @@ func (l *LinkModel) ReadByCodigoHash(codigoHash string) ([]Link, error) {
 	var links []Link
 
 	rows, err := l.DB.Query(
-		"SELECT ID, NOME, LINK, PLATAFORMA, REDIRECIONADOR FROM LINK WHERE REMOVIDO_EM IS NULL AND REDIRECIONADOR = ?",
+		"SELECT ID, NOME, LINK, ATIVO, PLATAFORMA, REDIRECIONADOR FROM LINK WHERE REMOVIDO_EM IS NULL AND REDIRECIONADOR = ?",
 		codigoHash,
 	)
 
@@ -71,6 +73,7 @@ func (l *LinkModel) ReadByCodigoHash(codigoHash string) ([]Link, error) {
 			&link.Id,
 			&link.Nome,
 			&link.Link,
+			&link.Ativo,
 			&link.Plataforma,
 			&link.Redirecionador,
 		); err != nil {

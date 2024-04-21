@@ -8,11 +8,12 @@ type Usuario struct {
 	Id                int64  `json:"-"`
 	Cpf               string `json:"cpf"`
 	Nome              string `json:"nome"`
-	NomeDeUsuario     string `json:"nome_de_usuario"`
+	NomeDeUsuario     string `json:"-"`
 	Email             string `json:"email"`
 	Senha             string `json:"-"`
 	DataDeNascimento  string `json:"data_de_nascimento"`
 	PlanoDeAssinatura string `json:"plano_de_assinatura"`
+	CriadoEm          string `json:"criado_em"`
 } // @name Usuario
 
 type UsuarioModel struct {
@@ -23,7 +24,7 @@ func (u *UsuarioModel) ReadByNomeDeUsuario(nomeDeUsuario string) (Usuario, error
 	var usuario Usuario
 
 	row := u.DB.QueryRow(
-		"SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA FROM USUARIO WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = ?",
+		"SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA, CRIADO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL AND NOME_DE_USUARIO = ?",
 		nomeDeUsuario,
 	)
 
@@ -36,6 +37,7 @@ func (u *UsuarioModel) ReadByNomeDeUsuario(nomeDeUsuario string) (Usuario, error
 		&usuario.Senha,
 		&usuario.DataDeNascimento,
 		&usuario.PlanoDeAssinatura,
+		&usuario.CriadoEm,
 	); err != nil {
 		return usuario, err
 	}
@@ -50,7 +52,7 @@ func (u *UsuarioModel) ReadByNomeDeUsuario(nomeDeUsuario string) (Usuario, error
 func (u *UsuarioModel) ReadAll() ([]Usuario, error) {
 	var usuarios []Usuario
 
-	rows, err := u.DB.Query("SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA FROM USUARIO WHERE REMOVIDO_EM IS NULL")
+	rows, err := u.DB.Query("SELECT ID, CPF, NOME, NOME_DE_USUARIO, EMAIL, SENHA, DATA_DE_NASCIMENTO, PLANO_DE_ASSINATURA, CRIADO_EM FROM USUARIO WHERE REMOVIDO_EM IS NULL")
 
 	if err != nil {
 		return nil, err
@@ -70,6 +72,7 @@ func (u *UsuarioModel) ReadAll() ([]Usuario, error) {
 			&usuario.Senha,
 			&usuario.DataDeNascimento,
 			&usuario.PlanoDeAssinatura,
+			&usuario.CriadoEm,
 		); err != nil {
 			return nil, err
 		}
