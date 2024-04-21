@@ -128,15 +128,15 @@ func SetCookieToken(nome, token string, expiraEm time.Time, c echo.Context) {
 // autorização (ou seja, se é necessário ou não conferir o token de acesso do
 // contexto).
 func PathWithNoAuthRequired(c echo.Context) bool {
-	return (c.Request().URL.Path == "/u/login" && c.Request().Method == "POST") ||
-		(c.Path() == "/u/change_password/:hash" && c.Request().Method == "PATCH") ||
-		(c.Path() == "/u/:username/change_password" && c.Request().Method == "POST") ||
-		(c.Path() == "/docs/*" && c.Request().Method == "GET") ||
-		(c.Path() == "/pricing" && c.Request().Method == "GET") ||
-		(c.Path() == "/pricing/:name" && c.Request().Method == "GET") ||
-		(c.Path() == "/kirvano" && c.Request().Method == "POST") ||
-		(c.Path() == "/kirvano/to_user/:hash" && c.Request().Method == "POST") ||
-		(c.Path() == "/to/:hash" && c.Request().Method == "GET")
+	return (c.Request().URL.Path == "/api/u/login" && c.Request().Method == "POST") ||
+		(c.Path() == "/api/u/change_password/:hash" && c.Request().Method == "PATCH") ||
+		(c.Path() == "/api/u/:username/change_password" && c.Request().Method == "POST") ||
+		(c.Path() == "/api/docs/*" && c.Request().Method == "GET") ||
+		(c.Path() == "/api/pricing" && c.Request().Method == "GET") ||
+		(c.Path() == "/api/pricing/:name" && c.Request().Method == "GET") ||
+		(c.Path() == "/api/kirvano" && c.Request().Method == "POST") ||
+		(c.Path() == "/api/kirvano/to_user/:hash" && c.Request().Method == "POST") ||
+		(c.Path() == "/api/to/:hash" && c.Request().Method == "GET")
 }
 
 // TokenRefreshMiddleware verifica se o token de acesso do contexto está dentro

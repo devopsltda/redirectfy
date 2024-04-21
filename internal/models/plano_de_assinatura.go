@@ -5,13 +5,11 @@ import (
 )
 
 type PlanoDeAssinatura struct {
-	Id                      int64          `json:"id"`
+	Id                      int64          `json:"-"`
 	Nome                    string         `json:"nome"`
 	Valor                   int64          `json:"valor"`
 	LimiteRedirecionadores  int64          `json:"limite_redirecionadores"`
 	OrdenacaoAleatoriaLinks bool           `json:"ordenacao_aleatoria_links"`
-	CriadoEm                string         `json:"criado_em"`
-	AtualizadoEm            string         `json:"atualizado_em"`
 } // @name PlanoDeAssinatura
 
 type PlanoDeAssinaturaModel struct {
@@ -22,7 +20,7 @@ func (pa *PlanoDeAssinaturaModel) ReadByNome(nome string) (PlanoDeAssinatura, er
 	var planoDeAssinatura PlanoDeAssinatura
 
 	row := pa.DB.QueryRow(
-		"SELECT ID, NOME, VALOR, LIMITE_REDIRECIONADORES, ORDENACAO_ALEATORIA_LINKS, CRIADO_EM, ATUALIZADO_EM FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL AND NOME = ?",
+		"SELECT ID, NOME, VALOR, LIMITE_REDIRECIONADORES, ORDENACAO_ALEATORIA_LINKS FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL AND NOME = ?",
 		nome,
 	)
 
@@ -32,8 +30,6 @@ func (pa *PlanoDeAssinaturaModel) ReadByNome(nome string) (PlanoDeAssinatura, er
 		&planoDeAssinatura.Valor,
 		&planoDeAssinatura.LimiteRedirecionadores,
 		&planoDeAssinatura.OrdenacaoAleatoriaLinks,
-		&planoDeAssinatura.CriadoEm,
-		&planoDeAssinatura.AtualizadoEm,
 	); err != nil {
 		return planoDeAssinatura, err
 	}
@@ -48,7 +44,7 @@ func (pa *PlanoDeAssinaturaModel) ReadByNome(nome string) (PlanoDeAssinatura, er
 func (pa *PlanoDeAssinaturaModel) ReadAll() ([]PlanoDeAssinatura, error) {
 	var planosDeAssinatura []PlanoDeAssinatura
 
-	rows, err := pa.DB.Query("SELECT ID, NOME, VALOR, LIMITE_REDIRECIONADORES, ORDENACAO_ALEATORIA_LINKS, CRIADO_EM, ATUALIZADO_EM FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL")
+	rows, err := pa.DB.Query("SELECT ID, NOME, VALOR, LIMITE_REDIRECIONADORES, ORDENACAO_ALEATORIA_LINKS FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL")
 
 	if err != nil {
 		return nil, err
@@ -65,8 +61,6 @@ func (pa *PlanoDeAssinaturaModel) ReadAll() ([]PlanoDeAssinatura, error) {
 			&planoDeAssinatura.Valor,
 			&planoDeAssinatura.LimiteRedirecionadores,
 			&planoDeAssinatura.OrdenacaoAleatoriaLinks,
-			&planoDeAssinatura.CriadoEm,
-			&planoDeAssinatura.AtualizadoEm,
 		); err != nil {
 			return nil, err
 		}

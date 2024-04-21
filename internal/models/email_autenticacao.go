@@ -9,40 +9,15 @@ import (
 )
 
 type EmailAutenticacao struct {
-	Id             int64  `json:"id"`
-	Valor          string `json:"valor"`
-	Tipo           string `json:"tipo"`
-	ExpiraEm       string `json:"expira_em"`
-	UsuarioKirvano int64  `json:"usuario_kirvano"`
+	Id             int64  `json:"-"`
+	Valor          string `json:"-"`
+	Tipo           string `json:"-"`
+	ExpiraEm       string `json:"-"`
+	UsuarioKirvano int64  `json:"-"`
 } // @name EmailAutenticacao
 
 type EmailAutenticacaoModel struct {
 	DB *sql.DB
-}
-
-func (ea *EmailAutenticacaoModel) ReadByValor(valor string) (EmailAutenticacao, error) {
-	var emailAutenticacao EmailAutenticacao
-
-	row := ea.DB.QueryRow(
-		"SELECT ID, VALOR, TIPO, EXPIRA_EM, USUARIO_KIRVANO FROM EMAIL_AUTENTICACAO WHERE VALOR = ?",
-		valor,
-	)
-
-	if err := row.Scan(
-		&emailAutenticacao.Id,
-		&emailAutenticacao.Valor,
-		&emailAutenticacao.Tipo,
-		&emailAutenticacao.ExpiraEm,
-		&emailAutenticacao.UsuarioKirvano,
-	); err != nil {
-		return emailAutenticacao, err
-	}
-
-	if err := row.Err(); err != nil {
-		return emailAutenticacao, err
-	}
-
-	return emailAutenticacao, nil
 }
 
 func (ea *EmailAutenticacaoModel) Create(valor, tipo string, usuarioKirvano int64) (int64, error) {

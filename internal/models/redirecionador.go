@@ -5,13 +5,11 @@ import (
 )
 
 type Redirecionador struct {
-	Id                      int64          `json:"id"`
+	Id                      int64          `json:"-"`
 	Nome                    string         `json:"nome"`
 	CodigoHash              string         `json:"codigo_hash"`
 	OrdemDeRedirecionamento string         `json:"ordem_de_redirecionamento"`
 	Usuario                 string         `json:"usuario"`
-	CriadoEm                string         `json:"criado_em"`
-	AtualizadoEm            string         `json:"atualizado_em"`
 } // @name Redirecionador
 
 type RedirecionadorModel struct {
@@ -22,7 +20,7 @@ func (r *RedirecionadorModel) ReadByCodigoHash(codigoHash string) (Redirecionado
 	var redirecionador Redirecionador
 
 	row := r.DB.QueryRow(
-		"SELECT ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = ?",
+		"SELECT ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = ?",
 		codigoHash,
 	)
 
@@ -32,8 +30,6 @@ func (r *RedirecionadorModel) ReadByCodigoHash(codigoHash string) (Redirecionado
 		&redirecionador.CodigoHash,
 		&redirecionador.OrdemDeRedirecionamento,
 		&redirecionador.Usuario,
-		&redirecionador.CriadoEm,
-		&redirecionador.AtualizadoEm,
 	); err != nil {
 		return redirecionador, err
 	}
@@ -49,7 +45,7 @@ func (r *RedirecionadorModel) ReadAll(nomeDeUsuario string) ([]Redirecionador, e
 	var redirecionadores []Redirecionador
 
 	rows, err := r.DB.Query(
-		"SELECT ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO, CRIADO_EM, ATUALIZADO_EM FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND USUARIO = ?",
+		"SELECT ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND USUARIO = ?",
 		nomeDeUsuario,
 	)
 
@@ -68,8 +64,6 @@ func (r *RedirecionadorModel) ReadAll(nomeDeUsuario string) ([]Redirecionador, e
 			&redirecionador.CodigoHash,
 			&redirecionador.OrdemDeRedirecionamento,
 			&redirecionador.Usuario,
-			&redirecionador.CriadoEm,
-			&redirecionador.AtualizadoEm,
 		); err != nil {
 			return nil, err
 		}
