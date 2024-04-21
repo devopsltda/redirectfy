@@ -24,6 +24,10 @@ import { ContentGridComponent } from './content-grid/content-grid.component';
 import { ToastModule } from 'primeng/toast';
 import { CardSubscriptionPlanComponent } from './card-subscription-plan/card-subscription-plan.component';
 import { CardContactMobileComponent } from './card-contact-mobile/card-contact-mobile.component';
+import { IconVisaCardComponent } from './icon-visa-card/icon-visa-card.component';
+import { RedirectfyPremiumCardComponent } from './redirectfy-premium-card/redirectfy-premium-card.component';
+import { RedirectfyPremiumCardDesktopComponent } from './redirectfy-premium-card-desktop/redirectfy-premium-card-desktop.component';
+import { IconRightArrowComponent } from './icon-right-arrow/icon-right-arrow.component';
 
 
 @NgModule({
@@ -38,6 +42,10 @@ import { CardContactMobileComponent } from './card-contact-mobile/card-contact-m
     ButtonModule,
     IconCheckCircledComponent,
     IconMailComponent,
+    IconVisaCardComponent,
+    RedirectfyPremiumCardComponent,
+    RedirectfyPremiumCardDesktopComponent,
+    IconRightArrowComponent,
     NavbarComponent,
     IconUserComponent,
     IconSettingsComponent,
@@ -65,6 +73,10 @@ import { CardContactMobileComponent } from './card-contact-mobile/card-contact-m
     ButtonModule,
     IconCheckCircledComponent,
     IconMailComponent,
+    IconVisaCardComponent,
+    RedirectfyPremiumCardComponent,
+    RedirectfyPremiumCardDesktopComponent,
+    IconRightArrowComponent,
     NavbarComponent,
     IconUserComponent,
     IconSettingsComponent,
