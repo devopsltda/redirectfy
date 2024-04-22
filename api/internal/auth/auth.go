@@ -18,8 +18,8 @@ var (
 	ChaveDeAcesso  = os.Getenv("JWT_SECRET")
 	ChaveDeRefresh = os.Getenv("JWT_REFRESH_SECRET")
 
-	limiteAccess = 1 * time.Hour
-	limiteRefresh = 2 * time.Hour
+	limiteAccess                  = 1 * time.Hour
+	limiteRefresh                 = 2 * time.Hour
 	limiteParaCriacaoDeNovoAccess = 15 * time.Minute
 )
 
@@ -123,7 +123,6 @@ func SetCookieToken(nome, token string, expiraEm time.Time, c echo.Context) {
 	c.SetCookie(cookie)
 }
 
-
 // PathWithNoAuthRequired verifica se o caminho atual do contexto exige ou não
 // autorização (ou seja, se é necessário ou não conferir o token de acesso do
 // contexto).
@@ -153,7 +152,7 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		// autenticação, logo ele existe e não está expirado.
 		token := c.Get("usuario").(*jwt.Token)
 		claims := token.Claims.(*Claims)
-		
+
 		timeUntilAccessExpiration := time.Until(claims.RegisteredClaims.ExpiresAt.Time)
 
 		if timeUntilAccessExpiration < limiteParaCriacaoDeNovoAccess {

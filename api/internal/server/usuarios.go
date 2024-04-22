@@ -26,12 +26,17 @@ type customerData struct {
 	Email    string `json:"email"`
 }
 
+// Esses parâmetros estão dispostos aqui como é documentado
+// na configuração de web hooks da Kirvano em:
+// https://help.kirvano.com/pt-BR/articles/8141372-o-que-e-e-como-configurar-webhooks
 type parametrosKirvano struct {
 	Event    string        `json:"event"`
 	Customer customerData  `json:"customer"`
 	Products []productData `json:"products"`
 } // @name ParametrosKirvano
 
+// Essa função é utilizada para criar um nome de usuário com base no email
+// fornecido pela Kirvano.
 func criaNomeDeUsuario(s string) string {
 	var sb strings.Builder
 	for _, c := range s {

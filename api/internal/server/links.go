@@ -33,7 +33,7 @@ import (
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /r/:hash/links/:id [get]
+// @Router  /api/r/:hash/links/:id [get]
 func (s *Server) LinkReadById(c echo.Context) error {
 	id := c.Param("id")
 	codigoHash := c.Param("hash")
@@ -83,7 +83,7 @@ func (s *Server) LinkReadById(c echo.Context) error {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /r/:hash/links [get]
+// @Router  /api/r/:hash/links [get]
 func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
 	codigoHash := c.Param("hash")
 
@@ -122,7 +122,7 @@ func (s *Server) LinkReadByCodigoHash(c echo.Context) error {
 //
 // @Failure 500                 {object} echo.HTTPError
 //
-// @Router  /r/:hash/links [post]
+// @Router  /api/r/:hash/links [post]
 func (s *Server) LinkCreate(c echo.Context) error {
 	codigoHash := c.Param("hash")
 
@@ -204,7 +204,7 @@ func (s *Server) LinkCreate(c echo.Context) error {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /r/:hash/links/:id [patch]
+// @Router  /api/r/:hash/links/:id [patch]
 func (s *Server) LinkUpdate(c echo.Context) error {
 	id := c.Param("id")
 	codigoHash := c.Param("hash")
@@ -290,7 +290,7 @@ func (s *Server) LinkUpdate(c echo.Context) error {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /r/:hash/links/:id/disable [patch]
+// @Router  /api/r/:hash/links/:id/disable [patch]
 func (s *Server) LinkDisable(c echo.Context) error {
 	id := c.Param("id")
 	codigoHash := c.Param("hash")
@@ -342,7 +342,7 @@ func (s *Server) LinkDisable(c echo.Context) error {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /r/:hash/links/:id/enable [patch]
+// @Router  /api/r/:hash/links/:id/enable [patch]
 func (s *Server) LinkEnable(c echo.Context) error {
 	id := c.Param("id")
 	codigoHash := c.Param("hash")
@@ -394,7 +394,7 @@ func (s *Server) LinkEnable(c echo.Context) error {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /r/:hash/links/:id [delete]
+// @Router  /api/r/:hash/links/:id [delete]
 func (s *Server) LinkRemove(c echo.Context) error {
 	id := c.Param("id")
 	codigoHash := c.Param("hash")

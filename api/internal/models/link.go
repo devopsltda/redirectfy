@@ -181,6 +181,11 @@ func (l *LinkModel) Remove(id int64, codigoHash string) error {
 	return nil
 }
 
+// Essa função seleciona o link do Whatsapp e do Telegram, caso seja possível,
+// ou algum dos dois. Também é possível que nenhum link seja escolhido, caso
+// nenhum link seja passado, no entanto, existe um trigger no banco de dados
+// que apenas torna isso possível em um caso excepcional ou com alterações
+// externas ao banco.
 func LinkPicker(links []Link, isPro bool) (picked_links []Link) {
 	var (
 		linkWhatsapp  Link
@@ -202,6 +207,9 @@ func LinkPicker(links []Link, isPro bool) (picked_links []Link) {
 		}
 	}
 
+	// Caso o usuário não seja de algum plano "Pro", não há nenhum tipo de
+	// randomização de links selecionados. Caso contrário, os dois links são
+	// escolhidos de forma aleatória entre os links disponíveis.
 	if !isPro {
 		if len(linksWhatsapp) > 0 {
 			linkWhatsapp = linksWhatsapp[0]

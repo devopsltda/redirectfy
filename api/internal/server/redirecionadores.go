@@ -15,6 +15,8 @@ import (
 	_ "redirectfy/internal/models"
 )
 
+// Utilizado nas rotas de ler redirecionador por código
+// hash para que os links do redirecionador venham junto.
 type RedirecionadorReadByCodigoHashResponse struct {
 	R models.Redirecionador `json:"redirecionador"`
 	L []models.Link         `json:"links"`
@@ -36,7 +38,7 @@ type RedirecionadorReadByCodigoHashResponse struct {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /r [get]
+// @Router  /api/r [get]
 func (s *Server) RedirecionadorReadAll(c echo.Context) error {
 	nomeDeUsuario := c.Get("usuario").(*jwt.Token).Claims.(*auth.Claims).NomeDeUsuario
 	redirecionadores, err := s.RedirecionadorModel.ReadAll(nomeDeUsuario)
@@ -67,7 +69,7 @@ func (s *Server) RedirecionadorReadAll(c echo.Context) error {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /r/:hash [get]
+// @Router  /api/r/:hash [get]
 func (s *Server) RedirecionadorReadByCodigoHash(c echo.Context) error {
 	codigoHash := c.Param("hash")
 
@@ -114,7 +116,7 @@ func (s *Server) RedirecionadorReadByCodigoHash(c echo.Context) error {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /to/:hash [get]
+// @Router  /api/to/:hash [get]
 func (s *Server) RedirecionadorLinksToGoTo(c echo.Context) error {
 	codigoHash := c.Param("hash")
 
@@ -174,7 +176,7 @@ func (s *Server) RedirecionadorLinksToGoTo(c echo.Context) error {
 //
 // @Failure 500                       {object} echo.HTTPError
 //
-// @Router  /r [post]
+// @Router  /api/r [post]
 func (s *Server) RedirecionadorCreate(c echo.Context) error {
 	nomeDeUsuario := c.Get("usuario").(*jwt.Token).Claims.(*auth.Claims).NomeDeUsuario
 
@@ -293,7 +295,7 @@ func (s *Server) RedirecionadorCreate(c echo.Context) error {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /r/:hash/refresh [patch]
+// @Router  /api/r/:hash/refresh [patch]
 func (s *Server) RedirecionadorRefresh(c echo.Context) error {
 	codigoHash := c.Param("hash")
 
@@ -349,7 +351,7 @@ func (s *Server) RedirecionadorRefresh(c echo.Context) error {
 //
 // @Failure 500                       {object} echo.HTTPError
 //
-// @Router  /r/:hash [patch]
+// @Router  /api/r/:hash [patch]
 func (s *Server) RedirecionadorUpdate(c echo.Context) error {
 	parametros := struct {
 		Nome                    string `json:"nome"`
@@ -412,7 +414,7 @@ func (s *Server) RedirecionadorUpdate(c echo.Context) error {
 //
 // @Failure 500         {object} echo.HTTPError
 //
-// @Router  /r/:hash [delete]
+// @Router  /api/r/:hash [delete]
 func (s *Server) RedirecionadorRemove(c echo.Context) error {
 	codigoHash := c.Param("hash")
 

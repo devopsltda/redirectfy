@@ -26,6 +26,9 @@ var (
 func New() *sql.DB {
 	var err error
 
+	// Caso a variaǘel APP_ENV seja de "test" ou "debugtest", o banco de
+	// dados utilizado é inicializado em memória, fazendo com que ele não
+	// seja persistente.
 	if utils.AppEnv == "test" || utils.AppEnv == "debugtest" {
 		db, err := sql.Open("sqlite", "file::memory:?cache=shared")
 
@@ -44,6 +47,8 @@ func New() *sql.DB {
 		return db
 	}
 
+	// É necessário criar um diretório temporário para as réplicas de banco
+	// de dados criadas pelo Turso
 	TempDir, err := os.MkdirTemp("", "libsql-*")
 
 	if err != nil {
@@ -60,6 +65,28 @@ func New() *sql.DB {
 	}
 
 	db := sql.OpenDB(dbConnector)
+
+	if err != nil {
+		slog.Error("BancoDeDados", slog.Any("error", err))
+		os.Exit(1)
+	}
+
+	err = db.Ping()
+
+	if err != nil {
+		slog.Error("BancoDeDados", slog.Any("error", err))
+		os.Exit(1)
+	}
+
+	// Essas linhas apenas devem ser descomentadas na primeira execução, logo
+	// depois de criar o banco de dados. Ela é responsável por rodar os scripts
+	// de criação de tabelas, índices e triggers, além de popular o banco com
+	// os planos de assinatura.
+	// Isso é necessário porque o Turso não consegue ler os triggers diretamente
+	// pela CLI, como descrito na issue:
+	//
+	// https://github.com/tursodatabase/libsql-shell-go/issues/124
+	err = seed(db, "../internal/services/database/source/")
 
 	if err != nil {
 		slog.Error("BancoDeDados", slog.Any("error", err))
