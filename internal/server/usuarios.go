@@ -555,7 +555,7 @@ func (s *Server) UsuarioLogin(c echo.Context) error {
 // @Router  /u/logout [post]
 func (s *Server) UsuarioLogout(c echo.Context) error {
 	for _, c := range c.Cookies() {
-		c.Expires = time.Now()
+		c.Expires = time.Now().Add(-48 * time.Hour)
 	}
 
 	return c.JSON(http.StatusOK, "A autenticação do usuário foi expirada com sucesso.")
