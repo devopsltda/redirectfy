@@ -12,14 +12,19 @@ export class RedirectifyApiService {
   private loginRoute: string = `${this.prefix}/u/login`;
   private logoutRoute: string = `${this.prefix}/u/logout`;
   private finishSignUpRoute: string = `${this.prefix}/kirvano/to_user/`;
+  private getUserRoute: string = `${this.prefix}/u`
+
   private getAllRedirectsRoute: string = `${this.prefix}/r`;
   private createRedirectRoute: string = `${this.prefix}/r`;
   private deleteRedirectRoute: string = `${this.prefix}/r`;
   private getRedirectRoute: string = `${this.prefix}/r`;
   private addLinkToRedirectRoute: string = `${this.prefix}/r`;
   private deleteLinkInRedirectRoute: string = `${this.prefix}/r`;
-  private getUserRoute: string = `${this.prefix}/u`
+
   private updateLinkInRedirectRoute:string = `${this.prefix}/r`
+  private disableLinkInRedirectRoute:string = `${this.prefix}/r`
+  private enableLinkInRedirectRoute:string = `${this.prefix}/r`
+  private updateRedirectRoute:string  = `${this.prefix}/r`
   constructor(private http: HttpClient, private cookies: CookieService) {}
 
   // Usuário
@@ -37,8 +42,23 @@ export class RedirectifyApiService {
   }
 
   // redirecionadores
+  async updateRedirect(hash:string,data:any){
+
+    const resGetRedirect = await lastValueFrom(this.http.patch(`${this.updateRedirectRoute}/${hash}`,{data},{withCredentials:true,observe:'response'}))
+    .catch((error) => {
+      throw {
+        status: error.status,
+        statusText: error.statusText,
+        error: error.error,
+      };
+    });
+
+    return resGetRedirect
+
+  }
+
   async disableLinkInRedirect(hash:string,idLink:number){
-    const resGetRedirect = await lastValueFrom(this.http.patch(`${this.updateLinkInRedirectRoute}/${hash}/links/${idLink}/disable`,{},{withCredentials:true,observe:'response'}))
+    const resGetRedirect = await lastValueFrom(this.http.patch(`${this.disableLinkInRedirectRoute}/${hash}/links/${idLink}/disable`,{},{withCredentials:true,observe:'response'}))
     .catch((error) => {
       throw {
         status: error.status,
@@ -51,7 +71,7 @@ export class RedirectifyApiService {
   }
 
   async enableLinkInRedirect(hash:string,idLink:number){
-    const resGetRedirect = await lastValueFrom(this.http.patch(`${this.updateLinkInRedirectRoute}/${hash}/links/${idLink}/enable`,{},{withCredentials:true,observe:'response'}))
+    const resGetRedirect = await lastValueFrom(this.http.patch(`${this.enableLinkInRedirectRoute}/${hash}/links/${idLink}/enable`,{},{withCredentials:true,observe:'response'}))
     .catch((error) => {
       throw {
         status: error.status,

@@ -57,6 +57,9 @@ export class FormCreateRedirectComponent {
   createDataEmpty(){
     return Object.keys(this.createData).length?true:false
   }
+  arrayLength(data:any[]){
+    return data.length
+  }
 
   addContact(plataforma:string){
     this.submitted = true

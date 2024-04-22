@@ -8,8 +8,6 @@ import { CommonModule } from '@angular/common';
 import { RedirectifyApiService } from '../../services/redirectify-api.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { fadeInOutAnimation } from '../../animations/animations.module';
-import { Hash } from 'crypto';
-import { get } from 'http';
 import { MessageService } from 'primeng/api';
 
 
@@ -33,7 +31,7 @@ export class FormEditRedirectComponent implements OnInit {
   formStep:string = 'init'
   getPlataforma!:string
 
-  prioridade:string = 'whatsapp,telegram'
+  prioridade!:string
 
   submitData:any = []
   editedData:any = {'whatsappData':[],'telegramData':[]}
@@ -75,6 +73,7 @@ export class FormEditRedirectComponent implements OnInit {
  async ngOnInit() {
     await this.getRedirectData();
     this.redirectName = this.redirectData.redirecionador.nome
+    this.prioridade = this.redirectData.redirecionador.ordem_de_redirecionamento
     console.log(this.redirectData)
 
   }
@@ -82,6 +81,8 @@ export class FormEditRedirectComponent implements OnInit {
   objectLength(data:any){
     return Object.values(data).length
   }
+
+
 
   async getRedirectData(){
     this.redirectData = await this.api.getRedirect(this.redirectHash)
@@ -148,6 +149,21 @@ export class FormEditRedirectComponent implements OnInit {
         await this.ngOnInit()
       } catch (error) {
         console.log(error)
+      }
+    }
+  }
+
+  async trocarPrioridade(){
+    if (this.prioridade == 'whatsapp,telegram'){
+      const res  = await this.api.updateRedirect(this.redirectHash,{ordem_de_redirecionamento:'telegram,whatsapp'})
+      if(res.status == 200){
+        this.prioridade = 'telegram,whatsapp'
+      }
+    }
+    if (this.prioridade == 'telegram,whatsapp'){
+      const res  = await this.api.updateRedirect(this.redirectHash,{ordem_de_redirecionamento:'whatsapp,telegram'})
+      if(res.status == 200){
+        this.prioridade = 'whatsapp,telegram'
       }
     }
   }

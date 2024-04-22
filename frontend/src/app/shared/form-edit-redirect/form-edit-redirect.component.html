@@ -18,6 +18,7 @@
             </button>
           </span>
         </span>
+
         <p class="text-sm text-gray-400 md:text-lg">Escolha qual a plataforma do seu link.</p>
         <div class="flex flex-col md:flex-row gap-5 items-center">
           <button (click)="formStep = 'formAddW'" class="flex text-lg bg-[#F7F7F7]  text-[#3CB339] active:text-white active:bg-green-400 active:bg-opacity-20 hover:bg-green-500 hover:border-transparent hover:bg-opacity-70 hover:text-white  items-center justify-center border-l-4 border-l-[#3CB339] hover:bg-gradient-to-r   hover:to-[#3CB339] gap-3 drop-shadow  rounded-lg w-64 h-12 transition-all ease-in-out duration-300  ">
@@ -43,7 +44,7 @@
 
               <p>Prioridade</p>
 
-              <button (click)="prioridade == 'whatsapp,telegram'?'telegram,whatsapp':'whatsapp,telegram'" class="bg-[#F7F7F7] w-14 h-14 rounded-md drop-shadow group hover:bg-[rgb(53,181,174,1)] flex items-center justify-center transition-all ease-in-out duration-300">
+              <button (click)="trocarPrioridade()" class="bg-[#F7F7F7] w-14 h-14 rounded-md drop-shadow group hover:bg-[rgb(53,181,174,1)] flex items-center justify-center transition-all ease-in-out duration-300">
                 <svg class="w-8 h-8 fill-[#257F7A] group-hover:fill-white" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g clip-path="url(#clip0_827_1903)">
                   <path d="M7.875 2.625L4.375 6.11625H7V12.25H8.75V6.11625H11.375L7.875 2.625ZM14 14.8837V8.75H12.25V14.8837H9.625L13.125 18.375L16.625 14.8837H14Z"/>
@@ -61,8 +62,7 @@
 
             <div class="flex flex-col gap-5 md:gap-8   {{redirectData?.whatsappData.length!= 0 && this.redirectData?.telegramData.length != 0?'md:pr-40 md:pl-8':'md:pl-0 md:pr-0'}}">
               <!-- Botão links wpp -->
-
-              <button  (click)="getContacts('whatsapp')" *ngIf="this.redirectData?.whatsappData.length" (click)="formStep = 'getWContacts'" class=" flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7]  shadow-md text-sm items-center justify-around rounded-md border-l-4 border-l-green-400">
+              <button  (click)="getContacts('whatsapp')" *ngIf="this.redirectData?.whatsappData.length" (click)="formStep = 'getWContacts'" class=" flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7]  shadow-md text-sm items-center justify-around rounded-md border-l-4 border-l-green-400 transition-all {{prioridade=='whatsapp,telegram' && (redirectData?.whatsappData.length != 0 && redirectData?.telegramData.length !=0)?'translate-y-14 md:translate-y-20':''}}">
                 <app-icon-whatsapp ngClass="w-5 h-5"></app-icon-whatsapp>
                  Contatos do WhatsApp
               <svg class="w-5 h-5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -76,8 +76,10 @@
                 </defs>
               </svg>
               </button>
+
                <!-- END Botão links wpp -->
-              <button (click)="getContacts('telegram')" *ngIf="this.redirectData?.telegramData.length " class="flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7] shadow-md text-sm items-center justify-between px-[0.95rem]  rounded-md border-l-4 border-l-[#28A9EA]">
+
+              <button (click)="getContacts('telegram')" *ngIf="this.redirectData?.telegramData.length " class="flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7] shadow-md text-sm items-center justify-between px-[0.95rem]  rounded-md border-l-4 border-l-[#28A9EA] transition-all  {{prioridade =='whatsapp,telegram' && (redirectData?.whatsappData.length != 0 && redirectData?.telegramData.length !=0)?'-translate-y-14 md:-translate-y-20':''}}">
               <app-icon-telegram ngClass="w-[1.1rem] h-5"></app-icon-telegram>
                Links do Telegram
                 <svg class="w-5 h-5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -90,15 +92,14 @@
                   </clipPath>
                   </defs>
                 </svg>
-            </button>
+              </button>
             </div>
           </div>
-
         }
 
       <div class="flex flex-col w-fit md:w-full md:flex-row-reverse md:pt-16  md:pb-10 md:px-10  gap-5 md:justify-evenly">
         <app-button-secundary  class=" w-72 h-12 hidden md:flex"title="Voltar"[routerLink] ="['/']"></app-button-secundary>
-        <app-button-secundary *ngIf=" redirectData?.whatsappData.length && redirectData?.telegramData.length " class="w-72 group md:hidden"title="Alternar Prioridade">
+        <app-button-secundary (click)="trocarPrioridade()"  *ngIf=" redirectData?.whatsappData.length && redirectData?.telegramData.length " class="w-72 group md:hidden"title="Alternar Prioridade">
           <svg class="w-5 h-5 fill-[#257F7A] group-hover:fill-white" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clip-path="url(#clip0_827_1903)">
           <path d="M7.875 2.625L4.375 6.11625H7V12.25H8.75V6.11625H11.375L7.875 2.625ZM14 14.8837V8.75H12.25V14.8837H9.625L13.125 18.375L16.625 14.8837H14Z"/>
@@ -117,7 +118,7 @@
 
   @else if (formStep == 'getContacts'){
     <div @fadeIn500ms class="flex flex-col w-full h-4/6 items-center gap-8 px-3 overflow-y-auto overflow-x-hidden">
-      <span class="flex w-full h-fit pt-5 px-3 justify-center items-center relative ">
+      <span class=" flex w-full h-fit pt-5 px-3 justify-center items-center relative ">
         <h4 class=" flex text-lg h-full whitespace-nowrap items-center  text-gray-500 font-semibold w-full justify-center  ">{{getPlataforma == 'whatsapp'?'WhatsApps':'Telegrams'}} Vinculados</h4>
       </span>
       <div class="w-96  flex text-sm font-semibold flex-col items-center gap-4  ">
