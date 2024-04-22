@@ -24,7 +24,7 @@ var SenhaParams = &argon2id.Params{
 	KeyLength:   32,
 }
 
-/*** Variáveis de Ambient ***/
+/*** Variáveis de Ambiente ***/
 var (
 	AppEnv = os.Getenv("APP_ENV")
 	Pepper = os.Getenv("PEPPER")
