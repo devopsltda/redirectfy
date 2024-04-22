@@ -1,0 +1,22 @@
+<app-grid>
+  <header class="flex md:flex-col md:justify-start md:items-center md:bg-[#257F7A]  w-full md:w-2/3 h-fit md:h-full justify-center md:m-0 mt-12">
+    <app-redirectify-logo-name class="md:hidden" ></app-redirectify-logo-name>
+    <div class="md:flex mt-72 hidden flex-col gap-2 items-start  justify-center">
+      <svg class="w-48  h-42" viewBox="0 0 203 196" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M19.6233 0H0V19.6233V175.933V195.557L203 195.557V175.933H19.6233V19.6233H183.377L183.377 121.8H138.591L101.119 86.6134H133.98V66.9901H85.2599H65.6366V86.6134V136.01H85.2599V98.6407L129.92 140.576V141.423H130.822L131.022 141.611L131.198 141.423H183.377L203 141.423L203 19.6233L203 0H183.377H19.6233Z" fill="white"/>
+      </svg>
+      <h1 class="text-white text-4xl font-semibold tracking-wider pb">Redirectfy</h1>
+    </div>
+    <span class="hidden  md:flex w-full items-center justify-center">
+      <p class=" hidden w-48 text-white text-lg leading-normal md:flex  mt-5">O seu manager de <br> links numero um.</p>
+    </span>
+  </header>
+  <div class="w-full h-full flex flex-col items-center md:pt-56 pt-28">
+    <app-icon-mail ngClass="md:w-52 w-32"></app-icon-mail>
+    <h1 class="font-bold text-2xl  md:text-4xl pt-5">Verifique seu email</h1>
+    <span class="flex w-full justify-center mt-4">
+      <p class="text-sm md:text-lg">Enviamos um link de recuperação para seu <br> e-mail. Verifique sua caixa de entrada</p>
+    </span>
+    <app-button-primary class="w-64 mt-8 md:w-96 h-12" title="Voltar para Login" routerLink=""></app-button-primary>
+  </div>
+</app-grid>

@@ -1,0 +1,19 @@
+<app-grid ngClass="items-center">
+  <div class="flex flex-col w-full h-full items-center pt-10">
+      <app-redirectify-logo-name class="py-10 md:pb-20"></app-redirectify-logo-name>
+      <svg  class="w-72 h-44 md:h-fit md:w-96 text-4xl " viewBox="0 0 282 167" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M62.914 127V110.36H18.754V97.304L60.738 37.4H79.298V96.152H91.074V110.36H79.298V127H62.914ZM36.29 96.152H63.938V55.448L36.29 96.152ZM236.414 127V110.36H192.254V97.304L234.238 37.4H252.798V96.152H264.574V110.36H252.798V127H236.414ZM209.79 96.152H237.438V55.448L209.79 96.152Z" fill="black"/>
+        <g clip-path="url(#clip0_1_3)">
+        <path d="M140.952 35.6667C114.272 35.6667 92.6665 57.32 92.6665 84C92.6665 110.68 114.272 132.333 140.952 132.333C167.68 132.333 189.333 110.68 189.333 84C189.333 57.32 167.68 35.6667 140.952 35.6667ZM141 122.667C119.637 122.667 102.333 105.363 102.333 84C102.333 62.6367 119.637 45.3334 141 45.3334C162.363 45.3334 179.667 62.6367 179.667 84C179.667 105.363 162.363 122.667 141 122.667ZM157.917 79.1667C161.928 79.1667 165.167 75.9284 165.167 71.9167C165.167 67.905 161.928 64.6667 157.917 64.6667C153.905 64.6667 150.667 67.905 150.667 71.9167C150.667 75.9284 153.905 79.1667 157.917 79.1667ZM124.083 79.1667C128.095 79.1667 131.333 75.9284 131.333 71.9167C131.333 67.905 128.095 64.6667 124.083 64.6667C120.072 64.6667 116.833 67.905 116.833 71.9167C116.833 75.9284 120.072 79.1667 124.083 79.1667ZM141 91.25C129.738 91.25 120.168 98.3067 116.302 108.167H165.698C161.832 98.3067 152.262 91.25 141 91.25Z" fill="black"/>
+        </g>
+        <defs>
+        <clipPath id="clip0_1_3">
+        <rect width="116" height="116" fill="white" transform="translate(83 26)"/>
+        </clipPath>
+        </defs>
+        </svg>
+      <h1 class="font-bold text-xl md:text-4xl" >OPS! Ocorreu um erro?!</h1>
+      <p class="text-center text-lg pt-2 md:text-2xl">A pagina que você procura está indisponivel ou não existe</p>
+      <app-button-primary class="w-64 md:w-96 pt-10" title="Voltar" (click)="goBack()" ></app-button-primary>
+    </div>
+</app-grid>

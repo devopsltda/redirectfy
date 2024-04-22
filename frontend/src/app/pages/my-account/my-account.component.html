@@ -1,0 +1,45 @@
+<app-grid>
+    <app-navbar></app-navbar>
+    <div class="flex flex-col pt-5 p-10 w-full h-full md:bg-[#F7F7F7] overflow-y-auto">
+        <app-header title="Minha Conta"></app-header>
+        <app-content-window>
+            <div class="flex flex-col justify-center items-center w-full h-full pt-8 md:bg-white md:border md:rounded-[10px] md:gap-4">
+                <div class="flex flex-col items-center gap-4 justify-center">
+                        <span class="bg-[#F7F7F7] text-[16px] flex items-center pl-2 relative w-72 h-10 border border-[#E0E0E0] border-l-4 rounded-md border-l-teal-500 shadow-md md:w-96 md:text-[20px] text-gray-500">
+                            Nome: {{this.userData?.nome}}
+                        </span>
+                        <span class="bg-[#F7F7F7] text-[16px] flex items-center pl-2 relative w-72 h-10 border border-[#E0E0E0] border-l-4 rounded-md border-l-teal-500 shadow-md md:w-96 md:text-[20px] text-gray-500">
+                            Assinatura: {{this.userData?.plano_de_assinatura}}
+                        </span>
+                        <span class="bg-[#F7F7F7] text-[16px] flex items-center pl-2 relative w-72 h-10 border border-[#E0E0E0] border-l-4 rounded-md border-l-teal-500 shadow-md md:w-96 md:text-[20px] text-gray-500">
+                            Email: {{this.userData?.email}}
+                        </span>
+                        <span class="bg-[#F7F7F7] text-[16px] flex items-center pl-2 relative w-72 h-10 border border-[#E0E0E0] border-l-4 rounded-md border-l-teal-500 shadow-md md:w-96 md:text-[20px] text-gray-500">
+                            CPF: {{this.userData?.cpf}}
+                        </span>
+
+                        <span class="bg-[#F7F7F7] text-[16px] flex items-center pl-2 relative w-72 h-10 border border-[#E0E0E0] border-l-4 rounded-md border-l-teal-500 shadow-md md:w-96 md:text-[20px] text-gray-500">
+                            Data de Nascimento: {{this.userData?.data_de_nascimento}}
+                        </span>
+                        <span>Membro desde {{this.userData?.criado_em}}</span>
+                        <button
+                            class="flex items-center justify-between w-72 font-semibold text-1xl border border-[#E0E0E0] border-l-4 h-10 pl-2 rounded-md focus:outline-none focus:border-teal-500 hover:border-teal-500 shadow-md md:w-96">
+                            Redefinir Senha da Conta
+                            <app-icon-right-arrow class="ml-3 md:ml-16"></app-icon-right-arrow>
+                        </button>                                                    
+                </div>
+                <div class="md:flex w-full p-4">
+                    <div class="w-full flex justify-center">
+                        <app-button-secundary class="hidden h-12 shadow-md w-60 md:w-28 gap-4 flex-col md:inline" title="Voltar" [routerLink]="'/home'"></app-button-secundary>
+                    </div>
+                    <div class="flex flex-col items-center justify-center w-full md:flex-row gap-2 md:justify-end">
+                        <div class="flex flex-col w-72 md:w-full items-center md:flex-row justify-center md:gap-2">
+                        <app-button-primary class="w-72 shadow-md md:h-12 md:w-56 max-w-full md:max-w-52 mb-2"
+                            title="Mudar Plano"></app-button-primary>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </app-content-window>
+    </div>
+</app-grid>
