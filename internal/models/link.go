@@ -190,6 +190,10 @@ func LinkPicker(links []Link, isPro bool) (picked_links []Link) {
 	)
 
 	for _, link := range links {
+		if !link.Ativo {
+			continue
+		}
+
 		switch link.Plataforma {
 		case "whatsapp":
 			linksWhatsapp = append(linksWhatsapp, link)
