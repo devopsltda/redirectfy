@@ -19,6 +19,7 @@ export class RedirectifyApiService {
   private addLinkToRedirectRoute: string = `${this.prefix}/r`;
   private deleteLinkInRedirectRoute: string = `${this.prefix}/r`;
   private getUserRoute: string = `${this.prefix}/u`
+  private updateLinkInRedirectRoute:string = `${this.prefix}/r`
   constructor(private http: HttpClient, private cookies: CookieService) {}
 
   // Usuário
@@ -36,6 +37,44 @@ export class RedirectifyApiService {
   }
 
   // redirecionadores
+  async disableLinkInRedirect(hash:string,idLink:number){
+    const resGetRedirect = await lastValueFrom(this.http.patch(`${this.updateLinkInRedirectRoute}/${hash}/links/${idLink}/disable`,{},{withCredentials:true,observe:'response'}))
+    .catch((error) => {
+      throw {
+        status: error.status,
+        statusText: error.statusText,
+        error: error.error,
+      };
+    });
+
+    return resGetRedirect
+  }
+
+  async enableLinkInRedirect(hash:string,idLink:number){
+    const resGetRedirect = await lastValueFrom(this.http.patch(`${this.updateLinkInRedirectRoute}/${hash}/links/${idLink}/enable`,{},{withCredentials:true,observe:'response'}))
+    .catch((error) => {
+      throw {
+        status: error.status,
+        statusText: error.statusText,
+        error: error.error,
+      };
+    });
+
+    return resGetRedirect
+  }
+
+  async updateLinkInRedirect(hash:string,idLink:number,data:any){
+    const resGetRedirect = await lastValueFrom(this.http.patch(`${this.updateLinkInRedirectRoute}/${hash}/links/${idLink}`,data,{withCredentials:true,observe:'response'}))
+    .catch((error) => {
+      throw {
+        status: error.status,
+        statusText: error.statusText,
+        error: error.error,
+      };
+    });
+
+    return resGetRedirect
+  }
   async deleteLinkInRedirect(hash:string,idLink:number){
     const resGetRedirect = await lastValueFrom(this.http.delete(`${this.deleteLinkInRedirectRoute}/${hash}/links/${idLink}`,{withCredentials:true,observe:'response'}))
     .catch((error) => {
