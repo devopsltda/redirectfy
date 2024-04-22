@@ -1,0 +1,26 @@
+FROM golang:1.22.1-bookworm as builder
+
+ENV CGO_ENABLED=1
+
+WORKDIR /app
+
+COPY . .
+
+# Atualiza e instala dependências
+RUN apt-get -y update && \
+    apt-get install -y --no-install-recommends git make sqlite3 && \
+    rm -rf /var/lib/apt/lists/* && \
+    go install github.com/swaggo/swag/cmd/swag@latest
+
+RUN swag init --generalInfo routes.go --parseDependency --parseInternal --dir internal/server && \
+    go build --ldflags "-s -w" -o /go/bin/main ./cmd/api/main.go
+
+FROM debian:bookworm-slim as exec
+
+WORKDIR /app
+
+COPY --from=builder /go/bin/main /app/.env ./
+
+EXPOSE 8080
+
+ENTRYPOINT ["/app/main"]
