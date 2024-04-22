@@ -1,15 +1,16 @@
 <app-grid>
-  <header class="flex justify-center items-center">
-    <app-redirectify-logo-name class="flex pt-12"></app-redirectify-logo-name>
-  </header>
-  <div class="flex flex-col items-center justify-center">
-    <p class="text-sm">Escolha um plano que atenda as suas<br> necessidades</p>
-    <div class="flex flex-col gap-5 items-center">
-      <p>Planos</p>
-      <app-card-subscription-plan  [isAnnual]="true" [pricing]="10" class="border-l-4 border-b-4 border-black rounded-lg"></app-card-subscription-plan>
-      <app-card-subscription-plan  [isAnnual]="true" [pricing]="10" class="border-l-4 border-b-4 border-black rounded-lg"></app-card-subscription-plan>
-      <app-card-subscription-plan  [isAnnual]="true" [pricing]="10" class="border-l-4 border-b-4 border-black rounded-lg"></app-card-subscription-plan>
+  <div class="flex flex-col items-center gap-4 w-screen h-screen">
+    <header class="flex justify-center items-center">
+      <app-redirectify-logo-name class="flex pt-12"></app-redirectify-logo-name>
+    </header>
+    <p class="text-sm md:text-4xl font-bold text-gray-600 pt-4">Escolha um plano que atenda as suas<br> necessidades</p>
+    <p class="font-bold">Planos</p>
+    
+    <div class="flex flex-col gap-5 items-center md:flex-row">
+      <app-card-subscription-plan  [isAnnual]="true" [pricing]="10" class="border-l-4 border-b-4 border-black rounded-lg md:h-96"></app-card-subscription-plan>
+      <app-card-subscription-plan  [isAnnual]="true" [pricing]="10" class="border-l-4 border-b-4 border-black rounded-lg md:h-96"></app-card-subscription-plan>
+      <app-card-subscription-plan  [isAnnual]="true" [pricing]="10" class="border-l-4 border-b-4 border-black rounded-lg md:h-96"></app-card-subscription-plan>
+      <app-button-primary class="w-64 pb-4 md:hidden" title="Ir para o pagamento"></app-button-primary>
     </div>
-
   </div>
 </app-grid>
