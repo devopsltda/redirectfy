@@ -14,6 +14,7 @@ export class CardContactMobileComponent {
   @Output() cardEvent = new EventEmitter()
   @Input() cardName = 'Card Name'
   @Input() isTelegram:boolean = false
+  @Input() ativo:boolean = true
   menuIsOpen:boolean = false
   menuRadio!:boolean
 
