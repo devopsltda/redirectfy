@@ -1,27 +1,45 @@
-import { Component } from '@angular/core';
-
+import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { GridComponent } from '../../shared/grid/grid.component';
 import { CommonModule } from '@angular/common';
-import { ButtonNotificationComponent } from '../../shared/button-notification/button-notification.component';
-import { UserBannerComponent } from '../../shared/user-banner/user-banner.component';
-import { RedirectfyPremiumCardComponent } from '../../shared/redirectfy-premium-card/redirectfy-premium-card.component';
-import { ButtonPrimaryComponent } from '../../shared/button-primary/button-primary.component';
-import { ButtonSecundaryComponent } from '../../shared/button-secundary/button-secundary.component';
-import { IconVisaCardComponent } from '../../shared/icon-visa-card/icon-visa-card.component';
-import { IconRightArrowComponent } from '../../shared/icon-right-arrow/icon-right-arrow.component';
-import { TopbarMyAccountComponent } from '../../shared/topbar-my-account/topbar-my-account.component';
-import { RedirectfyPremiumCardDesktopComponent } from '../../shared/redirectfy-premium-card-desktop/redirectfy-premium-card-desktop.component';
 import { SharedModule } from '../../shared/shared.module';
+import { RedirectifyApiService } from '../../services/redirectify-api.service';
+
 
 @Component({
   selector: 'app-my-account',
   standalone: true,
-  imports: [SharedModule, RouterModule, NavbarComponent, GridComponent, CommonModule, ButtonNotificationComponent, UserBannerComponent, RedirectfyPremiumCardComponent, ButtonPrimaryComponent, ButtonSecundaryComponent, IconVisaCardComponent, IconRightArrowComponent, TopbarMyAccountComponent, RedirectfyPremiumCardDesktopComponent],
+  imports: [SharedModule, RouterModule, NavbarComponent, GridComponent, CommonModule],
   templateUrl: './my-account.component.html',
   styleUrl: './my-account.component.scss'
 })
-export class MyAccountComponent {
+
+export class MyAccountComponent implements OnInit {
+
+  userData: any
+  initials: string = ''; 
+  constructor(private api: RedirectifyApiService) {
+
+  }
+  async ngOnInit() {
+    await this.getUserData()
+    console.log(this.userData)
+  }
+
+
+
+
+  async getUserData() {
+    this.userData = await this.api.getUser();
+    this.userData.cpf = this.userData.cpf ? this.userData.cpf.replace(/\D/g, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : this.userData.cpf;
+    const data = new Date(this.userData.criado_em);
+    const dataNascimento = new Date(this.userData.data_de_nascimento);
+    const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'long', year: 'numeric' };
+    const optionsData: Intl.DateTimeFormatOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    this.userData.criado_em = data.toLocaleDateString('pt-BR', options);
+    this.userData.data_de_nascimento = dataNascimento.toLocaleDateString('pt-BR', optionsData);
+    return this.userData;
+  }
 
 }

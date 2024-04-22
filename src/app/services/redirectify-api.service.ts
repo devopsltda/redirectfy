@@ -18,9 +18,23 @@ export class RedirectifyApiService {
   private getRedirectRoute: string = `${this.prefix}/r`;
   private addLinkToRedirectRoute: string = `${this.prefix}/r`;
   private deleteLinkInRedirectRoute: string = `${this.prefix}/r`;
+  private getUserRoute: string = `${this.prefix}/u`
   private updateLinkInRedirectRoute:string = `${this.prefix}/r`
   constructor(private http: HttpClient, private cookies: CookieService) {}
 
+  // Usuário
+  async getUser(){
+    const resGetUser = await lastValueFrom(this.http.get(this.getUserRoute,{withCredentials:true,observe:'response'}))
+    .catch((error) => {
+      throw {
+        status: error.status,
+        statusText: error.statusText,
+        error: error.error,
+      };
+    });
+
+    return resGetUser.body
+  }
 
   // redirecionadores
   async disableLinkInRedirect(hash:string,idLink:number){
@@ -73,6 +87,8 @@ export class RedirectifyApiService {
 
     return resGetRedirect
   }
+
+
   async addLinkToRedirect(hash:string,link:any){
     const resGetRedirect = await lastValueFrom(this.http.post(`${this.addLinkToRedirectRoute}/${hash}/links`,{links:link},{withCredentials:true,observe:'response'}))
     .catch((error) => {
