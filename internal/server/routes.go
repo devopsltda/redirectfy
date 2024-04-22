@@ -29,20 +29,27 @@ import (
 func (s *Server) RegisterRoutes() http.Handler {
 	e := echo.New()
 
-	api := e.Group("/api")
-	api.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     []string{"http://localhost:4200"},
-		AllowCredentials: true,
-	}))
-	api.Use(middleware.Logger())
-	api.Use(middleware.Secure())
-	api.Use(middleware.Recover())
-	api.Use(middleware.GzipWithConfig(middleware.GzipConfig{
+	e.Use(middleware.Logger())
+	e.Use(middleware.Secure())
+	e.Use(middleware.Recover())
+	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
 		Skipper: func(c echo.Context) bool {
-			return strings.Contains(c.Path(), "/docs")
+			return strings.Contains(c.Path(), "/docs/index.html")
 		},
 	}))
 
+	e.POST("/api/kirvano", s.KirvanoCreate)
+
+	api := e.Group("/api")
+	api.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins:     []string{
+			"http://localhost", // Ambiente de desenvolvimento do Angular
+			"http://localhost:80", // Ambiente de desenvolvimento do Angular
+			"http://localhost:4200", // Ambiente de desenvolvimento do Angular
+			"https://redirectfy.fly.dev", // Ambiente de homologação da aplicação
+		},
+		AllowCredentials: true,
+	}))
 	api.Use(echojwt.WithConfig(echojwt.Config{
 		ContextKey:  "usuario",
 		SigningKey:  []byte(auth.ChaveDeAcesso),
@@ -81,7 +88,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	// API - Kirvano
 	api.POST("/kirvano/to_user/:hash", s.KirvanoToUser)
-	api.POST("/kirvano", s.KirvanoCreate)
 
 	// API - Autenticação
 	api.POST("/u/login", s.UsuarioLogin)
