@@ -9,7 +9,7 @@ type Redirecionador struct {
 	Nome                    string         `json:"nome"`
 	CodigoHash              string         `json:"codigo_hash"`
 	OrdemDeRedirecionamento string         `json:"ordem_de_redirecionamento"`
-	Usuario                 string         `json:"usuario"`
+	Usuario                 string         `json:"-"`
 } // @name Redirecionador
 
 type RedirecionadorModel struct {
