@@ -1,10 +1,10 @@
-<app-grid>
-  <div class="flex flex-col items-center md:gap-16 gap-10 w-screen h-screen">
+<app-grid class="">
+  <div class="flex flex-col items-center md:gap-16 md:gap-y-14 gap-10 w-screen h-screen overflow-x-hidden overflow-y-hidden ">
 
-    <p class="text-sm md:text-4xl font-bold text-gray-600 pt-12 md:pt-24">Escolha um plano que atenda as suas<br> necessidades</p>
+    <p class="text-sm md:text-4xl font-bold text-gray-600 pt-12 md:pt-16">Escolha um plano que atenda as suas<br> necessidades</p>
 
 
-    <div class="flex flex-col gap-8  h-fit items-center lg:flex-row w-full justify-center ">
+    <div class="flex flex-col gap-8  h-fit items-center md:flex-row w-full justify-center ">
       <app-card-subscription-plan (click)="redirectTo('https://pay.kirvano.com/7775a810-969e-44d2-aa44-35c1bd0c8caf')" [typePlan]="'Pro Anual'" [isAnnual]="true" [planName]="plansData?.[3].nome" titleTextColor="text-black-600" [pricing]="plansData?.[3].valor/100" class="md:shadow-lg border-4  relative  border-yellow-400 rounded-lg transition-all duration-500 hover:scale-105">
         <span class="text-white bg-red-500 flex w-12 h-12  md:w-16 md:h-16  items-center justify-center rounded-full text-xs absolute -right-2 animate-pulse -top-2 md:-right-8 md:-top-10">Melhor <br> Oferta</span>
         <div class="flex flex-col pl-2 pr-8 pt-2 md:pb-5 md:gap-4 md:text-2xl md:justify-center text-white ">
@@ -140,7 +140,7 @@
       </app-card-subscription-plan>
 
     </div>
-    <app-button-primary class="w-64 pb-4 " title="Voltar">
+    <app-button-primary [routerLink]="'/login'" class="w-64 " title="Voltar">
     </app-button-primary>
   </div>
 </app-grid>
