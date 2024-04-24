@@ -70,7 +70,7 @@ func criaNomeDeUsuario(s string) string {
 //
 // @Failure 500             {object} echo.HTTPError
 //
-// @Router  /u [get]
+// @Router  /api/u [get]
 func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 	nomeDeUsuario := c.Get("usuario").(*jwt.Token).Claims.(*auth.Claims).NomeDeUsuario
 
@@ -102,7 +102,7 @@ func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 //
 // @Failure 500                 {object} echo.HTTPError
 //
-// @Router  /kirvano [post]
+// @Router  /api/kirvano [post]
 func (s *Server) KirvanoCreate(c echo.Context) error {
 	var parametros parametrosKirvano
 
@@ -236,7 +236,7 @@ func (s *Server) KirvanoCreate(c echo.Context) error {
 //
 // @Failure 500                {object} echo.HTTPError
 //
-// @Router  /kirvano/to_user/:hash [post]
+// @Router  /api/kirvano/to_user/:hash [post]
 func (s *Server) KirvanoToUser(c echo.Context) error {
 	valor := c.Param("hash")
 
@@ -342,7 +342,7 @@ func (s *Server) KirvanoToUser(c echo.Context) error {
 //
 // @Failure 500               {object} echo.HTTPError
 //
-// @Router  /u/:username/change_password [patch]
+// @Router  /api/u/:username/change_password [patch]
 func (s *Server) UsuarioSolicitarTrocaDeSenha(c echo.Context) error {
 	nomeDeUsuario := c.Param("username")
 
@@ -411,7 +411,7 @@ func (s *Server) UsuarioSolicitarTrocaDeSenha(c echo.Context) error {
 //
 // @Failure 500               {object} echo.HTTPError
 //
-// @Router  /u/change_password/:hash [patch]
+// @Router  /api/u/change_password/:hash [patch]
 func (s *Server) UsuarioTrocaDeSenha(c echo.Context) error {
 	valor := c.Param("hash")
 
@@ -493,7 +493,7 @@ func (s *Server) UsuarioTrocaDeSenha(c echo.Context) error {
 //
 // @Failure 500               {object} echo.HTTPError
 //
-// @Router  /u/login [post]
+// @Router  /api/u/login [post]
 func (s *Server) UsuarioLogin(c echo.Context) error {
 	parametros := struct {
 		Email string `json:"email"`
@@ -557,7 +557,7 @@ func (s *Server) UsuarioLogin(c echo.Context) error {
 //
 // @Success 200               {object} map[string]string
 //
-// @Router  /u/logout [post]
+// @Router  /api/u/logout [post]
 func (s *Server) UsuarioLogout(c echo.Context) error {
 	for _, c := range c.Cookies() {
 		c.Expires = time.Now().Add(-48 * time.Hour)
