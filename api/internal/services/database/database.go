@@ -87,7 +87,7 @@ func New() *sql.DB {
 	//
 	// https://github.com/tursodatabase/libsql-shell-go/issues/124
 	//
-	// err = seed(db, "../internal/services/database/source/")
+	// err = seed(db, "./internal/services/database/source/")
 	// 
 	// if err != nil {
 	// 	slog.Error("BancoDeDados", slog.Any("error", err))
