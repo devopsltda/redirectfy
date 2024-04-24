@@ -8,7 +8,7 @@ import { lastValueFrom } from 'rxjs';
 })
 export class RedirectifyApiService {
   // Rotas
-  private prefix: string = '/api';
+  private prefix: string = 'http://localhost:8080/api';
   private loginRoute: string = `${this.prefix}/u/login`;
   private logoutRoute: string = `${this.prefix}/u/logout`;
   private finishSignUpRoute: string = `${this.prefix}/kirvano/to_user/`;
@@ -25,7 +25,22 @@ export class RedirectifyApiService {
   private disableLinkInRedirectRoute:string = `${this.prefix}/r`
   private enableLinkInRedirectRoute:string = `${this.prefix}/r`
   private updateRedirectRoute:string  = `${this.prefix}/r`
+  private getPlansRoute:string  = `${this.prefix}/pricing`
   constructor(private http: HttpClient, private cookies: CookieService) {}
+  //Planos
+
+  async getPlans(){
+    const resGetUser = await lastValueFrom(this.http.get(this.getPlansRoute,{withCredentials:true,observe:'response'}))
+    .catch((error) => {
+      throw {
+        status: error.status,
+        statusText: error.statusText,
+        error: error.error,
+      };
+    });
+
+    return resGetUser.body
+  }
 
   // Usuário
   async getUser(){
