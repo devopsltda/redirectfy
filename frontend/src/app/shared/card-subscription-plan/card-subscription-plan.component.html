@@ -1,67 +1,26 @@
-<div class="{{bgCardColor}} w-64 h-36 p-4 flex flex-col justify-between relative rounded-lg md:h-96 md:items-center md:pb-2">
-  
-  <span class="flex w-full pl-4 items-center gap-2 md:border-b-2 border-b-gray-600 md:w-56 md:pb-4">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-12 {{logoFillColor}}" viewBox="0 0 48 47" fill="none">
+<div class="{{bgCardColor}} w-64 h-44 p-4 flex flex-col justify-between relative rounded-lg md:w-[24rem] md:h-[28rem] md:items-center md:pb-2 border">
+
+  <span class="flex w-full pl-4 items-center gap-2 border-b-gray-600  ">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-12 md:w-16 {{logoFillColor}} " viewBox="0 0 48 47" fill="none">
       <path fill-rule="evenodd" clip-rule="evenodd" d="M4.64 0.702698H0V5.3427V42.3027V46.9427H4.64H48V42.3027H4.64V5.3427H43.3599V34.1427H47.9999V5.3427H48V0.702698H47.9999H43.3599H4.64ZM31.6799 16.5427H20.1599H15.5199V21.1827V32.8627H20.1599V24.0266L30.7199 33.9424V34.1427H30.9333L30.9805 34.187L31.0221 34.1427H43.3599V29.5027H32.7703L23.9097 21.1827H31.6799V16.5427Z" />
     </svg>
     <div class="flex flex-col">
-      <p class="text-2xl font-semibold p-0 m-0  {{titleTextColor}} ">Redirectfy</p>
-      <p class="text-xl font-semibold p-0 m-0 leading-5  {{planTextColor}}">{{planName}}</p>
+      <p class="text-2xl font-semibold p-0 m-0  {{titleTextColor}} md:text-4xl">Redirectfy</p>
+      <p class="text-xl font-semibold p-0 m-0 leading-5  md:text-2xl md:text-nowrap {{planTextColor}}">{{planName}}</p>
     </div>
   </span>
   <span class="flex flex-row-reverse ">
-    <span class=" {{bgPricingColor}} rounded-md text-white w-fit px-3 py-1 absolute -bottom-2 -right-1 md:hidden"> R${{pricing}}{{isAnnual?'/Ano':'/Mês'}}</span>
+    <span class=" {{bgPricingColor}} rounded-md text-white w-fit px-3 py-1 absolute -bottom-6 -right-1 md:hidden"> R${{pricing}}{{isAnnual?'/Ano':'/Mês'}}</span>
   </span>
   <div>
     <ng-content></ng-content>
   </div>
-  <div class="flex flex-col pl-2 pr-8 pt-2 md:pb-5 md:gap-2 md:text-2xl">
-    <span class="flex items-center gap-2 font-bold text-[12px] border-b-2 border-[#195451]">
-      <svg class="w-3 h-4" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g clip-path="url(#clip0_496_884)">
-        <path d="M3.74984 6.74999L1.99984 4.99999L1.4165 5.58333L3.74984 7.91666L8.74984 2.91666L8.1665 2.33333L3.74984 6.74999Z" fill="#3CB339"/>
-        </g>
-        <defs>
-        <clipPath id="clip0_496_884">
-        <rect width="10" height="10" fill="white"/>
-        </clipPath>
-        </defs>
-        </svg> 
-        Limmite de 2 links
-    </span>
-    <span class="flex items-center gap-2 font-bold text-[12px] border-b-2 border-[#195451]">
-      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g clip-path="url(#clip0_496_882)">
-        <path d="M7.91683 2.67083L7.32933 2.08333L5.00016 4.41249L2.671 2.08333L2.0835 2.67083L4.41266 4.99999L2.0835 7.32916L2.671 7.91666L5.00016 5.58749L7.32933 7.91666L7.91683 7.32916L5.58766 4.99999L7.91683 2.67083Z" fill="#FF0000"/>
-        </g>
-        <defs>
-        <clipPath id="clip0_496_882">
-        <rect width="10" height="10" fill="white"/>
-        </clipPath>
-        </defs>
-        </svg>
-        Configurações ilimitadas
-    </span>
-    <span class="flex items-center gap-2 font-bold text-[12px]">
-      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g clip-path="url(#clip0_496_882)">
-        <path d="M7.91683 2.67083L7.32933 2.08333L5.00016 4.41249L2.671 2.08333L2.0835 2.67083L4.41266 4.99999L2.0835 7.32916L2.671 7.91666L5.00016 5.58749L7.32933 7.91666L7.91683 7.32916L5.58766 4.99999L7.91683 2.67083Z" fill="#FF0000"/>
-        </g>
-        <defs>
-        <clipPath id="clip0_496_882">
-        <rect width="10" height="10" fill="white"/>
-        </clipPath>
-        </defs>
-        </svg>
-        Modo escuro
-    </span>
-  </div>
-  <div class="hidden md:inline">
-    <span class="font-semibold">Valor</span>
+  <div class="hidden md:inline {{titleTextColor}} ">
+    <span class="font-semibold text-xl">Valor</span>
     <div class="pb-4">
-      <h1 class="flex items-center gap-8 font-bold">R$ 39,99/mês <small class="font-normal text-[10px]">R${{pricing}}{{isAnnual?'/Ano':'/Mês'}}</small></h1>
+      <h1 class="flex items-center gap-8 font-bold text-2xl">R$ {{isAnnual?pricing.toLocaleString('pt-BR', { minimumFractionDigits: 2 }):pricing.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}}{{isAnnual?'/Ano':'/Mês'}} <small class="font-normal text-sm">R${{isAnnual?(pricing/12).toFixed(2):(pricing*12).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}}{{isAnnual?'/Mês':'/Ano'}}</small></h1>
     <small class="text-[10px]">*Impostos locais podem ser aplicados</small>
     </div>
   </div>
-  <button class="hidden h-10 bg-black text-white w-56 md:inline items-center justify-center text-[20px] font-semibold rounded-md">Prosseguir</button>
+  <button class="hidden h-10 bg-teal-400 bg-opacity-70 text-white w-56 md:inline items-center justify-center text-[20px] font-semibold rounded-md">Prosseguir</button>
 </div>
