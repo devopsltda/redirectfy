@@ -13,6 +13,7 @@ import { MyAccountComponent } from './pages/my-account/my-account.component';
 import { authGuard } from './guard/auth.guard';
 import { BuyNowComponent } from './pages/buy-now/buy-now.component';
 import { EditRedirectComponent } from './pages/edit-redirect/edit-redirect.component';
+import { SupportComponent } from './pages/support/support.component';
 
 
 export const routes: Routes = [
@@ -25,6 +26,7 @@ export const routes: Routes = [
   {path:'newPassword',component:ResetPasswordComponent},
   {path:'newPasswordComplete',component:ResetCompleteComponent},
   {path:'account',component:MyAccountComponent},
+  {path:'support',component:SupportComponent},
   {path:'newRedirect',component:CreateRedirectComponent},
   {path:'buyNow',component:BuyNowComponent},
   {path:'home',component:HomeComponent,canActivate:[authGuard]},

@@ -1,0 +1,49 @@
+<app-grid>
+    <app-navbar></app-navbar>
+    <div class="flex flex-col pt-5 p-10 w-full h-full md:bg-[#F7F7F7] overflow-y-auto">
+        <app-header title="Suporte"></app-header>
+        <app-content-window>
+            <div class="flex flex-col justify-center items-center p-8 gap-2 w-full">
+                <div class="flex flex-col items-start pt-2">
+                    <p class="text-justify">Se você está enfrentando problemas ou tem dúvidas, não hesite em nos
+                        contatar.<br> Envie um email para <span
+                            class="text-blue-600">contato&#64;redirectfy.com</span> ou preencha o formulário abaixo.
+                        Entraremos em contato o mais rápido possível.</p>
+                    <h1 class="w-full text-center pt-2 font-bold">Formulário para contato</h1>
+                    <form action="https://formsubmit.co/contato@redirectfy.com" method="POST" enctype="multipart/form-data" class="flex flex-col w-full pt-2 gap-2"> <!--Endpoint do FormSubmit, substitua o email pelo email de contato-->
+                        <input type="hidden" name="_next" value="http://localhost:4200/support"> <!-- Após o email ser enviado, o usuário é redirecionado para a página de suporte -->
+                        <input type="hidden" name="_captcha" value="false"> <!-- Linha responsável por desabilitar o captcha do FormSubmit -->
+                        <div class="flex flex-col gap-2 md:flex-row md:gap-4">
+                            <div class="flex flex-col gap-1 w-full">
+                                <label for="name" class="font-semibold">Nome</label>
+                                <input type="text" id="name" name="name" placeholder="Seu Nome"
+                                    class="w-full border border-[#E0E0E0] rounded-md px-4 py-2 focus:outline-none focus:border-[#35b5ae]">
+                            </div>
+                            <div class="flex flex-col gap-1 w-full">
+                                <label for="email" class="font-semibold">E-mail</label>
+                                <input type="text" id="email" name="name" placeholder="Seu E-mail"
+                                    class="w-full border border-[#E0E0E0] rounded-md px-4 py-2 focus:outline-none focus:border-[#35b5ae]">
+                            </div>
+                        </div>
+                        <label for="subject" class="font-semibold">Assunto</label>
+                        <input type="text" id="subject" name="name" placeholder="Assunto"
+                                    class="w-full border border-[#E0E0E0] rounded-md px-4 py-2 focus:outline-none focus:border-[#35b5ae]">
+                        <label for="message" class="font-semibold">Mensagem:</label>
+                        <textarea id="message" name="message" rows="5" placeholder="Sua Mensagem"
+                            class="w-full border border-[#E0E0E0]  rounded-md px-4 py-2 focus:outline-none focus:border-[#35b5ae] resize-none"></textarea>
+                        <h1>Anexos (opcional)</h1>
+                        <label for="attachment"
+                            class="cursor-pointer w-full border border-[#E0E0E0] rounded-md px-4 py-2 flex items-center justify-center focus:outline-none focus:border-[#35b5ae]">
+                            <span class="text-gray-500 focus:outline-none focus:border-[#35b5ae]">{{ fileName ? fileName
+                                : 'Escolher um arquivo' }}</span>
+                            <input id="attachment" type="file" name="attachment" accept="image/png, image/jpeg"
+                                class="hidden" (change)="onFileSelected($event)">
+                        </label>
+                        <button type="submit"
+                            class="font-semibold bg-[#35b5ae] text-center text-white py-2 shadow-md rounded-md hover:bg-teal-600 transition duration-400 text-md">Enviar</button>
+                    </form>
+                </div>
+            </div>
+        </app-content-window>
+    </div>
+</app-grid>
