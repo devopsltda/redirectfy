@@ -41,7 +41,7 @@
           </div>
           <div class="flex flex-col gap-5 md:gap-8   {{this.createData['whatsappData'] != undefined && this.createData['telegramData'] != undefined?'md:pr-40 md:pl-8':'md:pl-0 md:pr-0'}}">
             <!-- Botão links wpp -->
-            <button  (click)="getContacts('whatsapp')" *ngIf="this.createData['whatsappData'] != undefined" (click)="formStep = 'getWContacts'" class=" flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7]  shadow-md text-sm items-center justify-around rounded-md border-l-4 border-l-green-400 transition-all {{prioridade=='whatsapp,telegram' && createData['whatsappData'] != undefined && createData['telegramData'] != undefined &&  createData['whatsappData'].length != 0 && createData['telegramData'].length != 0 ?'':'translate-y-14 md:translate-y-20'}} ">
+            <button  (click)="getContacts('whatsapp')" *ngIf="this.createData['whatsappData'] != undefined" (click)="formStep = 'getWContacts'" class=" flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7]  shadow-md text-sm items-center justify-around rounded-md border-l-4 border-l-green-400 transition-all {{prioridade=='whatsapp,telegram' && (createData['whatsappData'] != 0 && createData['telegramData'] != 0) ?'':'translate-y-14 md:translate-y-20'}} ">
               {{prioridade == 'whatsapp,telegram'?'1°':'2°'}}
               <app-icon-whatsapp ngClass="w-5 h-5"></app-icon-whatsapp>
              Contatos do WhatsApp
