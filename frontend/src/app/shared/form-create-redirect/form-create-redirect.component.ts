@@ -96,7 +96,6 @@ export class FormCreateRedirectComponent {
           this.telegramForm.reset()
           this.formStep = 'init'
         }
-        console.log(this.createData)
       }
     }
 

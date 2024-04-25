@@ -29,8 +29,7 @@ export class HomeComponent implements OnInit {
 
   constructor(private api: RedirectifyApiService) {}
   async ngOnInit() {
-    await this.getHomeData()
-    console.log(this.homeData);
+    await this.getHomeData();
   }
 
   onPageChange(event: PaginatorState) {

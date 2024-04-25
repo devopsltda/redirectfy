@@ -74,7 +74,7 @@ export class FormEditRedirectComponent implements OnInit {
     await this.getRedirectData();
     this.redirectName = this.redirectData.redirecionador.nome
     this.prioridade = this.redirectData.redirecionador.ordem_de_redirecionamento
-    console.log(this.redirectData)
+
   }
 
   objectLength(data:any){
