@@ -59,7 +59,7 @@ export class RedirectifyApiService {
   // redirecionadores
   async updateRedirect(hash:string,data:any){
 
-    const resGetRedirect = await lastValueFrom(this.http.patch(`${this.updateRedirectRoute}/${hash}`,{data},{withCredentials:true,observe:'response'}))
+    const resGetRedirect = await lastValueFrom(this.http.patch(`${this.updateRedirectRoute}/${hash}`,data,{withCredentials:true,observe:'response'}))
     .catch((error) => {
       throw {
         status: error.status,
@@ -99,7 +99,7 @@ export class RedirectifyApiService {
   }
 
   async updateLinkInRedirect(hash:string,idLink:number,data:any){
-    const resGetRedirect = await lastValueFrom(this.http.patch(`${this.updateLinkInRedirectRoute}/${hash}/links/${idLink}`,data,{withCredentials:true,observe:'response'}))
+    const resGetRedirect = await lastValueFrom(this.http.patch(`${this.updateLinkInRedirectRoute}/${hash}/links/${idLink}`,[data],{withCredentials:true,observe:'response'}))
     .catch((error) => {
       throw {
         status: error.status,

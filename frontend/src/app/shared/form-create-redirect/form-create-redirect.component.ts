@@ -6,14 +6,14 @@ import { AnimationsModule, fadeInOutAnimation } from '../../animations/animation
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RedirectifyApiService } from '../../services/redirectify-api.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 
 
 @Component({
   selector: 'app-form-create-redirect',
   standalone: true,
-  imports: [IconWhatsappComponent,IconTelegramComponent,SharedModule,AnimationsModule,ReactiveFormsModule,CommonModule,FormsModule],
+  imports: [IconWhatsappComponent,IconTelegramComponent,SharedModule,AnimationsModule,ReactiveFormsModule,CommonModule,FormsModule,RouterLink],
   providers:[MessageService],
   animations:[fadeInOutAnimation],
   templateUrl: './form-create-redirect.component.html',
@@ -52,6 +52,7 @@ export class FormCreateRedirectComponent {
       nome:['',[Validators.required]],
       plataforma:[]
     })
+
   }
 
   createDataEmpty(){

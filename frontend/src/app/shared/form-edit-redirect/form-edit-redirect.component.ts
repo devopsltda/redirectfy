@@ -75,7 +75,6 @@ export class FormEditRedirectComponent implements OnInit {
     this.redirectName = this.redirectData.redirecionador.nome
     this.prioridade = this.redirectData.redirecionador.ordem_de_redirecionamento
     console.log(this.redirectData)
-
   }
 
   objectLength(data:any){
@@ -114,7 +113,6 @@ export class FormEditRedirectComponent implements OnInit {
   }
 
  async buttonCardEvent(event:string,data:any){
-    console.log(event)
     if(event == 'editar'){
       if(data.plataforma == 'whatsapp'){
         const numero = data.link.match(/\/\+(\d+)/)[1];
@@ -140,7 +138,7 @@ export class FormEditRedirectComponent implements OnInit {
         await this.api.enableLinkInRedirect(this.redirectHash,data.id)
         await this.ngOnInit()
       } catch (error) {
-        console.log(error)
+        this.messageService.add({summary:"Falha na Ação",detail:'Ocorreu um erro ao trocar a prioridade, ação não executada',severity:'error'})
       }
     }
     else if(event == 'disable'){
@@ -148,27 +146,36 @@ export class FormEditRedirectComponent implements OnInit {
         await this.api.disableLinkInRedirect(this.redirectHash,data.id)
         await this.ngOnInit()
       } catch (error) {
-        console.log(error)
+        this.messageService.add({summary:"Falha na Ação",detail:'Ocorreu um erro ao trocar a prioridade, ação não executada',severity:'error'})
       }
     }
   }
 
   async trocarPrioridade(){
     if (this.prioridade == 'whatsapp,telegram'){
-      const res  = await this.api.updateRedirect(this.redirectHash,{ordem_de_redirecionamento:'telegram,whatsapp'})
-      if(res.status == 200){
-        this.prioridade = 'telegram,whatsapp'
+      try {
+        const res  = await this.api.updateRedirect(this.redirectHash,{ordem_de_redirecionamento:'telegram,whatsapp'})
+        if(res.status == 200){
+          this.prioridade = 'telegram,whatsapp'
+        }
+      } catch (error) {
+        this.messageService.add({summary:"Falha na Ação",detail:'Ocorreu um erro ao trocar a prioridade, ação não executada',severity:'error'})
       }
     }
-    if (this.prioridade == 'telegram,whatsapp'){
-      const res  = await this.api.updateRedirect(this.redirectHash,{ordem_de_redirecionamento:'whatsapp,telegram'})
-      if(res.status == 200){
-        this.prioridade = 'whatsapp,telegram'
+    else if (this.prioridade == 'telegram,whatsapp'){
+      try {
+        const res  = await this.api.updateRedirect(this.redirectHash,{ordem_de_redirecionamento:'whatsapp,telegram'})
+        if(res.status == 200){
+          this.prioridade = 'whatsapp,telegram'
+        }
+
+      } catch (error) {
+        this.messageService.add({summary:"Falha na Ação",detail:'Ocorreu um erro ao trocar a prioridade, ação não executada',severity:'error'})
       }
     }
   }
 
-  addContact(plataforma:string){
+ async addContact(plataforma:string){
     this.submitted = true
 
     if(this.whatsappForm.valid || this.telegramForm.valid){
@@ -178,13 +185,16 @@ export class FormEditRedirectComponent implements OnInit {
         data['plataforma'] = plataforma
         if(this.createData['whatsappData'] == undefined){
           this.createData['whatsappData'] = [data]
+          await this.onSubmit()
           this.whatsappForm.reset()
           this.formStep = 'init'
         } else{
           this.createData['whatsappData'].push(data)
+          await this.onSubmit()
           this.whatsappForm.reset()
           this.formStep = 'init'
         }
+
       }
 
 
@@ -195,21 +205,34 @@ export class FormEditRedirectComponent implements OnInit {
         if(this.createData['telegramData'] == undefined){
 
           this.createData['telegramData'] = [data]
+          await this.onSubmit()
           this.telegramForm.reset()
           this.formStep = 'init'
         } else{
           this.createData['telegramData'].push(data)
+          await this.onSubmit()
           this.telegramForm.reset()
           this.formStep = 'init'
         }
-        console.log(this.createData)
       }
     }
 
 
   }
 
-
+  async renameTitle(){
+    if(this.disableEditNome == true){
+      this.disableEditNome = false
+    } else {
+      try {
+        this.api.updateRedirect(this.redirectHash,{nome:this.redirectName})
+      } catch (error) {
+        await this.ngOnInit()
+        this.messageService.add({summary:"Falha na Ação",detail:'Ocorreu um erro ao renomear o redirecionador, ação não executada',severity:'error'})
+      }
+      this.disableEditNome = true
+    }
+  }
   async saveEdits(plataforma:string){
     this.submitted = true
     if(plataforma == 'whatsapp'){
@@ -229,7 +252,7 @@ export class FormEditRedirectComponent implements OnInit {
           await this.api.updateLinkInRedirect(this.redirectHash,editedData['id'],submitEditData)
           await this.ngOnInit()
         } catch (error){
-          console.log(error)
+          this.messageService.add({summary:"Falha ao Criar Redirecionador",detail:'Ocorreu um erro ao criar o redirecionador, ação não executada',severity:'error'})
         }
         this.formStep = 'init'
         this.whatsappForm.reset()
@@ -237,12 +260,11 @@ export class FormEditRedirectComponent implements OnInit {
     } else  if(plataforma == 'telegram'){
       if(this.telegramForm.valid){
         let editedData = this.telegramForm.getRawValue()
-        console.log(editedData)
         try{
           await this.api.updateLinkInRedirect(this.redirectHash,editedData['id'],editedData)
           await this.ngOnInit()
         } catch (error){
-          console.log(error)
+          this.messageService.add({summary:"Falha ao Criar Redirecionador",detail:'Ocorreu um erro ao criar o redirecionador, ação não executada',severity:'error'})
         }
         this.telegramForm.reset()
         this.formStep = 'init'
