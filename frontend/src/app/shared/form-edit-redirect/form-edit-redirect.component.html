@@ -8,7 +8,7 @@
         <span class="flex w-full h-20 md:h-40 px-3 justify-center items-center relative ">
           <span class="flex gap-4 items-center">
             <input pInputText [disabled]="disableEditNome" required class=" flex text-lg h-full w-fit whitespace-nowrap items-center {{disableEditNome?'':'border-2 border-teal-400'}} text-gray-500 font-semibold justify-center md:text-3xl text-center  " [(ngModel)]="redirectName">
-            <button (click)="this.disableEditNome = !this.disableEditNome " class=" p-2 border-2 border-teal-400 rounded-md shadow-sm">
+            <button (click)="renameTitle()" class=" p-2 border-2 border-teal-400 rounded-md shadow-sm">
               <svg  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-teal-400 {{disableEditNome?'':'hidden'}}">
               <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
               </svg>
@@ -44,8 +44,8 @@
 
               <p>Prioridade</p>
 
-              <button (click)="trocarPrioridade()" class="bg-[#F7F7F7] w-14 h-14 rounded-md drop-shadow group hover:bg-[rgb(53,181,174,1)] flex items-center justify-center transition-all ease-in-out duration-300">
-                <svg class="w-8 h-8 fill-[#257F7A] group-hover:fill-white" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <button (click)="trocarPrioridade()" class="bg-[#F7F7F7] w-14 h-14 rounded-md drop-shadow group active:bg-[rgb(53,181,174,1)] flex items-center justify-center transition-all ease-in-out duration-300">
+                <svg class="w-8 h-8 fill-[#257F7A] group-active:fill-white" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g clip-path="url(#clip0_827_1903)">
                   <path d="M7.875 2.625L4.375 6.11625H7V12.25H8.75V6.11625H11.375L7.875 2.625ZM14 14.8837V8.75H12.25V14.8837H9.625L13.125 18.375L16.625 14.8837H14Z"/>
                   </g>
@@ -62,7 +62,8 @@
 
             <div class="flex flex-col gap-5 md:gap-8   {{redirectData?.whatsappData.length!= 0 && this.redirectData?.telegramData.length != 0?'md:pr-40 md:pl-8':'md:pl-0 md:pr-0'}}">
               <!-- Botão links wpp -->
-              <button  (click)="getContacts('whatsapp')" *ngIf="this.redirectData?.whatsappData.length" (click)="formStep = 'getWContacts'" class=" flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7]  shadow-md text-sm items-center justify-around rounded-md border-l-4 border-l-green-400 transition-all {{prioridade=='whatsapp,telegram' && (redirectData?.whatsappData.length != 0 && redirectData?.telegramData.length !=0)?'translate-y-14 md:translate-y-20':''}}">
+              <button  (click)="getContacts('whatsapp')" *ngIf="this.redirectData?.whatsappData.length" (click)="formStep = 'getWContacts'" class=" flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7]  shadow-md text-sm items-center justify-around rounded-md border-l-4 border-l-green-400 transition-all {{prioridade=='whatsapp,telegram' && (redirectData?.whatsappData.length != 0 && redirectData?.telegramData.length !=0)?'':'translate-y-14 md:translate-y-20'}}">
+                {{prioridade == 'whatsapp,telegram'?'1°':'2°'}}
                 <app-icon-whatsapp ngClass="w-5 h-5"></app-icon-whatsapp>
                  Contatos do WhatsApp
               <svg class="w-5 h-5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -79,8 +80,9 @@
 
                <!-- END Botão links wpp -->
 
-              <button (click)="getContacts('telegram')" *ngIf="this.redirectData?.telegramData.length " class="flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7] shadow-md text-sm items-center justify-between px-[0.95rem]  rounded-md border-l-4 border-l-[#28A9EA] transition-all  {{prioridade =='whatsapp,telegram' && (redirectData?.whatsappData.length != 0 && redirectData?.telegramData.length !=0)?'-translate-y-14 md:-translate-y-20':''}}">
-              <app-icon-telegram ngClass="w-[1.1rem] h-5"></app-icon-telegram>
+              <button (click)="getContacts('telegram')" *ngIf="this.redirectData?.telegramData.length " class="flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7] shadow-md text-sm items-center justify-between px-[0.95rem]  rounded-md border-l-4 border-l-[#28A9EA] transition-all  {{prioridade =='whatsapp,telegram' && (redirectData?.whatsappData.length != 0 && redirectData?.telegramData.length !=0)?'':'-translate-y-14 md:-translate-y-20'}}">
+                {{prioridade == 'whatsapp,telegram'?'2°':'1°'}}
+                <app-icon-telegram ngClass="w-[1.1rem] h-5"></app-icon-telegram>
                Links do Telegram
                 <svg class="w-5 h-5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g clip-path="url(#clip0_485_711)">
@@ -98,7 +100,7 @@
         }
 
       <div class="flex flex-col w-fit md:w-full md:flex-row-reverse md:pt-16  md:pb-10 md:px-10  gap-5 md:justify-evenly">
-        <app-button-secundary  class=" w-72 h-12 hidden md:flex"title="Voltar"[routerLink] ="['/']"></app-button-secundary>
+        <app-button-secundary  class=" w-72 h-12 hidden md:flex"title="Voltar"[routerLink] ="['/home']"></app-button-secundary>
         <app-button-secundary (click)="trocarPrioridade()"  *ngIf=" redirectData?.whatsappData.length && redirectData?.telegramData.length " class="w-72 group md:hidden"title="Alternar Prioridade">
           <svg class="w-5 h-5 fill-[#257F7A] group-hover:fill-white" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clip-path="url(#clip0_827_1903)">

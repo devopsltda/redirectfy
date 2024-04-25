@@ -22,7 +22,4 @@ export class CardContactMobileComponent {
     this.cardEvent.emit(event)
   }
 
-  test(){
-    console.log(this.menuRadio)
-  }
 }

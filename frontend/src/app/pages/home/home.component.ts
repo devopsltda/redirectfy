@@ -4,19 +4,15 @@ import { SharedModule } from '../../shared/shared.module';
 import { fadeInOutAnimation } from '../../animations/animations.module';
 import { RedirectifyApiService } from '../../services/redirectify-api.service';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
-import { get } from 'http';
+import { MessageService } from 'primeng/api';
 
-interface PageEvent {
-  first: number;
-  rows: number;
-  page: number;
-  pageCount: number;
-}
+
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [SharedModule, RouterModule, PaginatorModule],
+  providers:[MessageService],
   animations: [fadeInOutAnimation],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
@@ -27,10 +23,9 @@ export class HomeComponent implements OnInit {
 
   homeData!: any;
 
-  constructor(private api: RedirectifyApiService) {}
+  constructor(private api: RedirectifyApiService,private message:MessageService) {}
   async ngOnInit() {
-    await this.getHomeData()
-    console.log(this.homeData);
+    await this.getHomeData();
   }
 
   onPageChange(event: PaginatorState) {
@@ -39,13 +34,12 @@ export class HomeComponent implements OnInit {
   }
 
  async cardEvent(event:string,item:any){
-    console.log(item)
     if(event == 'delete'){
       try {
         const resApi = await this.api.deleteRedirect(item.codigo_hash)
         this.getHomeData()
       } catch (error) {
-        console.log(error)
+        this.message.add({summary:"Falha na ação",detail:"Falha ao deletar, ação não concluida",severity:'error'})
       }
     }
   }
