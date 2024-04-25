@@ -48,8 +48,20 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	// Essa é a única rota que não passa pelo CORS, porque não sabemos qual
 	// o servidor da Kirvano e se ele vai ser persistente. A autenticidade
-	// da requisição deve ser conferido pelo token enviado por eles.
-	e.POST("/api/kirvano", s.KirvanoCreate)
+	// da requisição deve ser conferido pelo token enviado por eles,
+	// e essa verificação é realizada pelo middleware abaixo.
+	e.POST("/api/kirvano", s.KirvanoCreate, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			val, ok := c.Request().Header["Security-Token"]
+
+			if !ok || val[0] != utils.KirvanoToken {
+				utils.DebugLog("KirvanoMiddleware", "Token enviado pela Kirvano não corresponde ao KIRVANO_TOKEN", nil)
+				return utils.Erro(http.StatusUnauthorized, "Você não tem permissão para enviar requisições para esse endpoint.")
+			}
+
+			return next(c)
+		}
+	})
 
 	api := e.Group("/api")
 
@@ -128,7 +140,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	api.PATCH("/r/:hash/refresh", s.RedirecionadorRefresh, func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			if c.Get("usuario") == nil {
-				utils.DebugLog("TokenRefreshMiddleware", "Erro ao ler o contexto 'usuario'", nil)
+				utils.DebugLog("PricingMiddleware", "Erro ao ler o contexto 'usuario'", nil)
 				return utils.Erro(http.StatusBadRequest, "Você não contém um ou mais dos cookies necessários para autenticação.")
 			}
 
