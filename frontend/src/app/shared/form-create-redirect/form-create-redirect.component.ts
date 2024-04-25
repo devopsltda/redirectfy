@@ -144,7 +144,6 @@ export class FormCreateRedirectComponent {
       if (resApi.status == 201) {
         this.router.navigate(['/home'])
       }
-      console.log(resApi)
     } catch (error){
       this.messageService.add({summary:"Falha ao Criar Redirecionador",detail:'Ocorreu um erro ao criar o redirecionador, ação não executada',severity:'error'})
     }

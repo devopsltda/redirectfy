@@ -19,7 +19,7 @@ export class BuyNowComponent implements OnInit {
 
  async ngOnInit(){
       this.plansData = await this.api.getPlans()
-      console.log(this.plansData)
+
   }
 
   redirectTo(router:string){

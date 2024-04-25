@@ -18,13 +18,12 @@ import { RedirectifyApiService } from '../../services/redirectify-api.service';
 export class MyAccountComponent implements OnInit {
 
   userData: any
-  initials: string = ''; 
+  initials: string = '';
   constructor(private api: RedirectifyApiService) {
 
   }
   async ngOnInit() {
     await this.getUserData()
-    console.log(this.userData)
   }
 
 

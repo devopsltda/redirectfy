@@ -36,7 +36,6 @@ export class NavbarComponent {
       this.router.navigate(['/'])
     }
    } catch(error) {
-    console.log(error)
    }
   }
 }
