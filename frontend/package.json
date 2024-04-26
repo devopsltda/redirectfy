@@ -22,6 +22,7 @@
     "@angular/router": "^17.3.4",
     "@angular/ssr": "^17.3.4",
     "express": "^4.19.2",
+    "ngx-clipboard": "^16.0.0",
     "ngx-cookie-service": "^17.1.0",
     "ngx-cookie-service-ssr": "^17.1.0",
     "primeng": "^17.13.0",

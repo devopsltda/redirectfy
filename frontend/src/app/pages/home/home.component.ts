@@ -5,6 +5,7 @@ import { fadeInOutAnimation } from '../../animations/animations.module';
 import { RedirectifyApiService } from '../../services/redirectify-api.service';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { MessageService } from 'primeng/api';
+import { ClipboardService } from 'ngx-clipboard';
 
 
 
@@ -23,7 +24,7 @@ export class HomeComponent implements OnInit {
 
   homeData!: any;
 
-  constructor(private api: RedirectifyApiService,private message:MessageService) {}
+  constructor(private api: RedirectifyApiService,private message:MessageService, private cliboardService:ClipboardService) {}
   async ngOnInit() {
     await this.getHomeData();
   }
@@ -41,6 +42,9 @@ export class HomeComponent implements OnInit {
       } catch (error) {
         this.message.add({summary:"Falha na ação",detail:"Falha ao deletar, ação não concluida",severity:'error'})
       }
+    } else if(event == 'copy'){
+      this.cliboardService.copyFromContent(`${item.codigo_hash}`)
+      this.message.add({summary:"Link Copiado",detail:"O link de redirecionamento foi copiado com sucesso",severity:'success'})
     }
   }
 
