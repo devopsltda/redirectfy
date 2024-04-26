@@ -62,7 +62,7 @@
 
             <div class="flex flex-col gap-5 md:gap-8   {{redirectData?.whatsappData.length!= 0 && this.redirectData?.telegramData.length != 0?'md:pr-40 md:pl-8':'md:pl-0 md:pr-0'}}">
               <!-- Botão links wpp -->
-              <button  (click)="getContacts('whatsapp')" *ngIf="this.redirectData?.whatsappData.length" (click)="formStep = 'getWContacts'" class=" flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7]  shadow-md text-sm items-center justify-around rounded-md border-l-4 border-l-green-400 transition-all {{prioridade=='whatsapp,telegram' && (redirectData?.whatsappData.length != 0 && redirectData?.telegramData.length !=0)?'':'translate-y-14 md:translate-y-20'}}">
+              <button  (click)="getContacts('whatsapp')" *ngIf="this.redirectData?.whatsappData.length" (click)="formStep = 'getWContacts'" class=" flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7]  shadow-md text-sm items-center justify-around rounded-md border-l-4 border-l-green-400 transition-all {{prioridade=='whatsapp,telegram' && redirectData?.whatsappData.length != 0 && redirectData?.telegramData.length !=0?'':'translate-y-14 md:translate-y-20'}}">
                 {{prioridade == 'whatsapp,telegram'?'1°':'2°'}}
                 <app-icon-whatsapp ngClass="w-5 h-5"></app-icon-whatsapp>
                  Contatos do WhatsApp
@@ -80,7 +80,7 @@
 
                <!-- END Botão links wpp -->
 
-              <button (click)="getContacts('telegram')" *ngIf="this.redirectData?.telegramData.length " class="flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7] shadow-md text-sm items-center justify-between px-[0.95rem]  rounded-md border-l-4 border-l-[#28A9EA] transition-all  {{prioridade =='whatsapp,telegram' && (redirectData?.whatsappData.length != 0 && redirectData?.telegramData.length !=0)?'':'-translate-y-14 md:-translate-y-20'}}">
+              <button (click)="getContacts('telegram')" *ngIf="this.redirectData?.telegramData.length " class="flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7] shadow-md text-sm items-center justify-between px-[0.95rem]  rounded-md border-l-4 border-l-[#28A9EA] transition-all  {{prioridade =='whatsapp,telegram' && redirectData?.whatsappData.length != 0 && redirectData?.telegramData.length !=0?'':'-translate-y-14 md:-translate-y-20'}}">
                 {{prioridade == 'whatsapp,telegram'?'2°':'1°'}}
                 <app-icon-telegram ngClass="w-[1.1rem] h-5"></app-icon-telegram>
                Links do Telegram

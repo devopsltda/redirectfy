@@ -94,12 +94,12 @@
     </div>
   </div>
 }
-@else if (formStep == 'formAddW') {
+@else if (formStep == 'formAddW' || formStep =='editW') {
   <div @fadeIn500ms class="flex flex-col w-full h-full items-center gap-8 ">
       <span class="flex w-full h-20 p-3 justify-center items-center relative">
         <h4 class=" flex text-xl whitespace-nowrap text-gray-500 font-semibold w-fit justify-center items-center">Informações do Contato</h4>
       </span>
-      <form [formGroup]="whatsappForm" (ngSubmit)="addContact('whatsapp')" class="flex flex-col h-full gap-8 items-center">
+      <form [formGroup]="whatsappForm" (ngSubmit)="formStep == 'formAddW'? addContact('whatsapp'):saveEdit('whatsapp')" class="flex flex-col h-full gap-8 items-center">
         <div class="flex flex-col">
           <div class="flex gap-2">
             <label for="w-numero" class="flex  gap-2 items-center ease-in-out duration-300"> <app-icon-whatsapp ngClass="w-5 h-5"></app-icon-whatsapp></label>
@@ -156,12 +156,12 @@
       </form>
   </div>
 }
-@else if (formStep == 'formAddT'){
+@else if (formStep == 'formAddT' || formStep =='editT'){
   <div  @fadeIn500ms class="flex flex-col w-full h-full items-center gap-8 ">
     <span class="flex w-full h-20 p-3 justify-center items-center relative">
       <h4 class=" flex text-xl whitespace-nowrap text-gray-500 font-semibold w-fit justify-center items-center">Informações do Contato</h4>
     </span>
-    <form  [formGroup]="telegramForm" class="flex flex-col h-full gap-8 items-center" (ngSubmit)="addContact('telegram')">
+    <form  [formGroup]="telegramForm" class="flex flex-col h-full gap-8 items-center" (ngSubmit)=" formStep == 'formAddT'?  addContact('telegram'):saveEdit('telegram')">
       <div class="flex flex-col">
         <div class="flex gap-2">
             <label for="t-link" class="flex  gap-2 items-center ease-in-out duration-300"> <app-icon-telegram ngClass="w-5 h-5"></app-icon-telegram></label>
@@ -200,40 +200,27 @@
   </div>
 
 }
-@else if (formStep == 'getContacts') {
-  <div @fadeIn500ms class="flex flex-col w-full h-full items-center gap-8 px-3">
-    <span class="flex w-full h-20 px-3 justify-center items-center relative ">
+@else if (formStep == 'getContacts'){
+  <div @fadeIn500ms class="flex flex-col w-full h-4/6 items-center gap-8 px-3 overflow-y-auto overflow-x-hidden">
+    <span class=" flex w-full h-fit pt-5 px-3 justify-center items-center relative ">
       <h4 class=" flex text-lg h-full whitespace-nowrap items-center  text-gray-500 font-semibold w-full justify-center  ">{{getPlataforma == 'whatsapp'?'WhatsApps':'Telegrams'}} Vinculados</h4>
     </span>
-    <div class="w-96 h-full flex text-sm font-semibold flex-col items-center">
-    <span class=" flex w-full  h-10  justify-evenly items-center border-b group  border-b-gray-200"> <input class="" disabled type="radio" name="" id=""> <p class="w-24">Nome</p> <p class="w-28">{{getPlataforma == 'WhatsApps'?'Número':'Link'}}</p>
-    </span>
+    <div class="w-96  flex text-sm font-semibold flex-col items-center gap-4  ">
     @if(getPlataforma == 'whatsapp'){
-      @for (data of createData['whatsappData']; track $index) {
-
-        <label  for="contatoWppSelecionado1" class="flex w-full h-14  justify-evenly items-center border-b border-b-gray-100 text-[#C2C2C2]"> <input class="" type="radio" name="contatoWppSelecionado" id="contatoWppSelecionado1">
-          <p class="w-28">{{data.nome}}</p>
-          <p>{{data.link}}</p>
-        </label>
-
-      }
+        @for (item of this.createData['whatsappData']; track $index) {
+          <app-card-contact-mobile  [enableButton]="false" *ngIf="this.item.plataforma == 'whatsapp'" [cardName]=" item.plataforma == 'whatsapp'?item.nome:''" (cardEvent)="buttonCardEvent($event,item)" ></app-card-contact-mobile>
+        }
     } @else if(getPlataforma == 'telegram') {
 
-      @for (data of createData['telegramData']; track $index) {
-
-        <label  for="contatoWppSelecionado1" class="flex w-full h-14  justify-evenly items-center border-b border-b-gray-100 text-[#C2C2C2]"> <input class="" type="radio" name="contatoWppSelecionado" id="contatoWppSelecionado1">
-          <p class="w-28">{{data.nome}}</p>
-          <p>{{data.link}}</p>
-        </label>
-
+      @for (item of this.createData['telegramData']; track $index) {
+        <app-card-contact-mobile [enableButton]="false" [isTelegram]="true" *ngIf="this.item.plataforma == 'telegram'" [cardName]=" item.plataforma == 'telegram'?item.nome:''" (cardEvent)="buttonCardEvent($event,item)" ></app-card-contact-mobile>
       }
     }
-    <div class="flex flex-col w-full h-40 justify-center items-center gap-5 ">
-      <app-button-primary class="w-64 h-12" title="Editar"></app-button-primary>
-      <app-button-secundary class="w-64 h-12" (click)="formStep = 'init'" title="Voltar" ></app-button-secundary>
-    </div>
   </div>
-  </div>
+</div>
+<div class="flex flex-col w-full justify-center items-center ">
+  <app-button-secundary class="w-64 h-12 mt-20" (click)="formStep = 'init'" title="Voltar" ></app-button-secundary>
+</div>
 }
 @else if (formStep == 'enterName') {
   <div @fadeIn500ms class="flex flex-col w-full h-full items-center gap-8 px-3">

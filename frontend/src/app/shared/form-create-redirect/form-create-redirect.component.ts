@@ -31,7 +31,7 @@ export class FormCreateRedirectComponent {
   createData:{[key:string]:any} = {}
   whatsappForm!:FormGroup
   telegramForm!:FormGroup
-
+  dataEdit:any
   constructor
   (
     private formBuilder:FormBuilder,
@@ -62,6 +62,57 @@ export class FormCreateRedirectComponent {
     return data.length
   }
 
+  async buttonCardEvent(event:string,data:any){
+    if(event == 'editar'){
+      if(data.plataforma == 'whatsapp'){
+        this.whatsappForm.controls['link'].setValue(data.link);
+        this.whatsappForm.controls['mensagem'].setValue(data.mensagem);
+        this.whatsappForm.controls['nome'].setValue(data.nome)
+        this.goEdit(data)
+        this.formStep = 'editW'
+      }
+      else if(data.plataforma == 'telegram'){
+       this.telegramForm.controls['link'].setValue(data.link);
+       this.telegramForm.controls['nome'].setValue(data.nome)
+       this.goEdit(data)
+       this.formStep = 'editT'
+     }
+    } else if (event == 'deletar') {
+      if (data.plataforma == 'whatsapp') {
+          this.createData['whatsappData'] = this.createData['whatsappData'].filter((item: any) => item.nome !== data.nome);
+      } else {
+        this.createData['telegramData'] = this.createData['telegramData'].filter((item: any) => item.nome !== data.nome);
+      }
+  }
+
+
+  }
+
+  goEdit(data:any){
+      this.dataEdit = data
+  }
+
+  saveEdit(plataforma: string) {
+    if (plataforma == 'whatsapp') {
+        const index = this.createData['whatsappData'].findIndex((item: any) => item.nome === this.dataEdit.nome);
+        if (index !== -1) {
+            this.createData['whatsappData'][index].link = this.whatsappForm.get('link')?.value;
+            this.createData['whatsappData'][index].mensagem = this.whatsappForm.get('mensagem')?.value;
+            this.createData['whatsappData'][index].nome = this.whatsappForm.get('nome')?.value;
+        }
+    } else if (plataforma == 'telegram') {
+        const index = this.createData['telegramData'].findIndex((item: any) => item.nome === this.dataEdit.nome);
+        if (index !== -1) {
+            this.createData['telegramData'][index].link = this.telegramForm.get('link')?.value;
+            this.createData['telegramData'][index].nome = this.telegramForm.get('nome')?.value;
+        }
+    }
+    this.formStep = 'init';
+    this.dataEdit = null;
+}
+
+
+
   addContact(plataforma:string){
     this.submitted = true
 
@@ -80,7 +131,6 @@ export class FormCreateRedirectComponent {
           this.formStep = 'init'
         }
       }
-
 
 
       else if(plataforma == 'telegram'){
