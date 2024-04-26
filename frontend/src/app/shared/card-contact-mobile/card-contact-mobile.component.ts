@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './card-contact-mobile.component.scss'
 })
 export class CardContactMobileComponent {
-
+  @Input() enableButton:boolean = true;
   @Output() cardEvent = new EventEmitter()
   @Input() cardName = 'Card Name'
   @Input() isTelegram:boolean = false
