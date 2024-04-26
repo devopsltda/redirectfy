@@ -334,7 +334,7 @@ func (s *Server) KirvanoToUser(c echo.Context) error {
 //
 // @Produce json
 //
-// @Param   username          path     string true "Nome de Usuário"
+// @Param   email             body     string true "Email"
 //
 // @Success 200               {object} map[string]string
 //
@@ -342,22 +342,34 @@ func (s *Server) KirvanoToUser(c echo.Context) error {
 //
 // @Failure 500               {object} echo.HTTPError
 //
-// @Router  /api/u/:username/change_password [patch]
+// @Router  /api/u/change_password [patch]
 func (s *Server) UsuarioSolicitarTrocaDeSenha(c echo.Context) error {
-	nomeDeUsuario := c.Param("username")
-
-	if !utils.IsURLSafe(nomeDeUsuario) {
-		utils.DebugLog("UsuarioSolicitarTrocaDeSenha", "Erro de validação do nome do usuário no parâmetro 'username'", nil)
-		return utils.Erro(http.StatusBadRequest, "Por favor, forneça um nome de usuário válido (3 a 120 caracteres, composto de apenas letras, números e '-' ou '_').")
-	}
+	parametros := struct {
+		Email            string `json:"email"`
+	}{}
 
 	var err error
+	var erros []string
 
-	usuario, err := s.UsuarioModel.ReadByNomeDeUsuario(nomeDeUsuario)
+	if err := c.Bind(&parametros); err != nil {
+		utils.DebugLog("UsuarioSolicitarTrocaDeSenha", "Não foram inseridos os parâmetros na requisição", nil)
+		erros = append(erros, "Por favor, forneça o email no parâmetro 'email'.")
+	}
+
+	if err := utils.Validate.Var(parametros.Email, "required,email"); parametros.Email != "" && err != nil {
+		utils.DebugLog("UsuarioSolicitarTrocaDeSenha", "Erro no email inválido no parâmetro 'email'", nil)
+		erros = append(erros, "Por favor, forneça o email do usuário válido no parâmetro 'email'.")
+	}
+
+	if len(erros) > 0 {
+		return utils.ErroValidacaoParametro(erros)
+	}
+
+	usuario, err := s.UsuarioModel.ReadByEmail(parametros.Email)
 
 	if err != nil {
-		utils.DebugLog("UsuarioSolicitarTrocaDeSenha", "Erro ao ler o usuário", err)
-		return utils.Erro(http.StatusBadRequest, "Não foi possível ler o usuário com o nome de usuário do parâmetro 'username'.")
+		utils.ErroLog("UsuarioSolicitarTrocaDeSenha", "Erro ao procurar um usuário com esse email", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi procurar um usuário com esse email.")
 	}
 
 	var valor string
@@ -381,7 +393,7 @@ func (s *Server) UsuarioSolicitarTrocaDeSenha(c echo.Context) error {
 		return utils.Erro(http.StatusInternalServerError, "Não foi possível criar um email de troca de senha para o usuário.")
 	}
 
-	err = s.email.SendTrocaDeSenha(id, usuario.Nome, valor, usuario.Email)
+	err = s.email.SendTrocaDeSenha(id, usuario.Nome, valor, parametros.Email)
 
 	if err != nil {
 		utils.ErroLog("UsuarioSolicitarTrocaDeSenha", "Erro ao enviar email de troca de senha", err)

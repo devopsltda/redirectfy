@@ -1,10 +1,8 @@
 definitions:
   Link:
     properties:
-      atualizado_em:
-        type: string
-      criado_em:
-        type: string
+      ativo:
+        type: boolean
       id:
         type: integer
       link:
@@ -29,12 +27,6 @@ definitions:
     type: object
   PlanoDeAssinatura:
     properties:
-      atualizado_em:
-        type: string
-      criado_em:
-        type: string
-      id:
-        type: integer
       limite_redirecionadores:
         type: integer
       nome:
@@ -46,25 +38,15 @@ definitions:
     type: object
   Redirecionador:
     properties:
-      atualizado_em:
-        type: string
       codigo_hash:
         type: string
-      criado_em:
-        type: string
-      id:
-        type: integer
       nome:
         type: string
       ordem_de_redirecionamento:
         type: string
-      usuario:
-        type: string
     type: object
   Usuario:
     properties:
-      atualizado_em:
-        type: string
       cpf:
         type: string
       criado_em:
@@ -73,15 +55,9 @@ definitions:
         type: string
       email:
         type: string
-      id:
-        type: integer
       nome:
         type: string
-      nome_de_usuario:
-        type: string
       plano_de_assinatura:
-        type: string
-      senha:
         type: string
     type: object
   echo.HTTPError:
@@ -115,11 +91,11 @@ info:
   contact:
     email: comercialdevops@gmail.com
     name: Equipe da DevOps (Pablo Eduardo, Guilherme Bernardo e Eduardo Henrique)
-  description: API para interagir com o Redirectify
-  title: API do Redirectify
+  description: API para interagir com o Redirectfy
+  title: API do Redirectfy
   version: 1.0.0
 paths:
-  /kirvano:
+  /api/kirvano:
     post:
       consumes:
       - application/json
@@ -150,7 +126,7 @@ paths:
       summary: Cria um usuário da Kirvano
       tags:
       - Kirvano
-  /kirvano/to_user/:hash:
+  /api/kirvano/to_user/:hash:
     post:
       consumes:
       - application/json
@@ -192,7 +168,7 @@ paths:
       summary: Cria um usuário a partir de um usuário da Kirvano
       tags:
       - Kirvano
-  /pricing:
+  /api/pricing:
     get:
       consumes:
       - application/json
@@ -216,7 +192,7 @@ paths:
       summary: Retorna os planos de assinatura
       tags:
       - Planos de Assinatura
-  /pricing/:name:
+  /api/pricing/:name:
     get:
       consumes:
       - application/json
@@ -244,7 +220,7 @@ paths:
       summary: Retorna o plano de assinatura com o nome fornecido
       tags:
       - Planos de Assinatura
-  /r:
+  /api/r:
     get:
       consumes:
       - application/json
@@ -310,7 +286,7 @@ paths:
       summary: Cria um redirecionador
       tags:
       - Redirecionadores
-  /r/:hash:
+  /api/r/:hash:
     delete:
       consumes:
       - application/json
@@ -406,7 +382,7 @@ paths:
       summary: Atualiza um redirecionador
       tags:
       - Redirecionadores
-  /r/:hash/links:
+  /api/r/:hash/links:
     get:
       consumes:
       - application/json
@@ -473,7 +449,7 @@ paths:
       summary: Cria links no redirecionador com o código hash fornecido
       tags:
       - Links
-  /r/:hash/links/:id:
+  /api/r/:hash/links/:id:
     delete:
       consumes:
       - application/json
@@ -590,7 +566,7 @@ paths:
       summary: Atualiza um link específico de um redirecionador específico
       tags:
       - Links
-  /r/:hash/links/:id/disable:
+  /api/r/:hash/links/:id/disable:
     patch:
       consumes:
       - application/json
@@ -625,7 +601,7 @@ paths:
       summary: Desativa um link específico de um redirecionador específico
       tags:
       - Links
-  /r/:hash/links/:id/enable:
+  /api/r/:hash/links/:id/enable:
     patch:
       consumes:
       - application/json
@@ -660,7 +636,7 @@ paths:
       summary: Ativa um link específico de um redirecionador específico
       tags:
       - Links
-  /r/:hash/refresh:
+  /api/r/:hash/refresh:
     patch:
       consumes:
       - application/json
@@ -690,7 +666,7 @@ paths:
       summary: Recria o hash de um redirecionador
       tags:
       - Redirecionadores
-  /to/:hash:
+  /api/to/:hash:
     get:
       consumes:
       - application/json
@@ -720,7 +696,7 @@ paths:
       summary: Retorna os links selecionados daquele redirecionador
       tags:
       - Redirecionadores
-  /u:
+  /api/u:
     get:
       consumes:
       - application/json
@@ -742,16 +718,17 @@ paths:
       summary: Retorna o usuário com o nome de usuário fornecido
       tags:
       - Usuários
-  /u/:username/change_password:
+  /api/u/change_password:
     patch:
       consumes:
       - application/json
       parameters:
-      - description: Nome de Usuário
-        in: path
-        name: username
+      - description: Email
+        in: body
+        name: email
         required: true
-        type: string
+        schema:
+          type: string
       produces:
       - application/json
       responses:
@@ -772,7 +749,7 @@ paths:
       summary: Exige a troca de senha de um usuário
       tags:
       - Usuários
-  /u/change_password/:hash:
+  /api/u/change_password/:hash:
     patch:
       consumes:
       - application/json
@@ -808,7 +785,7 @@ paths:
       summary: Troca a senha de um usuário
       tags:
       - Usuários
-  /u/login:
+  /api/u/login:
     post:
       consumes:
       - application/json
@@ -849,7 +826,7 @@ paths:
       summary: Autentica o usuário
       tags:
       - Usuários
-  /u/logout:
+  /api/u/logout:
     post:
       consumes:
       - application/json
