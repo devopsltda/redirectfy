@@ -1,6 +1,7 @@
 package server
 
 import (
+	"database/sql"
 	"net/http"
 	"strings"
 	"time"
@@ -536,6 +537,11 @@ func (s *Server) UsuarioLogin(c echo.Context) error {
 	id, nome, nomeDeUsuario, planoDeAssinatura, senha, err := s.UsuarioModel.Login(parametros.Email)
 
 	if err != nil {
+		if err == sql.ErrNoRows {
+			utils.DebugLog("UsuarioLogin", "Erro ao ler o email do usuário", err)
+			return utils.Erro(http.StatusBadRequest, "Usuário ou senha incorretos.")
+		}
+
 		utils.DebugLog("UsuarioLogin", "Erro ao ler os dados do usuário", err)
 		return utils.Erro(http.StatusInternalServerError, "Não foi possível ler o usuário com o email inserido.")
 	}
@@ -544,7 +550,7 @@ func (s *Server) UsuarioLogin(c echo.Context) error {
 
 	if !match || err != nil {
 		utils.DebugLog("UsuarioLogin", "Erro ao validar a senha do usuário", err)
-		return utils.Erro(http.StatusUnauthorized, "Não foi possível validar a senha do usuário.")
+		return utils.Erro(http.StatusBadRequest, "Usuário ou senha incorretos.")
 	}
 
 	err = auth.GeraTokensESetaCookies(id, nome, nomeDeUsuario, planoDeAssinatura, c)
