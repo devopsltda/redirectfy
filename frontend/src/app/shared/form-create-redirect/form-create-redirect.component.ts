@@ -189,14 +189,24 @@ export class FormCreateRedirectComponent {
       this.redirectName = `Redirect #${this.generateRandomInteger(1,100)}`
     }
 
-    try{
-      const resApi = await this.api.createRedirect(this.redirectName,this.prioridade,this.submitData)
-      if (resApi.status == 201) {
-        this.router.navigate(['/home'])
+    if (this.redirectName.length < 3 || this.redirectName.length > 120) {
+      this.messageService.add({summary: "Falha ao Criar Redirecionador", detail: 'Por favor, insira um nome entre 3 e 120 caracteres', severity: 'error'});
+    } else {
+      try {
+        const resApi = await this.api.createRedirect(this.redirectName, this.prioridade, this.submitData);
+        if (resApi.status === 201) {
+          this.router.navigate(['/home']);
+        }
+      } 
+      catch (error) {
+        if (typeof error === 'object' && error !== null) {
+          if((error as any).status === 402){
+            this.messageService.add({summary: "Limite de criação excedido!", detail: 'Oops! Parece que você atingiu o limite de redirecionadores. Faça um upgrade do seu plano de assinatura ou remova redirecionadores já existentes', severity: 'info'});
+          }
+        }else{
+          this.messageService.add({summary: "Falha ao Criar Redirecionador", detail: 'Ocorreu um erro ao criar o redirecionador, ação não executada', severity: 'error'});
+        }        
       }
-    } catch (error){
-      this.messageService.add({summary:"Falha ao Criar Redirecionador",detail:'Ocorreu um erro ao criar o redirecionador, ação não executada',severity:'error'})
     }
   }
-
 }
