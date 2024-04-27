@@ -22,7 +22,8 @@ export class BuyNowComponent implements OnInit {
 
   }
 
-  redirectTo(router:string){
+  redirectTo(router:any){
+    console.log(router)
     window.location.href = router
   }
 

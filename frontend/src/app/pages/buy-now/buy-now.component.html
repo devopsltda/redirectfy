@@ -5,7 +5,7 @@
 
 
     <div class="flex flex-col gap-8  h-fit items-center md:flex-row w-full justify-center ">
-      <app-card-subscription-plan (click)="redirectTo('https://pay.kirvano.com/7775a810-969e-44d2-aa44-35c1bd0c8caf')" [typePlan]="'Pro Anual'" [isAnnual]="true" [planName]="plansData?.[3].nome" titleTextColor="text-black-600" [pricing]="plansData?.[3].valor/100" class="md:shadow-lg border-4  relative  border-yellow-400 rounded-lg transition-all duration-500 hover:scale-105">
+      <app-card-subscription-plan (linkCheckoutEvent)="redirectTo($event)" [typePlan]="'Pro Anual'" [isAnnual]="true" [planName]="plansData?.[3].nome" titleTextColor="text-black-600" [pricing]="plansData?.[3].valor/100" class="md:shadow-lg border-4  relative  border-yellow-400 rounded-lg transition-all duration-500 hover:scale-105">
         <span class="text-white bg-red-500 flex w-12 h-12  md:w-16 md:h-16  items-center justify-center rounded-full text-xs absolute -right-2 animate-pulse -top-2 md:-right-8 md:-top-10">Melhor <br> Oferta</span>
         <div class="flex flex-col pl-2 pr-8 pt-2 md:pb-5 md:gap-4 md:text-2xl md:justify-center text-white ">
           <span class="flex items-center gap-2 font-bold text-[12px] md:text-lg">
@@ -51,7 +51,7 @@
       </app-card-subscription-plan>
 
 
-      <app-card-subscription-plan (click)="redirectTo('https://pay.kirvano.com/e5ef0564-7360-4582-bb88-02a1da528aee')" typePlan="Pro Mensal" [planName]="plansData?.[2].nome"   [pricing]="plansData?.[2].valor/100" class="md:shadow-lg border-2 border-teal-600 border-opacity-70 rounded-lg transition-all duration-500 hover:scale-105">
+      <app-card-subscription-plan (linkCheckoutEvent)="redirectTo($event)" typePlan="Pro Mensal" [planName]="plansData?.[2].nome"   [pricing]="plansData?.[2].valor/100" class="md:shadow-lg border-2 border-teal-600 border-opacity-70 rounded-lg transition-all duration-500 hover:scale-105">
         <div class="flex flex-col pl-2 pr-8 pt-2 md:pb-5 md:gap-4 md:text-2xl md:justify-center  text-opacity-90 ">
           <span class="flex items-center gap-2 font-bold text-[12px] md:text-lg ">
             <svg class="w-3 h-4 md:h-6 md:w-4" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -95,7 +95,7 @@
           </span>
         </div>
       </app-card-subscription-plan>
-      <app-card-subscription-plan (click)="redirectTo('https://pay.kirvano.com/e11da46d-eea0-4110-9c60-f9b3c0e95a47')" [typePlan]="'Basic Mensal'" [planName]="plansData?.[1].nome" [pricing]="plansData?.[1].valor/100" class="md:shadow-lg antialiased border-b-2 border-l-2 border-gray-400 border-opacity-70 rounded-lg transition-all duration-500 hover:scale-105">
+      <app-card-subscription-plan (linkCheckoutEvent)="redirectTo($event)" [typePlan]="'Basic Mensal'" [planName]="plansData?.[1].nome" [pricing]="plansData?.[1].valor/100" class="md:shadow-lg antialiased border-b-2 border-l-2 border-gray-400 border-opacity-70 rounded-lg transition-all duration-500 hover:scale-105">
         <div class="flex flex-col pl-2 pr-8 pt-2 md:pb-5 md:gap-4 md:text-2xl md:justify-center ">
           <span class="flex items-center gap-2 font-bold text-[12px] md:text-lg ">
             <svg class="w-3 h-4 md:h-6 md:w-4" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
