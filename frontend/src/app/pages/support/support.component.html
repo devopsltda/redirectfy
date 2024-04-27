@@ -5,10 +5,6 @@
         <app-content-window>
             <div class="flex flex-col justify-center items-center p-8 gap-2 w-full">
                 <div class="flex flex-col items-start pt-2">
-                    <p class="text-justify">Se você está enfrentando problemas ou tem dúvidas, não hesite em nos
-                        contatar.<br> Envie um email para <span
-                            class="text-blue-600">contato&#64;redirectfy.com</span> ou preencha o formulário abaixo.
-                        Entraremos em contato o mais rápido possível.</p>
                     <h1 class="w-full text-center pt-2 font-bold">Formulário para contato</h1>
                     <form action="https://formsubmit.co/contato@redirectfy.com" method="POST" enctype="multipart/form-data" class="flex flex-col w-full pt-2 gap-2"> <!--Endpoint do FormSubmit, substitua o email pelo email de contato-->
                         <input type="hidden" name="_next" value="http://localhost:4200/support"> <!-- Após o email ser enviado, o usuário é redirecionado para a página de suporte -->
@@ -42,6 +38,10 @@
                         <button type="submit"
                             class="font-semibold bg-[#35b5ae] text-center text-white py-2 shadow-md rounded-md hover:bg-teal-600 transition duration-400 text-md">Enviar</button>
                     </form>
+                    <p class="text-justify pt-2">Se você está enfrentando problemas ou tem dúvidas, não hesite em nos
+                        contatar.<br> Envie um email para <span
+                            class="text-blue-600">contato&#64;redirectfy.com</span> ou preencha o formulário acima.
+                        Entraremos em contato o mais rápido possível.</p>
                 </div>
             </div>
         </app-content-window>
