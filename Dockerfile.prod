@@ -34,7 +34,7 @@ FROM nginx:bookworm as exec
 WORKDIR /app
 
 # Copy API binary
-COPY --from=api-builder /app/.env .
+COPY --from=api-builder /app/.env.prod .
 COPY --from=api-builder /go/bin/main .
 
 # Copy frontend build

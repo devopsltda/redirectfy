@@ -125,10 +125,12 @@
               </svg>
             </label>
             <!-- Input Nome Contato -->
-            <input id="w-contato" formControlName="nome" placeholder="Nome do Contato " type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
+            <input id="w-contato" formControlName="nome" placeholder="Nome do Contato " type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm" maxlength="20"/>
             <!-- END Input Nome Contato -->
           </div>
-          <small *ngIf="this.whatsappForm.controls['nome'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio</small>
+        <small *ngIf="this.whatsappForm.controls['nome'].invalid && submitted || (this.whatsappForm.controls['nome'].value?.length >= 20)" class="text-red-500 ml-8">
+          {{ this.whatsappForm.controls['nome'].invalid ? 'Este campo é obrigatório' : 'Limite de 20 caracteres' }}
+        </small>
         </div>
           <div class="flex flex-col">
             <div class="flex gap-2">
@@ -187,10 +189,12 @@
             </svg>
           </label>
           <!-- INPUT NOME -->
-          <input id="" formControlName="nome" placeholder="Nome do Contato " type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
+          <input id="" formControlName="nome" placeholder="Nome do Contato " type="text" pInputText class="flex border-l-4 border-l-[#35B5AE]  border w-52 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm" maxlength="20"/>
           <!-- END INPUT NOME  -->
         </div>
-        <small *ngIf="this.telegramForm.controls['nome'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio</small>
+        <small *ngIf="this.telegramForm.controls['nome'].invalid && submitted || (this.telegramForm.controls['nome'].value?.length >= 20)" class="text-red-500 ml-8">
+          {{ this.telegramForm.controls['nome'].invalid ? 'Este campo é obrigatório' : 'Limite de 20 caracteres' }}
+        </small>
       </div>
       <div class="flex flex-col w-full h-40 justify-center gap-5 ">
         <app-button-primary type="submit" class="h-12" title="Adicionar Contato"></app-button-primary>
