@@ -8,7 +8,7 @@ import { lastValueFrom } from 'rxjs';
 })
 export class RedirectifyApiService {
   // Rotas
-  private prefix: string = 'http://localhost:8080/api';
+  private prefix: string = '/api';
   private loginRoute: string = `${this.prefix}/u/login`;
   private logoutRoute: string = `${this.prefix}/u/logout`;
   private finishSignUpRoute: string = `${this.prefix}/kirvano/to_user/`;
