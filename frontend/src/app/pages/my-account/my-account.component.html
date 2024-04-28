@@ -1,4 +1,5 @@
 <app-grid>
+  <p-toast></p-toast>
     <app-navbar></app-navbar>
     <div class="flex flex-col pt-5 p-10 w-full h-full md:bg-[#F7F7F7] overflow-y-auto">
         <app-header title="Minha Conta"></app-header>
@@ -22,11 +23,11 @@
                             Data de Nascimento: {{this.userData?.data_de_nascimento}}
                         </span>
                         <span>Membro desde {{this.userData?.criado_em}}</span>
-                        <button
-                            class="flex items-center justify-between w-72 font-semibold text-1xl border border-[#E0E0E0] border-l-4 h-10 pl-2 rounded-md focus:outline-none focus:border-teal-500 hover:border-teal-500 shadow-md md:w-96">
+                        <button (click)="redifinirSenha()"
+                            class="flex items-center justify-between w-72 font-semibold text-1xl border border-[#E0E0E0] border-l-4 h-10 pl-2 rounded-md focus:outline-none active:border-teal-500 hover:border-teal-500 shadow-md md:w-96">
                             Redefinir Senha da Conta
                             <app-icon-right-arrow class="ml-3 md:ml-16"></app-icon-right-arrow>
-                        </button>                                                    
+                        </button>
                 </div>
                 <div class="md:flex w-full p-4">
                     <div class="w-full flex justify-center">

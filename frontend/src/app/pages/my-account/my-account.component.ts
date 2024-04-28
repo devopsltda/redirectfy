@@ -5,12 +5,14 @@ import { GridComponent } from '../../shared/grid/grid.component';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../shared/shared.module';
 import { RedirectifyApiService } from '../../services/redirectify-api.service';
+import { MessageService } from 'primeng/api';
 
 
 @Component({
   selector: 'app-my-account',
   standalone: true,
   imports: [SharedModule, RouterModule, NavbarComponent, GridComponent, CommonModule],
+  providers:[MessageService],
   templateUrl: './my-account.component.html',
   styleUrl: './my-account.component.scss'
 })
@@ -19,7 +21,7 @@ export class MyAccountComponent implements OnInit {
 
   userData: any
   initials: string = '';
-  constructor(private api: RedirectifyApiService) {
+  constructor(private api: RedirectifyApiService, private messageService:MessageService ) {
 
   }
   async ngOnInit() {
@@ -39,6 +41,18 @@ export class MyAccountComponent implements OnInit {
     this.userData.criado_em = data.toLocaleDateString('pt-BR', options);
     this.userData.data_de_nascimento = dataNascimento.toLocaleDateString('pt-BR', optionsData);
     return this.userData;
+  }
+
+  async redifinirSenha(){
+    try {
+      const res = await this.api.changePasswordUser(this.userData.email)
+      if(res.status == 200){
+        this.messageService.add({severity:'success', summary:'Redifição de senha solicitada',detail:'Email de redefinição enviado, por favor verifique sua caixa de entrada ou span'})
+      }
+    } catch(error){
+      this.messageService.add({severity:'error', summary:'Falha na Redifição de senha ',detail:'Falha ao redefinir a senha, tente novamente mais tarde, caso persista por favor entre em contato com o suporte'})
+    }
+
   }
 
 }

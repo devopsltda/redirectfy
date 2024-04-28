@@ -26,6 +26,8 @@ export class RedirectifyApiService {
   private enableLinkInRedirectRoute:string = `${this.prefix}/r`
   private updateRedirectRoute:string  = `${this.prefix}/r`
   private getPlansRoute:string  = `${this.prefix}/pricing`
+  private changePasswordUserRoute:string  = `${this.prefix}/u/change_password`
+  private getLinksRedirectRoute:string  = `${this.prefix}/r`
   constructor(private http: HttpClient, private cookies: CookieService) {}
   //Planos
 
@@ -43,6 +45,19 @@ export class RedirectifyApiService {
   }
 
   // Usuário
+  async changePasswordUser(email:string){
+    const resGetUser = await lastValueFrom(this.http.patch(this.changePasswordUserRoute,{email:email},{withCredentials:true,observe:'response'}))
+    .catch((error) => {
+      throw {
+        status: error.status,
+        statusText: error.statusText,
+        error: error.error,
+      };
+    });
+
+    return resGetUser
+  }
+
   async getUser(){
     const resGetUser = await lastValueFrom(this.http.get(this.getUserRoute,{withCredentials:true,observe:'response'}))
     .catch((error) => {
@@ -57,6 +72,21 @@ export class RedirectifyApiService {
   }
 
   // redirecionadores
+  async getLinksRedirect(hash:string){
+
+    const resGetRedirect = await lastValueFrom(this.http.get(`${this.getLinksRedirectRoute}/${hash}/links`,{withCredentials:true,observe:'response'}))
+    .catch((error) => {
+      throw {
+        status: error.status,
+        statusText: error.statusText,
+        error: error.error,
+      };
+    });
+
+    return resGetRedirect
+
+  }
+
   async updateRedirect(hash:string,data:any){
 
     const resGetRedirect = await lastValueFrom(this.http.patch(`${this.updateRedirectRoute}/${hash}`,data,{withCredentials:true,observe:'response'}))
@@ -99,7 +129,7 @@ export class RedirectifyApiService {
   }
 
   async updateLinkInRedirect(hash:string,idLink:number,data:any){
-    const resGetRedirect = await lastValueFrom(this.http.patch(`${this.updateLinkInRedirectRoute}/${hash}/links/${idLink}`,[data],{withCredentials:true,observe:'response'}))
+    const resGetRedirect = await lastValueFrom(this.http.patch(`${this.updateLinkInRedirectRoute}/${hash}/links/${idLink}`,data,{withCredentials:true,observe:'response'}))
     .catch((error) => {
       throw {
         status: error.status,
