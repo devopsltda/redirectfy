@@ -14,6 +14,8 @@ import { authGuard } from './guard/auth.guard';
 import { BuyNowComponent } from './pages/buy-now/buy-now.component';
 import { EditRedirectComponent } from './pages/edit-redirect/edit-redirect.component';
 import { SupportComponent } from './pages/support/support.component';
+import { RedirecionadorComponent } from './pages/redirecionador/redirecionador.component';
+import { ChangePlanComponent } from './pages/change-plan/change-plan.component';
 
 
 export const routes: Routes = [
@@ -26,11 +28,13 @@ export const routes: Routes = [
   {path:'newPassword',component:ResetPasswordComponent},
   {path:'newPasswordComplete',component:ResetCompleteComponent},
   {path:'account',component:MyAccountComponent},
+  {path:'account/changePlan',component:ChangePlanComponent},
   {path:'support',component:SupportComponent},
   {path:'newRedirect',component:CreateRedirectComponent},
   {path:'buyNow',component:BuyNowComponent},
   {path:'home',component:HomeComponent,canActivate:[authGuard]},
   {path:'home/:hash_redirect',component:EditRedirectComponent},
+  {path:'to/:hash', component:RedirecionadorComponent},
 
 
 
