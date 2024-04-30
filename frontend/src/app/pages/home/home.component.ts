@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit {
         this.message.add({summary:"Falha na ação",detail:"Falha ao deletar, ação não concluida",severity:'error'})
       }
     } else if(event == 'copy'){
-      this.cliboardService.copyFromContent(`${item.codigo_hash}`)
+      this.cliboardService.copyFromContent(`redirectfy.fly.dev/to/${item.codigo_hash}`)
       this.message.add({summary:"Link Copiado",detail:"O link de redirecionamento foi copiado com sucesso",severity:'success'})
     }
   }
