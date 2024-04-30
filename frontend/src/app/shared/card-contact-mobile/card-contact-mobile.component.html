@@ -1,12 +1,12 @@
 <div class="flex text-lg bg-[#F7F7F7]   {{isTelegram?'text-blue-400':'text-[#3CB339]'}}  items-center justify-center border-l-4 {{isTelegram?'border-l-blue-400':'border-l-[#3CB339]'}}  hover:bg-gradient-to-r  gap-3 drop-shadow  rounded-lg w-64 h-12 transition-all ease-in-out duration-300  {{ativo?'':'text-gray-400 border-l-gray-400 '}} ">
-  <p class="flex justify-center pl-2 text-[18px]">{{cardName}}</p>
+  <p class="flex justify-center pl-2 w-full text-[18px]">{{cardName}}</p>
   <span class="flex pr-2 relative h-full items-center">
     <button (click)="menuIsOpen = !menuIsOpen" >
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 rotate-90">
         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
       </svg>
     </button>
-    <div class="absolute {{menuIsOpen?'flex':'hidden'}} flex-col rounded-md justify-evenly -top-12 -right-14 bg-white shadow-md border w-14 items-center pb-1  ">
+    <div class="absolute {{menuIsOpen?'flex':'hidden'}} flex-col md:flex-row rounded-md justify-evenly -top-10 md:-top-8 -right-14 mr-2 gap-2 p-1 bg-white shadow-md border items-center">
       <button title="Editar" (click)="cardEventEmmiter('editar') ">
         <svg class="w-7 h-7 fill-gray-500" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clip-path="url(#clip0_902_1985)">
