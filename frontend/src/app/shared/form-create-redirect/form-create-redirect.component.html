@@ -129,9 +129,8 @@
             <!-- END Input Nome Contato -->
           </div>
         <small *ngIf="this.whatsappForm.controls['nome'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio<br></small>
-        <small *ngIf="this.whatsappForm.controls['nome'].dirty && submitted && (this.whatsappForm.controls['nome'].value?.length < 3 || this.whatsappForm.controls['nome'].value?.length >= 20)" class="text-red-500 ml-8">
-          {{ this.whatsappForm.controls['nome'].value?.length < 3 ? 'Mínimo 3 caracteres' : 'Limite de 20 caracteres' }}
-        </small>
+        <small *ngIf="this.whatsappForm.controls['nome'].value?.length >= 20" class="text-red-500 ml-8">Limite de 20 caracteres<br></small>
+        <small *ngIf="this.whatsappForm.controls['nome'].dirty && this.whatsappForm.controls['nome'].value?.length < 3" class="text-red-500 ml-8">Mínimo 3 caracteres</small>
         </div>
           <div class="flex flex-col">
             <div class="flex gap-2">
@@ -194,9 +193,8 @@
           <!-- END INPUT NOME  -->
         </div>
         <small *ngIf="this.telegramForm.controls['nome'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio<br></small>
-        <small *ngIf="this.telegramForm.controls['nome'].dirty && submitted && (this.telegramForm.controls['nome'].value?.length < 3 || this.telegramForm.controls['nome'].value?.length >= 20)" class="text-red-500 ml-8">
-          {{ this.telegramForm.controls['nome'].value?.length < 3 ? 'Mínimo 3 caracteres' : 'Limite de 20 caracteres' }}
-        </small>
+        <small *ngIf="this.telegramForm.controls['nome'].value?.length >= 20" class="text-red-500 ml-8">Limite de 20 caracteres<br></small>
+        <small *ngIf="this.telegramForm.controls['nome'].dirty && this.telegramForm.controls['nome'].value?.length < 3" class="text-red-500 ml-8">Mínimo 3 caracteres</small>
       </div>
       <div class="flex flex-col w-full h-40 justify-center gap-5 ">
         <app-button-primary type="submit" class="h-12" title="Adicionar Contato"></app-button-primary>
@@ -234,7 +232,7 @@
       <h4 class=" flex text-lg h-full whitespace-nowrap items-center  text-gray-500 font-semibold w-full justify-center  ">Titulo do Redirect</h4>
     </span>
     <div class="flex gap-2 p-float-label">
-      <input required [(ngModel)]="redirectName" id="t-numero" type="text" pInputText class="flex   border w-64 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm"/>
+      <input required [(ngModel)]="redirectName" id="t-numero" type="text" pInputText class="flex   border w-64 h-10 focus:border-teal-500 hover:border-teal-500 pl-2 text-sm" minlength="3" maxlength="20"/>
       <label for="t-numero" class="flex  gap-2 items-center ease-in-out duration-300">Insira um Nome</label>
     </div>
     <div class="w-96 h-full flex text-sm font-semibold flex-col items-center">
