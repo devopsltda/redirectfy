@@ -189,8 +189,8 @@ export class FormCreateRedirectComponent {
       this.redirectName = `Redirect #${this.generateRandomInteger(1,100)}`
     }
 
-    if (this.redirectName.length < 3 || this.redirectName.length > 120) {
-      this.messageService.add({summary: "Falha ao Criar Redirecionador", detail: 'Por favor, insira um nome entre 3 e 120 caracteres', severity: 'error'});
+    if (this.redirectName.length < 3 || this.redirectName.length > 20) {
+      this.messageService.add({summary: "Falha ao Criar Redirecionador", detail: 'Por favor, insira um nome entre 3 e 20 caracteres', severity: 'error'});
     } else {
       try {
         const resApi = await this.api.createRedirect(this.redirectName, this.prioridade, this.submitData);
