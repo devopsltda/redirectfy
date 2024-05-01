@@ -7,7 +7,14 @@
 
         <span class="flex w-full h-20 md:h-40 px-3 justify-center items-center relative ">
           <span class="flex gap-4 items-center">
-            <input pInputText [disabled]="disableEditNome" required class=" flex text-lg h-full w-fit whitespace-nowrap items-center {{disableEditNome?'':'border-2 border-teal-400'}} text-gray-500 font-semibold justify-center md:text-3xl text-center  " [(ngModel)]="redirectName">
+            <div class="flex flex-col justify-center w-full items-center gap-2">
+              <input pInputText [disabled]="disableEditNome" required class="flex mt-14 h-16 text-lg w-fit whitespace-nowrap items-center {{disableEditNome?'':'border-2 border-teal-400'}} text-gray-500 font-semibold justify-center md:text-3xl text-center"
+                [(ngModel)]="redirectName" minlength="3" maxlength="20" #redirectInput="ngModel">
+                <div class="h-14 w-full flex justify-center">
+                  <small *ngIf="redirectInput.dirty && this.redirectName.length >= 20" class="text-red-500">Limite de 20 caracteres</small>
+                  <small *ngIf="redirectInput.dirty && this.redirectName.length < 3" class="text-red-500">Mínimo 3 caracteres</small>
+                </div>
+            </div>
             <button (click)="renameTitle()" class=" p-2 border-2 border-teal-400 rounded-md shadow-sm">
               <svg  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-teal-400 {{disableEditNome?'':'hidden'}}">
               <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
@@ -182,9 +189,8 @@
               <!-- END Input Nome Contato -->
             </div>
             <small *ngIf="this.whatsappForm.controls['nome'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio<br></small>
-            <small *ngIf="this.whatsappForm.controls['nome'].dirty && submitted && (this.whatsappForm.controls['nome'].value?.length < 3 || this.whatsappForm.controls['nome'].value?.length >= 20)" class="text-red-500 ml-8">
-              {{ this.whatsappForm.controls['nome'].value?.length < 3 ? 'Mínimo 3 caracteres' : 'Limite de 20 caracteres' }}
-            </small>
+            <small *ngIf="this.whatsappForm.controls['nome'].value?.length >= 20" class="text-red-500 ml-8">Limite de 20 caracteres<br></small>
+            <small *ngIf="this.whatsappForm.controls['nome'].dirty && this.whatsappForm.controls['nome'].value?.length < 3" class="text-red-500 ml-8">Mínimo 3 caracteres</small>
           </div>
             <div class="flex flex-col">
               <div class="flex gap-2">
@@ -253,9 +259,8 @@
             <!-- END Input Nome Contato -->
           </div>
           <small *ngIf="this.telegramForm.controls['nome'].invalid && submitted" class="text-red-500 ml-8">Este campo é obrigatorio<br></small>
-          <small *ngIf="this.telegramForm.controls['nome'].dirty && submitted && (this.telegramForm.controls['nome'].value?.length < 3 || this.telegramForm.controls['nome'].value?.length >= 20)" class="text-red-500 ml-8">
-            {{ this.telegramForm.controls['nome'].value?.length < 3 ? 'Minimo 3 caracteres' : 'Limite de 20 caracteres' }}
-          </small>
+          <small *ngIf="this.telegramForm.controls['nome'].value?.length >= 20" class="text-red-500 ml-8">Limite de 20 caracteres<br></small>
+          <small *ngIf="this.telegramForm.controls['nome'].dirty && this.telegramForm.controls['nome'].value?.length < 3" class="text-red-500 ml-8">Mínimo 3 caracteres</small>
         </div>
           <div class="flex flex-col w-full h-40 justify-center gap-5 ">
             <app-button-primary *ngIf="formStep == 'formAddT';else elseT" type="submit" class="h-12" title='Adicionar Contato'></app-button-primary>
