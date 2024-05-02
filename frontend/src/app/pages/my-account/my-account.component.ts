@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { GridComponent } from '../../shared/grid/grid.component';
 import { CommonModule } from '@angular/common';
@@ -21,14 +21,16 @@ export class MyAccountComponent implements OnInit {
 
   userData: any
   initials: string = '';
-  constructor(private api: RedirectifyApiService, private messageService:MessageService ) {
+  constructor(private api: RedirectifyApiService, private messageService:MessageService,private router:Router, private activatedRoute:ActivatedRoute ) {
 
   }
   async ngOnInit() {
     await this.getUserData()
   }
 
-
+  goChangePlan(){
+    this.router.navigate(['account/','changePlan'])
+  }
 
 
   async getUserData() {
