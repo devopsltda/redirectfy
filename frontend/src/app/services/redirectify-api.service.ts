@@ -27,7 +27,7 @@ export class RedirectifyApiService {
   private updateRedirectRoute:string  = `${this.prefix}/r`
   private getPlansRoute:string  = `${this.prefix}/pricing`
   private changePasswordUserRoute:string  = `${this.prefix}/u/change_password`
-  private getLinksRedirectRoute:string  = `${this.prefix}/r`
+  private getLinksRedirectRoute:string  = `${this.prefix}/to`
   constructor(private http: HttpClient, private cookies: CookieService) {}
   //Planos
 
@@ -72,9 +72,9 @@ export class RedirectifyApiService {
   }
 
   // redirecionadores
-  async getLinksRedirect(hash:string){
+  async getToLinksRedirect(hash:string){
 
-    const resGetRedirect = await lastValueFrom(this.http.get(`${this.getLinksRedirectRoute}/${hash}/links`,{withCredentials:true,observe:'response'}))
+    const resGetRedirect = await lastValueFrom(this.http.get(`${this.getLinksRedirectRoute}/${hash}`,{withCredentials:true,observe:'response'}))
     .catch((error) => {
       throw {
         status: error.status,
