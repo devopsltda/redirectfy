@@ -9,7 +9,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   styleUrl: './card-subscription-plan.component.scss'
 })
 export class CardSubscriptionPlanComponent implements OnInit {
-
+  @Input() disable:boolean = false
   @Input() pricing:number = 555
   @Input() isAnnual:boolean = false
   @Input() planName:string = 'Nome do Plano'

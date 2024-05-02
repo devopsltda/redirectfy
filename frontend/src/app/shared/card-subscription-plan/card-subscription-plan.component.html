@@ -1,4 +1,4 @@
-<div class="{{bgCardColor}} w-64 h-44 p-4 flex flex-col justify-between relative rounded-lg md:h-[30rem] md:w-72 xl:w-[24rem] xl:h-[28rem] md:items-center md:pb-2 border">
+<div class=" relative {{bgCardColor}} w-64 h-44 p-4 flex flex-col justify-between relative rounded-lg md:h-[30rem] md:w-72 xl:w-[24rem] xl:h-[28rem] md:items-center md:pb-2 border">
 
   <span class="flex w-full pl-4 items-center gap-2 border-b-gray-600  ">
     <svg xmlns="http://www.w3.org/2000/svg" class="w-12 md:w-16 {{logoFillColor}} " viewBox="0 0 48 47" fill="none">
@@ -10,7 +10,7 @@
     </div>
   </span>
   <span class="flex flex-row-reverse ">
-    <span class=" {{bgPricingColor}} rounded-md text-white w-fit px-3 py-1 absolute -bottom-6 -right-1 md:hidden"> R${{pricing}}{{isAnnual?'/Ano':'/Mês'}}</span>
+    <span class=" {{bgPricingColor}} rounded-md text-white w-fit px-3 py-1 absolute -bottom-6 -right-1 md:hidden"> {{disable?'Plano Atual':'R$'+(pricing)+(isAnnual?'/Ano':'/Mês')}}</span>
   </span>
   <div>
     <ng-content></ng-content>
@@ -22,5 +22,10 @@
     <small class="text-[10px]">*Impostos locais podem ser aplicados</small>
     </div>
   </div>
-  <button (click)="onClickEvent()"  class="hidden h-10 bg-teal-400 bg-opacity-70 text-white w-56 md:inline items-center justify-center text-[20px] font-semibold rounded-md">Prosseguir</button>
+  <button (click)="onClickEvent()" [disabled]="disable"   class="hidden h-10 bg-teal-400 {{disable?'bg-gray-400':''}} bg-opacity-70 text-white w-56 md:inline items-center justify-center text-[20px] font-semibold rounded-md">{{disable?'Plano Atual':'Prosseguir'}}</button>
+  <button (click)="onClickEvent()"  [disabled]="disable"   class=" md:hidden absolute flex items-center {{disable?'bg-gray-400':''}}  -right-10  bottom-11  bg-teal-400 text-white justify-center font-semibold text-sm rounded-3xl h-16 w-16">
+    <svg xmlns="http://www.w3.org/2000/svg" class=" stroke-white w-10 h-10 " viewBox="0 0 24 24" >
+    <path d="M6 12H18M18 12L13 7M18 12L13 17" stroke="current" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </button>
 </div>
