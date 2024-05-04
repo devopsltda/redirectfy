@@ -24,7 +24,7 @@
       @if(createDataEmpty()){
         <div class="flex md:flex-row h-fit  flex-col md:items-center  gap-4 md:gap-8">
           <!-- Alternar Prioridade -->
-          <div *ngIf="this.createData['whatsappData'] != undefined && this.createData['telegramData'] != undefined" class="md:flex flex-col hidden text-sm   gap-4  h-full items-center">
+          <div *ngIf="this.createData['whatsappData'] != undefined && this.createData['telegramData'] != undefined && this.createData['whatsappData'].length != 0 && this.createData['telegramData'].length != 0" class="md:flex flex-col hidden text-sm   gap-4  h-full items-center">
             <p>Prioridade</p>
             <button (click)="prioridade == 'whatsapp,telegram'? prioridade = 'telegram,whatsapp': prioridade = 'whatsapp,telegram'" class="bg-[#F7F7F7] w-14 h-14 rounded-md drop-shadow group hover:bg-[rgb(53,181,174,1)] flex items-center justify-center transition-all ease-in-out duration-300">
               <svg class="w-8 h-8 fill-[#257F7A] group-hover:fill-white" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -39,10 +39,12 @@
                 </svg>
             </button>
           </div>
-          <div class="flex flex-col gap-5 md:gap-8   {{this.createData['whatsappData'] != undefined && this.createData['telegramData'] != undefined?'md:pr-40 md:pl-8':'md:pl-0 md:pr-0'}}">
+          <div class="flex flex-col gap-5 md:gap-8    {{this.createData['whatsappData'] != undefined && this.createData['telegramData'] != undefined  && this.createData['telegramData']?.length != 0 && createData['whatsappData']?.length != 0 ?'md:pr-40 md:pl-8':'md:pl-0 md:pr-0'}}">
             <!-- Botão links wpp -->
-            <button  (click)="getContacts('whatsapp')" *ngIf="this.createData['whatsappData'] != undefined" (click)="formStep = 'getWContacts'" class=" flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7]  shadow-md text-sm items-center justify-around rounded-md border-l-4 border-l-green-400 transition-all {{prioridade=='whatsapp,telegram' && (createData['whatsappData'] != 0 && createData['telegramData'] != 0) ?'':'translate-y-14 md:translate-y-20'}} ">
-              {{prioridade == 'whatsapp,telegram'?'1°':'2°'}}
+            <button  (click)="getContacts('whatsapp')" *ngIf="this.createData['whatsappData']  != undefined  && this.createData['whatsappData']?.length != 0" (click)="formStep = 'getWContacts'" class=" flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7]  shadow-md text-sm items-center justify-around rounded-md border-l-4 border-l-green-400 transition-all {{prioridade=='whatsapp,telegram' && (createData['telegramData']?.length != 0 || createData['telegramData'] == undefined ||createData['telegramData']?.length == 0 )?'':'translate-y-14 md:translate-y-20'}} ">
+              <span class="{{createData['telegramData'] != undefined && createData['whatsappData']!= undefined && createData['telegramData'].length != 0?'':'hidden'}}">
+                {{prioridade == 'whatsapp,telegram'?'1°':'2°'}}
+              </span>
               <app-icon-whatsapp ngClass="w-5 h-5"></app-icon-whatsapp>
              Contatos do WhatsApp
             <svg class="w-5 h-5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -57,8 +59,10 @@
             </svg>
             </button>
              <!-- END Botão links wpp -->
-            <button (click)="getContacts('telegram')" *ngIf="this.createData['telegramData'] != undefined" class="flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7] shadow-md text-sm items-center justify-between px-[0.95rem]  rounded-md border-l-4 border-l-[#28A9EA] transition-all {{prioridade=='whatsapp,telegram' && (createData['whatsappData'] != 0 && createData['telegramData'] != 0)?'':'-translate-y-14 md:-translate-y-20'}}">
-              {{prioridade == 'whatsapp,telegram'?'2°':'1°'}}
+            <button (click)="getContacts('telegram')" *ngIf="this.createData['telegramData'] != undefined && this.createData['telegramData'].length != 0" class="flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7] shadow-md text-sm items-center justify-between px-[0.95rem]  rounded-md border-l-4 border-l-[#28A9EA] transition-all {{prioridade=='telegram,whatsapp' && createData['whatsappData']?.length != 0 ?'-translate-y-14 md:-translate-y-20':''}} ">
+              <span class="{{createData['telegramData'] != undefined && createData['whatsappData'] != undefined && createData['whatsappData'].length != 0?'':'hidden'}}">
+                {{prioridade == 'whatsapp,telegram'?'2°':'1°'}}
+              </span>
             <app-icon-telegram ngClass="w-[1.1rem] h-5"></app-icon-telegram>
              Links do Telegram
               <svg class="w-5 h-5" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">

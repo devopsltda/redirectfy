@@ -80,8 +80,14 @@ export class FormCreateRedirectComponent {
     } else if (event == 'deletar') {
       if (data.plataforma == 'whatsapp') {
           this.createData['whatsappData'] = this.createData['whatsappData'].filter((item: any) => item.nome !== data.nome);
+          if(this.createData['whatsappData'].length == 0 ){
+            this.prioridade = 'telegram,whatsapp'
+          }
       } else {
         this.createData['telegramData'] = this.createData['telegramData'].filter((item: any) => item.nome !== data.nome);
+        if(this.createData['telegramData'].length == 0 ){
+          this.prioridade = 'whatsapp,telegram'
+        }
       }
   }
 
