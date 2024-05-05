@@ -41,7 +41,6 @@ export class RedirecionadorComponent implements OnInit {
 
   async ngOnInit() {
     this.data = await this.api.getToLinksRedirect(this.redirectHash)
-    console.log(this.data)
     if(this.data.body.links?.[0]?.plataforma == 'whatsapp'){
       this.linkWhatsapp = this.data.body.links?.[0].link
       this.linkTelegram = this.data.body.links?.[1].link
@@ -50,6 +49,7 @@ export class RedirecionadorComponent implements OnInit {
       this.linkTelegram = this.data.body.links?.[0].link
     }
     this.openDialog()
+
   }
 
   goLinkTelegram(){
@@ -61,26 +61,31 @@ export class RedirecionadorComponent implements OnInit {
   }
 
  whatsappLinkToHook(link: string): string {
-    // Expressão regular para encontrar tudo após a última '/'
-    const regex = /[^/]*$/;
-    // Encontra o que está após a última '/' no link
-    const match = link.match(regex);
-    if (match) {
-        // Pega a parte correspondente ao que está após a última '/' e adiciona ao link 'whatsapp://'
-        return 'whatsapp://' + match[0];
-    } else {
-        // Se não encontrar nada após a última '/', retorna o link original
-        return link;
-    }
+    // Extrair o número de telefone do link
+    const phoneRegex = /\+\d+/;
+    const phoneMatch = link.match(phoneRegex);
+    const phone = phoneMatch ? phoneMatch[0] : '';
+
+    // Extrair o texto do link
+    const textRegex = /text=(.*)/;
+    const textMatch = link.match(textRegex);
+    const newText = textMatch ? textMatch[1] : '';
+
+    // Criar o novo link do WhatsApp com o número de telefone e o texto
+    const whatsappLink = `whatsapp://send/?phone=${phone}&text=${newText}`;
+
+    return whatsappLink;
 }
 telegramLinkToHook(link: string): string {
   // Expressão regular para encontrar tudo após a última barra do "https://t.me/"
-  const regex = /https:\/\/t\.me\/([^/]+)$/;
+  const regex = /https:\/\/t\.me\/\+?([^/]+)$/;
   // Encontra o que está após a última barra do "https://t.me/" no link
   const match = link.match(regex);
   if (match) {
-      // Pega a parte correspondente ao que está após a última barra do "https://t.me/" e retorna
-      return `tg://join?invite=${match[1]}`;
+      // Remove o sinal de mais (+) se estiver presente no código de convite
+      const inviteCode = match[1].startsWith('+') ? match[1].slice(1) : match[1];
+      // Retorna o link do Telegram com o código de convite modificado
+      return `tg://join?invite=${inviteCode}`;
   } else {
       // Se não encontrar "https://t.me/" no link, retorna o link original
       return link;
