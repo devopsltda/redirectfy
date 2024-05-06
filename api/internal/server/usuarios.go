@@ -105,6 +105,11 @@ func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 //
 // @Router  /api/kirvano [post]
 func (s *Server) KirvanoCreate(c echo.Context) error {
+	if c.Request().Header.Get("Security-Token") != "abc123" {
+				utils.ErroLog("KirvanoCreate", "Erro no token de segurança passado pela Kirvano", nil)
+				return utils.Erro(http.StatusUnauthorized, "Você não tem o que é necessário para o usuário.")
+	}
+
 	var parametros parametrosKirvano
 
 	var erros []string
