@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { lastValueFrom } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RedirectifyApiService {
   // Rotas
-  private prefix: string = 'http://localhost:8080/api';
+  private prefix: string = environment.apiUrl;
   private loginRoute: string = `${this.prefix}/u/login`;
   private logoutRoute: string = `${this.prefix}/u/logout`;
   private finishSignUpRoute: string = `${this.prefix}/kirvano/to_user/`;

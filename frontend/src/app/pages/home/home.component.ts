@@ -6,6 +6,7 @@ import { RedirectifyApiService } from '../../services/redirectify-api.service';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { MessageService } from 'primeng/api';
 import { ClipboardService } from 'ngx-clipboard';
+import { environment } from '../../../environments/environment';
 
 
 
@@ -43,7 +44,7 @@ export class HomeComponent implements OnInit {
         this.message.add({summary:"Falha na ação",detail:"Falha ao deletar, ação não concluida",severity:'error'})
       }
     } else if(event == 'copy'){
-      this.cliboardService.copyFromContent(`https://redirectfy.fly.dev/to/${item.codigo_hash}`)
+      this.cliboardService.copyFromContent(`${environment.frontUrl}/to/${item.codigo_hash}`)
       this.message.add({summary:"Link Copiado",detail:"O link de redirecionamento foi copiado com sucesso",severity:'success'})
     }
   }
