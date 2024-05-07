@@ -19,7 +19,7 @@ func (pa *PlanoDeAssinaturaModel) ReadByNome(nome string) (PlanoDeAssinatura, er
 	var planoDeAssinatura PlanoDeAssinatura
 
 	row := pa.DB.QueryRow(
-		"SELECT NOME, VALOR, LIMITE_REDIRECIONADORES, ORDENACAO_ALEATORIA_LINKS FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL AND NOME = ?",
+		"SELECT NOME, VALOR, LIMITE_REDIRECIONADORES, ORDENACAO_ALEATORIA_LINKS FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL AND NOME != 'Administrador' && NOME = ?",
 		nome,
 	)
 
@@ -42,7 +42,7 @@ func (pa *PlanoDeAssinaturaModel) ReadByNome(nome string) (PlanoDeAssinatura, er
 func (pa *PlanoDeAssinaturaModel) ReadAll() ([]PlanoDeAssinatura, error) {
 	var planosDeAssinatura []PlanoDeAssinatura
 
-	rows, err := pa.DB.Query("SELECT NOME, VALOR, LIMITE_REDIRECIONADORES, ORDENACAO_ALEATORIA_LINKS FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL")
+	rows, err := pa.DB.Query("SELECT NOME, VALOR, LIMITE_REDIRECIONADORES, ORDENACAO_ALEATORIA_LINKS FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL AND NOME != 'Administrador'")
 
 	if err != nil {
 		return nil, err
