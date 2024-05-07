@@ -1,9 +1,9 @@
 <app-grid>
   <p-toast></p-toast>
     <app-navbar></app-navbar>
-    <div class="flex flex-col pt-5 p-10 w-full h-full md:bg-[#F7F7F7] overflow-y-auto">
+    <div class="flex flex-col pt-5 px-10 w-full h-full md:bg-[#F7F7F7] overflow-y-auto">
         <app-header title="Minha Conta"></app-header>
-        <app-content-window>
+        <app-content-window class="h-full">
             <div class="flex flex-col justify-center items-center w-full h-full pt-8 md:bg-white md:border md:rounded-[10px] md:gap-4">
                 <div class="flex flex-col items-center gap-4 justify-center">
                         <span class="bg-[#F7F7F7] text-[16px] flex items-center pl-2 relative w-72 h-10 border border-[#E0E0E0] border-l-4 rounded-md border-l-teal-500 shadow-md md:w-96 md:text-[20px] text-gray-500">
@@ -42,5 +42,8 @@
                 </div>
             </div>
         </app-content-window>
+
+          <app-devops-brand></app-devops-brand>
+
     </div>
 </app-grid>
