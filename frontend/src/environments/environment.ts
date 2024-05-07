@@ -1,5 +1,5 @@
 export const environment = {
   production:true,
   apiUrl:'/api',
-  frontUrl:''
+  frontUrl:'https://redirectfy.com'
 };
