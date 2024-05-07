@@ -41,6 +41,7 @@ export class RedirecionadorComponent implements OnInit {
 
   async ngOnInit() {
     this.data = await this.api.getToLinksRedirect(this.redirectHash)
+    console.log(this.data)
     if(this.data.body.links?.[0]?.plataforma == 'whatsapp'){
       this.linkWhatsapp = this.data.body.links?.[0].link
       this.linkTelegram = this.data.body.links?.[1].link
@@ -60,22 +61,23 @@ export class RedirecionadorComponent implements OnInit {
     return  window.location.href = this.linkWhatsapp;
   }
 
- whatsappLinkToHook(link: string): string {
+  whatsappLinkToHook(link: string): string {
     // Extrair o número de telefone do link
-    const phoneRegex = /\+\d+/;
+    const phoneRegex = /\+(\d+)/;
     const phoneMatch = link.match(phoneRegex);
-    const phone = phoneMatch ? phoneMatch[0] : '';
+    const phone = phoneMatch ? phoneMatch[1] : '';
 
     // Extrair o texto do link
-    const textRegex = /text=(.*)/;
+    const textRegex = /text=([^&]*)/;
     const textMatch = link.match(textRegex);
-    const newText = textMatch ? textMatch[1] : '';
+    const newText = textMatch ? decodeURIComponent(textMatch[1]) : '';
 
     // Criar o novo link do WhatsApp com o número de telefone e o texto
-    const whatsappLink = `whatsapp://send/?phone=${phone}&text=${newText}`;
+    const whatsappLink = `whatsapp://send/app/?phone=${phone}&text=${newText}`;
 
     return whatsappLink;
 }
+
 telegramLinkToHook(link: string): string {
   // Expressão regular para encontrar tudo após a última barra do "https://t.me/"
   const regex = /https:\/\/t\.me\/\+?([^/]+)$/;

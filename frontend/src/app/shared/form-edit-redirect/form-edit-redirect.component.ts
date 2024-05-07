@@ -93,10 +93,10 @@ export class FormEditRedirectComponent implements OnInit {
 
   async getRedirectData() {
     this.redirectData = await this.api.getRedirect(this.redirectHash);
-    const whatsappData = this.redirectData.links.filter(
+    const whatsappData = this.redirectData?.links?.filter(
       (link: any) => link.plataforma === 'whatsapp'
     );
-    const telegramData = this.redirectData.links.filter(
+    const telegramData = this.redirectData?.links?.filter(
       (link: any) => link.plataforma === 'telegram'
     );
     Object.assign(this.redirectData, { whatsappData, telegramData });
@@ -148,7 +148,7 @@ export class FormEditRedirectComponent implements OnInit {
       } catch (error) {
         this.messageService.add({
           summary: 'Falha na Ação',
-          detail: 'Ocorreu um erro ao trocar a prioridade, ação não executada',
+          detail: 'Ocorreu um erro ao habilitar o link, ação não executada',
           severity: 'error',
         });
       }
@@ -159,7 +159,28 @@ export class FormEditRedirectComponent implements OnInit {
       } catch (error) {
         this.messageService.add({
           summary: 'Falha na Ação',
-          detail: 'Ocorreu um erro ao trocar a prioridade, ação não executada',
+          detail: 'Ocorreu um erro ao desabilitar o link, ação não executada',
+          severity: 'error',
+        });
+      }
+    } else if (event == 'deletar') {
+      try {
+        if((this.redirectData?.whatsappData?.length + this.redirectData?.telegramData?.length) <= 1){
+          throw new Error('Redirecionador vazio')
+        }
+        await this.api.deleteLinkInRedirect(this.redirectHash, data.id);
+        await this.ngOnInit();
+      } catch (error:any) {
+        if(error.message == 'Redirecionador vazio'){
+         return this.messageService.add({
+            summary: 'Falha ao Apagar',
+            detail: 'O redirecionador não pode ficar vazio',
+            severity: 'error',
+          });
+        }
+         return this.messageService.add({
+          summary: 'Falha na Ação',
+          detail: 'Ocorreu um erro ao deletar o link, ação não executada',
           severity: 'error',
         });
       }

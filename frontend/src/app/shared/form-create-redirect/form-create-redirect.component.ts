@@ -173,7 +173,7 @@ export class FormCreateRedirectComponent {
       this.submitData.push(
         {
         nome:`${item.nome?item.nome:'+'+item.link}`,
-        link:`https://wa.me/?phone=${item.link}${item.mensagem ? `&text=${encodeURIComponent(item.mensagem)}` : ""}`,
+        link:`https://wa.me/+${item.link}${item.mensagem ? `&text=${encodeURIComponent(item.mensagem)}` : ""}`,
         plataforma:item.plataforma
         }
       )

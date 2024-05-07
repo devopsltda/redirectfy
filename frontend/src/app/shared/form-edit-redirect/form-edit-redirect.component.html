@@ -47,7 +47,7 @@
           <div class="flex md:flex-row h-fit  flex-col md:items-center  gap-4 md:gap-8">
             <!-- Alternar Prioridade -->
 
-            <div *ngIf="this.redirectData?.whatsappData.length != 0 && this.redirectData?.telegramData.length != 0 " class="md:flex flex-col hidden text-sm   gap-4  h-full items-center">
+            <div *ngIf="this.redirectData?.whatsappData?.length != 0 && this.redirectData?.telegramData?.length != 0 " class="md:flex flex-col hidden text-sm   gap-4  h-full items-center">
 
               <p>Prioridade</p>
 
@@ -67,10 +67,10 @@
 
             </div>
 
-            <div class="flex flex-col gap-5 md:gap-8   {{redirectData?.whatsappData.length!= 0 && this.redirectData?.telegramData.length != 0?'md:pr-40 md:pl-8':'md:pl-0 md:pr-0'}}">
+            <div class="flex flex-col gap-5 md:gap-8   {{redirectData?.whatsappData?.length!= 0 && this.redirectData?.telegramData?.length != 0?'md:pr-40 md:pl-8':'md:pl-0 md:pr-0'}}">
               <!-- Botão links wpp -->
-              <button  (click)="getContacts('whatsapp')" *ngIf="this.redirectData?.whatsappData.length" (click)="formStep = 'getWContacts'" class=" flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7]  shadow-md text-sm items-center justify-around rounded-md border-l-4 border-l-green-400 transition-all {{prioridade=='whatsapp,telegram'?'':'translate-y-14 md:translate-y-20'}}">
-                <span class="{{redirectData?.telegramData.length != 0 && redirectData?.whatsappData.length != 0?'':'hidden'}}">
+              <button  (click)="getContacts('whatsapp')" *ngIf="this.redirectData?.whatsappData?.length" (click)="formStep = 'getWContacts'" class=" flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7]  shadow-md text-sm items-center justify-around rounded-md border-l-4 border-l-green-400 transition-all {{prioridade=='whatsapp,telegram'?'':'translate-y-14 md:translate-y-20'}}">
+                <span class="{{redirectData?.telegramData.length != 0 && redirectData?.whatsappData?.length != 0?'':'hidden'}}">
                   {{prioridade == 'whatsapp,telegram'?'1°':'2°'}}
                 </span>
                 <app-icon-whatsapp ngClass="w-5 h-5"></app-icon-whatsapp>
@@ -89,8 +89,8 @@
 
                <!-- END Botão links wpp -->
 
-              <button (click)="getContacts('telegram')" *ngIf="this.redirectData?.telegramData.length " class="flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7] shadow-md text-sm items-center justify-between px-[0.95rem]  rounded-md border-l-4 border-l-[#28A9EA] transition-all  {{prioridade =='telegram,whatsapp' && redirectData?.whatsappData.length != 0 && redirectData?.telegramData.length !=0?'-translate-y-14 md:-translate-y-20':''}}">
-                <span class="{{redirectData?.telegramData.length != 0 && redirectData?.whatsappData.length != 0?'':'hidden'}}">
+              <button (click)="getContacts('telegram')" *ngIf="this.redirectData?.telegramData?.length " class="flex w-72 h-10 md:h-12 md:w-96 bg-[#F7F7F7] shadow-md text-sm items-center justify-between px-[0.95rem]  rounded-md border-l-4 border-l-[#28A9EA] transition-all  {{prioridade =='telegram,whatsapp' && redirectData?.whatsappData?.length != 0 && redirectData?.telegramData?.length !=0?'-translate-y-14 md:-translate-y-20':''}}">
+                <span class="{{redirectData?.telegramData.length != 0 && redirectData?.whatsappData?.length != 0?'':'hidden'}}">
                   {{prioridade == 'whatsapp,telegram'?'2°':'1°'}}
                 </span>
 
@@ -113,7 +113,7 @@
 
       <div class="flex flex-col w-fit md:w-full md:flex-row-reverse md:pt-16  md:pb-10 md:px-10  gap-5 md:justify-evenly">
         <app-button-secundary  class=" w-72 h-12 hidden md:flex"title="Voltar"[routerLink] ="['/home']"></app-button-secundary>
-        <app-button-secundary (click)="trocarPrioridade()"  *ngIf=" redirectData?.whatsappData.length && redirectData?.telegramData.length " class="w-72 group md:hidden"title="Alternar Prioridade">
+        <app-button-secundary (click)="trocarPrioridade()"  *ngIf=" redirectData?.whatsappData?.length && redirectData?.telegramData?.length " class="w-72 group md:hidden"title="Alternar Prioridade">
           <svg class="w-5 h-5 fill-[#257F7A] group-hover:fill-white" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clip-path="url(#clip0_827_1903)">
           <path d="M7.875 2.625L4.375 6.11625H7V12.25H8.75V6.11625H11.375L7.875 2.625ZM14 14.8837V8.75H12.25V14.8837H9.625L13.125 18.375L16.625 14.8837H14Z"/>
