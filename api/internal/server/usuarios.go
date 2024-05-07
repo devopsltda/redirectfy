@@ -18,7 +18,7 @@ import (
 )
 
 type productData struct {
-	OfferName string `json:"offer_name"`
+	Name string `json:"name"`
 }
 
 type customerData struct {
@@ -137,7 +137,7 @@ func (s *Server) KirvanoCreate(c echo.Context) error {
 	if len(parametros.Products) != 1 {
 		utils.DebugLog("KirvanoCreate", "Erro no parâmetro 'products' que possui mais de um produto", nil)
 		erros = append(erros, "Por favor, forneça um único produto no parâmetro 'products'.")
-	} else if err := utils.Validate.Var(parametros.Products[0].OfferName, "required,min=3,max=120"); err != nil {
+	} else if err := utils.Validate.Var(parametros.Products[0].Name, "required,min=3,max=120"); err != nil {
 		utils.DebugLog("KirvanoCreate", "Erro no nome inválido no parâmetro 'products.name'", nil)
 		erros = append(erros, "Por favor, forneça um nome válido (texto de 3 a 120 caracteres) no parâmetro 'products.name'.")
 	}
@@ -153,7 +153,7 @@ func (s *Server) KirvanoCreate(c echo.Context) error {
 		_, err := s.UsuarioModel.ReadByNomeDeUsuario(nomeDeUsuario)
 
 		if err == nil {
-			err := s.UsuarioModel.UpdatePlanoDeAssinatura(nomeDeUsuario, parametros.Products[0].OfferName)
+			err := s.UsuarioModel.UpdatePlanoDeAssinatura(nomeDeUsuario, parametros.Products[0].Name)
 
 			if err != nil {
 				utils.ErroLog("KirvanoCreate", "Erro na atualização do usuário", err)
@@ -168,7 +168,7 @@ func (s *Server) KirvanoCreate(c echo.Context) error {
 			parametros.Customer.Name,
 			nomeDeUsuario,
 			parametros.Customer.Email,
-			parametros.Products[0].OfferName,
+			parametros.Products[0].Name,
 		)
 
 		if err != nil {
@@ -209,6 +209,13 @@ func (s *Server) KirvanoCreate(c echo.Context) error {
 		if err != nil {
 			utils.ErroLog("KirvanoCreate", "Erro na atualização do usuário", err)
 			return utils.Erro(http.StatusInternalServerError, "Não foi possível atualizar o usuário.")
+		}
+
+		err = s.RedirecionadorModel.RemoveAllFromUser(nomeDeUsuario)
+
+		if err != nil {
+			utils.ErroLog("KirvanoCreate", "Erro na remoção dos redirecionadores do usuário", err)
+			return utils.Erro(http.StatusInternalServerError, "Não foi possível remover os redirecionadores do usuário.")
 		}
 	}
 

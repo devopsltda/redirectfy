@@ -205,3 +205,16 @@ func (r *RedirecionadorModel) Remove(codigoHash string) error {
 
 	return nil
 }
+
+func (r *RedirecionadorModel) RemoveAllFromUser(nomeDeUsuario string) error {
+	_, err := r.DB.Exec(
+		"UPDATE REDIRECIONADOR SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE USUARIO = ?",
+		nomeDeUsuario,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
