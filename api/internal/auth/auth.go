@@ -129,7 +129,7 @@ func SetCookieToken(nome, token string, expiraEm time.Time, c echo.Context) {
 func PathWithNoAuthRequired(c echo.Context) bool {
 	return (c.Request().URL.Path == "/api/u/login" && c.Request().Method == "POST") ||
 		(c.Path() == "/api/u/change_password/:hash" && c.Request().Method == "PATCH") ||
-		(c.Path() == "/api/u/:username/change_password" && c.Request().Method == "POST") ||
+		(c.Path() == "/api/u/change_password" && c.Request().Method == "POST") ||
 		(c.Path() == "/api/docs/*" && c.Request().Method == "GET") ||
 		(c.Path() == "/api/pricing" && c.Request().Method == "GET") ||
 		(c.Path() == "/api/pricing/:name" && c.Request().Method == "GET") ||
