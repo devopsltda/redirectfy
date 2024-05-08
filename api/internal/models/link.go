@@ -207,9 +207,9 @@ func LinkPicker(links []Link, isPro bool) (picked_links []Link) {
 		}
 	}
 
-	// Caso o usuário não seja de algum plano "Pro", não há nenhum tipo de
-	// randomização de links selecionados. Caso contrário, os dois links são
-	// escolhidos de forma aleatória entre os links disponíveis.
+	// Caso o usuário não seja de algum plano "Pro" ou "Administrador", não há
+	// nenhum tipo de randomização de links selecionados. Caso contrário, os
+	// dois links são escolhidos de forma aleatória entre os links disponíveis.
 	if !isPro {
 		if len(linksWhatsapp) > 0 {
 			linkWhatsapp = linksWhatsapp[0]
