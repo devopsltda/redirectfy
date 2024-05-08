@@ -58,11 +58,7 @@ export class ResetPasswordComponent {
           }
 
         } catch (error:any) {
-          error.error.forEach(
-            (errorMessage:string)=>{
-            return this.messageService.add({severity:'error',summary:'Falha na Ação',detail:'Erro ao finalizar o cadastro'})
-          }
-        )
+          return this.messageService.add({severity:'error',summary:'Falha na Ação',detail:'Erro ao finalizar o cadastro'})
 
         }
       }
