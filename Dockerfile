@@ -6,6 +6,7 @@ ENV CGO_ENABLED=1
 WORKDIR /app
 
 COPY api/ .
+COPY .env .
 
 RUN apt-get -y update && \
     apt-get install -y --no-install-recommends git make sqlite3 && \
@@ -34,7 +35,7 @@ FROM nginx:bookworm as exec
 WORKDIR /app
 
 # Copy API binary
-COPY --from=api-builder /app/.env .
+COPY .env .
 COPY --from=api-builder /go/bin/main .
 
 # Copy frontend build
