@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { GridComponent } from '../../shared/grid/grid.component';
 import { SharedModule } from '../../shared/shared.module';
 import { Router, RouterModule } from '@angular/router';
 import { RedirectifyApiService } from '../../services/redirectify-api.service';
@@ -26,12 +25,11 @@ export class RecoveryPasswordComponent {
   async recoveryPassword(){
     try {
       const res = await this.api.changePasswordUser(this.recoveryEmail)
-      console.log(res)
       if (res.status == 200){
         this.router.navigate(['/recoverySend'])
       }
     } catch (error) {
-      return this.messageService.add({severity:'erro',summary:'Falha na ação',detail:'Fala ao solicitar redefinição de senha'})
+      return this.messageService.add({severity:'error',summary:'Falha na ação',detail:'Fala ao solicitar redefinição de senha'})
     }
   }
 }
