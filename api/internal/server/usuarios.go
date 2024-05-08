@@ -377,7 +377,7 @@ func (s *Server) UsuarioSolicitarTrocaDeSenha(c echo.Context) error {
 
 	if err != nil {
 		utils.ErroLog("UsuarioSolicitarTrocaDeSenha", "Erro ao procurar um usuário com esse email", err)
-		return utils.Erro(http.StatusInternalServerError, "Não foi procurar um usuário com esse email.")
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível procurar um usuário com esse email.")
 	}
 
 	var valor string
