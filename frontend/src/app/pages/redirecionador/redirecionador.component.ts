@@ -58,6 +58,7 @@ export class RedirecionadorComponent implements OnInit {
   }
 
   goLinkWhatsapp(){
+    console.log(this.linkWhatsapp)
     return  window.location.href = this.linkWhatsapp;
   }
 
@@ -73,7 +74,7 @@ export class RedirecionadorComponent implements OnInit {
     const newText = textMatch ? decodeURIComponent(textMatch[1]) : '';
 
     // Criar o novo link do WhatsApp com o número de telefone e o texto
-    const whatsappLink = `whatsapp://send/app/?phone=${phone}&text=${newText}`;
+    const whatsappLink = `whatsapp://send/app/?phone=${phone}&text=${encodeURI(newText)}`;
 
     return whatsappLink;
 }

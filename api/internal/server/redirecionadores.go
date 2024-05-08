@@ -146,7 +146,7 @@ func (s *Server) RedirecionadorLinksToGoTo(c echo.Context) error {
 		return utils.Erro(http.StatusInternalServerError, "Não foi possível ler o usuário do redirecionador.")
 	}
 
-	picked_links := models.LinkPicker(links, strings.HasPrefix(usuario.PlanoDeAssinatura, "Pro"))
+	picked_links := models.LinkPicker(links, strings.HasPrefix(usuario.PlanoDeAssinatura, "Pro") || usuario.PlanoDeAssinatura == "Administrador")
 
 	return c.JSON(http.StatusOK, RedirecionadorReadByCodigoHashResponse{
 		R: redirecionador,

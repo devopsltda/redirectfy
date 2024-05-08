@@ -67,10 +67,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	// Middleware de CORS
 	api.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     []string{
-			"http://localhost", // Ambiente de desenvolvimento do Angular
-			"http://localhost:80", // Ambiente de desenvolvimento do Angular
-			"http://localhost:4200", // Ambiente de desenvolvimento do Angular
+		AllowOrigins: []string{
+			"http://localhost",           // Ambiente de desenvolvimento do Angular
+			"http://localhost:80",        // Ambiente de desenvolvimento do Angular
+			"http://localhost:4200",      // Ambiente de desenvolvimento do Angular
 			"https://redirectfy.fly.dev", // Ambiente de homologação da aplicação
 		},
 		AllowCredentials: true,
@@ -136,7 +136,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	api.POST("/r", s.RedirecionadorCreate)
 
 	// Rota de rehash tem um middleware específico para verificar se o usuário é
-	// de um plano Pro que tenha acesso a essa funcionalidade.
+	// de um plano Pro ou Administrador que tenha acesso a essa funcionalidade.
 	api.PATCH("/r/:hash/refresh", s.RedirecionadorRefresh, func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			if c.Get("usuario") == nil {
@@ -144,7 +144,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 				return utils.Erro(http.StatusBadRequest, "Você não contém um ou mais dos cookies necessários para autenticação.")
 			}
 
-			if !strings.HasPrefix(c.Get("usuario").(*jwt.Token).Claims.(*auth.Claims).PlanoDeAssinatura, "Pro") {
+			if !strings.HasPrefix(c.Get("usuario").(*jwt.Token).Claims.(*auth.Claims).PlanoDeAssinatura, "Pro") &&
+				c.Get("usuario").(*jwt.Token).Claims.(*auth.Claims).PlanoDeAssinatura != "Administrador" {
 				utils.DebugLog("PricingMiddleware", "O usuário não tem o plano de assinatura apropriado para usar o rehash", nil)
 				return utils.Erro(http.StatusPaymentRequired, "O seu plano de assinatura não oferece o recurso de rehash.")
 			}
