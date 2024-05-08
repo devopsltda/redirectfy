@@ -6,7 +6,6 @@ import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RedirectifyApiService } from '../../services/redirectify-api.service';
 import { MessageService } from 'primeng/api';
-import { error } from 'node:console';
 import { CookieService } from 'ngx-cookie-service';
 
 @Component({
