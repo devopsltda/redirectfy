@@ -4,9 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "development": "ng build",
+    "staging":"ng build --configuration staging",
+    "production": "ng build --configuration production",
     "serve:ssr:redirectfy-frontend": "node dist/redirectfy-frontend/server/server.mjs"
   },
   "private": true,
