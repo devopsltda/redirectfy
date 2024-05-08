@@ -193,6 +193,7 @@ export class RedirectifyApiService {
 
     return resDeleteRedirect
   }
+
   async createRedirect(nome: string, ordem_de_redirecionamento: string,links:{link:string,nome:string,plataforma:string}[]) {
 
     const resCreateRedirect = await lastValueFrom(
@@ -272,6 +273,32 @@ export class RedirectifyApiService {
       this.http.post<any>(
         `${this.finishSignUpRoute}${hash}`,
         { data_de_nascimento: data_de_nascimento, senha: senha_nova },
+        { observe: 'response' }
+      )
+    ).catch((error) => {
+      throw {
+        status: error.status,
+        statusText: error.statusText,
+        error: error.error,
+      };
+    });
+
+    return {
+      status: response.status,
+      statusText: response.statusText,
+      ok: response.ok,
+      message: response.body,
+    };
+  }
+
+  async resetPassword(
+    hash: string,
+    senha_nova: string
+  ) {
+    const response = await lastValueFrom(
+      this.http.post<any>(
+        `${this.finishSignUpRoute}${hash}`,
+        {senha: senha_nova },
         { observe: 'response' }
       )
     ).catch((error) => {
