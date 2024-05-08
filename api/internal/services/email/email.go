@@ -138,13 +138,13 @@ Content-Disposition: inline
         <p style="color: #666; ">Olá {{ .Nome }}!</p>
         <p style="color: #666;">Recebemos uma solicitação de redefinição de senha para a sua conta no Redirectfy. Para fazer isso, basta clicar no botão abaixo para redefinir sua senha.</p>
         <div style="width: 100%; display: flex; justify-content: center;">
-            <a href="{{ .URI }}finishSignup/{{ .Valor }}"
+            <a href="{{ .URI }}newPassword/{{ .Valor }}"
                 style="font-size: 25px; padding: 10px 20px; background-color: #35B5AE; color: #fff; text-decoration: none; border-radius: 3px;">
                 Redefinir senha
             </a>
         </div>
         <p style="color: #666;"">Caso não consiga pelo botão acima, utilize o link abaixo:</p>
-        <p style="color: #666;"">{{ .URI }}finishSignup/{{ .Valor }}</p>
+        <p style="color: #666;"">{{ .URI }}newPassword/{{ .Valor }}</p>
         <p style=" color: #666;">Se não foi você, basta ignorar esse e-mail.</p>
         <p style="color: #666;">Atenciosamente,<br>Equipe do Redirectfy</p>
     </div>
