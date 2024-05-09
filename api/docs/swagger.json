@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "API para interagir com o Redirectify",
-        "title": "API do Redirectify",
+        "description": "API para interagir com o Redirectfy",
+        "title": "API do Redirectfy",
         "contact": {
             "name": "Equipe da DevOps (Pablo Eduardo, Guilherme Bernardo e Eduardo Henrique)",
             "email": "comercialdevops@gmail.com"
@@ -10,7 +10,7 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/kirvano": {
+        "/api/kirvano": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -58,7 +58,7 @@
                 }
             }
         },
-        "/kirvano/to_user/:hash": {
+        "/api/kirvano/to_user/:hash": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -122,7 +122,7 @@
                 }
             }
         },
-        "/pricing": {
+        "/api/pricing": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -159,7 +159,7 @@
                 }
             }
         },
-        "/pricing/:name": {
+        "/api/pricing/:name": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -202,7 +202,7 @@
                 }
             }
         },
-        "/r": {
+        "/api/r": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -303,7 +303,7 @@
                 }
             }
         },
-        "/r/:hash": {
+        "/api/r/:hash": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -450,7 +450,7 @@
                 }
             }
         },
-        "/r/:hash/links": {
+        "/api/r/:hash/links": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -552,7 +552,7 @@
                 }
             }
         },
-        "/r/:hash/links/:id": {
+        "/api/r/:hash/links/:id": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -728,7 +728,7 @@
                 }
             }
         },
-        "/r/:hash/links/:id/disable": {
+        "/api/r/:hash/links/:id/disable": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -781,7 +781,7 @@
                 }
             }
         },
-        "/r/:hash/links/:id/enable": {
+        "/api/r/:hash/links/:id/enable": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -834,7 +834,7 @@
                 }
             }
         },
-        "/r/:hash/refresh": {
+        "/api/r/:hash/refresh": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -880,7 +880,7 @@
                 }
             }
         },
-        "/to/:hash": {
+        "/api/to/:hash": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -926,7 +926,7 @@
                 }
             }
         },
-        "/u": {
+        "/api/u": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -960,7 +960,7 @@
                 }
             }
         },
-        "/u/:username/change_password": {
+        "/api/u/change_password": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -974,11 +974,13 @@
                 "summary": "Exige a troca de senha de um usuário",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Nome de Usuário",
-                        "name": "username",
-                        "in": "path",
-                        "required": true
+                        "description": "Email",
+                        "name": "email",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -1006,7 +1008,7 @@
                 }
             }
         },
-        "/u/change_password/:hash": {
+        "/api/u/change_password/:hash": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -1061,7 +1063,7 @@
                 }
             }
         },
-        "/u/login": {
+        "/api/u/login": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -1124,7 +1126,7 @@
                 }
             }
         },
-        "/u/logout": {
+        "/api/u/logout": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -1154,11 +1156,8 @@
         "Link": {
             "type": "object",
             "properties": {
-                "atualizado_em": {
-                    "type": "string"
-                },
-                "criado_em": {
-                    "type": "string"
+                "ativo": {
+                    "type": "boolean"
                 },
                 "id": {
                     "type": "integer"
@@ -1197,15 +1196,6 @@
         "PlanoDeAssinatura": {
             "type": "object",
             "properties": {
-                "atualizado_em": {
-                    "type": "string"
-                },
-                "criado_em": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
                 "limite_redirecionadores": {
                     "type": "integer"
                 },
@@ -1223,25 +1213,13 @@
         "Redirecionador": {
             "type": "object",
             "properties": {
-                "atualizado_em": {
-                    "type": "string"
-                },
                 "codigo_hash": {
                     "type": "string"
-                },
-                "criado_em": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "nome": {
                     "type": "string"
                 },
                 "ordem_de_redirecionamento": {
-                    "type": "string"
-                },
-                "usuario": {
                     "type": "string"
                 }
             }
@@ -1249,9 +1227,6 @@
         "Usuario": {
             "type": "object",
             "properties": {
-                "atualizado_em": {
-                    "type": "string"
-                },
                 "cpf": {
                     "type": "string"
                 },
@@ -1264,19 +1239,10 @@
                 "email": {
                     "type": "string"
                 },
-                "id": {
-                    "type": "integer"
-                },
                 "nome": {
                     "type": "string"
                 },
-                "nome_de_usuario": {
-                    "type": "string"
-                },
                 "plano_de_assinatura": {
-                    "type": "string"
-                },
-                "senha": {
                     "type": "string"
                 }
             }

@@ -28,6 +28,7 @@ import { IconVisaCardComponent } from './icon-visa-card/icon-visa-card.component
 import { RedirectfyPremiumCardComponent } from './redirectfy-premium-card/redirectfy-premium-card.component';
 import { RedirectfyPremiumCardDesktopComponent } from './redirectfy-premium-card-desktop/redirectfy-premium-card-desktop.component';
 import { IconRightArrowComponent } from './icon-right-arrow/icon-right-arrow.component';
+import { DevopsBrandComponent } from './devops-brand/devops-brand.component';
 
 
 @NgModule({
@@ -60,7 +61,8 @@ import { IconRightArrowComponent } from './icon-right-arrow/icon-right-arrow.com
     ContentGridComponent,
     ToastModule,
     CardSubscriptionPlanComponent,
-    CardContactMobileComponent
+    CardContactMobileComponent,
+    DevopsBrandComponent
 
   ],
   exports:[
@@ -91,7 +93,8 @@ import { IconRightArrowComponent } from './icon-right-arrow/icon-right-arrow.com
     ContentGridComponent,
     ToastModule,
     CardSubscriptionPlanComponent,
-    CardContactMobileComponent
+    CardContactMobileComponent,
+    DevopsBrandComponent
   ]
 })
 export class SharedModule { }

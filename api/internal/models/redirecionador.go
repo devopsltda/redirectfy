@@ -5,11 +5,10 @@ import (
 )
 
 type Redirecionador struct {
-	Id                      int64          `json:"-"`
 	Nome                    string         `json:"nome"`
 	CodigoHash              string         `json:"codigo_hash"`
 	OrdemDeRedirecionamento string         `json:"ordem_de_redirecionamento"`
-	Usuario                 string         `json:"usuario"`
+	Usuario                 string         `json:"-"`
 } // @name Redirecionador
 
 type RedirecionadorModel struct {
@@ -20,12 +19,11 @@ func (r *RedirecionadorModel) ReadByCodigoHash(codigoHash string) (Redirecionado
 	var redirecionador Redirecionador
 
 	row := r.DB.QueryRow(
-		"SELECT ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = ?",
+		"SELECT NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND CODIGO_HASH = ?",
 		codigoHash,
 	)
 
 	if err := row.Scan(
-		&redirecionador.Id,
 		&redirecionador.Nome,
 		&redirecionador.CodigoHash,
 		&redirecionador.OrdemDeRedirecionamento,
@@ -45,7 +43,7 @@ func (r *RedirecionadorModel) ReadAll(nomeDeUsuario string) ([]Redirecionador, e
 	var redirecionadores []Redirecionador
 
 	rows, err := r.DB.Query(
-		"SELECT ID, NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND USUARIO = ?",
+		"SELECT NOME, CODIGO_HASH, ORDEM_DE_REDIRECIONAMENTO, USUARIO FROM REDIRECIONADOR WHERE REMOVIDO_EM IS NULL AND USUARIO = ?",
 		nomeDeUsuario,
 	)
 
@@ -59,7 +57,6 @@ func (r *RedirecionadorModel) ReadAll(nomeDeUsuario string) ([]Redirecionador, e
 		var redirecionador Redirecionador
 
 		if err := rows.Scan(
-			&redirecionador.Id,
 			&redirecionador.Nome,
 			&redirecionador.CodigoHash,
 			&redirecionador.OrdemDeRedirecionamento,
@@ -121,6 +118,8 @@ func (r *RedirecionadorModel) Create(nome, codigoHash, ordemDeRedirecionamento, 
 	return id, nil
 }
 
+// Essa função verifica se o usuário pode criar mais redirecionadores ou se o
+// limite de redirecionadores da sua conta já foi atingida.
 func (r *RedirecionadorModel) WithinLimit(nomeDeUsuario string) (bool, error) {
 	var quantidadeRedirecionadores int
 	var limiteRedirecionadores int
@@ -198,6 +197,19 @@ func (r *RedirecionadorModel) Remove(codigoHash string) error {
 	_, err := r.DB.Exec(
 		"UPDATE REDIRECIONADOR SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE CODIGO_HASH = ?",
 		codigoHash,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *RedirecionadorModel) RemoveAllFromUser(nomeDeUsuario string) error {
+	_, err := r.DB.Exec(
+		"UPDATE REDIRECIONADOR SET REMOVIDO_EM = CURRENT_TIMESTAMP WHERE USUARIO = ?",
+		nomeDeUsuario,
 	)
 
 	if err != nil {

@@ -17,11 +17,11 @@ import (
 	_ "redirectfy/docs"
 )
 
-// @title API do Redirectify
+// @title API do Redirectfy
 //
 // @version 1.0.0
 //
-// @description API para interagir com o Redirectify
+// @description API para interagir com o Redirectfy
 //
 // @contact.name Equipe da DevOps (Pablo Eduardo, Guilherme Bernardo e Eduardo Henrique)
 //
@@ -29,27 +29,55 @@ import (
 func (s *Server) RegisterRoutes() http.Handler {
 	e := echo.New()
 
+	// Middleware de logs
 	e.Use(middleware.Logger())
+
+	// Middleware que adiciona headers que visam aumentar
+	// a segurança da API
 	e.Use(middleware.Secure())
+
+	// Middleware que reinicia o servidor em caso de panic
 	e.Use(middleware.Recover())
+
+	// Middleware de compressão de dados
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
 		Skipper: func(c echo.Context) bool {
 			return strings.Contains(c.Path(), "/docs/index.html")
 		},
 	}))
 
-	e.POST("/api/kirvano", s.KirvanoCreate)
+	// Essa é a única rota que não passa pelo CORS, porque não sabemos qual
+	// o servidor da Kirvano e se ele vai ser persistente. A autenticidade
+	// da requisição deve ser conferido pelo token enviado por eles,
+	// e essa verificação é realizada pelo middleware abaixo.
+	e.POST("/api/kirvano", s.KirvanoCreate, func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			val, ok := c.Request().Header["Security-Token"]
+
+			if !ok || val[0] != utils.KirvanoToken {
+				utils.DebugLog("KirvanoMiddleware", "Token enviado pela Kirvano não corresponde ao KIRVANO_TOKEN", nil)
+				return utils.Erro(http.StatusUnauthorized, "Você não tem permissão para enviar requisições para esse endpoint.")
+			}
+
+			return next(c)
+		}
+	})
 
 	api := e.Group("/api")
+
+	// Middleware de CORS
 	api.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     []string{
-			"http://localhost", // Ambiente de desenvolvimento do Angular
-			"http://localhost:80", // Ambiente de desenvolvimento do Angular
-			"http://localhost:4200", // Ambiente de desenvolvimento do Angular
+		AllowOrigins: []string{
+			"http://localhost",           // Ambiente de desenvolvimento do Angular
+			"http://localhost:80",        // Ambiente de desenvolvimento do Angular
+			"http://localhost:4200",      // Ambiente de desenvolvimento do Angular
 			"https://redirectfy.fly.dev", // Ambiente de homologação da aplicação
 		},
 		AllowCredentials: true,
 	}))
+
+	// Middleware de autenticação (mais especificamente, do que diz respeito
+	// ao token de acesso)
 	api.Use(echojwt.WithConfig(echojwt.Config{
 		ContextKey:  "usuario",
 		SigningKey:  []byte(auth.ChaveDeAcesso),
@@ -75,6 +103,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 			}
 		},
 	}))
+
+	// Middleware que gera mais tokens de acesso baseado na validade do token de
+	// atualização
 	api.Use(auth.TokenRefreshMiddleware)
 
 	// API - Documentação Swagger
@@ -93,7 +124,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	api.POST("/u/login", s.UsuarioLogin)
 	api.POST("/u/logout", s.UsuarioLogout)
 	api.PATCH("/u/change_password/:hash", s.UsuarioTrocaDeSenha)
-	api.PATCH("/u/:username/change_password", s.UsuarioSolicitarTrocaDeSenha)
+	api.PATCH("/u/change_password", s.UsuarioSolicitarTrocaDeSenha)
 
 	// API - Plano de Assinatura
 	api.GET("/pricing", s.PlanoDeAssinaturaReadAll)
@@ -103,14 +134,18 @@ func (s *Server) RegisterRoutes() http.Handler {
 	api.GET("/r", s.RedirecionadorReadAll)
 	api.GET("/r/:hash", s.RedirecionadorReadByCodigoHash)
 	api.POST("/r", s.RedirecionadorCreate)
+
+	// Rota de rehash tem um middleware específico para verificar se o usuário é
+	// de um plano Pro ou Administrador que tenha acesso a essa funcionalidade.
 	api.PATCH("/r/:hash/refresh", s.RedirecionadorRefresh, func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			if c.Get("usuario") == nil {
-				utils.DebugLog("TokenRefreshMiddleware", "Erro ao ler o contexto 'usuario'", nil)
+				utils.DebugLog("PricingMiddleware", "Erro ao ler o contexto 'usuario'", nil)
 				return utils.Erro(http.StatusBadRequest, "Você não contém um ou mais dos cookies necessários para autenticação.")
 			}
 
-			if !strings.HasPrefix(c.Get("usuario").(*jwt.Token).Claims.(*auth.Claims).PlanoDeAssinatura, "Pro") {
+			if !strings.HasPrefix(c.Get("usuario").(*jwt.Token).Claims.(*auth.Claims).PlanoDeAssinatura, "Pro") &&
+				c.Get("usuario").(*jwt.Token).Claims.(*auth.Claims).PlanoDeAssinatura != "Administrador" {
 				utils.DebugLog("PricingMiddleware", "O usuário não tem o plano de assinatura apropriado para usar o rehash", nil)
 				return utils.Erro(http.StatusPaymentRequired, "O seu plano de assinatura não oferece o recurso de rehash.")
 			}
@@ -118,6 +153,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 			return next(c)
 		}
 	})
+
 	api.PATCH("/r/:hash", s.RedirecionadorUpdate)
 	api.DELETE("/r/:hash", s.RedirecionadorRemove)
 
@@ -129,13 +165,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 	api.PATCH("/r/:hash/links/:id/enable", s.LinkEnable)
 	api.PATCH("/r/:hash/links/:id/disable", s.LinkDisable)
 	api.DELETE("/r/:hash/links/:id", s.LinkRemove)
-
-	// API - Admin
-	// api.GET("/admin/user_history", s.UserHistory)
-	// api.GET("/admin/redirect_history", s.RedirectHistory)
-	// api.GET("/admin/kirvano_history", s.KirvanoHistory)
-	// api.GET("/admin/pricing_history", s.PricingHistory)
-	// api.GET("/admin/link_history", s.LinkHistory)
 
 	return e
 }

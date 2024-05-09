@@ -26,5 +26,7 @@ tmp/
 
 # .env file
 .env
+.env.staging
+.env.prod
 
 *_templ.go

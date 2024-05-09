@@ -20,6 +20,28 @@ type UsuarioModel struct {
 	DB *sql.DB
 }
 
+func (u *UsuarioModel) ReadByEmail(email string) (Usuario, error) {
+	var usuario Usuario
+
+	row := u.DB.QueryRow(
+		"SELECT ID, NOME FROM USUARIO WHERE REMOVIDO_EM IS NULL AND EMAIL = ?",
+		email,
+	)
+
+	if err := row.Scan(
+		&usuario.Id,
+		&usuario.Nome,
+	); err != nil {
+		return usuario, err
+	}
+
+	if err := row.Err(); err != nil {
+		return usuario, err
+	}
+
+	return usuario, nil
+}
+
 func (u *UsuarioModel) ReadByNomeDeUsuario(nomeDeUsuario string) (Usuario, error) {
 	var usuario Usuario
 

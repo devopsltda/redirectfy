@@ -21,6 +21,9 @@ type EmailAutenticacaoModel struct {
 }
 
 func (ea *EmailAutenticacaoModel) Create(valor, tipo string, usuarioKirvano int64) (int64, error) {
+	// O tempo inserido é em GMT porque a função utilizada para registrar o tempo
+	// de tudo na aplicação por padrão, a CURRENT_TIMESTAMP, devolve o tempo em
+	// GMT.
 	result, err := ea.DB.Exec(
 		"INSERT INTO EMAIL_AUTENTICACAO (VALOR, TIPO, EXPIRA_EM, USUARIO_KIRVANO) VALUES (?, ?, ?, ?) RETURNING ID",
 		valor,
@@ -42,6 +45,8 @@ func (ea *EmailAutenticacaoModel) Create(valor, tipo string, usuarioKirvano int6
 	return id, nil
 }
 
+// Essa função verifica se já existe esse valor no banco de dados, e é útil
+// para não criar valores repetidos em banco, causando erros.
 func (ea *EmailAutenticacaoModel) CheckIfValorExists(valor string) (bool, error) {
 	row := ea.DB.QueryRow(
 		"SELECT '' FROM EMAIL_AUTENTICACAO WHERE VALOR = ?",
@@ -63,6 +68,8 @@ func (ea *EmailAutenticacaoModel) CheckIfValorExists(valor string) (bool, error)
 	return true, nil
 }
 
+// Essa função verifica se existe o valor no banco de dados e se ele é válido
+// (ou seja, é do tipo passado), autenticando assim o email.
 func (ea *EmailAutenticacaoModel) CheckIfValorExistsAndIsValid(valor, tipo string) (int64, error) {
 	var tipoRetornado string
 	var usuarioKirvano int64

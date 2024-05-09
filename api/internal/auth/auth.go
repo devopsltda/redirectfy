@@ -18,8 +18,8 @@ var (
 	ChaveDeAcesso  = os.Getenv("JWT_SECRET")
 	ChaveDeRefresh = os.Getenv("JWT_REFRESH_SECRET")
 
-	limiteAccess = 1 * time.Hour
-	limiteRefresh = 2 * time.Hour
+	limiteAccess                  = 1 * time.Hour
+	limiteRefresh                 = 2 * time.Hour
 	limiteParaCriacaoDeNovoAccess = 15 * time.Minute
 )
 
@@ -123,14 +123,13 @@ func SetCookieToken(nome, token string, expiraEm time.Time, c echo.Context) {
 	c.SetCookie(cookie)
 }
 
-
 // PathWithNoAuthRequired verifica se o caminho atual do contexto exige ou não
 // autorização (ou seja, se é necessário ou não conferir o token de acesso do
 // contexto).
 func PathWithNoAuthRequired(c echo.Context) bool {
 	return (c.Request().URL.Path == "/api/u/login" && c.Request().Method == "POST") ||
 		(c.Path() == "/api/u/change_password/:hash" && c.Request().Method == "PATCH") ||
-		(c.Path() == "/api/u/:username/change_password" && c.Request().Method == "POST") ||
+		(c.Path() == "/api/u/change_password" && c.Request().Method == "POST") ||
 		(c.Path() == "/api/docs/*" && c.Request().Method == "GET") ||
 		(c.Path() == "/api/pricing" && c.Request().Method == "GET") ||
 		(c.Path() == "/api/pricing/:name" && c.Request().Method == "GET") ||
@@ -153,7 +152,7 @@ func TokenRefreshMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		// autenticação, logo ele existe e não está expirado.
 		token := c.Get("usuario").(*jwt.Token)
 		claims := token.Claims.(*Claims)
-		
+
 		timeUntilAccessExpiration := time.Until(claims.RegisteredClaims.ExpiresAt.Time)
 
 		if timeUntilAccessExpiration < limiteParaCriacaoDeNovoAccess {

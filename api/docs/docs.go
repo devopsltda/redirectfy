@@ -18,7 +18,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/kirvano": {
+        "/api/kirvano": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -66,7 +66,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/kirvano/to_user/:hash": {
+        "/api/kirvano/to_user/:hash": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -130,7 +130,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/pricing": {
+        "/api/pricing": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -167,7 +167,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/pricing/:name": {
+        "/api/pricing/:name": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -210,7 +210,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/r": {
+        "/api/r": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -311,7 +311,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/r/:hash": {
+        "/api/r/:hash": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -458,7 +458,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/r/:hash/links": {
+        "/api/r/:hash/links": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -560,7 +560,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/r/:hash/links/:id": {
+        "/api/r/:hash/links/:id": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -736,7 +736,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/r/:hash/links/:id/disable": {
+        "/api/r/:hash/links/:id/disable": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -789,7 +789,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/r/:hash/links/:id/enable": {
+        "/api/r/:hash/links/:id/enable": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -842,7 +842,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/r/:hash/refresh": {
+        "/api/r/:hash/refresh": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -888,7 +888,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/to/:hash": {
+        "/api/to/:hash": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -934,7 +934,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/u": {
+        "/api/u": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -968,7 +968,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/u/:username/change_password": {
+        "/api/u/change_password": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -982,11 +982,13 @@ const docTemplate = `{
                 "summary": "Exige a troca de senha de um usuário",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Nome de Usuário",
-                        "name": "username",
-                        "in": "path",
-                        "required": true
+                        "description": "Email",
+                        "name": "email",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -1014,7 +1016,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/u/change_password/:hash": {
+        "/api/u/change_password/:hash": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -1069,7 +1071,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/u/login": {
+        "/api/u/login": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -1132,7 +1134,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/u/logout": {
+        "/api/u/logout": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -1162,11 +1164,8 @@ const docTemplate = `{
         "Link": {
             "type": "object",
             "properties": {
-                "atualizado_em": {
-                    "type": "string"
-                },
-                "criado_em": {
-                    "type": "string"
+                "ativo": {
+                    "type": "boolean"
                 },
                 "id": {
                     "type": "integer"
@@ -1205,15 +1204,6 @@ const docTemplate = `{
         "PlanoDeAssinatura": {
             "type": "object",
             "properties": {
-                "atualizado_em": {
-                    "type": "string"
-                },
-                "criado_em": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
                 "limite_redirecionadores": {
                     "type": "integer"
                 },
@@ -1231,25 +1221,13 @@ const docTemplate = `{
         "Redirecionador": {
             "type": "object",
             "properties": {
-                "atualizado_em": {
-                    "type": "string"
-                },
                 "codigo_hash": {
                     "type": "string"
-                },
-                "criado_em": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "nome": {
                     "type": "string"
                 },
                 "ordem_de_redirecionamento": {
-                    "type": "string"
-                },
-                "usuario": {
                     "type": "string"
                 }
             }
@@ -1257,9 +1235,6 @@ const docTemplate = `{
         "Usuario": {
             "type": "object",
             "properties": {
-                "atualizado_em": {
-                    "type": "string"
-                },
                 "cpf": {
                     "type": "string"
                 },
@@ -1272,19 +1247,10 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
-                "id": {
-                    "type": "integer"
-                },
                 "nome": {
                     "type": "string"
                 },
-                "nome_de_usuario": {
-                    "type": "string"
-                },
                 "plano_de_assinatura": {
-                    "type": "string"
-                },
-                "senha": {
                     "type": "string"
                 }
             }
@@ -1340,8 +1306,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "API do Redirectify",
-	Description:      "API para interagir com o Redirectify",
+	Title:            "API do Redirectfy",
+	Description:      "API para interagir com o Redirectfy",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

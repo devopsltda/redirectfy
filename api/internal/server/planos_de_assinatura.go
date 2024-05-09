@@ -29,7 +29,7 @@ import (
 //
 // @Failure 500  {object} echo.HTTPError
 //
-// @Router  /pricing/:name [get]
+// @Router  /api/pricing/:name [get]
 func (s *Server) PlanoDeAssinaturaReadByNome(c echo.Context) error {
 	nome := c.Param("name")
 
@@ -69,7 +69,7 @@ func (s *Server) PlanoDeAssinaturaReadByNome(c echo.Context) error {
 //
 // @Failure 500  {object} echo.HTTPError
 //
-// @Router  /pricing [get]
+// @Router  /api/pricing [get]
 func (s *Server) PlanoDeAssinaturaReadAll(c echo.Context) error {
 	planosDeAssinatura, err := s.PlanoDeAssinaturaModel.ReadAll()
 

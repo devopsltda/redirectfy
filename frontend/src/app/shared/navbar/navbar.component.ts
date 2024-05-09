@@ -9,6 +9,7 @@ import { Router, RouterLink, RouterModule } from '@angular/router';
 import { ButtonNotificationComponent } from '../button-notification/button-notification.component';
 import { HttpClient } from '@angular/common/http';
 import { RedirectifyApiService } from '../../services/redirectify-api.service';
+import { CookieService } from 'ngx-cookie-service';
 
 
 
@@ -21,7 +22,7 @@ import { RedirectifyApiService } from '../../services/redirectify-api.service';
 })
 export class NavbarComponent {
 
-  constructor(private api:RedirectifyApiService, private router:Router){}
+  constructor(private api:RedirectifyApiService, private router:Router, private cookie:CookieService){}
 
   sidebarVisible:boolean = false;
   isHovered:boolean = false;
@@ -33,10 +34,13 @@ export class NavbarComponent {
    try{
     const resApi = await this.api.logout()
     if(resApi.status == 200){
-      this.router.navigate(['/'])
+      this.cookie.deleteAll()
+      if(!this.cookie.check('access-token') && !this.cookie.check('refresh-token')){
+        this.router.navigate(['/'])
+      }
     }
    } catch(error) {
-    console.log(error)
+
    }
   }
 }

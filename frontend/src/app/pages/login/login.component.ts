@@ -6,7 +6,6 @@ import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RedirectifyApiService } from '../../services/redirectify-api.service';
 import { MessageService } from 'primeng/api';
-import { error } from 'node:console';
 import { CookieService } from 'ngx-cookie-service';
 
 @Component({
@@ -32,8 +31,8 @@ export class LoginComponent implements OnInit {
   )
     {
     this.loginForm = this.formBuilder.group({
-      email:['pabloed0009@gmail.com',[Validators.required,Validators.email]],
-      senha:['teste123',[Validators.required]]
+      email:['',[Validators.required,Validators.email]],
+      senha:['',[Validators.required]]
     })
   }
 

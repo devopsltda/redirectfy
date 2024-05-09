@@ -1,6 +1,7 @@
 package server
 
 import (
+	"database/sql"
 	"net/http"
 	"strings"
 	"time"
@@ -26,12 +27,17 @@ type customerData struct {
 	Email    string `json:"email"`
 }
 
+// Esses parâmetros estão dispostos aqui como é documentado
+// na configuração de web hooks da Kirvano em:
+// https://help.kirvano.com/pt-BR/articles/8141372-o-que-e-e-como-configurar-webhooks
 type parametrosKirvano struct {
 	Event    string        `json:"event"`
 	Customer customerData  `json:"customer"`
 	Products []productData `json:"products"`
 } // @name ParametrosKirvano
 
+// Essa função é utilizada para criar um nome de usuário com base no email
+// fornecido pela Kirvano.
 func criaNomeDeUsuario(s string) string {
 	var sb strings.Builder
 	for _, c := range s {
@@ -65,7 +71,7 @@ func criaNomeDeUsuario(s string) string {
 //
 // @Failure 500             {object} echo.HTTPError
 //
-// @Router  /u [get]
+// @Router  /api/u [get]
 func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 	nomeDeUsuario := c.Get("usuario").(*jwt.Token).Claims.(*auth.Claims).NomeDeUsuario
 
@@ -97,7 +103,7 @@ func (s *Server) UsuarioReadByNomeDeUsuario(c echo.Context) error {
 //
 // @Failure 500                 {object} echo.HTTPError
 //
-// @Router  /kirvano [post]
+// @Router  /api/kirvano [post]
 func (s *Server) KirvanoCreate(c echo.Context) error {
 	var parametros parametrosKirvano
 
@@ -204,6 +210,13 @@ func (s *Server) KirvanoCreate(c echo.Context) error {
 			utils.ErroLog("KirvanoCreate", "Erro na atualização do usuário", err)
 			return utils.Erro(http.StatusInternalServerError, "Não foi possível atualizar o usuário.")
 		}
+
+		err = s.RedirecionadorModel.RemoveAllFromUser(nomeDeUsuario)
+
+		if err != nil {
+			utils.ErroLog("KirvanoCreate", "Erro na remoção dos redirecionadores do usuário", err)
+			return utils.Erro(http.StatusInternalServerError, "Não foi possível remover os redirecionadores do usuário.")
+		}
 	}
 
 	return c.JSON(http.StatusCreated, "O usuário da Kirvano foi criado com sucesso.")
@@ -231,7 +244,7 @@ func (s *Server) KirvanoCreate(c echo.Context) error {
 //
 // @Failure 500                {object} echo.HTTPError
 //
-// @Router  /kirvano/to_user/:hash [post]
+// @Router  /api/kirvano/to_user/:hash [post]
 func (s *Server) KirvanoToUser(c echo.Context) error {
 	valor := c.Param("hash")
 
@@ -329,7 +342,7 @@ func (s *Server) KirvanoToUser(c echo.Context) error {
 //
 // @Produce json
 //
-// @Param   username          path     string true "Nome de Usuário"
+// @Param   email             body     string true "Email"
 //
 // @Success 200               {object} map[string]string
 //
@@ -337,22 +350,34 @@ func (s *Server) KirvanoToUser(c echo.Context) error {
 //
 // @Failure 500               {object} echo.HTTPError
 //
-// @Router  /u/:username/change_password [patch]
+// @Router  /api/u/change_password [patch]
 func (s *Server) UsuarioSolicitarTrocaDeSenha(c echo.Context) error {
-	nomeDeUsuario := c.Param("username")
-
-	if !utils.IsURLSafe(nomeDeUsuario) {
-		utils.DebugLog("UsuarioSolicitarTrocaDeSenha", "Erro de validação do nome do usuário no parâmetro 'username'", nil)
-		return utils.Erro(http.StatusBadRequest, "Por favor, forneça um nome de usuário válido (3 a 120 caracteres, composto de apenas letras, números e '-' ou '_').")
-	}
+	parametros := struct {
+		Email            string `json:"email"`
+	}{}
 
 	var err error
+	var erros []string
 
-	usuario, err := s.UsuarioModel.ReadByNomeDeUsuario(nomeDeUsuario)
+	if err := c.Bind(&parametros); err != nil {
+		utils.DebugLog("UsuarioSolicitarTrocaDeSenha", "Não foram inseridos os parâmetros na requisição", nil)
+		erros = append(erros, "Por favor, forneça o email no parâmetro 'email'.")
+	}
+
+	if err := utils.Validate.Var(parametros.Email, "required,email"); parametros.Email != "" && err != nil {
+		utils.DebugLog("UsuarioSolicitarTrocaDeSenha", "Erro no email inválido no parâmetro 'email'", nil)
+		erros = append(erros, "Por favor, forneça o email do usuário válido no parâmetro 'email'.")
+	}
+
+	if len(erros) > 0 {
+		return utils.ErroValidacaoParametro(erros)
+	}
+
+	usuario, err := s.UsuarioModel.ReadByEmail(parametros.Email)
 
 	if err != nil {
-		utils.DebugLog("UsuarioSolicitarTrocaDeSenha", "Erro ao ler o usuário", err)
-		return utils.Erro(http.StatusBadRequest, "Não foi possível ler o usuário com o nome de usuário do parâmetro 'username'.")
+		utils.ErroLog("UsuarioSolicitarTrocaDeSenha", "Erro ao procurar um usuário com esse email", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível procurar um usuário com esse email.")
 	}
 
 	var valor string
@@ -376,7 +401,7 @@ func (s *Server) UsuarioSolicitarTrocaDeSenha(c echo.Context) error {
 		return utils.Erro(http.StatusInternalServerError, "Não foi possível criar um email de troca de senha para o usuário.")
 	}
 
-	err = s.email.SendTrocaDeSenha(id, usuario.Nome, valor, usuario.Email)
+	err = s.email.SendTrocaDeSenha(id, usuario.Nome, valor, parametros.Email)
 
 	if err != nil {
 		utils.ErroLog("UsuarioSolicitarTrocaDeSenha", "Erro ao enviar email de troca de senha", err)
@@ -406,7 +431,7 @@ func (s *Server) UsuarioSolicitarTrocaDeSenha(c echo.Context) error {
 //
 // @Failure 500               {object} echo.HTTPError
 //
-// @Router  /u/change_password/:hash [patch]
+// @Router  /api/u/change_password/:hash [patch]
 func (s *Server) UsuarioTrocaDeSenha(c echo.Context) error {
 	valor := c.Param("hash")
 
@@ -488,7 +513,7 @@ func (s *Server) UsuarioTrocaDeSenha(c echo.Context) error {
 //
 // @Failure 500               {object} echo.HTTPError
 //
-// @Router  /u/login [post]
+// @Router  /api/u/login [post]
 func (s *Server) UsuarioLogin(c echo.Context) error {
 	parametros := struct {
 		Email string `json:"email"`
@@ -519,6 +544,11 @@ func (s *Server) UsuarioLogin(c echo.Context) error {
 	id, nome, nomeDeUsuario, planoDeAssinatura, senha, err := s.UsuarioModel.Login(parametros.Email)
 
 	if err != nil {
+		if err == sql.ErrNoRows {
+			utils.DebugLog("UsuarioLogin", "Erro ao ler o email do usuário", err)
+			return utils.Erro(http.StatusBadRequest, "Usuário ou senha incorretos.")
+		}
+
 		utils.DebugLog("UsuarioLogin", "Erro ao ler os dados do usuário", err)
 		return utils.Erro(http.StatusInternalServerError, "Não foi possível ler o usuário com o email inserido.")
 	}
@@ -527,7 +557,7 @@ func (s *Server) UsuarioLogin(c echo.Context) error {
 
 	if !match || err != nil {
 		utils.DebugLog("UsuarioLogin", "Erro ao validar a senha do usuário", err)
-		return utils.Erro(http.StatusUnauthorized, "Não foi possível validar a senha do usuário.")
+		return utils.Erro(http.StatusBadRequest, "Usuário ou senha incorretos.")
 	}
 
 	err = auth.GeraTokensESetaCookies(id, nome, nomeDeUsuario, planoDeAssinatura, c)
@@ -552,7 +582,7 @@ func (s *Server) UsuarioLogin(c echo.Context) error {
 //
 // @Success 200               {object} map[string]string
 //
-// @Router  /u/logout [post]
+// @Router  /api/u/logout [post]
 func (s *Server) UsuarioLogout(c echo.Context) error {
 	for _, c := range c.Cookies() {
 		c.Expires = time.Now().Add(-48 * time.Hour)
