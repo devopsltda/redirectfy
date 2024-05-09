@@ -6,14 +6,14 @@ import { AnimationsModule, fadeInOutAnimation } from '../../animations/animation
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RedirectifyApiService } from '../../services/redirectify-api.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 
 
 @Component({
   selector: 'app-form-create-redirect',
   standalone: true,
-  imports: [IconWhatsappComponent,IconTelegramComponent,SharedModule,AnimationsModule,ReactiveFormsModule,CommonModule,FormsModule],
+  imports: [IconWhatsappComponent,IconTelegramComponent,SharedModule,AnimationsModule,ReactiveFormsModule,CommonModule,FormsModule,RouterLink],
   providers:[MessageService],
   animations:[fadeInOutAnimation],
   templateUrl: './form-create-redirect.component.html',
@@ -31,7 +31,7 @@ export class FormCreateRedirectComponent {
   createData:{[key:string]:any} = {}
   whatsappForm!:FormGroup
   telegramForm!:FormGroup
-
+  dataEdit:any
   constructor
   (
     private formBuilder:FormBuilder,
@@ -52,11 +52,72 @@ export class FormCreateRedirectComponent {
       nome:['',[Validators.required]],
       plataforma:[]
     })
+
   }
 
   createDataEmpty(){
     return Object.keys(this.createData).length?true:false
   }
+  arrayLength(data:any[]){
+    return data.length
+  }
+
+  async buttonCardEvent(event:string,data:any){
+    if(event == 'editar'){
+      if(data.plataforma == 'whatsapp'){
+        this.whatsappForm.controls['link'].setValue(data.link);
+        this.whatsappForm.controls['mensagem'].setValue(data.mensagem);
+        this.whatsappForm.controls['nome'].setValue(data.nome)
+        this.goEdit(data)
+        this.formStep = 'editW'
+      }
+      else if(data.plataforma == 'telegram'){
+       this.telegramForm.controls['link'].setValue(data.link);
+       this.telegramForm.controls['nome'].setValue(data.nome)
+       this.goEdit(data)
+       this.formStep = 'editT'
+     }
+    } else if (event == 'deletar') {
+      if (data.plataforma == 'whatsapp') {
+          this.createData['whatsappData'] = this.createData['whatsappData'].filter((item: any) => item.nome !== data.nome);
+          if(this.createData['whatsappData'].length == 0 ){
+            this.prioridade = 'telegram,whatsapp'
+          }
+      } else {
+        this.createData['telegramData'] = this.createData['telegramData'].filter((item: any) => item.nome !== data.nome);
+        if(this.createData['telegramData'].length == 0 ){
+          this.prioridade = 'whatsapp,telegram'
+        }
+      }
+  }
+
+
+  }
+
+  goEdit(data:any){
+      this.dataEdit = data
+  }
+
+  saveEdit(plataforma: string) {
+    if (plataforma == 'whatsapp') {
+        const index = this.createData['whatsappData'].findIndex((item: any) => item.nome === this.dataEdit.nome);
+        if (index !== -1) {
+            this.createData['whatsappData'][index].link = this.whatsappForm.get('link')?.value;
+            this.createData['whatsappData'][index].mensagem = this.whatsappForm.get('mensagem')?.value;
+            this.createData['whatsappData'][index].nome = this.whatsappForm.get('nome')?.value;
+        }
+    } else if (plataforma == 'telegram') {
+        const index = this.createData['telegramData'].findIndex((item: any) => item.nome === this.dataEdit.nome);
+        if (index !== -1) {
+            this.createData['telegramData'][index].link = this.telegramForm.get('link')?.value;
+            this.createData['telegramData'][index].nome = this.telegramForm.get('nome')?.value;
+        }
+    }
+    this.formStep = 'init';
+    this.dataEdit = null;
+}
+
+
 
   addContact(plataforma:string){
     this.submitted = true
@@ -78,7 +139,6 @@ export class FormCreateRedirectComponent {
       }
 
 
-
       else if(plataforma == 'telegram'){
         const data = this.telegramForm.getRawValue()
         data['plataforma'] = plataforma
@@ -92,7 +152,6 @@ export class FormCreateRedirectComponent {
           this.telegramForm.reset()
           this.formStep = 'init'
         }
-        console.log(this.createData)
       }
     }
 
@@ -136,15 +195,24 @@ export class FormCreateRedirectComponent {
       this.redirectName = `Redirect #${this.generateRandomInteger(1,100)}`
     }
 
-    try{
-      const resApi = await this.api.createRedirect(this.redirectName,this.prioridade,this.submitData)
-      if (resApi.status == 201) {
-        this.router.navigate(['/home'])
+    if (this.redirectName.length < 3 || this.redirectName.length > 20) {
+      this.messageService.add({summary: "Falha ao Criar Redirecionador", detail: 'Por favor, insira um nome entre 3 e 20 caracteres', severity: 'error'});
+    } else {
+      try {
+        const resApi = await this.api.createRedirect(this.redirectName, this.prioridade, this.submitData);
+        if (resApi.status === 201) {
+          this.router.navigate(['/home']);
+        }
       }
-      console.log(resApi)
-    } catch (error){
-      this.messageService.add({summary:"Falha ao Criar Redirecionador",detail:'Ocorreu um erro ao criar o redirecionador, ação não executada',severity:'error'})
+      catch (error) {
+        if (typeof error === 'object' && error !== null) {
+          if((error as any).status === 402){
+            this.messageService.add({summary: "Limite de criação excedido!", detail: 'Oops! Parece que você atingiu o limite de redirecionadores. Faça um upgrade do seu plano de assinatura ou remova redirecionadores já existentes', severity: 'info'});
+          }
+        }else{
+          this.messageService.add({summary: "Falha ao Criar Redirecionador", detail: 'Ocorreu um erro ao criar o redirecionador, ação não executada', severity: 'error'});
+        }
+      }
     }
   }
-
 }

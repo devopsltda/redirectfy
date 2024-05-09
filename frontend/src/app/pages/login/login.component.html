@@ -39,13 +39,16 @@
         <p class="pl-1 text-sm text-red-400" *ngIf="this.loginForm.controls['senha'].errors?.['required']">Este campo é obrigatorio</p>
       }
       <span class="flex justify-end w-full mt-2 ">
-        <button class="mt-1 text-[#7E7E7E] underline text-sm" routerLink="/recovery"><p>Esqueceu a Senha?</p></button>
+        <p class="mt-1 text-[#7E7E7E] underline text-sm cursor-pointer" routerLink="/recovery">Esqueceu a Senha?</p>
       </span>
       <div class="flex flex-col gap-3 mt-12">
         <app-button-primary class="w-full h-12" title="Entrar"></app-button-primary>
         <app-button-secundary title="Adquira Já" [routerLink]="'/buyNow'"></app-button-secundary>
       </div>
     </form>
+    <div class="w-full h-full">
+      <app-devops-brand></app-devops-brand>
+    </div>
   </div>
 </app-grid>
 

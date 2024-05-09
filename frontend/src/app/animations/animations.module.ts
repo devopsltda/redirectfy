@@ -52,5 +52,13 @@ trigger('expandCollapse', [
 
 
 
-
 ]
+
+export const RedirecionadorAnimation = [
+  trigger('showIn', [
+    transition(':enter', [style({opacity:0}), animate('1s 2s ease-in', style({opacity:1}))]),
+  ]),
+  trigger('translateY', [
+    transition(':enter', [style({transform:'translateY(25%)'}), animate('1s 2s ease-in', style({transform:'translateY(0%)'}))]),
+  ])
+];

@@ -16,6 +16,9 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
+// Esses parâmetros são os mínimos recomendados para
+// o uso do algoritmo argon2 de forma eficiente:
+// https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
 var SenhaParams = &argon2id.Params{
 	Memory:      19 * 1024,
 	Iterations:  2,
@@ -24,7 +27,7 @@ var SenhaParams = &argon2id.Params{
 	KeyLength:   32,
 }
 
-/*** Variáveis de Ambient ***/
+/*** Variáveis de Ambiente ***/
 var (
 	AppEnv = os.Getenv("APP_ENV")
 	Pepper = os.Getenv("PEPPER")
@@ -36,6 +39,8 @@ var (
 var seededRand *rand.Rand = rand.New(rand.NewPCG(uint64(time.Now().Unix()), uint64(time.Now().Add(10*time.Second).Unix())))
 var symbols []byte = []byte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_")
 
+// Gera o hash selecionando de forma aleatória caracteres alfanuméricos, '_' ou '-'
+// no tamanho inserido.
 func GeraHashCode(length int) string {
 	b := make([]byte, length)
 
@@ -49,6 +54,8 @@ func GeraHashCode(length int) string {
 /*** Validação ***/
 var Validate = validator.New()
 
+// Verifica se s contém algum caractere não alfanumérico que seja diferente
+// de '_' ou '-'.
 func IsURLSafe(s string) bool {
 	for _, c := range s {
 		if !unicode.IsLetter(c) && !unicode.IsNumber(c) && c != '_' && c != '-' {
@@ -67,6 +74,7 @@ func ErroLog(nomeFuncao, mensagem string, erro error) {
 	slog.Error(nomeFuncao, slog.String("message", mensagem), slog.Any("error", erro))
 }
 
+// Volta a mensagem de erro padronizada.
 func Erro(code int, message string) *echo.HTTPError {
 	return echo.NewHTTPError(
 		code,

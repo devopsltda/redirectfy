@@ -5,7 +5,6 @@ import (
 )
 
 type PlanoDeAssinatura struct {
-	Id                      int64          `json:"-"`
 	Nome                    string         `json:"nome"`
 	Valor                   int64          `json:"valor"`
 	LimiteRedirecionadores  int64          `json:"limite_redirecionadores"`
@@ -20,12 +19,11 @@ func (pa *PlanoDeAssinaturaModel) ReadByNome(nome string) (PlanoDeAssinatura, er
 	var planoDeAssinatura PlanoDeAssinatura
 
 	row := pa.DB.QueryRow(
-		"SELECT ID, NOME, VALOR, LIMITE_REDIRECIONADORES, ORDENACAO_ALEATORIA_LINKS FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL AND NOME = ?",
+		"SELECT NOME, VALOR, LIMITE_REDIRECIONADORES, ORDENACAO_ALEATORIA_LINKS FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL AND NOME != 'Administrador' && NOME = ?",
 		nome,
 	)
 
 	if err := row.Scan(
-		&planoDeAssinatura.Id,
 		&planoDeAssinatura.Nome,
 		&planoDeAssinatura.Valor,
 		&planoDeAssinatura.LimiteRedirecionadores,
@@ -44,7 +42,7 @@ func (pa *PlanoDeAssinaturaModel) ReadByNome(nome string) (PlanoDeAssinatura, er
 func (pa *PlanoDeAssinaturaModel) ReadAll() ([]PlanoDeAssinatura, error) {
 	var planosDeAssinatura []PlanoDeAssinatura
 
-	rows, err := pa.DB.Query("SELECT ID, NOME, VALOR, LIMITE_REDIRECIONADORES, ORDENACAO_ALEATORIA_LINKS FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL")
+	rows, err := pa.DB.Query("SELECT NOME, VALOR, LIMITE_REDIRECIONADORES, ORDENACAO_ALEATORIA_LINKS FROM PLANO_DE_ASSINATURA WHERE REMOVIDO_EM IS NULL AND NOME != 'Administrador'")
 
 	if err != nil {
 		return nil, err
@@ -56,7 +54,6 @@ func (pa *PlanoDeAssinaturaModel) ReadAll() ([]PlanoDeAssinatura, error) {
 		var planoDeAssinatura PlanoDeAssinatura
 
 		if err := rows.Scan(
-			&planoDeAssinatura.Id,
 			&planoDeAssinatura.Nome,
 			&planoDeAssinatura.Valor,
 			&planoDeAssinatura.LimiteRedirecionadores,

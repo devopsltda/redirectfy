@@ -17,6 +17,9 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
+// Essa estrutura do servidor armazena informações essenciais
+// para seu uso, como a porta do servidor, a pool de conexões
+// com o banco de dados e os modelos para cada tabela específica.
 type Server struct {
 	port                   int
 	db                     *sql.DB
@@ -30,6 +33,8 @@ type Server struct {
 }
 
 func NewServer() *http.Server {
+	// Mostra o nível de log DEBUG caso a variável de ambiente APP_ENV
+	// seja "debug" (banco em nuvem) ou "debugtest" (banco em memória)
 	if utils.AppEnv == "debug" || utils.AppEnv == "debugtest" {
 		appLevel := new(slog.LevelVar)
 		h := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: appLevel})
@@ -53,7 +58,7 @@ func NewServer() *http.Server {
 		UsuarioKirvanoModel:    &models.UsuarioKirvanoModel{DB: db},
 	}
 
-	// Declare Server config
+	// Inicialiação de um servidor HTTP baseado no servidor criado
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%d", newServer.port),
 		Handler:      newServer.RegisterRoutes(),
