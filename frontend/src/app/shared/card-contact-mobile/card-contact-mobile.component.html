@@ -2,7 +2,7 @@
   <p class="flex justify-center pl-2 w-full text-[18px]">{{cardName}}</p>
   <span class="flex pr-2 relative h-full items-center">
     <!-- Botão que abre e fecha o menu -->
-    <button (click)="toggleMenu($event)" id="menu">
+    <button id="cardMenuButton{{cardName}}" (click)="toggleMenu($event,cardName)">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 rotate-90">
         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
       </svg>
