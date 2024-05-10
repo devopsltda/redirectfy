@@ -6,7 +6,7 @@
   <p-confirmDialog #cd closable="false" >
     <ng-template pTemplate="footer">
       <div class="flex gap-5 flex-row-reverse">
-        <button (click)="cd.reject()">{{prioridade=='whatsapp,telegram' && linkTelegram ?'Não, ir para o Telegram':data?.body.redirecionador.ordem_de_redirecionamento=='whatsapp,telegram'?'Não': data?.body.redirecionador.ordem_de_redirecionamento=='telegram,whatsapp'  && linkWhatsapp?'Não, ir para o Whatsapp':'Não' }}</button>
+        <button (click)="cd.reject()">{{prioridade=='whatsapp,telegram' && linkTelegram ?'Não, ir para o Telegram':data?.body.redirecionador.ordem_de_redirecionamento=='whatsapp,telegram'?'Não': data?.body.redirecionador.ordem_de_redirecionamento=='telegram,whatsapp'  && linkWhatsapp?'Não':'Não,ir para Whatsapp' }}</button>
         <button (click)="cd.accept()">Sim</button>
       </div>
     </ng-template>
