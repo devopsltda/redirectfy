@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/signal"
 	"redirectfy/internal/server"
-	"redirectfy/internal/services/database"
 	"syscall"
 	"time"
 )
@@ -43,6 +42,5 @@ func main() {
 		panic(fmt.Sprintf("O servidor não pôde ser finalizado graciosamente: %s", err))
 	}
 
-	_ = os.RemoveAll(database.TempDir)
 	fmt.Println("O servidor parou.")
 }
