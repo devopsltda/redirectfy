@@ -29,7 +29,7 @@ export class MyAccountComponent implements OnInit {
   }
 
   goChangePlan(){
-    this.router.navigate(['account/','changePlan'])
+    window.location.href = 'https://app.kirvano.com/'
   }
 
 

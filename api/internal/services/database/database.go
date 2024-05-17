@@ -2,25 +2,19 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 	"log/slog"
 	"os"
-	"path/filepath"
 	"redirectfy/internal/utils"
-	"time"
-
-	"github.com/tursodatabase/go-libsql"
 
 	_ "github.com/joho/godotenv/autoload"
+	_ "github.com/tursodatabase/libsql-client-go/libsql"
 	_ "modernc.org/sqlite"
 )
 
 var (
 	dbUrl        = os.Getenv("DB_URL")
-	dbName       = os.Getenv("DB_NAME")
 	dbToken      = os.Getenv("DB_TOKEN")
-
-	TempDir     string
-	dbConnector *libsql.Connector
 )
 
 func New() *sql.DB {
@@ -47,24 +41,7 @@ func New() *sql.DB {
 		return db
 	}
 
-	// É necessário criar um diretório temporário para as réplicas de banco
-	// de dados criadas pelo Turso
-	TempDir, err := os.MkdirTemp("", "libsql-*")
-
-	if err != nil {
-		slog.Error("BancoDeDados", slog.Any("error", err))
-		os.Exit(1)
-	}
-
-	dbPath := filepath.Join(TempDir, dbName)
-	dbConnector, err = libsql.NewEmbeddedReplicaConnector(dbPath, dbUrl, libsql.WithAuthToken(dbToken), libsql.WithSyncInterval(15*time.Minute))
-
-	if err != nil {
-		slog.Error("BancoDeDados", slog.Any("error", err))
-		os.Exit(1)
-	}
-
-	db := sql.OpenDB(dbConnector)
+	db, err := sql.Open("libsql", fmt.Sprintf("%s?authToken=%s", dbUrl, dbToken))
 
 	if err != nil {
 		slog.Error("BancoDeDados", slog.Any("error", err))
