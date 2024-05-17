@@ -24,31 +24,18 @@ export class CardContactMobileComponent {
   }
 
   ngOnInit(): void {
-    document.body.addEventListener('click', (event) => {
-      if (this.menuIsOpen && event.target) {
-        const target = event.target as HTMLElement;
-        if (!target.closest('.menu') && !target.closest('.menu-button')) {
-          this.menuIsOpen = false;
-        }
+    document.body.addEventListener('click', () => {
+      if (this.menuIsOpen) {
+        this.menuIsOpen = false;
       }
     });
   }
-  
-  toggleMenu(event: Event, cardName: string) {
-    const menuButtonId = `cardMenuButton${cardName}`;
-    const otherMenus = document.querySelectorAll('.menu');
-    otherMenus.forEach((menu: Element) => {
-      const menuElement = menu as HTMLElement;
-      if (menuElement.id !== menuButtonId) {
-        menuElement.classList.remove('flex');
-        menuElement.classList.add('hidden');
-      }
-    });
 
+  toggleMenu(event: Event) {
     this.menuIsOpen = !this.menuIsOpen;
     event.stopPropagation(); 
   }
-
+  
   handleButtonClick(event: Event) {
     event.stopPropagation();
   }
