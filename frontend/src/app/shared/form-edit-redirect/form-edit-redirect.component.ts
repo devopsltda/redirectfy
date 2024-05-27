@@ -304,8 +304,8 @@ export class FormEditRedirectComponent implements OnInit {
             severity: 'error',
           });
         }
-        this.formStep = 'init';
         this.whatsappForm.reset();
+        this.formStep = 'init';
       }
     } else if (plataforma == 'telegram') {
       if (this.telegramForm.valid) {
