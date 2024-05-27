@@ -52,7 +52,6 @@ export class FormCreateRedirectComponent {
       nome:['',[Validators.required]],
       plataforma:[]
     })
-    console.log(this.createData?.['whatsappData']?.length)
   }
 
   createDataEmpty(){
