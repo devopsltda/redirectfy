@@ -93,6 +93,7 @@ export class FormEditRedirectComponent implements OnInit {
 
   async getRedirectData() {
     this.redirectData = await this.api.getRedirect(this.redirectHash);
+
     const whatsappData = this.redirectData?.links?.filter(
       (link: any) => link.plataforma === 'whatsapp'
     );
@@ -224,6 +225,7 @@ export class FormEditRedirectComponent implements OnInit {
   async addContact(plataforma: string) {
     this.submitted = true;
 
+
     if (this.whatsappForm.valid || this.telegramForm.valid) {
       this.submitted = false;
       if (plataforma == 'whatsapp') {
@@ -231,12 +233,9 @@ export class FormEditRedirectComponent implements OnInit {
         data['plataforma'] = plataforma;
         if (this.createData['whatsappData'] == undefined) {
           this.createData['whatsappData'] = [data];
+
           await this.onSubmit();
-          this.whatsappForm.reset();
-          this.formStep = 'init';
-        } else {
-          this.createData['whatsappData'].push(data);
-          await this.onSubmit();
+          this.createData = []
           this.whatsappForm.reset();
           this.formStep = 'init';
         }
@@ -246,11 +245,7 @@ export class FormEditRedirectComponent implements OnInit {
         if (this.createData['telegramData'] == undefined) {
           this.createData['telegramData'] = [data];
           await this.onSubmit();
-          this.telegramForm.reset();
-          this.formStep = 'init';
-        } else {
-          this.createData['telegramData'].push(data);
-          await this.onSubmit();
+          this.createData = []
           this.telegramForm.reset();
           this.formStep = 'init';
         }
@@ -278,6 +273,7 @@ export class FormEditRedirectComponent implements OnInit {
   }
   async saveEdits(plataforma: string) {
     this.submitted = true;
+
     if (plataforma == 'whatsapp') {
       if (this.whatsappForm.valid) {
         let editedData = this.whatsappForm.getRawValue();
@@ -363,6 +359,7 @@ export class FormEditRedirectComponent implements OnInit {
         this.submitData
       );
       if (resApi.status == 201) {
+        this.submitData = []
         await this.ngOnInit();
         this.formStep = 'init';
       }
