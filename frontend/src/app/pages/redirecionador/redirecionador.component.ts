@@ -107,7 +107,6 @@ telegramLinkToHook(link: string): string {
         this.confirmationService.confirm({
           header:'Redirecionando para Whatsapp',
           message: `Abrir whatsapp e iniciar a conversa com ${this.data.body?.redirecionador.nome} ?`,
-
           accept: () => {
             this.isLoading = false
             if(this.linkWhatsapp){
@@ -116,7 +115,7 @@ telegramLinkToHook(link: string): string {
           },
           reject: () => {
             if(this.linkTelegram){
-              window.location.href = this.whatsappLinkToHook(this.linkWhatsapp)
+              window.location.href = this.telegramLinkToHook(this.linkTelegram)
             }
             this.isLoading = false
           }
