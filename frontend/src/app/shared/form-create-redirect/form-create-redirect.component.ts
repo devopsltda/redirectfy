@@ -52,7 +52,6 @@ export class FormCreateRedirectComponent {
       nome:['',[Validators.required]],
       plataforma:[]
     })
-
   }
 
   createDataEmpty(){
@@ -81,11 +80,13 @@ export class FormCreateRedirectComponent {
       if (data.plataforma == 'whatsapp') {
           this.createData['whatsappData'] = this.createData['whatsappData'].filter((item: any) => item.nome !== data.nome);
           if(this.createData['whatsappData'].length == 0 ){
+            delete this.createData['whatsappData']
             this.prioridade = 'telegram,whatsapp'
           }
       } else {
         this.createData['telegramData'] = this.createData['telegramData'].filter((item: any) => item.nome !== data.nome);
         if(this.createData['telegramData'].length == 0 ){
+          delete this.createData['telegramData']
           this.prioridade = 'whatsapp,telegram'
         }
       }
