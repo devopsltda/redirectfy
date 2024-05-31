@@ -1,11 +1,12 @@
 # Build stage for API
-FROM golang:1.22.3-bookworm as api-builder
+FROM golang:1.22.1-bookworm as api-builder
 
 ENV CGO_ENABLED=1
 
 WORKDIR /app
 
 COPY api/ .
+COPY .env .
 
 RUN apt-get -y update && \
     apt-get install -y --no-install-recommends git make sqlite3 && \
@@ -26,7 +27,7 @@ RUN npm install
 
 COPY frontend/ .
 
-RUN npm run development
+RUN npm run staging
 
 # Final stage
 FROM nginx:bookworm as exec
@@ -34,6 +35,7 @@ FROM nginx:bookworm as exec
 WORKDIR /app
 
 # Copy API binary
+COPY .env .
 COPY --from=api-builder /go/bin/main .
 
 # Copy frontend build

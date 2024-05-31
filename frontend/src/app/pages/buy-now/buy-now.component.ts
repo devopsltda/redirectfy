@@ -23,7 +23,7 @@ export class BuyNowComponent implements OnInit {
   }
 
   redirectTo(router:any){
-
+    console.log(router)
     window.location.href = router
   }
 

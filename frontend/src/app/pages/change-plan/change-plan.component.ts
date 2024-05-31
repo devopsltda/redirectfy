@@ -20,11 +20,11 @@ export class ChangePlanComponent implements OnInit {
  async ngOnInit(){
       this.plansData = await this.api.getPlans()
       this.userData = await this.api.getUser()
-
+      console.log(this.userData)
   }
 
   redirectTo(router:any){
-
+    console.log(router)
     window.location.href = router
   }
 }
