@@ -125,7 +125,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	api.POST("/u/login", s.UsuarioLogin)
 	api.POST("/u/logout", s.UsuarioLogout)
 	api.PATCH("/u/change_password/:hash", s.UsuarioTrocaDeSenha)
-	api.PATCH("/u/change_password", s.UsuarioSolicitarTrocaDeSenha)
+	api.POST("/u/change_password", s.UsuarioSolicitarTrocaDeSenha)
 
 	// API - Plano de Assinatura
 	api.GET("/pricing", s.PlanoDeAssinaturaReadAll)
