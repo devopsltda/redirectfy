@@ -13,6 +13,7 @@ import { CookieService } from 'ngx-cookie-service';
 
 
 
+
 @Component({
   selector: 'app-navbar',
   standalone: true,
@@ -22,7 +23,7 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class NavbarComponent {
 
-  constructor(private api:RedirectifyApiService, private router:Router, private cookie:CookieService){}
+  constructor(private api:RedirectifyApiService, private router:Router, private cookie:CookieService, private messageService:MessageService){}
 
   sidebarVisible:boolean = false;
   isHovered:boolean = false;
@@ -35,12 +36,9 @@ export class NavbarComponent {
     const resApi = await this.api.logout()
     if(resApi.status == 200){
       this.cookie.deleteAll()
-      if(!this.cookie.check('access-token') && !this.cookie.check('refresh-token')){
-        this.router.navigate(['/'])
-      }
+      this.router.navigate(['/'])
     }
    } catch(error) {
-
    }
   }
 }
