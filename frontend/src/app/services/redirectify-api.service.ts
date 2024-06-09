@@ -296,9 +296,9 @@ export class RedirectifyApiService {
     senha_nova: string
   ) {
     const response = await lastValueFrom(
-      this.http.post<any>(
-        `${this.finishSignUpRoute}${hash}`,
-        {senha: senha_nova },
+      this.http.patch<any>(
+        `${this.changePasswordUserRoute}/${hash}`,
+        {senha_nova: senha_nova },
         { observe: 'response' }
       )
     ).catch((error) => {
