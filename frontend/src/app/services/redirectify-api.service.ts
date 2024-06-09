@@ -47,7 +47,7 @@ export class RedirectifyApiService {
 
   // Usuário
   async changePasswordUser(email:string){
-    const resGetUser = await lastValueFrom(this.http.patch(this.changePasswordUserRoute,{email:email},{withCredentials:true,observe:'response'}))
+    const resGetUser = await lastValueFrom(this.http.post(this.changePasswordUserRoute,{email:email},{withCredentials:true,observe:'response'}))
     .catch((error) => {
       throw {
         status: error.status,
