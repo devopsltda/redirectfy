@@ -30,7 +30,7 @@ export class RedirecionadorComponent implements OnInit {
   linkWhatsapp!:string
   IsAccepted:boolean = true
   isVisible:boolean = true
-  prioridade!:string
+
   constructor
   (
     private activatedRoute:ActivatedRoute,
@@ -41,21 +41,13 @@ export class RedirecionadorComponent implements OnInit {
 
   async ngOnInit() {
     this.data = await this.api.getToLinksRedirect(this.redirectHash)
-    this.prioridade = this.data?.body.redirecionador.ordem_de_redirecionamento
-
+    console.log(this.data)
     if(this.data.body.links?.[0]?.plataforma == 'whatsapp'){
-      this.linkWhatsapp = this.data.body.links?.[0]?.link
-      this.linkTelegram = this.data.body.links?.[1]?.link
+      this.linkWhatsapp = this.data.body.links?.[0].link
+      this.linkTelegram = this.data.body.links?.[1].link
     } else {
-      this.linkWhatsapp = this.data.body?.links?.[1]?.link
-      this.linkTelegram = this.data.body?.links?.[0]?.link
-    }
-    if(!(this.linkTelegram && this.linkWhatsapp)){
-      if(this.linkTelegram){
-        this.prioridade = 'telegram,whatsapp'
-      } else if(this.linkWhatsapp){
-        this.prioridade = 'whatsapp,telegram'
-      }
+      this.linkWhatsapp = this.data.body.links?.[1].link
+      this.linkTelegram = this.data.body.links?.[0].link
     }
     this.openDialog()
 
@@ -66,6 +58,7 @@ export class RedirecionadorComponent implements OnInit {
   }
 
   goLinkWhatsapp(){
+    console.log(this.linkWhatsapp)
     return  window.location.href = this.linkWhatsapp;
   }
 
@@ -103,21 +96,20 @@ telegramLinkToHook(link: string): string {
 }
 
    openDialog(){
-      if(this.prioridade == 'whatsapp,telegram'){
+      if(this.data?.body.redirecionador.ordem_de_redirecionamento == 'whatsapp,telegram'){
         this.confirmationService.confirm({
           header:'Redirecionando para Whatsapp',
           message: `Abrir whatsapp e iniciar a conversa com ${this.data.body?.redirecionador.nome} ?`,
           accept: () => {
+            window.location.href = this.whatsappLinkToHook(this.linkWhatsapp)
             this.isLoading = false
-            if(this.linkWhatsapp){
-              window.location.href = this.whatsappLinkToHook(this.linkWhatsapp)
-            }
           },
           reject: () => {
             if(this.linkTelegram){
               window.location.href = this.telegramLinkToHook(this.linkTelegram)
             }
             this.isLoading = false
+            window.location.href = this.telegramLinkToHook(this.linkTelegram)
           }
         })
       } else {
@@ -126,16 +118,11 @@ telegramLinkToHook(link: string): string {
           message: `Abrir telegram e iniciar a conversa com ${this.data.body?.redirecionador.nome}?`,
           accept: () => {
             this.isLoading = false
-            if(this.linkTelegram){
-              window.location.href = this.telegramLinkToHook(this.linkTelegram)
-            }
+            window.location.href = this.telegramLinkToHook(this.linkTelegram)
           },
           reject: () => {
             this.isLoading = false
-            if(this.linkWhatsapp){
-              window.location.href = this.whatsappLinkToHook(this.linkWhatsapp)
-            }
-
+            window.location.href = this.whatsappLinkToHook(this.linkWhatsapp)
           }
         })
       }
