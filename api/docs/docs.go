@@ -969,7 +969,7 @@ const docTemplate = `{
             }
         },
         "/api/u/change_password": {
-            "patch": {
+            "post": {
                 "consumes": [
                     "application/json"
                 ],

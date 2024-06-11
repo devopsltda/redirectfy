@@ -13,6 +13,7 @@ import { CookieService } from 'ngx-cookie-service';
 
 
 
+
 @Component({
   selector: 'app-navbar',
   standalone: true,
@@ -35,12 +36,10 @@ export class NavbarComponent {
     const resApi = await this.api.logout()
     if(resApi.status == 200){
       this.cookie.deleteAll()
-      if(!this.cookie.check('access-token') && !this.cookie.check('refresh-token')){
-        this.router.navigate(['/'])
-      }
+      this.router.navigate(['/'])
     }
    } catch(error) {
-
+    console.log(error)
    }
   }
 }
