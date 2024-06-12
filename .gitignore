@@ -26,6 +26,7 @@ tmp/
 
 # .env file
 .env
+.env.dev
 .env.staging
 .env.prod
 

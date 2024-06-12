@@ -1,4 +1,4 @@
-FROM golang:1.22.3-bookworm as env
+FROM golang:1.22.4-bookworm as env
 
 ENV CGO_ENABLED=1
 
@@ -8,4 +8,4 @@ WORKDIR /app
 RUN apt-get -y update && apt-get install -y --no-install-recommends git make sqlite3 && rm -rf /var/lib/apt/lists/*
 
 # Instalar Swag e Air
-RUN go install github.com/swaggo/swag/cmd/swag@latest && go install github.com/cosmtrek/air@latest
+RUN go install github.com/swaggo/swag/cmd/swag@latest && go install github.com/air-verse/air@latest
