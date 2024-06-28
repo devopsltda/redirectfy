@@ -23,7 +23,7 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class NavbarComponent {
 
-  constructor(private api:RedirectifyApiService, private router:Router, private cookie:CookieService, private messageService:MessageService){}
+  constructor(private api:RedirectifyApiService, private router:Router, private cookie:CookieService){}
 
   sidebarVisible:boolean = false;
   isHovered:boolean = false;
@@ -39,6 +39,7 @@ export class NavbarComponent {
       this.router.navigate(['/'])
     }
    } catch(error) {
+    console.log(error)
    }
   }
 }

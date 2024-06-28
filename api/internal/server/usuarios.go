@@ -350,7 +350,7 @@ func (s *Server) KirvanoToUser(c echo.Context) error {
 //
 // @Failure 500               {object} echo.HTTPError
 //
-// @Router  /api/u/change_password [patch]
+// @Router  /api/u/change_password [post]
 func (s *Server) UsuarioSolicitarTrocaDeSenha(c echo.Context) error {
 	parametros := struct {
 		Email            string `json:"email"`

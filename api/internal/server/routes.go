@@ -68,11 +68,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 	// Middleware de CORS
 	api.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{
-			"http://localhost",               // Ambiente de desenvolvimento do Angular
-			"http://localhost:80",            // Ambiente de desenvolvimento do Angular
-			"http://localhost:4200",          // Ambiente de desenvolvimento do Angular
-			"https://staging.redirectfy.com", // Ambiente de homologação da aplicação
-			"https://redirectfy.com",         // Ambiente de produção da aplicação
+			"http://localhost",           // Ambiente de desenvolvimento do Angular
+			"http://localhost:80",        // Ambiente de desenvolvimento do Angular
+			"http://localhost:4200",      // Ambiente de desenvolvimento do Angular
+			"https://redirectfy.fly.dev", // Ambiente de homologação da aplicação
 		},
 		AllowCredentials: true,
 	}))

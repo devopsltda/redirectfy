@@ -188,6 +188,8 @@ func (l *LinkModel) Remove(id int64, codigoHash string) error {
 // externas ao banco.
 func LinkPicker(links []Link, isPro bool) (picked_links []Link) {
 	var (
+		linkWhatsapp  Link
+		linkTelegram  Link
 		linksWhatsapp []Link
 		linksTelegram []Link
 	)
@@ -210,29 +212,29 @@ func LinkPicker(links []Link, isPro bool) (picked_links []Link) {
 	// dois links são escolhidos de forma aleatória entre os links disponíveis.
 	if !isPro {
 		if len(linksWhatsapp) > 0 {
-			picked_links = append(picked_links, linksWhatsapp[0])
+			linkWhatsapp = linksWhatsapp[0]
 		}
 
 		if len(linksTelegram) > 0 {
-			picked_links = append(picked_links, linksTelegram[0])
+			linkTelegram = linksTelegram[0]
 		}
 
-		return
+		return []Link{linkWhatsapp, linkTelegram}
 	}
 
 	switch {
 	case len(linksWhatsapp) == 1:
-		picked_links = append(picked_links, linksWhatsapp[0])
-	case len(linksWhatsapp) > 1:
-		picked_links = append(picked_links, linksWhatsapp[rand.IntN(len(linksWhatsapp))])
+		linkWhatsapp = linksWhatsapp[0]
+	case len(linksWhatsapp) > 0:
+		linkWhatsapp = linksWhatsapp[rand.IntN(len(linksWhatsapp))]
 	}
 
 	switch {
 	case len(linksTelegram) == 1:
-		picked_links = append(picked_links, linksTelegram[0])
-	case len(linksTelegram) > 1:
-		picked_links = append(picked_links, linksTelegram[rand.IntN(len(linksTelegram))])
+		linkTelegram = linksTelegram[0]
+	case len(linksTelegram) > 0:
+		linkTelegram = linksTelegram[rand.IntN(len(linksTelegram))]
 	}
 
-	return
+	return []Link{linkWhatsapp, linkTelegram}
 }
