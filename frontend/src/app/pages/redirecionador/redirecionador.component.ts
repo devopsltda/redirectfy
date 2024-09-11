@@ -80,19 +80,32 @@ export class RedirecionadorComponent implements OnInit {
 }
 
 telegramLinkToHook(link: string): string {
-  // Expressão regular para encontrar tudo após a última barra do "https://t.me/"
-  const regex = /https:\/\/t\.me\/\+?([^/]+)$/;
-  // Encontra o que está após a última barra do "https://t.me/" no link
-  const match = link.match(regex);
-  if (match) {
-      // Remove o sinal de mais (+) se estiver presente no código de convite
-      const inviteCode = match[1].startsWith('+') ? match[1].slice(1) : match[1];
-      // Retorna o link do Telegram com o código de convite modificado
-      return `tg://join?invite=${inviteCode}`;
-  } else {
-      // Se não encontrar "https://t.me/" no link, retorna o link original
-      return link;
+  // Referência dos Deep Links do Telegram: https://core.telegram.org/api/links
+
+  // Prefixo necessário para links do Telegram
+  const prefix = "https://t.me/";
+
+  if (link.startsWith(prefix)) {
+    const hash = link.slice(prefix.length);
+
+    // Se o link do Telegram for privado, remover o + e usar o endpoint para se
+    // juntar a grupos privados.
+    //
+    // https://core.telegram.org/api/links#chat-invite-links
+    if (hash.startsWith("+")) {
+      return `tg://join?invite=${hash.slice(1)}`;
+    }
+
+    // Se não o link do Telegram é considerado público, usar o endpoint para se
+    // juntar a grupos públicos sem alterar o hash.
+    //
+    // https://core.telegram.org/api/links#public-username-links
+    return `tg://resolve?domain=${hash}`;
   }
+
+  // Caso o link não inicie com o prefixo necessário, ele deve ser devolvido da
+  // maneira como foi enviado.
+  return link;
 }
 
    openDialog(){
