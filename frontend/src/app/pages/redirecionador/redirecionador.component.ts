@@ -82,24 +82,25 @@ export class RedirecionadorComponent implements OnInit {
 telegramLinkToHook(link: string): string {
   // Referência dos Deep Links do Telegram: https://core.telegram.org/api/links
 
-  // Prefixo necessário para links do Telegram
+  // Prefixo necessário para todos os links do Telegram
   const prefix = "https://t.me/";
 
   if (link.startsWith(prefix)) {
     const hash = link.slice(prefix.length);
 
-    // Se o link do Telegram for privado, remover o + e usar o endpoint para se
-    // juntar a grupos privados.
+    // Se o link do Telegram for privado, remover o "+" e usar o endpoint para se
+    // juntar a grupos privados. CHAT ATRAVÉS DE GRUPOS/CANAIS PRIVADOS
     //
-    // https://core.telegram.org/api/links#chat-invite-links
+    // telegram doc: https://core.telegram.org/api/links#chat-invite-links
     if (hash.startsWith("+")) {
       return `tg://join?invite=${hash.slice(1)}`;
     }
 
     // Se não o link do Telegram é considerado público, usar o endpoint para se
-    // juntar a grupos públicos sem alterar o hash.
+    // juntar a grupos públicos sem alterar o hash. 
+    // CHAT ATRAVÉS DE NOME DE USUARIOS
     //
-    // https://core.telegram.org/api/links#public-username-links
+    // telegram doc: https://core.telegram.org/api/links#public-username-links
     return `tg://resolve?domain=${hash}`;
   }
 
