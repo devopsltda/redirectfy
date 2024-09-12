@@ -96,18 +96,18 @@ telegramLinkToHook(link: string): string {
       return `tg://join?invite=${hash.slice(1)}`;
     }
 
-    // Se o link do telegram for um número de telefone(17 dígitos contando espaços e +) BRASILEIRO, 
+    // Se o link do telegram for um número de telefone(14 dígitos no mínimo) BRASILEIRO,
     // remove o "+" e usa o endpoint para abrir o chat do usuario.
     // CHAT COM USUARIO ATRAVÉS DO NÚMERO DE TELEFONE
     //
     // telegram doc: https://core.telegram.org/api/links#phone-number-links
-    if ((hash.length >= 16) && hash.startsWith("+55")) {
+    if ((hash.length >= 14) && hash.startsWith("+55")) {
       return `tg://resolve?phone=${hash.slice(1)}`;
     }
 
 
     // Se não o link do Telegram é considerado público, usar o endpoint para se
-    // juntar a grupos públicos sem alterar o hash. 
+    // juntar a grupos públicos sem alterar o hash.
     // CHAT ATRAVÉS DE NOME DE USUARIOS
     //
     // telegram doc: https://core.telegram.org/api/links#public-username-links
