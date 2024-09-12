@@ -96,7 +96,7 @@ telegramLinkToHook(link: string): string {
       return `tg://join?invite=${hash.slice(1)}`;
     }
 
-    // se o link do telegram for um número de telefone(17 dígitos contando espaços e +) BRASILEIRO, 
+    // Se o link do telegram for um número de telefone(17 dígitos contando espaços e +) BRASILEIRO, 
     // remove o "+" e usa o endpoint para abrir o chat do usuario.
     // CHAT COM USUARIO ATRAVÉS DO NÚMERO DE TELEFONE
     //
