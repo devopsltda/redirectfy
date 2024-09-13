@@ -40,13 +40,9 @@ export class RedirecionadorComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.data = await this.api.getToLinksRedirect(this.redirectHash)
-    console.log(this.data)
-    
+    this.data = await this.api.getToLinksRedirect(this.redirectHash)    
     // quando temos 2 tipos de links, 1 pro telegram e outro pro zap
-  console.log("Log ngOnInit links: "+JSON.stringify(this.data.body.links))
     if (this.data.body.links.length === 2) {
-      console.log("log passou if links.lenght = 2")
       if(this.data.body.links?.[0]?.plataforma == 'whatsapp'){
         this.linkWhatsapp = this.data.body.links?.[0].link
         this.linkTelegram = this.data.body.links?.[1].link
@@ -54,22 +50,18 @@ export class RedirecionadorComponent implements OnInit {
         this.linkWhatsapp = this.data.body.links?.[1].link
         this.linkTelegram = this.data.body.links?.[0].link
       }
-      console.log("Log ngOnInit, 2 links, whatsapp first: "+this.data)
     }
     // quando temos apenas 1 link, seja do zap ou do telegram
     if (this.data.body.links.length === 1) {
       if (this.data.body.links?.[0].plataforma === "whatsapp"){
         // quando temos apenas 1 link, ele sendo do whatsapp
         this.linkWhatsapp = this.data.body.links?.[0].link
-        console.log("Log ngOnInit, 1 link, whatsapp only: "+this.linkWhatsapp)
       }
       if(this.data.body.links?.[0].plataforma === "telegram"){
         // quando temos apenas 1 link, ele sendo do telegram
         this.linkTelegram = this.data.body.links?.[0].link
-        console.log("Log ngOnInit, 1 link, telegram only: "+this.linkTelegram)
       }
     } 
-    
     this.openDialog()
   }
 
