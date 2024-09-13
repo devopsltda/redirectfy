@@ -41,7 +41,7 @@ export class RedirecionadorComponent implements OnInit {
 
   async ngOnInit() {
     this.data = await this.api.getToLinksRedirect(this.redirectHash)
-    console.log("Log ngOnInit inicial: "+this.data)
+    console.log(this.data)
     
     // quando temos 2 tipos de links, 1 pro telegram e outro pro zap
   console.log("Log ngOnInit links: "+this.data.body.links)
