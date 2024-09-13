@@ -44,7 +44,7 @@ export class RedirecionadorComponent implements OnInit {
     console.log(this.data)
     
     // quando temos 2 tipos de links, 1 pro telegram e outro pro zap
-  console.log("Log ngOnInit links: "+this.data.body.links)
+  console.log("Log ngOnInit links: "+JSON.stringify(this.data.body.links))
     if (this.data.body.links.length === 2) {
       console.log("log passou if links.lenght = 2")
       if(this.data.body.links?.[0]?.plataforma == 'whatsapp'){
