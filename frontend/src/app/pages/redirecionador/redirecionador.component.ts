@@ -58,12 +58,12 @@ export class RedirecionadorComponent implements OnInit {
     }
     // quando temos apenas 1 link, seja do zap ou do telegram
     if (this.data.body.links.length === 1) {
-      // quando temos apenas 1 link, ele sendo do whatsapp
-      if (this.data.links?.[0]?.plataforma == "whatsapp"){
+      if (this.data.body.links?.[0].plataforma === "whatsapp"){
+        // quando temos apenas 1 link, ele sendo do whatsapp
         this.linkWhatsapp = this.data.body.links?.[0].link
-        //this.linkTelegram = "stringvazia"
         console.log("Log ngOnInit, 1 link, whatsapp only: "+this.linkWhatsapp)
-      } else {
+      }
+      if(this.data.body.links?.[0].plataforma === "telegram"){
         // quando temos apenas 1 link, ele sendo do telegram
         this.linkTelegram = this.data.body.links?.[0].link
         console.log("Log ngOnInit, 1 link, telegram only: "+this.linkTelegram)
