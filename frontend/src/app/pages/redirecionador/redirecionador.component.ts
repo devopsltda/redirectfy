@@ -42,15 +42,33 @@ export class RedirecionadorComponent implements OnInit {
   async ngOnInit() {
     this.data = await this.api.getToLinksRedirect(this.redirectHash)
     console.log(this.data)
-    if(this.data.body.links?.[0]?.plataforma == 'whatsapp'){
-      this.linkWhatsapp = this.data.body.links?.[0].link
-      this.linkTelegram = this.data.body.links?.[1].link
-    } else {
-      this.linkWhatsapp = this.data.body.links?.[1].link
-      this.linkTelegram = this.data.body.links?.[0].link
+    
+    // quando temos 2 tipos de links, 1 pro telegram e outro pro zap
+    if (this.data.body.links.length = 2) {
+      if(this.data.body.links?.[0]?.plataforma == 'whatsapp'){
+        this.linkWhatsapp = this.data.body.links?.[0].link
+        this.linkTelegram = this.data.body.links?.[1].link
+      } else {
+        this.linkWhatsapp = this.data.body.links?.[1].link
+        this.linkTelegram = this.data.body.links?.[0].link
+      }
     }
+    // quando temos apenas 1 link, seja do zap ou do telegram
+    if (this.data.body.links.length = 1) {
+      // quando temos apenas 1 link, ele sendo do whatsapp
+      if (this.data.links?.[0]?.plataforma == "whatsapp"){
+        this.linkWhatsapp = this.data.body.links?.[0].link
+        //this.linkTelegram = "stringvazia"
+        console.log("Link zap teste 1: "+this.linkWhatsapp)
+      } else {
+        // quando temos apenas 1 link, ele sendo do telegram
+        this.linkTelegram = this.data.body.links?.[0].link
+        console.log("Link telegram teste 2: "+this.linkTelegram)
+      }
+      
+    } 
+    
     this.openDialog()
-
   }
 
   goLinkTelegram(){
