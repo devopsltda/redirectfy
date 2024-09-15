@@ -27,7 +27,7 @@ RUN npm install
 
 COPY frontend/ .
 
-RUN npm run staging
+RUN npm run development
 
 # Final stage
 FROM nginx:bookworm as exec
