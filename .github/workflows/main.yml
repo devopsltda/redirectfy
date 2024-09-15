@@ -11,7 +11,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.22.1'
+          go-version: '1.22.4'
       - name: Build Go
         run: go build -v ./...
       - name: Copy .env.example
