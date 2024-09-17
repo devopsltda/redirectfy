@@ -34,11 +34,12 @@ export class RedirecionadorComponent implements OnInit {
   linkWhatsapp!: string;
   IsAccepted: boolean = true;
   isVisible: boolean = true;
+  plataforma!: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private api: RedirectifyApiService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
   ) {}
 
   async ngOnInit() {
@@ -49,9 +50,11 @@ export class RedirecionadorComponent implements OnInit {
       if (this.data.body.links?.[0]?.plataforma == 'whatsapp') {
         this.linkWhatsapp = this.data.body.links?.[0].link;
         this.linkTelegram = this.data.body.links?.[1].link;
+        this.plataforma = "whatsapp";
       } else {
         this.linkWhatsapp = this.data.body.links?.[1].link;
         this.linkTelegram = this.data.body.links?.[0].link;
+        this.plataforma = "telegram";
       }
     }
     // quando temos apenas 1 link, seja do zap ou do telegram
@@ -59,10 +62,12 @@ export class RedirecionadorComponent implements OnInit {
       if (this.data.body.links?.[0].plataforma === 'whatsapp') {
         // quando temos apenas 1 link, ele sendo do whatsapp
         this.linkWhatsapp = this.data.body.links?.[0].link;
+        this.plataforma = "whatsapp";
       }
       if (this.data.body.links?.[0].plataforma === 'telegram') {
         // quando temos apenas 1 link, ele sendo do telegram
         this.linkTelegram = this.data.body.links?.[0].link;
+        this.plataforma = "telegram";
       }
     }
     this.openDialog();
@@ -146,13 +151,13 @@ export class RedirecionadorComponent implements OnInit {
     console.log(this.data.body.links.length+" rock");
   
     if (this.data?.body.links.length <= 2) {
-      switch (this.data?.body.redirecionador.ordem_de_redirecionamento) {
-        case 'whatsapp,telegram': //caso 2 plataformas, whatsapp primeiro
+      switch (this.plataforma) {
+        case 'whatsapp': //caso 2 plataformas, whatsapp primeiro
           this.confirmationService.confirm({
             header: 'Redirecionando para Whatsapp',
             message: `Abrir whatsapp e iniciar a conversa com ${this.data.body?.redirecionador.nome} ?`,
             accept: () => {
-              console.log("link do zap dentro do openDialog whatsapp,telegram: "+this.linkWhatsapp);
+              console.log("link do zap dentro do openDialog whatsapp,telegram:"+this.linkWhatsapp);
               window.location.href = this.whatsappLinkToHook(this.linkWhatsapp);
               this.isLoading = false;
             },
@@ -168,7 +173,7 @@ export class RedirecionadorComponent implements OnInit {
           });
           break;
 
-        case 'telegram,whatsapp': //caso 2 plataformas, telegram primeiro
+        case 'telegram': //caso 2 plataformas, telegram primeiro
           this.confirmationService.confirm({
             header: 'Redirecionando para Telegram',
             message: `Abrir telegram e iniciar a conversa com ${this.data.body?.redirecionador.nome}?`,
@@ -186,11 +191,9 @@ export class RedirecionadorComponent implements OnInit {
           break;
 
         default:
+          throw Error;
       }
 
-    }
-    if (this.data?.body.links.length == 0 || this.data?.body.links.length == null) { //praticamente impossivel de acontecer?
-      throw Error;
     }
   }
 }
