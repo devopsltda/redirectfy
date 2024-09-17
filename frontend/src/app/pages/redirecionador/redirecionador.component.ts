@@ -39,7 +39,7 @@ export class RedirecionadorComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private api: RedirectifyApiService,
     private confirmationService: ConfirmationService
-  ) {}
+  ) { }
 
   async ngOnInit() {
     this.data = await this.api.getToLinksRedirect(this.redirectHash);
@@ -77,30 +77,37 @@ export class RedirecionadorComponent implements OnInit {
   }
 
   whatsappLinkToHook(link: string): string {
-    // Extrair o número de telefone do link
-    console.log("link inicio da funcao whatsappLinkToHook: "+link);
+
+    console.log(link)
+
+    if (link === undefined) {
+      link = "telegram"
+    }
     
+
+    // Extrair o número de telefone do link
     const phoneRegex = /\+(\d+)/;
     const phoneMatch = link.match(phoneRegex);
     const phone = phoneMatch ? phoneMatch[1] : '';
-    console.log("phoneMatch ->  funcao whatsappLinkToHook: "+phoneMatch);
 
     // Extrair o texto do link
     const textRegex = /text=([^&]*)/;
     const textMatch = link.match(textRegex);
-    console.log("textMatch ->  funcao whatsappLinkToHook: "+textMatch);
     const newText = textMatch ? decodeURIComponent(textMatch[1]) : '';
 
     // Criar o novo link do WhatsApp com o número de telefone e o texto
     const whatsappLink = `whatsapp://send/app/?phone=${phone}&text=${encodeURI(
       newText
     )}`;
-    console.log("link final da função whatsappLinkToHook: "+whatsappLink);
-    
+
     return whatsappLink;
   }
 
   telegramLinkToHook(link: string): string {
+
+
+
+
     // Referência dos Deep Links do Telegram: https://core.telegram.org/api/links
 
     // Prefixo necessário para todos os links do Telegram
@@ -140,11 +147,7 @@ export class RedirecionadorComponent implements OnInit {
   }
 
   openDialog() {
-    
-    console.log(this.data?.body.redirecionador.ordem_de_redirecionamento)
-
     switch (this.data?.body.redirecionador.ordem_de_redirecionamento) {
-      
       case 'whatsapp,telegram': //caso 2 plataformas, whatsapp primeiro
         this.confirmationService.confirm({
           header: 'Redirecionando para Whatsapp',
@@ -162,9 +165,6 @@ export class RedirecionadorComponent implements OnInit {
           },
         });
         break;
-
-
-
       case 'telegram,whatsapp': //caso 2 plataformas, telegram primeiro
         this.confirmationService.confirm({
           header: 'Redirecionando para Telegram',
@@ -182,15 +182,25 @@ export class RedirecionadorComponent implements OnInit {
 
 
       case 'telegram':
+
+
+
         this.confirmationService.confirm({
           header: 'Redirecionando para Telegram',
           message: `Abrir telegram e iniciar a conversa com ${this.data.body?.redirecionador.nome}?`,
           accept: () => {
             this.isLoading = false;
             window.location.href = this.telegramLinkToHook(this.linkTelegram);
-          }
+          },
+          reject: () => {
+            this.isLoading = false;
+            window.location.href = this.whatsappLinkToHook(this.linkWhatsapp);
+          },
         });
+
+
         break;
+
 
 
       case 'whatsapp':
@@ -200,10 +210,16 @@ export class RedirecionadorComponent implements OnInit {
           accept: () => {
             window.location.href = this.whatsappLinkToHook(this.linkWhatsapp);
             this.isLoading = false;
-          }
+          },
+          reject: () => {
+            if (this.linkTelegram) {
+              window.location.href = this.telegramLinkToHook(this.linkTelegram);
+            }
+            this.isLoading = false;
+            window.location.href = this.telegramLinkToHook(this.linkTelegram);
+          },
         });
         break;
-
 
       default:
     }
