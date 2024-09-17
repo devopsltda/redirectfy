@@ -143,7 +143,9 @@ export class RedirecionadorComponent implements OnInit {
   }
 
   openDialog() {
-    if (this.data?.body.redirecionador.links < 2) {
+    console.log(this.data?.body.links.lenght+" rock");
+  
+    if (this.data?.body.links.lenght <= 2) {
       switch (this.data?.body.redirecionador.ordem_de_redirecionamento) {
         case 'whatsapp,telegram': //caso 2 plataformas, whatsapp primeiro
           this.confirmationService.confirm({
@@ -182,7 +184,10 @@ export class RedirecionadorComponent implements OnInit {
 
         default:
       }
+
+      if (this.data?.body.links.lenght == 0 || this.data?.body.links.lenght == null) { //praticamente impossivel de acontecer?
+        throw Error;
+      }
     }
   }
-
 }
