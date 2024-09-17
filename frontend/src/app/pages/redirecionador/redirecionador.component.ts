@@ -34,23 +34,27 @@ export class RedirecionadorComponent implements OnInit {
   linkWhatsapp!: string;
   IsAccepted: boolean = true;
   isVisible: boolean = true;
+  plataforma!: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private api: RedirectifyApiService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
   ) {}
 
   async ngOnInit() {
     this.data = await this.api.getToLinksRedirect(this.redirectHash);
     // quando temos 2 tipos de links, 1 pro telegram e outro pro zap
+    console.log(this.data?.body.links);
     if (this.data.body.links.length === 2) {
       if (this.data.body.links?.[0]?.plataforma == 'whatsapp') {
         this.linkWhatsapp = this.data.body.links?.[0].link;
         this.linkTelegram = this.data.body.links?.[1].link;
+        this.plataforma = "whatsapp";
       } else {
         this.linkWhatsapp = this.data.body.links?.[1].link;
         this.linkTelegram = this.data.body.links?.[0].link;
+        this.plataforma = "telegram";
       }
     }
     // quando temos apenas 1 link, seja do zap ou do telegram
@@ -58,10 +62,12 @@ export class RedirecionadorComponent implements OnInit {
       if (this.data.body.links?.[0].plataforma === 'whatsapp') {
         // quando temos apenas 1 link, ele sendo do whatsapp
         this.linkWhatsapp = this.data.body.links?.[0].link;
+        this.plataforma = "whatsapp";
       }
       if (this.data.body.links?.[0].plataforma === 'telegram') {
         // quando temos apenas 1 link, ele sendo do telegram
         this.linkTelegram = this.data.body.links?.[0].link;
+        this.plataforma = "telegram";
       }
     }
     this.openDialog();
@@ -77,6 +83,13 @@ export class RedirecionadorComponent implements OnInit {
   }
 
   whatsappLinkToHook(link: string): string {
+    console.log('Esse é po cara antes: ', link);
+
+    if (link === undefined) {
+      link = 'telegram';
+      console.log('Esse é po cara depois: ', link);
+    }
+
     // Extrair o número de telefone do link
     const phoneRegex = /\+(\d+)/;
     const phoneMatch = link.match(phoneRegex);
@@ -135,71 +148,52 @@ export class RedirecionadorComponent implements OnInit {
   }
 
   openDialog() {
-    switch (this.data?.body.redirecionador.ordem_de_redirecionamento) {
-      case 'whatsapp,telegram': //caso 2 plataformas, whatsapp primeiro
-        this.confirmationService.confirm({
-          header: 'Redirecionando para Whatsapp',
-          message: `Abrir whatsapp e iniciar a conversa com ${this.data.body?.redirecionador.nome} ?`,
-          accept: () => {
-            window.location.href = this.whatsappLinkToHook(this.linkWhatsapp);
-            this.isLoading = false;
-          },
-          reject: () => {
-            if (this.linkTelegram) {
+    console.log(this.data.body.links.length+" rock");
+  
+    if (this.data?.body.links.length <= 2) {
+      switch (this.plataforma) {
+        case 'whatsapp': //caso 2 plataformas, whatsapp primeiro
+          this.confirmationService.confirm({
+            header: 'Redirecionando para Whatsapp',
+            message: `Abrir whatsapp e iniciar a conversa com ${this.data.body?.redirecionador.nome} ?`,
+            accept: () => {
+              console.log("link do zap dentro do openDialog whatsapp,telegram:"+this.linkWhatsapp);
+              window.location.href = this.whatsappLinkToHook(this.linkWhatsapp);
+              this.isLoading = false;
+            },
+            reject: () => {
+              if (this.linkTelegram) {
+                window.location.href = this.telegramLinkToHook(
+                  this.linkTelegram
+                );
+              }
+              this.isLoading = false;
               window.location.href = this.telegramLinkToHook(this.linkTelegram);
-            }
-            this.isLoading = false;
-            window.location.href = this.telegramLinkToHook(this.linkTelegram);
-          },
-        });
-        break;
-      case 'telegram,whatsapp': //caso 2 plataformas, telegram primeiro
-        this.confirmationService.confirm({
-          header: 'Redirecionando para Telegram',
-          message: `Abrir telegram e iniciar a conversa com ${this.data.body?.redirecionador.nome}?`,
-          accept: () => {
-            this.isLoading = false;
-            window.location.href = this.telegramLinkToHook(this.linkTelegram);
-          },
-          reject: () => {
-            this.isLoading = false;
-            window.location.href = this.whatsappLinkToHook(this.linkWhatsapp);
-          },
-        });
-        break;
-      case 'telegram':
-        this.confirmationService.confirm({
-          header: 'Redirecionando para Telegram',
-          message: `Abrir telegram e iniciar a conversa com ${this.data.body?.redirecionador.nome}?`,
-          accept: () => {
-            this.isLoading = false;
-            window.location.href = this.telegramLinkToHook(this.linkTelegram);
-          },
-          reject: () => {
-            this.isLoading = false;
-            window.location.href = this.whatsappLinkToHook(this.linkWhatsapp);
-          },
-        });
-        break;
-      case 'whatsapp':
-        this.confirmationService.confirm({
-          header: 'Redirecionando para Whatsapp',
-          message: `Abrir whatsapp e iniciar a conversa com ${this.data.body?.redirecionador.nome} ?`,
-          accept: () => {
-            window.location.href = this.whatsappLinkToHook(this.linkWhatsapp);
-            this.isLoading = false;
-          },
-          reject: () => {
-            if (this.linkTelegram) {
-              window.location.href = this.telegramLinkToHook(this.linkTelegram);
-            }
-            this.isLoading = false;
-            window.location.href = this.telegramLinkToHook(this.linkTelegram);
-          },
-        });
-        break;
+            },
+          });
+          break;
 
-      default:
+        case 'telegram': //caso 2 plataformas, telegram primeiro
+          this.confirmationService.confirm({
+            header: 'Redirecionando para Telegram',
+            message: `Abrir telegram e iniciar a conversa com ${this.data.body?.redirecionador.nome}?`,
+            accept: () => {
+              this.isLoading = false;
+              window.location.href = this.telegramLinkToHook(this.linkTelegram);
+            },
+            reject: () => {
+              this.isLoading = false;
+              console.log("link do zap dentro do openDialog telegram,whatsapp: "+this.linkWhatsapp);
+              
+              window.location.href = this.whatsappLinkToHook(this.linkWhatsapp);
+            },
+          });
+          break;
+
+        default:
+          throw Error;
+      }
+
     }
   }
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"redirectfy/internal/models"
 	"redirectfy/internal/utils"
@@ -319,6 +320,49 @@ func (s *Server) LinkDisable(c echo.Context) error {
 		return utils.Erro(http.StatusInternalServerError, "Não foi possível desativar o link do redirecionador inserido.")
 	}
 
+	links, err := s.LinkModel.ReadByCodigoHash(codigoHash)
+
+	if err != nil {
+		utils.ErroLog("LinkRemove", "Erro na remoção do link do redirecionador inserido", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível remover o link do redirecionador inserido.")
+	}
+
+	redirecionador, err := s.RedirecionadorModel.ReadByCodigoHash(codigoHash)
+
+	if err != nil {
+		utils.ErroLog("LinkRemove", "Erro na remoção do link do redirecionador inserido", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível remover o link do redirecionador inserido.")
+	}
+
+	var plataforma string
+	var mudarPlataforma bool
+
+	if strings.HasPrefix(redirecionador.OrdemDeRedirecionamento, "whatsapp") {
+		plataforma = "whatsapp"
+	} else {
+		plataforma = "telegram"
+	}
+
+	for _, l := range links {
+		if l.Plataforma == plataforma && l.Ativo {
+			break
+		}
+	}
+
+	if mudarPlataforma {
+		var err error
+		if plataforma == "whatsapp" {
+			err = s.RedirecionadorModel.Update("", codigoHash, "telegram")
+		} else {
+			err = s.RedirecionadorModel.Update("", codigoHash, "whatsapp")
+		}
+
+		if err != nil {
+			utils.ErroLog("LinkRemove", "Erro na remoção do link do redirecionador inserido", err)
+			return utils.Erro(http.StatusInternalServerError, "Não foi possível remover o link do redirecionador inserido.")
+		}
+	}
+
 	return c.JSON(http.StatusOK, "O link foi desativado com sucesso.")
 }
 
@@ -421,6 +465,49 @@ func (s *Server) LinkRemove(c echo.Context) error {
 	if err != nil {
 		utils.ErroLog("LinkRemove", "Erro na remoção do link do redirecionador inserido", err)
 		return utils.Erro(http.StatusInternalServerError, "Não foi possível remover o link do redirecionador inserido.")
+	}
+
+	links, err := s.LinkModel.ReadByCodigoHash(codigoHash)
+
+	if err != nil {
+		utils.ErroLog("LinkRemove", "Erro na remoção do link do redirecionador inserido", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível remover o link do redirecionador inserido.")
+	}
+
+	redirecionador, err := s.RedirecionadorModel.ReadByCodigoHash(codigoHash)
+
+	if err != nil {
+		utils.ErroLog("LinkRemove", "Erro na remoção do link do redirecionador inserido", err)
+		return utils.Erro(http.StatusInternalServerError, "Não foi possível remover o link do redirecionador inserido.")
+	}
+
+	var plataforma string
+	var mudarPlataforma bool
+
+	if strings.HasPrefix(redirecionador.OrdemDeRedirecionamento, "whatsapp") {
+		plataforma = "whatsapp"
+	} else {
+		plataforma = "telegram"
+	}
+
+	for _, l := range links {
+		if l.Plataforma == plataforma && l.Ativo {
+			break
+		}
+	}
+
+	if mudarPlataforma {
+		var err error
+		if plataforma == "whatsapp" {
+			err = s.RedirecionadorModel.Update("", codigoHash, "telegram")
+		} else {
+			err = s.RedirecionadorModel.Update("", codigoHash, "whatsapp")
+		}
+
+		if err != nil {
+			utils.ErroLog("LinkRemove", "Erro na remoção do link do redirecionador inserido", err)
+			return utils.Erro(http.StatusInternalServerError, "Não foi possível remover o link do redirecionador inserido.")
+		}
 	}
 
 	return c.JSON(http.StatusOK, "O link foi removido com sucesso.")
