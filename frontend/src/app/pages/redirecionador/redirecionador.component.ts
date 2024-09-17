@@ -152,6 +152,7 @@ export class RedirecionadorComponent implements OnInit {
             header: 'Redirecionando para Whatsapp',
             message: `Abrir whatsapp e iniciar a conversa com ${this.data.body?.redirecionador.nome} ?`,
             accept: () => {
+              console.log("link do zap dentro do openDialog whatsapp,telegram: "+this.linkWhatsapp);
               window.location.href = this.whatsappLinkToHook(this.linkWhatsapp);
               this.isLoading = false;
             },
@@ -177,6 +178,8 @@ export class RedirecionadorComponent implements OnInit {
             },
             reject: () => {
               this.isLoading = false;
+              console.log("link do zap dentro do openDialog telegram,whatsapp: "+this.linkWhatsapp);
+              
               window.location.href = this.whatsappLinkToHook(this.linkWhatsapp);
             },
           });
@@ -186,7 +189,7 @@ export class RedirecionadorComponent implements OnInit {
       }
 
     }
-    if (this.data?.body.links.lenght == 0 || this.data?.body.links.lenght == null) { //praticamente impossivel de acontecer?
+    if (this.data?.body.links.length == 0 || this.data?.body.links.length == null) { //praticamente impossivel de acontecer?
       throw Error;
     }
   }
