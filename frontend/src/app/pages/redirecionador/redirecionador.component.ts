@@ -78,20 +78,25 @@ export class RedirecionadorComponent implements OnInit {
 
   whatsappLinkToHook(link: string): string {
     // Extrair o número de telefone do link
+    console.log("link inicio da funcao whatsappLinkToHook: "+link);
+    
     const phoneRegex = /\+(\d+)/;
     const phoneMatch = link.match(phoneRegex);
     const phone = phoneMatch ? phoneMatch[1] : '';
+    console.log("phoneMatch ->  funcao whatsappLinkToHook: "+phoneMatch);
 
     // Extrair o texto do link
     const textRegex = /text=([^&]*)/;
     const textMatch = link.match(textRegex);
+    console.log("textMatch ->  funcao whatsappLinkToHook: "+textMatch);
     const newText = textMatch ? decodeURIComponent(textMatch[1]) : '';
 
     // Criar o novo link do WhatsApp com o número de telefone e o texto
     const whatsappLink = `whatsapp://send/app/?phone=${phone}&text=${encodeURI(
       newText
     )}`;
-
+    console.log("link final da função whatsappLinkToHook: "+whatsappLink);
+    
     return whatsappLink;
   }
 
