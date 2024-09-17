@@ -185,9 +185,9 @@ export class RedirecionadorComponent implements OnInit {
         default:
       }
 
-      if (this.data?.body.links.lenght == 0 || this.data?.body.links.lenght == null) { //praticamente impossivel de acontecer?
-        throw Error;
-      }
+    }
+    if (this.data?.body.links.lenght == 0 || this.data?.body.links.lenght == null) { //praticamente impossivel de acontecer?
+      throw Error;
     }
   }
 }
