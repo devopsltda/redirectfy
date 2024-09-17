@@ -174,11 +174,7 @@ export class RedirecionadorComponent implements OnInit {
           accept: () => {
             this.isLoading = false;
             window.location.href = this.telegramLinkToHook(this.linkTelegram);
-          },
-          reject: () => {
-            this.isLoading = false;
-            window.location.href = this.whatsappLinkToHook(this.linkWhatsapp);
-          },
+          }
         });
         break;
       case 'whatsapp':
@@ -188,14 +184,7 @@ export class RedirecionadorComponent implements OnInit {
           accept: () => {
             window.location.href = this.whatsappLinkToHook(this.linkWhatsapp);
             this.isLoading = false;
-          },
-          reject: () => {
-            if (this.linkTelegram) {
-              window.location.href = this.telegramLinkToHook(this.linkTelegram);
-            }
-            this.isLoading = false;
-            window.location.href = this.telegramLinkToHook(this.linkTelegram);
-          },
+          }
         });
         break;
 
