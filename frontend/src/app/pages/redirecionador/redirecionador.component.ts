@@ -135,7 +135,11 @@ export class RedirecionadorComponent implements OnInit {
   }
 
   openDialog() {
+    
+    console.log(this.data?.body.redirecionador.ordem_de_redirecionamento)
+
     switch (this.data?.body.redirecionador.ordem_de_redirecionamento) {
+      
       case 'whatsapp,telegram': //caso 2 plataformas, whatsapp primeiro
         this.confirmationService.confirm({
           header: 'Redirecionando para Whatsapp',
@@ -153,6 +157,9 @@ export class RedirecionadorComponent implements OnInit {
           },
         });
         break;
+
+
+
       case 'telegram,whatsapp': //caso 2 plataformas, telegram primeiro
         this.confirmationService.confirm({
           header: 'Redirecionando para Telegram',
@@ -167,6 +174,8 @@ export class RedirecionadorComponent implements OnInit {
           },
         });
         break;
+
+
       case 'telegram':
         this.confirmationService.confirm({
           header: 'Redirecionando para Telegram',
@@ -177,6 +186,8 @@ export class RedirecionadorComponent implements OnInit {
           }
         });
         break;
+
+
       case 'whatsapp':
         this.confirmationService.confirm({
           header: 'Redirecionando para Whatsapp',
@@ -187,6 +198,7 @@ export class RedirecionadorComponent implements OnInit {
           }
         });
         break;
+
 
       default:
     }
