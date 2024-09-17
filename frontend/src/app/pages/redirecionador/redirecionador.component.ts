@@ -105,10 +105,6 @@ export class RedirecionadorComponent implements OnInit {
   }
 
   telegramLinkToHook(link: string): string {
-
-
-
-
     // Referência dos Deep Links do Telegram: https://core.telegram.org/api/links
 
     // Prefixo necessário para todos os links do Telegram
@@ -195,7 +191,7 @@ export class RedirecionadorComponent implements OnInit {
           },
           reject: () => {
             this.isLoading = false;
-            window.location.href = this.whatsappLinkToHook(this.linkWhatsapp);
+            // window.location.href = this.whatsappLinkToHook(this.linkWhatsapp);
           },
         });
 
