@@ -78,10 +78,11 @@ export class RedirecionadorComponent implements OnInit {
 
   whatsappLinkToHook(link: string): string {
 
-    console.log(link)
+    console.log("Esse é po cara antes: ", link)
 
     if (link === undefined) {
       link = "telegram"
+      console.log("Esse é po cara depois: ", link)
     }
     
 
