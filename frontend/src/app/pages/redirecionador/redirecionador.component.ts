@@ -143,9 +143,9 @@ export class RedirecionadorComponent implements OnInit {
   }
 
   openDialog() {
-    console.log(this.data?.body.links.lenght+" rock");
+    console.log(this.data.body.links.length+" rock");
   
-    if (this.data?.body.links.lenght <= 2) {
+    if (this.data?.body.links.length <= 2) {
       switch (this.data?.body.redirecionador.ordem_de_redirecionamento) {
         case 'whatsapp,telegram': //caso 2 plataformas, whatsapp primeiro
           this.confirmationService.confirm({
