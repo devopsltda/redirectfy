@@ -157,6 +157,7 @@ export class RedirecionadorComponent implements OnInit {
   openDialog() {
     if (!this.linkWhatsapp && !this.linkTelegram) {
       // Abre o modal sem opções de redirecionamento
+      this.isLinksAvailable = false
       this.confirmationService.confirm({
         header: 'Nenhum redirecionamento disponível',
         message: 'Nenhuma plataforma de redirecionamento está disponível.',
@@ -205,10 +206,6 @@ export class RedirecionadorComponent implements OnInit {
         default:
           throw Error;
       }
-
-    }
-    if (this.data?.body.links.length == 0 || null) {
-      this.isLinksAvailable = false
     }
   }
 }
