@@ -1,32 +1,37 @@
-
-
-
-<div class=" bg-teal-400 flex flex-col gap-6 w-screen h-screen items-center justify-center relative">
-
-  <p-confirmDialog #cd closable="false" >
+<div class="bg-teal-400 flex flex-col gap-6 w-screen h-screen items-center justify-center relative">
+  <p-confirmDialog #cd closable="false">
     <ng-template pTemplate="footer">
       <div class="flex gap-5 flex-row-reverse">
-        <button (click)="cd.reject()">{{data?.body.redirecionador.ordem_de_redirecionamento=='whatsapp,telegram'?'Não, ir para o Telegram':'Não, ir para o Whatsapp'}}</button>
+        <button (click)="cd.reject()">{{data?.body.redirecionador.ordem_de_redirecionamento=='whatsapp,telegram' ? 'Não, ir para o Telegram' : 'Não, ir para o Whatsapp'}}</button>
         <button (click)="cd.accept()">Sim</button>
       </div>
     </ng-template>
   </p-confirmDialog>
 
-
-  <div [@translateY] class="flex w-full justify-center {{isLoading?'animate-pulse':'animate-none'}}" #logo>
-    <svg class="w-32 fill-white " viewBox="0 0 46 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <div [@translateY] class="flex w-full justify-center {{isLoading ? 'animate-pulse' : 'animate-none'}}" #logo>
+    <svg class="w-32 fill-white" viewBox="0 0 46 44" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path fill-rule="evenodd" clip-rule="evenodd" d="M4.37308 0H0V4.37308V39.2069V43.58V43.58H4.37308V43.58H45.2388V39.2069H4.37308V4.37308H40.8651V27.1433H30.8851L22.5342 19.3019H29.8568V14.9288H18.9995H14.6264V19.3019V30.31H18.9995V21.9816L28.9536 31.3284V31.5164H29.1538L29.1982 31.5581L29.2374 31.5164H40.8665V31.5163H45.2382V4.37308H45.2388V0H45.2382H40.8651H4.37308Z" fill='current'/>
     </svg>
   </div>
-  <p [@showIn] class="font-semibold text-4xl text-white ">Redirectfy</p>
-  <div class="flex flex-col w-full items-center opacity-0  gap-5 transition duration-[2000ms]  {{isLoading?'':' opacity-100'}} ">
-    <button *ngIf="linkWhatsapp" (click)="goLinkWhatsapp()" class="flex w-60 h-14 gap-6 md:h-12 text-xl bg-green-400 bg-opacity-50 text-white md:w-96 bg-  shadow-md  items-center  justify-center rounded-md border-l-4 border-l-green-400 transition-all ">
+  <p [@showIn] class="font-semibold text-4xl text-white">Redirectfy</p>
+
+  <!-- Verifica se há links disponíveis -->
+  <div *ngIf="isLinksAvailable" class="flex flex-col w-full items-center opacity-0 gap-5 transition duration-[2000ms] {{isLoading ? '' : 'opacity-100'}}">
+    <!-- Botão para WhatsApp se o link existir -->
+    <button *ngIf="linkWhatsapp" (click)="goLinkWhatsapp()" class="flex w-60 h-14 gap-6 md:h-12 text-xl bg-green-400 bg-opacity-50 text-white md:w-96 shadow-md items-center justify-center rounded-md border-l-4 border-l-green-400 transition-all">
       <app-icon-whatsapp ngClass="w-7 h-7"></app-icon-whatsapp>
-      Ir para  Whatsapp
+      Ir para WhatsApp
     </button>
-    <button *ngIf="linkTelegram"  (click)="goLinkTelegram()" class="flex w-60 h-14 gap-6 md:h-12 text-xl bg-blue-400 bg-opacity-50 text-white md:w-96 bg-  shadow-md  items-center  justify-center rounded-md border-l-4 border-l-blue-400 transition-all ">
+
+    <!-- Botão para Telegram se o link existir -->
+    <button *ngIf="linkTelegram" (click)="goLinkTelegram()" class="flex w-60 h-14 gap-6 md:h-12 text-xl bg-blue-400 bg-opacity-50 text-white md:w-96 shadow-md items-center justify-center rounded-md border-l-4 border-l-blue-400 transition-all">
       <app-icon-telegram ngClass="w-7 h-7"></app-icon-telegram>
       Ir para Telegram
     </button>
+  </div>
+
+  <!-- Caso não haja links disponíveis -->
+  <div *ngIf="!isLinksAvailable" class="flex flex-col w-full items-center gap-5 transition duration-[2000ms] {{isLoading ? '' : 'opacity-100'}}">
+    <p class="text-white text-xl">Nenhuma plataforma de redirecionamento disponível no momento.</p>
   </div>
 </div>

@@ -30,6 +30,7 @@ export class RedirecionadorComponent implements OnInit {
   data: any;
 
   isLoading: boolean = true;
+  isLinksAvailable: boolean = true;
   linkTelegram!: string;
   linkWhatsapp!: string;
   IsAccepted: boolean = true;
@@ -154,7 +155,17 @@ export class RedirecionadorComponent implements OnInit {
   }
 
   openDialog() {
-    if (this.data?.body.links.length <= 2) {
+    if (!this.linkWhatsapp && !this.linkTelegram) {
+      // Abre o modal sem opções de redirecionamento
+      this.confirmationService.confirm({
+        header: 'Nenhum redirecionamento disponível',
+        message: 'Nenhuma plataforma de redirecionamento está disponível.',
+        accept: () => {
+          this.isLoading = false;
+          // Ação caso seja aceito (pode ser fechado ou fazer outra ação)
+        },
+      });
+    } else if (this.data?.body.links.length <= 2) {
       switch (this.plataforma) {
         case 'whatsapp': //caso 2 plataformas, whatsapp primeiro
           this.confirmationService.confirm({
@@ -195,6 +206,9 @@ export class RedirecionadorComponent implements OnInit {
           throw Error;
       }
 
+    }
+    if (this.data?.body.links.length == 0 || null) {
+      this.isLinksAvailable = false
     }
   }
 }
