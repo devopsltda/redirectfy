@@ -56,22 +56,13 @@ export class RedirecionadorComponent implements OnInit {
           this.linkTelegram = this.data.body.links?.[1].link;
           this.plataforma = "whatsapp";
         }
-        else {
-          this.linkWhatsapp = this.data.body.links?.[1].link;
-          this.linkTelegram = this.data.body.links?.[0].link;
-          this.plataforma = "telegram";
-        }
       }
 
       if (this.data.body?.redirecionador.ordem_de_redirecionamento == "telegram,whatsapp") { //caso ordem de redirecionamento = telegram
         if (this.data.body.links?.[1]?.plataforma == 'telegram') {
-          this.linkWhatsapp = this.data.body.links?.[1].link;
-          this.linkTelegram = this.data.body.links?.[0].link;
-          this.plataforma = "telegram";
-        } else {
           this.linkWhatsapp = this.data.body.links?.[0].link;
           this.linkTelegram = this.data.body.links?.[1].link;
-          this.plataforma = "whatsapp";
+          this.plataforma = "telegram";
         }
       }
     }
