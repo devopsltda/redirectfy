@@ -184,9 +184,9 @@ export class RedirecionadorComponent implements OnInit {
 
         case 'telegram': //caso 2 plataformas, telegram primeiro
 
-        console.log("this.plataforma case 'whatsapp'", this.plataforma)
+        console.log("this.plataforma case 'telegram'", this.plataforma)
 
-        
+
           this.confirmationService.confirm({
             header: 'Redirecionando para Telegram',
             message: `Abrir telegram e iniciar a conversa com ${this.data.body?.redirecionador.nome}?`,
