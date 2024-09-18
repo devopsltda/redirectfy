@@ -83,11 +83,11 @@ export class RedirecionadorComponent implements OnInit {
   }
 
   whatsappLinkToHook(link: string): string {
-    console.log('Esse é po cara antes: ', link);
+    console.log('Esse é o cara antes: ', link);
 
     if (link === undefined) {
       link = 'telegram';
-      console.log('Esse é po cara depois: ', link);
+      console.log('Esse é o cara depois: ', link);
     }
 
     // Extrair o número de telefone do link
@@ -149,15 +149,24 @@ export class RedirecionadorComponent implements OnInit {
 
   openDialog() {
     console.log(this.data.body.links.length+" rock");
-  
+
+    console.log("this.plataforma antes de entrar no switch: ",this.plataforma)
+
     if (this.data?.body.links.length <= 2) {
+
       switch (this.plataforma) {
+
         case 'whatsapp': //caso 2 plataformas, whatsapp primeiro
+
+        console.log("this.plataforma case 'whatsapp'", this.plataforma)
+
           this.confirmationService.confirm({
             header: 'Redirecionando para Whatsapp',
             message: `Abrir whatsapp e iniciar a conversa com ${this.data.body?.redirecionador.nome} ?`,
             accept: () => {
-              console.log("link do zap dentro do openDialog whatsapp,telegram:"+this.linkWhatsapp);
+
+              console.log("link do zap dentro do openDialog whatsapp,telegram:" + this.linkWhatsapp);
+
               window.location.href = this.whatsappLinkToHook(this.linkWhatsapp);
               this.isLoading = false;
             },
@@ -174,6 +183,10 @@ export class RedirecionadorComponent implements OnInit {
           break;
 
         case 'telegram': //caso 2 plataformas, telegram primeiro
+
+        console.log("this.plataforma case 'whatsapp'", this.plataforma)
+
+        
           this.confirmationService.confirm({
             header: 'Redirecionando para Telegram',
             message: `Abrir telegram e iniciar a conversa com ${this.data.body?.redirecionador.nome}?`,
