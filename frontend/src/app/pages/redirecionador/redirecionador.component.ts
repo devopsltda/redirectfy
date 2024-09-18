@@ -166,7 +166,9 @@ export class RedirecionadorComponent implements OnInit {
           // Ação caso seja aceito (pode ser fechado ou fazer outra ação)
         },
       });
-    } else if (this.data?.body.links.length <= 2) {
+    } 
+    
+    if (this.data?.body.links?.length <= 2) {
       switch (this.plataforma) {
         case 'whatsapp': //caso 2 plataformas, whatsapp primeiro
           this.confirmationService.confirm({
