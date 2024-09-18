@@ -34,24 +34,42 @@ export class RedirecionadorComponent implements OnInit {
   linkWhatsapp!: string;
   IsAccepted: boolean = true;
   isVisible: boolean = true;
-  plataforma!: string;
+  plataforma: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private api: RedirectifyApiService,
     private confirmationService: ConfirmationService,
-  ) {}
+  ) {
+    this.plataforma = '' // Iniciando como uma string vazia
+  }
 
   async ngOnInit() {
+
+    console.log(this.plataforma)
+
     this.data = await this.api.getToLinksRedirect(this.redirectHash);
+
+
     // quando temos 2 tipos de links, 1 pro telegram e outro pro zap
-    console.log(this.data?.body.links);
+
+    console.log("this.data?.body.links: ", this.data?.body.links);
+
+
     if (this.data.body.links.length === 2) {
+
+
       if (this.data.body.links?.[0]?.plataforma == 'whatsapp') {
+
+
         this.linkWhatsapp = this.data.body.links?.[0].link;
         this.linkTelegram = this.data.body.links?.[1].link;
         this.plataforma = "whatsapp";
+
+
       } else {
+
+
         this.linkWhatsapp = this.data.body.links?.[1].link;
         this.linkTelegram = this.data.body.links?.[0].link;
         this.plataforma = "telegram";
