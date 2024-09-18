@@ -46,7 +46,7 @@ export class RedirecionadorComponent implements OnInit {
 
   async ngOnInit() {
 
-    console.log("this.plataforma no INICIO do ngOnInit: ",this.plataforma)
+    console.log("this.plataforma no INICIO do ngOnInit: ", this.plataforma)
 
     this.data = await this.api.getToLinksRedirect(this.redirectHash);
 
@@ -56,27 +56,41 @@ export class RedirecionadorComponent implements OnInit {
     console.log("this.data?.body: ", this.data?.body);
 
 
-    console.log("this.data?.body.links: ", this.data?.body.links);    
+    console.log("this.data?.body.links: ", this.data?.body.links);
 
     if (this.data.body.links.length === 2) {
 
-      console.log("this.data.body.links: ",  this.data.body.links)
-
-      if (this.data.body.links?.[0]?.plataforma == 'whatsapp') {
-
-
-        this.linkWhatsapp = this.data.body.links?.[0].link;
-        this.linkTelegram = this.data.body.links?.[1].link;
-        this.plataforma = "whatsapp";
+      console.log("this.data.body.links: ", this.data.body.links)
+      if (this.data.body?.redirecionador.ordem_de_redirecionamento == "whatsapp,telegram") {
+        if (this.data.body.links?.[0]?.plataforma == 'whatsapp') {
 
 
-      } else {
+          this.linkWhatsapp = this.data.body.links?.[0].link;
+          this.linkTelegram = this.data.body.links?.[1].link;
+          this.plataforma = "whatsapp";
+        }
+        else {
 
 
-        this.linkWhatsapp = this.data.body.links?.[1].link;
-        this.linkTelegram = this.data.body.links?.[0].link;
-        this.plataforma = "telegram";
+          this.linkWhatsapp = this.data.body.links?.[1].link;
+          this.linkTelegram = this.data.body.links?.[0].link;
+          this.plataforma = "telegram";
+        }
       }
+
+      if (this.data.body?.redirecionador.ordem_de_redirecionamento == "telegram,whatsapp") {
+        if (this.data.body.links?.[0]?.plataforma == 'telegram') {
+          this.linkWhatsapp = this.data.body.links?.[1].link;
+          this.linkTelegram = this.data.body.links?.[0].link;
+          this.plataforma = "telegram";
+        } else {
+          this.linkWhatsapp = this.data.body.links?.[0].link;
+          this.linkTelegram = this.data.body.links?.[1].link;
+          this.plataforma = "whatsapp";
+        }
+      }
+
+
     }
     // quando temos apenas 1 link, seja do zap ou do telegram
     if (this.data.body.links.length === 1) {
@@ -91,7 +105,7 @@ export class RedirecionadorComponent implements OnInit {
         this.plataforma = "telegram";
       }
     }
-    console.log("this.plataforma no FINAL do ngOnInit: ",this.plataforma)
+    console.log("this.plataforma no FINAL do ngOnInit: ", this.plataforma)
 
     this.openDialog();
   }
@@ -171,9 +185,9 @@ export class RedirecionadorComponent implements OnInit {
   }
 
   openDialog() {
-    console.log(this.data.body.links.length+" rock");
+    console.log(this.data.body.links.length + " rock");
 
-    console.log("this.plataforma antes de entrar no switch: ",this.plataforma)
+    console.log("this.plataforma antes de entrar no switch: ", this.plataforma)
 
     if (this.data?.body.links.length <= 2) {
 
@@ -181,7 +195,7 @@ export class RedirecionadorComponent implements OnInit {
 
         case 'whatsapp': //caso 2 plataformas, whatsapp primeiro
 
-        console.log("this.plataforma case 'whatsapp'", this.plataforma)
+          console.log("this.plataforma case 'whatsapp'", this.plataforma)
 
           this.confirmationService.confirm({
             header: 'Redirecionando para Whatsapp',
@@ -207,7 +221,7 @@ export class RedirecionadorComponent implements OnInit {
 
         case 'telegram': //caso 2 plataformas, telegram primeiro
 
-        console.log("this.plataforma case 'telegram'", this.plataforma)
+          console.log("this.plataforma case 'telegram'", this.plataforma)
 
 
           this.confirmationService.confirm({
@@ -219,8 +233,8 @@ export class RedirecionadorComponent implements OnInit {
             },
             reject: () => {
               this.isLoading = false;
-              console.log("link do zap dentro do openDialog telegram,whatsapp: "+this.linkWhatsapp);
-              
+              console.log("link do zap dentro do openDialog telegram,whatsapp: " + this.linkWhatsapp);
+
               window.location.href = this.whatsappLinkToHook(this.linkWhatsapp);
             },
           });
