@@ -46,18 +46,21 @@ export class RedirecionadorComponent implements OnInit {
 
   async ngOnInit() {
 
-    console.log(this.plataforma)
+    console.log("this.plataforma no INICIO do ngOnInit: ",this.plataforma)
 
     this.data = await this.api.getToLinksRedirect(this.redirectHash);
 
 
     // quando temos 2 tipos de links, 1 pro telegram e outro pro zap
 
-    console.log("this.data?.body.links: ", this.data?.body.links);
+    console.log("this.data?.body: ", this.data?.body);
 
+
+    console.log("this.data?.body.links: ", this.data?.body.links);    
 
     if (this.data.body.links.length === 2) {
 
+      console.log("this.data.body.links: ",  this.data.body.links)
 
       if (this.data.body.links?.[0]?.plataforma == 'whatsapp') {
 
@@ -88,6 +91,8 @@ export class RedirecionadorComponent implements OnInit {
         this.plataforma = "telegram";
       }
     }
+    console.log("this.plataforma no FINAL do ngOnInit: ",this.plataforma)
+
     this.openDialog();
   }
 
