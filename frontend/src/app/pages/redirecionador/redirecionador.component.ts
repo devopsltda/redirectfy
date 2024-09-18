@@ -45,36 +45,36 @@ export class RedirecionadorComponent implements OnInit {
   }
 
   async ngOnInit() {
-
+    console.log("this.data?.body: ", this.data?.body);
     console.log("this.plataforma no INICIO do ngOnInit: ", this.plataforma)
-
+    
+    
     this.data = await this.api.getToLinksRedirect(this.redirectHash);
 
 
     // quando temos 2 tipos de links, 1 pro telegram e outro pro zap
 
-    console.log("this.data?.body: ", this.data?.body);
 
 
-    console.log("this.data?.body.links: ", this.data?.body.links);
 
     if (this.data.body.links.length === 2) {
 
-      console.log("this.data.body.links: ", this.data.body.links)
+      console.log("this.data.body.links DENTRO DO IF INICIAL: ", this.data.body.links)
       if (this.data.body?.redirecionador.ordem_de_redirecionamento == "whatsapp,telegram") {
         if (this.data.body.links?.[0]?.plataforma == 'whatsapp') {
-
 
           this.linkWhatsapp = this.data.body.links?.[0].link;
           this.linkTelegram = this.data.body.links?.[1].link;
           this.plataforma = "whatsapp";
+          console.log("CHEGOU NO PRIMEIRO IF")
         }
         else {
 
-
+          
           this.linkWhatsapp = this.data.body.links?.[1].link;
           this.linkTelegram = this.data.body.links?.[0].link;
           this.plataforma = "telegram";
+          console.log("CHEGOU NO PRIMEIRO ELSE")
         }
       }
 
@@ -83,12 +83,18 @@ export class RedirecionadorComponent implements OnInit {
           this.linkWhatsapp = this.data.body.links?.[1].link;
           this.linkTelegram = this.data.body.links?.[0].link;
           this.plataforma = "telegram";
+          console.log("CHEGOU NO SEGUNDO IF")
+
         } else {
           this.linkWhatsapp = this.data.body.links?.[0].link;
           this.linkTelegram = this.data.body.links?.[1].link;
           this.plataforma = "whatsapp";
+          console.log("CHEGOU NO SEGUNDO ELSE")
+
         }
       }
+
+    console.log("this.plataforma no NO MEIO do ngOnInit: ", this.plataforma)
 
 
     }
